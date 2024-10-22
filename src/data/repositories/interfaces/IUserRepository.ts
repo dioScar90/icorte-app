@@ -1,6 +1,6 @@
 import { Result } from "@/data/result";
 import { UserEmailUpdateType, UserPasswordUpdateType, UserPhoneNumberUpdateType } from "@/schemas/user";
-import { UserMe } from "@/types/user";
+import { UserMe } from "@/types/models/user";
 
 export interface IUserRepository {
   getMe(): Promise<Result<UserMe>>;

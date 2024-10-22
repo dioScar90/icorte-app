@@ -1,11 +1,11 @@
 import { UserEmailUpdateType, UserPasswordUpdateType, UserPhoneNumberUpdateType } from "@/schemas/user";
 import { IUserRepository } from "./interfaces/IUserRepository";
-import { UserMe } from "@/types/user";
+import { UserMe } from "@/types/models/user";
 import { Result } from "@/data/result";
 import { IUserService } from "../services/interfaces/IUserService";
 
 export class UserRepository implements IUserRepository {
-  constructor(private readonly service: IUserService) {}
+  constructor(private readonly service: IUserService) { }
 
   async getMe() {
     try {
@@ -15,7 +15,7 @@ export class UserRepository implements IUserRepository {
       return Result.Failure<UserMe>(err as Error)
     }
   }
-  
+
   changeEmail(data: UserEmailUpdateType): Promise<Result<boolean>> {
     throw new Error("Method not implemented.");
   }

@@ -1,5 +1,5 @@
 import { AddressType } from "@/schemas/address";
-import { Address } from "@/types/address";
+import { Address } from "@/types/models/address";
 import { AxiosResponse } from "axios";
 
 export interface IAddressService {

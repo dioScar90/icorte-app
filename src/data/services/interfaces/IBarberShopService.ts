@@ -1,5 +1,5 @@
 import { BarberShopType } from "@/schemas/barberShop";
-import { BarberShop } from "@/types/barberShop";
+import { BarberShop } from "@/types/models/barberShop";
 import { AxiosResponse } from "axios";
 
 export interface IBarberShopService {

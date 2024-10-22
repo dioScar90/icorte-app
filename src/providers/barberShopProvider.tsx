@@ -1,10 +1,10 @@
 import { BarberShopRepository } from "@/data/repositories/BarberShopRepository"
 import { IBarberShopRepository } from "@/data/repositories/interfaces/IBarberShopRepository"
 import { BarberShopService } from "@/data/services/BarberShopService"
-import { UserMe } from "@/types/user"
+import { UserMe } from "@/types/models/user"
 import { createContext, PropsWithChildren, useContext } from "react"
-import { useAuth } from "./auth"
-import { useProxy } from "./proxy"
+import { useAuth } from "./authProvider"
+import { useProxy } from "./proxyProvider"
 
 export type BarberShopContextType = {
   barberShop: NonNullable<UserMe['barberShop']>
@@ -26,7 +26,7 @@ export function useBarberShop() {
 export function BarberShopProvider({ children }: PropsWithChildren) {
   const { httpClient } = useProxy()
   const { authUser } = useAuth()
-  
+
   return (
     <BarberShopContext.Provider
       value={{

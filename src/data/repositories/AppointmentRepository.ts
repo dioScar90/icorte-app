@@ -2,10 +2,10 @@ import { IAppointmentRepository } from "./interfaces/IAppointmentRepository";
 import { IAppointmentService } from "../services/interfaces/IAppointmentService";
 import { Result } from "@/data/result";
 import { AppointmentType } from "@/schemas/appointment";
-import { Appointment } from "@/types/appointment";
+import { Appointment } from "@/types/models/appointment";
 
 export class AppointmentRepository implements IAppointmentRepository {
-  constructor(private readonly service: IAppointmentService) {}
+  constructor(private readonly service: IAppointmentService) { }
 
   async createAppointment(data: AppointmentType) {
     try {

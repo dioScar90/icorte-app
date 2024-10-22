@@ -1,7 +1,7 @@
 import { Result } from "@/data/result";
 import { RecurringScheduleType } from "@/schemas/recurringSchedule";
-import { DayOfWeek } from "@/types/date";
-import { RecurringSchedule } from "@/types/recurringSchedule";
+import { DayOfWeek } from "@/types/models/date";
+import { RecurringSchedule } from "@/types/models/recurringSchedule";
 
 export interface IRecurringScheduleRepository {
   createRecurringSchedule(barberShpoId: number, data: RecurringScheduleType): Promise<Result<boolean>>;

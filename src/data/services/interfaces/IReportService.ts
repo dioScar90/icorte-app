@@ -1,5 +1,5 @@
 import { ReportType } from "@/schemas/report";
-import { Report } from "@/types/report";
+import { Report } from "@/types/models/report";
 import { AxiosResponse } from "axios";
 
 export interface IReportService {

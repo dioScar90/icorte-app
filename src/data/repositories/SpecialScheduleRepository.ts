@@ -2,11 +2,11 @@ import { ISpecialScheduleRepository } from "./interfaces/ISpecialScheduleReposit
 import { ISpecialScheduleService } from "../services/interfaces/ISpecialScheduleService";
 import { Result } from "@/data/result";
 import { SpecialScheduleType } from "@/schemas/specialSchedule";
-import { SpecialSchedule } from "@/types/specialSchedule";
-import { DateOnly } from "@/types/date";
+import { SpecialSchedule } from "@/types/models/specialSchedule";
+import { DateOnly } from "@/types/models/date";
 
 export class SpecialScheduleRepository implements ISpecialScheduleRepository {
-  constructor(private readonly service: ISpecialScheduleService) {}
+  constructor(private readonly service: ISpecialScheduleService) { }
 
   async createSpecialSchedule(barberShpoId: number, data: SpecialScheduleType) {
     try {

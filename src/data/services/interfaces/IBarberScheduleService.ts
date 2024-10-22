@@ -1,5 +1,5 @@
-import { TopBarberShop } from "@/types/barberShop";
-import { DateOnly, TimeOnly } from "@/types/date";
+import { TopBarberShop } from "@/types/models/barberShop";
+import { DateOnly, TimeOnly } from "@/types/models/date";
 import { AxiosResponse } from "axios";
 
 export interface IBarberScheduleService {

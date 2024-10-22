@@ -1,9 +1,9 @@
-import { useAuth } from "@/providers/auth"
+import { useAuth } from "@/providers/authProvider"
 import { MaxWidthWrapper } from "./MaxWidthWrapper"
 import { buttonVariants } from "./ui/button"
 import { ArrowRight } from "lucide-react"
 import { Link } from "react-router-dom"
-import { ROUTE_ENUM } from "@/App"
+import { ROUTE_ENUM } from "@/types/route"
 
 export function Navbar() {
   const { isAuthenticated, isClient, isBarberShop, isAdmin } = useAuth()

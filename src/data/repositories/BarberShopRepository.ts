@@ -1,11 +1,11 @@
-import { BarberShop } from "@/types/barberShop";
+import { BarberShop } from "@/types/models/barberShop";
 import { Result } from "@/data/result";
 import { IBarberShopRepository } from "./interfaces/IBarberShopRepository";
 import { BarberShopType } from "@/schemas/barberShop";
 import { IBarberShopService } from "../services/interfaces/IBarberShopService";
 
 export class BarberShopRepository implements IBarberShopRepository {
-  constructor(private readonly service: IBarberShopService) {}
+  constructor(private readonly service: IBarberShopService) { }
 
   async createBarberShop(data: BarberShopType) {
     try {

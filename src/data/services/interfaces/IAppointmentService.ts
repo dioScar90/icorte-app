@@ -1,5 +1,5 @@
 import { AppointmentType } from "@/schemas/appointment";
-import { Appointment } from "@/types/appointment";
+import { Appointment } from "@/types/models/appointment";
 import { AxiosResponse } from "axios";
 
 export interface IAppointmentService {

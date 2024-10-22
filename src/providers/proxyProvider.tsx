@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useContext } from "react"
 import axios, { AxiosInstance } from 'axios'
-import { ROUTE_ENUM } from "@/App"
+import { ROUTE_ENUM } from "@/types/route"
 
 const httpClient = axios.create({
   baseURL: import.meta.env.BASE_URL,
@@ -21,10 +21,10 @@ httpClient.interceptors.response.use(
     if (!isAuthError) {
       return Promise.reject(error)
     }
-    
+
     // const { state } = getStorage('auth-storage')
     // removeStorage('token', 'auth-storage')
-    
+
     // const isAdmin = state?.user?.role?.name === 'ADMIN'
     // location.href = isAdmin ? '/dashboard/login' : '/login'
   }

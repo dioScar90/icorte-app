@@ -1,6 +1,6 @@
 import { Result } from "@/data/result";
 import { BarberShopType } from "@/schemas/barberShop";
-import { BarberShop } from "@/types/barberShop";
+import { BarberShop } from "@/types/models/barberShop";
 
 export interface IBarberShopRepository {
   createBarberShop(data: BarberShopType): Promise<Result<boolean>>;

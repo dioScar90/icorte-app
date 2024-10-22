@@ -1,6 +1,6 @@
 import { Result } from "@/data/result";
 import { AddressType } from "@/schemas/address";
-import { Address } from "@/types/address";
+import { Address } from "@/types/models/address";
 
 export interface IAddressRepository {
   createAddress(barberShpoId: number, data: AddressType): Promise<Result<boolean>>;

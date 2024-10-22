@@ -1,6 +1,6 @@
 import { Result } from "@/data/result";
 import { ServiceType } from "@/schemas/service";
-import { Service } from "@/types/service";
+import { Service } from "@/types/models/service";
 
 export interface IServiceRepository {
   createService(barberShpoId: number, data: ServiceType): Promise<Result<boolean>>;

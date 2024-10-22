@@ -1,4 +1,4 @@
-import { DateOnly } from "@/types/date";
+import { DateOnly } from "@/types/models/date";
 import { IBarberScheduleService } from "./interfaces/IBarberScheduleService";
 import { HttpClient } from "../httpClient";
 
@@ -15,21 +15,21 @@ function getUrl(date: DateOnly, final?: Final, barberShopId?: number) {
 }
 
 export class BarberScheduleService implements IBarberScheduleService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: HttpClient) { }
 
   async getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateOnly) {
     const url = getUrl(dateOfWeek, 'dates', barberShopId)
     return await this.httpClient.get(url)
   }
-  
+
   async getAvailableSlots(barberShopId: number, date: DateOnly) {
     const url = getUrl(date, 'slots', barberShopId)
     return await this.httpClient.get(url)
   }
-  
+
   async getTopBarbersWithAvailability(dateOfWeek: DateOnly) {
     const url = getUrl(dateOfWeek)
     return await this.httpClient.get(url)
   }
-  
+
 }

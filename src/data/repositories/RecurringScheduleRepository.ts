@@ -2,11 +2,11 @@ import { IRecurringScheduleRepository } from "./interfaces/IRecurringScheduleRep
 import { IRecurringScheduleService } from "../services/interfaces/IRecurringScheduleService";
 import { Result } from "@/data/result";
 import { RecurringScheduleType } from "@/schemas/recurringSchedule";
-import { RecurringSchedule } from "@/types/recurringSchedule";
-import { DayOfWeek } from "@/types/date";
+import { RecurringSchedule } from "@/types/models/recurringSchedule";
+import { DayOfWeek } from "@/types/models/date";
 
 export class RecurringScheduleRepository implements IRecurringScheduleRepository {
-  constructor(private readonly service: IRecurringScheduleService) {}
+  constructor(private readonly service: IRecurringScheduleService) { }
 
   async createRecurringSchedule(barberShpoId: number, data: RecurringScheduleType) {
     try {

@@ -1,5 +1,5 @@
 import { ServiceType } from "@/schemas/service";
-import { Service } from "@/types/service";
+import { Service } from "@/types/models/service";
 import { AxiosResponse } from "axios";
 
 export interface IServiceService {

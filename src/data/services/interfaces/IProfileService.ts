@@ -1,5 +1,5 @@
 import { ProfileType } from "@/schemas/profile";
-import { Profile } from "@/types/profile";
+import { Profile } from "@/types/models/profile";
 import { AxiosResponse } from "axios";
 
 export interface IProfileService {

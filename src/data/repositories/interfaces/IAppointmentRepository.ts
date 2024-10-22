@@ -1,6 +1,6 @@
 import { Result } from "@/data/result";
 import { AppointmentType } from "@/schemas/appointment";
-import { Appointment } from "@/types/appointment";
+import { Appointment } from "@/types/models/appointment";
 
 export interface IAppointmentRepository {
   createAppointment(data: AppointmentType): Promise<Result<boolean>>;

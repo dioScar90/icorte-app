@@ -1,5 +1,5 @@
-import { AuthProvider } from '@/providers/auth'
-import { ProxyProvider } from '@/providers/proxy'
+import { AuthProvider } from '@/providers/authProvider'
+import { ProxyProvider } from '@/providers/proxyProvider'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import { PropsWithChildren } from 'react'
 

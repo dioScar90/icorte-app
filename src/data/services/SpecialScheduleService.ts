@@ -1,7 +1,7 @@
 import { SpecialScheduleType } from "@/schemas/specialSchedule";
 import { HttpClient } from "@/data/httpClient";
 import { ISpecialScheduleService } from "./interfaces/ISpecialScheduleService";
-import { DateOnly } from "@/types/date";
+import { DateOnly } from "@/types/models/date";
 
 function getUrl(barberShpoId: number, date?: DateOnly) {
   const baseEndpoint = `/barber-shop/${barberShpoId}/special-schedule`
@@ -9,13 +9,13 @@ function getUrl(barberShpoId: number, date?: DateOnly) {
   if (date === undefined) {
     return baseEndpoint
   }
-  
+
   return `${baseEndpoint}/${date}`
 }
 
 export class SpecialScheduleService implements ISpecialScheduleService {
-  constructor(private readonly httpClient: HttpClient) {}
-  
+  constructor(private readonly httpClient: HttpClient) { }
+
   async createSpecialSchedule(barberShpoId: number, data: SpecialScheduleType) {
     const url = getUrl(barberShpoId)
     return await this.httpClient.post(url, { ...data })

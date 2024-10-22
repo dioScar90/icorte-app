@@ -1,11 +1,11 @@
-import { Profile } from "@/types/profile";
+import { Profile } from "@/types/models/profile";
 import { Result } from "@/data/result";
 import { IProfileRepository } from "./interfaces/IProfileRepository";
 import { ProfileType } from "@/schemas/profile";
 import { IProfileService } from "../services/interfaces/IProfileService";
 
 export class ProfileRepository implements IProfileRepository {
-  constructor(private readonly service: IProfileService) {}
+  constructor(private readonly service: IProfileService) { }
 
   async createProfile(data: ProfileType) {
     try {

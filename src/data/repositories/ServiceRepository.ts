@@ -2,10 +2,10 @@ import { IServiceRepository } from "./interfaces/IServiceRepository";
 import { IServiceService } from "../services/interfaces/IServiceService";
 import { Result } from "@/data/result";
 import { ServiceType } from "@/schemas/service";
-import { Service } from "@/types/service";
+import { Service } from "@/types/models/service";
 
 export class ServiceRepository implements IServiceRepository {
-  constructor(private readonly service: IServiceService) {}
+  constructor(private readonly service: IServiceService) { }
 
   async createService(barberShpoId: number, data: ServiceType) {
     try {

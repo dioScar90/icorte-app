@@ -7,21 +7,22 @@ import { ClientLayout } from './components/layouts/ClientLayout'
 import { BarberShopLayout } from './components/layouts/BarberShopLayout'
 import { AdminLayout } from './components/layouts/AdminLayout'
 import { BarberScheduleLayout } from './components/layouts/BarberScheduleLayout'
-import { ProtectedClientRoute } from './protectedRoutes/client'
-import { ProtectedBarberShopRoute } from './protectedRoutes/barberShop'
-import { ProtectedAdminRoute } from './protectedRoutes/admin'
+import { ProtectedClientRoute } from './protectedRoutes/clientProtectedRoute'
+import { ProtectedBarberShopRoute } from './protectedRoutes/barberShopProtectedRoute'
+import { ProtectedAdminRoute } from './protectedRoutes/adminProtectedRoute'
+import { ROUTE_ENUM } from './types/route'
 
-export const ROUTE_ENUM = {
-  ROOT: '/',
-  REGISTER: '/register',
-  LOGIN: '/login',
-  LOGOUT: '/logout',
-  CLIENT: '/client',
-  PROFILE: '/profile',
-  BARBER_SHOP: '/barber-shop',
-  BARBER_SCHEDULE: '/barber-schedule',
-  ADMIN: '/admin',
-} as const
+// export const ROUTE_ENUM = {
+//   ROOT: '/',
+//   REGISTER: '/register',
+//   LOGIN: '/login',
+//   LOGOUT: '/logout',
+//   CLIENT: '/client',
+//   PROFILE: '/profile',
+//   BARBER_SHOP: '/barber-shop',
+//   BARBER_SCHEDULE: '/barber-schedule',
+//   ADMIN: '/admin',
+// } as const
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -33,10 +34,6 @@ export function App() {
           <Route path="register" element={<Register />} />
           
           <Route element={<ProtectedClientRoute />}>
-            <Route path={ROUTE_ENUM.CLIENT} element={<ClientLayout />}>
-              <Route index element={<Home />} />
-            </Route>
-
             <Route path={ROUTE_ENUM.PROFILE} element={<ClientLayout />}>
               <Route path=":id" element={<p>Profile</p>} />
               <Route path=":id/edit" element={<p>Edit</p>} />

@@ -1,4 +1,4 @@
-import { DateOnly, TimeOnly } from "@/types/date"
+import { DateOnly, TimeOnly } from "@/types/models/date"
 
 type GetTodayProps = {
   dateOnly?: DateOnly,
@@ -14,20 +14,20 @@ function getNewDateObject(dateOnly?: DateOnly, timeOnly?: TimeOnly) {
   if (!dateOnly) {
     return new Date(new Date().setHours(12))
   }
-  
+
   timeOnly ??= '12:00:00'
   return new Date(dateOnly + 'T' + timeOnly)
 }
 
 export function getToday({
-    dateOnly = undefined,
-    timeOnly = undefined,
-    isDateIso = undefined,
-    isTimeIso = undefined,
-    isFullIso = undefined,
-    isString = undefined,
-    locale = undefined,
-  }: GetTodayProps) {
+  dateOnly = undefined,
+  timeOnly = undefined,
+  isDateIso = undefined,
+  isTimeIso = undefined,
+  isFullIso = undefined,
+  isString = undefined,
+  locale = undefined,
+}: GetTodayProps) {
   const date = getNewDateObject(dateOnly, timeOnly)
 
   if (isString) {
@@ -45,6 +45,6 @@ export function getToday({
     const [dateIso, timeIso] = fullIso.split('T')
     return isTimeIso ? timeIso : dateIso
   }
-  
+
   return date
 }

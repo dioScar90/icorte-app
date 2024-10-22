@@ -3,9 +3,9 @@ import { UserRepository } from "@/data/repositories/UserRepository"
 import { AuthService } from "@/data/services/AuthService"
 import { UserService } from "@/data/services/UserService"
 import { UserRegisterType } from "@/schemas/user"
-import { UserMe } from "@/types/user"
+import { UserMe } from "@/types/models/user"
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useReducer } from "react"
-import { useProxy } from "./proxy"
+import { useProxy } from "./proxyProvider"
 
 export type AuthUser = {
   user: Omit<UserMe, 'roles' | 'profile' | 'barberShop'>
@@ -53,7 +53,7 @@ export type AuthAction =
   | { type: 'LOGIN_FAILURE' }
   | { type: 'LOGOUT' }
   | { type: 'SET_LOADING'; payload: boolean }
-  
+
 function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case 'LOGIN_SUCCESS':
@@ -108,7 +108,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       dispatch({ type: 'LOGIN_FAILURE' })
       return
     }
-    
+
     const userData: UserMe = userResult.value
 
     const user: AuthUser = {
@@ -135,7 +135,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       dispatch({ type: 'LOGIN_FAILURE' })
       return
     }
-    
+
     const userData: UserMe = userResult.value
 
     const user: AuthUser = {
@@ -156,12 +156,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
     authRepository.logout()
     dispatch({ type: 'LOGOUT' })
   }
-  
+
   useEffect(() => {
     const checkAuthStatus = async () => await login()
     checkAuthStatus()
   }, [])
-  
+
   return (
     <AuthContext.Provider
       value={{

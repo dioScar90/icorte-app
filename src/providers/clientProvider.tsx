@@ -1,10 +1,10 @@
 import { ProfileRepository } from "@/data/repositories/ProfileRepository"
 import { IProfileRepository } from "@/data/repositories/interfaces/IProfileRepository"
 import { ProfileService } from "@/data/services/ProfileService"
-import { UserMe } from "@/types/user"
+import { UserMe } from "@/types/models/user"
 import { createContext, PropsWithChildren, useContext } from "react"
-import { useAuth } from "./auth"
-import { useProxy } from "./proxy"
+import { useAuth } from "./authProvider"
+import { useProxy } from "./proxyProvider"
 
 export type ClientContextType = {
   profile: NonNullable<UserMe['profile']>
@@ -26,7 +26,7 @@ export function useClient() {
 export function ClientProvider({ children }: PropsWithChildren) {
   const { httpClient } = useProxy()
   const { authUser } = useAuth()
-  
+
   return (
     <ClientContext.Provider
       value={{

@@ -1,6 +1,6 @@
 import { Result } from "@/data/result";
 import { ProfileType } from "@/schemas/profile";
-import { Profile } from "@/types/profile";
+import { Profile } from "@/types/models/profile";
 
 export interface IProfileRepository {
   createProfile(data: ProfileType): Promise<Result<boolean>>;

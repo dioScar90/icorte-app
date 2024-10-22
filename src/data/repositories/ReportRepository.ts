@@ -2,10 +2,10 @@ import { IReportRepository } from "./interfaces/IReportRepository";
 import { IReportService } from "../services/interfaces/IReportService";
 import { Result } from "@/data/result";
 import { ReportType } from "@/schemas/report";
-import { Report } from "@/types/report";
+import { Report } from "@/types/models/report";
 
 export class ReportRepository implements IReportRepository {
-  constructor(private readonly service: IReportService) {}
+  constructor(private readonly service: IReportService) { }
 
   async createReport(barberShpoId: number, data: ReportType) {
     try {

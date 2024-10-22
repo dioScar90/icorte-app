@@ -1,6 +1,6 @@
 import { Result } from "@/data/result";
 import { ReportType } from "@/schemas/report";
-import { Report } from "@/types/report";
+import { Report } from "@/types/models/report";
 
 export interface IReportRepository {
   createReport(barberShpoId: number, data: ReportType): Promise<Result<boolean>>;

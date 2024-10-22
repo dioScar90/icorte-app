@@ -1,6 +1,6 @@
 import { SpecialScheduleType } from "@/schemas/specialSchedule";
-import { DateOnly } from "@/types/date";
-import { SpecialSchedule } from "@/types/specialSchedule";
+import { DateOnly } from "@/types/models/date";
+import { SpecialSchedule } from "@/types/models/specialSchedule";
 import { AxiosResponse } from "axios";
 
 export interface ISpecialScheduleService {

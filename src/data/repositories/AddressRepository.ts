@@ -2,10 +2,10 @@ import { IAddressRepository } from "./interfaces/IAddressRepository";
 import { IAddressService } from "../services/interfaces/IAddressService";
 import { Result } from "@/data/result";
 import { AddressType } from "@/schemas/address";
-import { Address } from "@/types/address";
+import { Address } from "@/types/models/address";
 
 export class AddressRepository implements IAddressRepository {
-  constructor(private readonly service: IAddressService) {}
+  constructor(private readonly service: IAddressService) { }
 
   async createAddress(barberShpoId: number, data: AddressType) {
     try {

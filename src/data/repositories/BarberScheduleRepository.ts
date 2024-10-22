@@ -1,11 +1,11 @@
-import { TopBarberShop } from "@/types/barberShop";
+import { TopBarberShop } from "@/types/models/barberShop";
 import { Result } from "@/data/result";
 import { IBarberScheduleRepository } from "./interfaces/IBarberScheduleRepository";
 import { IBarberScheduleService } from "../services/interfaces/IBarberScheduleService";
-import { DateOnly, TimeOnly } from "@/types/date";
+import { DateOnly, TimeOnly } from "@/types/models/date";
 
 export class BarberScheduleRepository implements IBarberScheduleRepository {
-  constructor(private readonly service: IBarberScheduleService) {}
+  constructor(private readonly service: IBarberScheduleService) { }
 
   async getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateOnly) {
     try {
