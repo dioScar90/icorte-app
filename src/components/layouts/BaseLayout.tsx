@@ -5,6 +5,7 @@ import { useAuth } from "@/providers/authProvider";
 import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 import { ROUTE_ENUM } from "@/types/route";
 import { AppSidebar } from "../app-sidebar";
+import Page from "@/app/dashboard/page";
 
 export function BaseLayout() {
   const { pathname } = useLocation()
@@ -13,17 +14,19 @@ export function BaseLayout() {
   if (!isAuthenticated && !pathname.startsWith(ROUTE_ENUM.LOGIN)) {
     return <Navigate to={ROUTE_ENUM.LOGIN} replace />
   }
-  
-  return (
-    <SidebarProvider>
-      <AppSidebar />
 
-      <main>
-        <SidebarTrigger />
-        <Outlet />
-      </main>
+  return <Page />
+  
+  // return (
+  //   <SidebarProvider>
+  //     <AppSidebar />
+
+  //     <main>
+  //       <SidebarTrigger />
+  //       <Outlet />
+  //     </main>
       
-      <Toaster />
-    </SidebarProvider>
-  )
+  //     <Toaster />
+  //   </SidebarProvider>
+  // )
 }
