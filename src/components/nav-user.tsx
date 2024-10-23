@@ -2,11 +2,9 @@ import {
   BadgeCheck,
   Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
   Sparkles,
 } from "lucide-react"
-
 import {
   Avatar,
   AvatarFallback,
@@ -27,6 +25,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Link } from "react-router-dom"
+import { ROUTE_ENUM } from "@/types/route"
 
 export function NavUser({
   user,
@@ -77,33 +77,44 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+
             <DropdownMenuSeparator />
+
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
+              <Link to={ROUTE_ENUM.BE_PRO}>
+                <DropdownMenuItem className="cursor-pointer">
+                  <Sparkles />
+                  Seja Pro
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
+
             <DropdownMenuSeparator />
+
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
+              <Link to={ROUTE_ENUM.ADMIN}>
+                <DropdownMenuItem className="cursor-pointer">
+                  <BadgeCheck />
+                  Minha conta
+                </DropdownMenuItem>
+              </Link>
+              
+              <Link to={ROUTE_ENUM.CHAT}>
+                <DropdownMenuItem className="cursor-pointer">
+                  <Bell />
+                  Chat
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
+
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+
+            <Link to={ROUTE_ENUM.LOGOUT}>
+              <DropdownMenuItem className="cursor-pointer">
+                <LogOut />
+                Log out
+              </DropdownMenuItem>
+            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

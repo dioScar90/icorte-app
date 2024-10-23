@@ -1,8 +1,8 @@
 import * as React from "react"
+import logoImgUrl from '/barber.png'
 import {
   BriefcaseBusinessIcon,
   CalendarCheck2,
-  Command,
   ContactRoundIcon,
   LayoutDashboard,
   LogInIcon,
@@ -11,13 +11,13 @@ import {
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-// import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -25,43 +25,54 @@ import {
 } from "@/components/ui/sidebar"
 import { ROUTE_ENUM } from "@/types/route"
 import { AuthContextType, useAuth } from "@/providers/authProvider"
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+import { Link } from "react-router-dom"
 
 function getUserInfosToSidebar({ authUser }: AuthContextType) {
+  // return {
+  //   name: authUser?.profile?.firstName!,
+  //   email: authUser?.user.email!,
+  //   avatar: authUser?.profile?.imageUrl ?? "/avatars/shadcn.jpg",
+  // }
   return {
-    name: authUser?.profile?.firstName!,
-    email: authUser?.user.email!,
-    avatar: authUser?.profile?.imageUrl ?? "/avatars/shadcn.jpg",
+    name: authUser?.profile?.firstName ?? 'Diogo',
+    email: authUser?.user.email ?? 'diogols@live.com',
+    avatar: authUser?.profile?.imageUrl ?? "https://randomuser.me/api/portraits/men/9.jpg",
   }
 }
 
-function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin }: AuthContextType) {
-  const vamoooo = []
+function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, authUser }: AuthContextType) {
+  const items = []
 
-  if (isBarberShop) {
-    vamoooo.push({
+  if (!isBarberShop) {
+    items.push({
       title: "Minha barbearia",
       url: ROUTE_ENUM.BARBER_SHOP,
       icon: StoreIcon,
       isActive: true,
       items: [
         {
+          title: "Dashboard",
+          url: ROUTE_ENUM.BARBER_SHOP + '/dashboard',
+        },
+        {
           title: "Editar",
-          url: ROUTE_ENUM.BARBER_SHOP,
+          url: ROUTE_ENUM.BARBER_SHOP + '/edit',
         },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
+        // {
+        //   title: "Dashboard",
+        //   url: ROUTE_ENUM.BARBER_SHOP + '/' + authUser!.barberShop!.id + '/dashboard',
+        // },
+        // {
+        //   title: "Editar",
+        //   url: ROUTE_ENUM.BARBER_SHOP + '/' + authUser!.barberShop!.id + '/edit',
+        // },
       ],
     })
   }
   
-  if (isClient) {
-    vamoooo.push({
+  if (!isClient) {
+    items.push({
       title: "Agenda",
       url: ROUTE_ENUM.BARBER_SCHEDULE,
       icon: CalendarCheck2,
@@ -80,7 +91,7 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin }: AuthConte
   }
 
   if (isAdmin) {
-    vamoooo.push({
+    items.push({
       title: "Admin",
       url: ROUTE_ENUM.ADMIN,
       icon: LayoutDashboard,
@@ -98,19 +109,19 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin }: AuthConte
     })
   }
 
-  return vamoooo
+  return items
 }
 
 function getNavSecondaryItemsToSidebar() {
   return [
     {
       title: "Fale com a gente",
-      url: "#",
+      url: ROUTE_ENUM.CONTACT_US,
       icon: ContactRoundIcon,
     },
     {
       title: "Trabalhe conosco",
-      url: "#",
+      url: ROUTE_ENUM.WORK_WITH_US,
       icon: BriefcaseBusinessIcon,
     },
   ]
@@ -122,45 +133,54 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   console.log({ ...userInfos })
 
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar collapsible="icon" variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Command className="size-4" />
+              <Link to={ROUTE_ENUM.ROOT}>
+                <div className="flex aspect-square size-8 items-center justify-center rounded-full bg-sidebar-primary text-sidebar-primary-foreground">
+                  <Avatar>
+                    <AvatarImage src={logoImgUrl} />
+                    <AvatarFallback>iCorte</AvatarFallback>
+                  </Avatar>
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">iCorte</span>
-                  <span className="truncate text-xs">Agendamento de Barbearia</span>
+                  <span className="truncate text-xs">Sua agenda online</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
       <SidebarContent>
-        {!userInfos.isAuthenticated && (
-          <>
-            <SidebarMenuButton asChild>
-              <a href={ROUTE_ENUM.LOGIN}>
-                <LogInIcon />
-                <span>Login</span>
-              </a>
-            </SidebarMenuButton>
-            
-            <SidebarMenuButton asChild>
-              <a href={ROUTE_ENUM.REGISTER}>
-                <UserRoundPlusIcon />
-                <span>Criar conta</span>
-              </a>
-            </SidebarMenuButton>
-          </>
+        <NavMain items={getNavMainItemsToSidebar({ ...userInfos })} />
+
+        {userInfos.isAuthenticated && (
+          <SidebarGroup>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Login">
+                  <Link to={ROUTE_ENUM.LOGIN}>
+                    <LogInIcon />
+                    <span>Login</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Criar conta">
+                  <Link to={ROUTE_ENUM.REGISTER}>
+                    <UserRoundPlusIcon />
+                    <span>Criar conta</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
         )}
 
-        <NavMain items={getNavMainItemsToSidebar({ ...userInfos })} />
         <NavSecondary items={getNavSecondaryItemsToSidebar()} className="mt-auto" />
       </SidebarContent>
 
