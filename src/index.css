@@ -103,8 +103,29 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+
+  main > header {
+    @apply flex h-16 shrink-0 items-center gap-2;
+    
+    > .header-container {
+      @apply flex items-center gap-2 px-2;
+    }
+  }
+
+  main > section[role=main] {
+    @apply flex flex-1 flex-col gap-3 p-2 md:pl-1 pt-0;
+  }
+
+  main > footer {
+    @apply bg-white rounded-lg shadow mx-2 md:ml-1 py-2 mb-2 dark:bg-gray-800;
+
+    > .footer-container {
+      @apply w-full mx-auto max-w-screen-xl px-4 md:flex md:items-center md:justify-between;
+    }
   }
 }
 

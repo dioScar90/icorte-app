@@ -4,10 +4,12 @@ import {
   BriefcaseBusinessIcon,
   CalendarCheck2,
   ContactRoundIcon,
+  HomeIcon,
   LayoutDashboard,
   LogInIcon,
   StoreIcon,
   UserRoundPlusIcon,
+  type LucideIcon,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -42,7 +44,29 @@ function getUserInfosToSidebar({ authUser }: AuthContextType) {
 }
 
 function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, authUser }: AuthContextType) {
-  const items = []
+  const items = [{
+    title: "Home",
+    url: ROUTE_ENUM.HOME,
+    icon: HomeIcon,
+    isActive: true,
+    items: [],
+  }] as {
+    title: string,
+    url: string,
+    icon: LucideIcon,
+    isActive?: boolean,
+    items: any[],
+  }[]
+
+  
+//   <SidebarMenuItem>
+//   <SidebarMenuButton asChild tooltip="Login">
+//     <Link to={ROUTE_ENUM.LOGIN}>
+//       <LogInIcon />
+//       <span>Login</span>
+//     </Link>
+//   </SidebarMenuButton>
+// </SidebarMenuItem>
 
   if (!isBarberShop) {
     items.push({

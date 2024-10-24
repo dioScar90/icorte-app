@@ -1,35 +1,23 @@
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
-import { Home } from './pages/Home'
+import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements, redirect, useNavigate, useNavigation } from 'react-router-dom'
+import { Home } from './pages/home'
 import { Login } from './pages/login'
-import { BaseLayout } from './components/layouts/BaseLayout'
+import { BaseLayout } from './components/layouts/base-layout'
 import { Register } from './pages/register'
-import { ClientLayout } from './components/layouts/ClientLayout'
-import { BarberShopLayout } from './components/layouts/BarberShopLayout'
-import { AdminLayout } from './components/layouts/AdminLayout'
-import { BarberScheduleLayout } from './components/layouts/BarberScheduleLayout'
-import { ProtectedClientRoute } from './protectedRoutes/clientProtectedRoute'
-import { ProtectedBarberShopRoute } from './protectedRoutes/barberShopProtectedRoute'
-import { ProtectedAdminRoute } from './protectedRoutes/adminProtectedRoute'
+import { ClientLayout } from './components/layouts/client-layout'
+import { BarberShopLayout } from './components/layouts/barber-shop-layout'
+import { AdminLayout } from './components/layouts/admin-layout'
+import { BarberScheduleLayout } from './components/layouts/barber-schedule-layout'
+import { ProtectedClientRoute } from './protectedRoutes/client-protected-route'
+import { ProtectedBarberShopRoute } from './protectedRoutes/barber-shop-protected-route'
+import { ProtectedAdminRoute } from './protectedRoutes/admin-protected-route'
 import { ROUTE_ENUM } from './types/route'
-
-// export const ROUTE_ENUM = {
-//   ROOT: '/',
-//   REGISTER: '/register',
-//   LOGIN: '/login',
-//   LOGOUT: '/logout',
-//   CLIENT: '/client',
-//   PROFILE: '/profile',
-//   BARBER_SHOP: '/barber-shop',
-//   BARBER_SCHEDULE: '/barber-schedule',
-//   ADMIN: '/admin',
-// } as const
 
 export function App() {
   const browerRouter = createBrowserRouter(
     createRoutesFromElements(
       <Route>
         <Route path={ROUTE_ENUM.ROOT} element={<BaseLayout />}>
-          <Route index element={<Home />} />
+          <Route path="home" element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           

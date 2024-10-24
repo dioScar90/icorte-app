@@ -37,9 +37,6 @@ export function NavMain({
     <SidebarGroup>
       <SidebarGroupLabel>Geral</SidebarGroupLabel>
       
-      <div className="absolute px-2 right-0">
-        <ModeToggle />
-      </div>
       
       <SidebarMenu>
         {items.map((item) => (

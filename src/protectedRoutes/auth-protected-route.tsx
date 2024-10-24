@@ -1,9 +1,8 @@
-import { PropsWithChildren } from "react"
-import { Navigate, useLocation } from "react-router-dom"
+import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { useAuth } from "@/providers/authProvider"
 import { ROUTE_ENUM } from "@/types/route"
 
-export function ProtectedAuthenticatedRoute({ children }: PropsWithChildren) {
+export function ProtectedAuthenticatedRoute() {
   const { isAuthenticated } = useAuth()
   const { pathname } = useLocation()
 
@@ -11,8 +10,8 @@ export function ProtectedAuthenticatedRoute({ children }: PropsWithChildren) {
   const isRegisterPage = pathname.startsWith(ROUTE_ENUM.REGISTER)
 
   if (!isAuthenticated && !isLoginPage && !isRegisterPage) {
-    return <Navigate to={ROUTE_ENUM.LOGIN} />
+    return <Navigate to={ROUTE_ENUM.LOGIN} replace />
   }
 
-  return children
+  return <Outlet />
 }

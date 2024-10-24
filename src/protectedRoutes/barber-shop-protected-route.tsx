@@ -1,19 +1,18 @@
-import { PropsWithChildren } from "react"
-import { Navigate } from "react-router-dom"
+import { Navigate, Outlet } from "react-router-dom"
 import { ROUTE_ENUM } from "@/types/route"
 import { BarberShopProvider } from "@/providers/barberShopProvider"
 import { useAuth } from "@/providers/authProvider"
 
-export function ProtectedBarberShopRoute({ children }: PropsWithChildren) {
+export function ProtectedBarberShopRoute() {
   const { isBarberShop } = useAuth()
 
   if (!isBarberShop) {
-    return <Navigate to={ROUTE_ENUM.CLIENT} />
+    return <Navigate to={ROUTE_ENUM.CLIENT} replace />
   }
 
   return (
     <BarberShopProvider>
-      {children}
+      <Outlet />
     </BarberShopProvider>
   )
 }

@@ -1,25 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { userLoginSchema } from "@/schemas/user";
 
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
 type SchemaType = z.infer<typeof userLoginSchema>
 
 function onSubmit(values: SchemaType) {
@@ -48,9 +34,9 @@ export function Login() {
                 <FormControl>
                   <Input type="email" placeholder="Digite seu email" {...field} />
                 </FormControl>
-                <FormDescription>
+                {/* <FormDescription>
                   Digite seu email
-                </FormDescription>
+                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -65,15 +51,15 @@ export function Login() {
                 <FormControl>
                   <Input type="password" placeholder="Digite sua senha" {...field} />
                 </FormControl>
-                <FormDescription>
+                {/* <FormDescription>
                   Digite sua senha
-                </FormDescription>
+                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
           />
           
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Login</Button>
         </form>
       </Form>
     </>

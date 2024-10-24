@@ -1,6 +1,7 @@
 
 export const ROUTE_ENUM = {
   ROOT: '/',
+  HOME: '/home',
   REGISTER: '/register',
   LOGIN: '/login',
   LOGOUT: '/logout',
