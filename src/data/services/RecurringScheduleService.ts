@@ -1,7 +1,7 @@
 import { RecurringScheduleType } from "@/schemas/recurringSchedule";
-import { HttpClient } from "@/data/httpClient";
 import { IRecurringScheduleService } from "./interfaces/IRecurringScheduleService";
 import { DayOfWeek } from "@/types/models/date";
+import { AxiosInstance } from "axios";
 
 function getUrl(barberShpoId: number, dayOfWeek?: DayOfWeek) {
   const baseEndpoint = `/barber-shop/${barberShpoId}/recurring-schedule`
@@ -14,7 +14,7 @@ function getUrl(barberShpoId: number, dayOfWeek?: DayOfWeek) {
 }
 
 export class RecurringScheduleService implements IRecurringScheduleService {
-  constructor(private readonly httpClient: HttpClient) { }
+  constructor(private readonly httpClient: AxiosInstance) { }
 
   async createRecurringSchedule(barberShpoId: number, data: RecurringScheduleType) {
     const url = getUrl(barberShpoId)

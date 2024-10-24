@@ -1,6 +1,6 @@
 import { DateOnly } from "@/types/models/date";
 import { IBarberScheduleService } from "./interfaces/IBarberScheduleService";
-import { HttpClient } from "../httpClient";
+import { AxiosInstance } from "axios";
 
 type Final = 'dates' | 'slots'
 
@@ -15,7 +15,7 @@ function getUrl(date: DateOnly, final?: Final, barberShopId?: number) {
 }
 
 export class BarberScheduleService implements IBarberScheduleService {
-  constructor(private readonly httpClient: HttpClient) { }
+  constructor(private readonly httpClient: AxiosInstance) { }
 
   async getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateOnly) {
     const url = getUrl(dateOfWeek, 'dates', barberShopId)

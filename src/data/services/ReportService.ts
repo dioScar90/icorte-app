@@ -1,6 +1,6 @@
 import { ReportType } from "@/schemas/report";
-import { HttpClient } from "@/data/httpClient";
 import { IReportService } from "./interfaces/IReportService";
+import { AxiosInstance } from "axios";
 
 function getUrl(barberShpoId: number, id?: number) {
   const baseEndpoint = `/barber-shop/${barberShpoId}/report`
@@ -13,7 +13,7 @@ function getUrl(barberShpoId: number, id?: number) {
 }
 
 export class ReportService implements IReportService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: AxiosInstance) {}
   
   async createReport(barberShpoId: number, data: ReportType) {
     const url = getUrl(barberShpoId)

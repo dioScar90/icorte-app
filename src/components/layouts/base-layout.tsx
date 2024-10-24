@@ -9,6 +9,7 @@ import { useAuth } from "@/providers/authProvider"
 import { ROUTE_ENUM } from "@/types/route"
 import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { Footer } from "../footer"
+import { useEffect } from "react"
 
 export function BaseLayout() {
   const { pathname } = useLocation()
@@ -18,8 +19,10 @@ export function BaseLayout() {
     return <Navigate to={ROUTE_ENUM.HOME} replace />
   }
 
-  if (!isAuthenticated && !pathname.startsWith(ROUTE_ENUM.LOGIN)) {
-    return <Navigate to={ROUTE_ENUM.LOGIN} replace />
+  const isLoginPageOrRegisterPage = pathname.startsWith(ROUTE_ENUM.LOGIN) || pathname.startsWith(ROUTE_ENUM.REGISTER)
+  
+  if (isAuthenticated && isLoginPageOrRegisterPage) {
+    return <Navigate to={ROUTE_ENUM.HOME} replace />
   }
 
   return (

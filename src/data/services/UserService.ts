@@ -1,7 +1,7 @@
 import { UserEmailUpdateType, UserPasswordUpdateType, UserPhoneNumberUpdateType } from "@/schemas/user"
 import { UserMe } from "@/types/models/user"
 import { IUserService } from "./interfaces/IUserService"
-import { HttpClient } from "@/data/httpClient"
+import { AxiosInstance } from "axios"
 
 function getUrl(final?: string) {
   const baseEndpoint = `/user`
@@ -14,7 +14,7 @@ function getUrl(final?: string) {
 }
 
 export class UserService implements IUserService {
-  constructor(private readonly httpClient: HttpClient) { }
+  constructor(private readonly httpClient: AxiosInstance) { }
 
   async getMe() {
     const url = getUrl('me')

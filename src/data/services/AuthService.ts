@@ -1,6 +1,6 @@
 import { UserLoginType, UserRegisterType } from "@/schemas/user"
-import { HttpClient, httpClient } from "../httpClient"
 import { IAuthService } from "./interfaces/IAuthService"
+import { AxiosInstance } from "axios"
 
 function getUrl(final?: string) {
   const baseEndpoint = `/auth`
@@ -13,7 +13,7 @@ function getUrl(final?: string) {
 }
 
 export class AuthService implements IAuthService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: AxiosInstance) {}
 
   async register(data: UserRegisterType) {
     const url = getUrl('register')

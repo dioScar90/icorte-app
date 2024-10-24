@@ -1,6 +1,6 @@
-import { HttpClient } from "@/data/httpClient"
 import { IProfileService } from "./interfaces/IProfileService"
 import { ProfileType } from "@/schemas/profile"
+import { AxiosInstance } from "axios"
 
 function getUrl(id?: number, final?: string) {
   const baseEndpoint = `/profile`
@@ -17,7 +17,7 @@ function getUrl(id?: number, final?: string) {
 }
 
 export class ProfileService implements IProfileService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: AxiosInstance) {}
 
   async createProfile(data: ProfileType) {
     const url = getUrl()

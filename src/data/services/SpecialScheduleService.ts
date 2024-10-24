@@ -1,7 +1,7 @@
 import { SpecialScheduleType } from "@/schemas/specialSchedule";
-import { HttpClient } from "@/data/httpClient";
 import { ISpecialScheduleService } from "./interfaces/ISpecialScheduleService";
 import { DateOnly } from "@/types/models/date";
+import { AxiosInstance } from "axios";
 
 function getUrl(barberShpoId: number, date?: DateOnly) {
   const baseEndpoint = `/barber-shop/${barberShpoId}/special-schedule`
@@ -14,7 +14,7 @@ function getUrl(barberShpoId: number, date?: DateOnly) {
 }
 
 export class SpecialScheduleService implements ISpecialScheduleService {
-  constructor(private readonly httpClient: HttpClient) { }
+  constructor(private readonly httpClient: AxiosInstance) { }
 
   async createSpecialSchedule(barberShpoId: number, data: SpecialScheduleType) {
     const url = getUrl(barberShpoId)

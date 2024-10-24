@@ -10,8 +10,10 @@ export class UserRepository implements IUserRepository {
   async getMe() {
     try {
       const res = await this.service.getMe();
+      console.log('res', res)
       return Result.Success(res.data)
     } catch (err) {
+      console.log('err', err)
       return Result.Failure<UserMe>(err as Error)
     }
   }

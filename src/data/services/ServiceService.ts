@@ -1,6 +1,6 @@
 import { ServiceType } from "@/schemas/service";
-import { HttpClient } from "@/data/httpClient";
 import { IServiceService } from "./interfaces/IServiceService";
+import { AxiosInstance } from "axios";
 
 function getUrl(barberShpoId: number, id?: number) {
   const baseEndpoint = `/barber-shop/${barberShpoId}/service`
@@ -13,7 +13,7 @@ function getUrl(barberShpoId: number, id?: number) {
 }
 
 export class ServiceService implements IServiceService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: AxiosInstance) {}
   
   async createService(barberShpoId: number, data: ServiceType) {
     const url = getUrl(barberShpoId)

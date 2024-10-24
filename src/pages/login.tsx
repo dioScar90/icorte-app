@@ -5,14 +5,12 @@ import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { userLoginSchema } from "@/schemas/user";
+import { useAuth } from "@/providers/authProvider";
 
 type SchemaType = z.infer<typeof userLoginSchema>
 
-function onSubmit(values: SchemaType) {
-  console.log('values', values)
-}
-
 export function Login() {
+  const { login } = useAuth()
   const form = useForm<SchemaType>({
     resolver: zodResolver(userLoginSchema),
     defaultValues: {
@@ -20,6 +18,16 @@ export function Login() {
       password: '',
     }
   })
+
+  async function onSubmit(values: SchemaType) {
+    console.log('values', values)
+
+    try {
+      await login(values)
+    } catch (err) {
+      console.log('oi acabou a agua... ♫')
+    }
+  }
 
   return (
     <>

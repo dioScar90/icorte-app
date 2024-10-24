@@ -1,6 +1,6 @@
 import { BarberShopType } from "@/schemas/barberShop";
-import { HttpClient } from "@/data/httpClient";
 import { IBarberShopService } from "./interfaces/IBarberShopService";
+import { AxiosInstance } from "axios";
 
 function getUrl(id?: number) {
   const baseEndpoint = `/barber-shop`
@@ -13,7 +13,7 @@ function getUrl(id?: number) {
 }
 
 export class BarberShopService implements IBarberShopService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: AxiosInstance) {}
 
   async createBarberShop(data: BarberShopType) {
     const url = getUrl()

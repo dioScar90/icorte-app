@@ -2,7 +2,7 @@ import { AuthRepository } from "@/data/repositories/AuthRepository"
 import { UserRepository } from "@/data/repositories/UserRepository"
 import { AuthService } from "@/data/services/AuthService"
 import { UserService } from "@/data/services/UserService"
-import { UserRegisterType } from "@/schemas/user"
+import { UserLoginType, UserRegisterType } from "@/schemas/user"
 import { UserMe } from "@/types/models/user"
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useReducer } from "react"
 import { useProxy } from "./proxyProvider"
@@ -22,7 +22,7 @@ export type AuthContextType = {
   isBarberShop: boolean
   isAdmin: boolean
   register: (data: UserRegisterType) => Promise<void>
-  login: (data: UserRegisterType) => Promise<void>
+  login: (data: UserLoginType) => Promise<void>
   logout: () => void
 }
 
@@ -55,6 +55,7 @@ export type AuthAction =
   | { type: 'SET_LOADING'; payload: boolean }
 
 function authReducer(state: AuthState, action: AuthAction): AuthState {
+  console.log('type', action.type)
   switch (action.type) {
     case 'LOGIN_SUCCESS':
       return {
@@ -95,21 +96,22 @@ const initialAuthState: AuthState = {
 export function AuthProvider({ children }: PropsWithChildren) {
   const { httpClient } = useProxy()
   const authRepository = useMemo(() => new AuthRepository(new AuthService(httpClient)), [])
-  const userRepository = useMemo(() => new UserRepository(new UserService(httpClient)), [])
   const [state, dispatch] = useReducer(authReducer, initialAuthState)
 
   const register = async (data: UserRegisterType) => {
     dispatch({ type: 'SET_LOADING', payload: true })
 
-    const userResult = await authRepository.register(data)
+    const authResult = await authRepository.register(data)
 
-    if (!userResult.isSuccess) {
-      console.error('Failed to fetch user data:', userResult.error)
+    console.error('authResult', authResult)
+
+    if (!authResult.isSuccess) {
+      console.error('Failed to fetch user data:', authResult.error)
       dispatch({ type: 'LOGIN_FAILURE' })
       return
     }
 
-    const userData: UserMe = userResult.value
+    const userData: UserMe = authResult.value
 
     const user: AuthUser = {
       user: {
@@ -125,18 +127,20 @@ export function AuthProvider({ children }: PropsWithChildren) {
     dispatch({ type: 'LOGIN_SUCCESS', payload: user })
   }
 
-  const login = async () => {
+  const login = async (data: UserLoginType) => {
     dispatch({ type: 'SET_LOADING', payload: true })
 
-    const userResult = await userRepository.getMe()
+    const authResult = await authRepository.login(data)
 
-    if (!userResult.isSuccess) {
-      console.error('Failed to fetch user data:', userResult.error)
+    console.error('authResult', authResult)
+
+    if (!authResult.isSuccess) {
+      console.error('Failed to fetch user data:', authResult.error)
       dispatch({ type: 'LOGIN_FAILURE' })
       return
     }
 
-    const userData: UserMe = userResult.value
+    const userData: UserMe = authResult.value
 
     const user: AuthUser = {
       user: {
@@ -156,12 +160,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     authRepository.logout()
     dispatch({ type: 'LOGOUT' })
   }
-
-  useEffect(() => {
-    const checkAuthStatus = async () => await login()
-    checkAuthStatus()
-  }, [])
-
+  
   return (
     <AuthContext.Provider
       value={{

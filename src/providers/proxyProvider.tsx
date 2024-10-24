@@ -2,8 +2,13 @@ import { createContext, PropsWithChildren, useContext } from "react"
 import axios, { AxiosInstance } from 'axios'
 import { ROUTE_ENUM } from "@/types/route"
 
+console.log('import.meta.env.VITE_BASE_URL', import.meta.env.VITE_BASE_URL)
+
 const httpClient = axios.create({
-  baseURL: import.meta.env.BASE_URL,
+  baseURL: import.meta.env.VITE_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
   withCredentials: true,
 })
 
@@ -16,6 +21,11 @@ be sent.
 httpClient.interceptors.response.use(
   response => response,
   (error) => {
+    console.log('errorrrrrr', error)
+    // if (error.code === 'ERR_NETWORK') {
+    //   return Promise.reject('Problemas de conexão. Tente novamente mais tarde.')
+    // }
+    
     const isAuthError = error.config.url !== ROUTE_ENUM.LOGIN && error.response.status === 401
 
     if (!isAuthError) {
@@ -53,3 +63,7 @@ export function ProxyProvider({ children }: PropsWithChildren) {
     </ProxyContext.Provider>
   )
 }
+
+httpClient.get('/')
+  .then(res => console.log('root', res))
+  .catch(err => console.log('root_err', err))

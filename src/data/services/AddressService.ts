@@ -1,6 +1,6 @@
 import { AddressType } from "@/schemas/address";
-import { HttpClient } from "@/data/httpClient";
 import { IAddressService } from "./interfaces/IAddressService";
+import { AxiosInstance } from "axios";
 
 function getUrl(barberShpoId: number, id?: number) {
   const baseEndpoint = `/barber-shop/${barberShpoId}/address`
@@ -13,7 +13,7 @@ function getUrl(barberShpoId: number, id?: number) {
 }
 
 export class AddressService implements IAddressService {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: AxiosInstance) {}
   
   async createAddress(barberShpoId: number, data: AddressType) {
     const url = getUrl(barberShpoId)

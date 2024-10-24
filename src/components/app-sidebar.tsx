@@ -68,7 +68,7 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, authUser }:
 //   </SidebarMenuButton>
 // </SidebarMenuItem>
 
-  if (!isBarberShop) {
+  if (isBarberShop) {
     items.push({
       title: "Minha barbearia",
       url: ROUTE_ENUM.BARBER_SHOP,
@@ -95,7 +95,7 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, authUser }:
     })
   }
   
-  if (!isClient) {
+  if (isClient) {
     items.push({
       title: "Agenda",
       url: ROUTE_ENUM.BARBER_SCHEDULE,
@@ -107,7 +107,7 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, authUser }:
           url: ROUTE_ENUM.BARBER_SCHEDULE + '/my-own',
         },
         {
-          title: "Meus agendamentos",
+          title: "Pesquisar",
           url: ROUTE_ENUM.BARBER_SCHEDULE + '/seach',
         },
       ],
@@ -182,7 +182,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={getNavMainItemsToSidebar({ ...userInfos })} />
 
-        {userInfos.isAuthenticated && (
+        {!userInfos.isAuthenticated && (
           <SidebarGroup>
             <SidebarMenu>
               <SidebarMenuItem>
