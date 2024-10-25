@@ -18,6 +18,7 @@ export class AuthRepository implements IAuthRepository {
   async login(data: UserLoginType) {
     try {
       const res = await this.service.login(data);
+      console.log('loginAuthRepository', res)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure<boolean>(err as Error)

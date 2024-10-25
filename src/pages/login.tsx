@@ -10,7 +10,7 @@ import { useAuth } from "@/providers/authProvider";
 type SchemaType = z.infer<typeof userLoginSchema>
 
 export function Login() {
-  const { login } = useAuth()
+  const { login, isLoading } = useAuth()
   const form = useForm<SchemaType>({
     resolver: zodResolver(userLoginSchema),
     defaultValues: {
@@ -67,7 +67,7 @@ export function Login() {
             )}
           />
           
-          <Button type="submit">Login</Button>
+          <Button type="submit" disabled={isLoading}>Login</Button>
         </form>
       </Form>
     </>

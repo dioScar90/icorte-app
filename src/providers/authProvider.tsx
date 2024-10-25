@@ -52,7 +52,7 @@ export type AuthAction =
   | { type: 'LOGIN_SUCCESS'; payload: AuthUser }
   | { type: 'LOGIN_FAILURE' }
   | { type: 'LOGOUT' }
-  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'SET_LOADING' }
 
 function authReducer(state: AuthState, action: AuthAction): AuthState {
   console.log('type', action.type)
@@ -80,7 +80,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
     case 'SET_LOADING':
       return {
         ...state,
-        isLoading: action.payload,
+        isLoading: true,
       }
     default:
       return state
@@ -96,10 +96,11 @@ const initialAuthState: AuthState = {
 export function AuthProvider({ children }: PropsWithChildren) {
   const { httpClient } = useProxy()
   const authRepository = useMemo(() => new AuthRepository(new AuthService(httpClient)), [])
+  const userRepository = useMemo(() => new UserRepository(new UserService(httpClient)), [])
   const [state, dispatch] = useReducer(authReducer, initialAuthState)
 
   const register = async (data: UserRegisterType) => {
-    dispatch({ type: 'SET_LOADING', payload: true })
+    dispatch({ type: 'SET_LOADING' })
 
     const authResult = await authRepository.register(data)
 
@@ -128,7 +129,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }
 
   const login = async (data: UserLoginType) => {
-    dispatch({ type: 'SET_LOADING', payload: true })
+    dispatch({ type: 'SET_LOADING' })
 
     const authResult = await authRepository.login(data)
 
@@ -139,6 +140,16 @@ export function AuthProvider({ children }: PropsWithChildren) {
       dispatch({ type: 'LOGIN_FAILURE' })
       return
     }
+
+    // const getMeResult = await userRepository.getMe()
+
+    // console.error('getMeResult', getMeResult)
+
+    // if (!getMeResult.isSuccess) {
+    //   console.error('Failed to fetch user data:', getMeResult.error)
+    //   dispatch({ type: 'LOGIN_FAILURE' })
+    //   return
+    // }
 
     const userData: UserMe = authResult.value
 
@@ -160,6 +171,24 @@ export function AuthProvider({ children }: PropsWithChildren) {
     authRepository.logout()
     dispatch({ type: 'LOGOUT' })
   }
+
+  useEffect(() => {
+    dispatch({ type: 'SET_LOADING' })
+
+    userRepository.getMe()
+      .then(res => {
+        console.log('getMe', res)
+        if (!res.isSuccess) {
+          dispatch({ type: 'LOGIN_FAILURE' })
+        }
+
+        dispatch({ type: 'LOGIN_SUCCESS', payload: res.value })
+      })
+      .catch(err => {
+        dispatch({ type: 'LOGIN_FAILURE' })
+        console.error(err)
+      })
+  }, [])
   
   return (
     <AuthContext.Provider
