@@ -63,7 +63,3 @@ export function ProxyProvider({ children }: PropsWithChildren) {
     </ProxyContext.Provider>
   )
 }
-
-httpClient.get('/')
-  .then(res => console.log('root', res))
-  .catch(err => console.log('root_err', err))

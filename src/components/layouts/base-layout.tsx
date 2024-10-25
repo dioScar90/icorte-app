@@ -9,7 +9,6 @@ import { useAuth } from "@/providers/authProvider"
 import { ROUTE_ENUM } from "@/types/route"
 import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { Footer } from "../footer"
-import { useEffect } from "react"
 
 export function BaseLayout() {
   const { pathname } = useLocation()

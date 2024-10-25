@@ -22,7 +22,10 @@ export class AuthService implements IAuthService {
 
   async login(data: UserLoginType) {
     const url = getUrl('login')
-    return await this.httpClient.post(url, { ...data })
+    console.log('url', url)
+    const res = await this.httpClient.post(url, { ...data })
+    console.log('loginAuthService', res)
+    return res
   }
 
   async logout() {

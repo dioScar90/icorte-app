@@ -6,11 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { userLoginSchema } from "@/schemas/user";
 import { useAuth } from "@/providers/authProvider";
+import { useNavigate } from "react-router-dom";
+import { ROUTE_ENUM } from "@/types/route";
 
 type SchemaType = z.infer<typeof userLoginSchema>
 
 export function Login() {
+  const navigate = useNavigate()
   const { login, isLoading } = useAuth()
+
   const form = useForm<SchemaType>({
     resolver: zodResolver(userLoginSchema),
     defaultValues: {
@@ -23,7 +27,9 @@ export function Login() {
     console.log('values', values)
 
     try {
-      await login(values)
+      const ola = await login(values)
+      console.log('olaaaaaaaaa', ola)
+      navigate(ROUTE_ENUM.HOME, { replace: true })
     } catch (err) {
       console.log('oi acabou a agua... ♫')
     }
