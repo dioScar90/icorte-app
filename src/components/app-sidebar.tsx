@@ -31,14 +31,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Link } from "react-router-dom"
 
 function getUserInfosToSidebar({ authUser }: AuthContextType) {
-  // return {
-  //   name: authUser?.profile?.firstName!,
-  //   email: authUser?.user.email!,
-  //   avatar: authUser?.profile?.imageUrl ?? "/avatars/shadcn.jpg",
-  // }
   return {
     name: authUser?.profile?.firstName ?? 'Diogo',
-    email: authUser?.user.email ?? 'diogols@live.com',
+    email: authUser?.user?.email ?? 'diogols@live.com',
     avatar: authUser?.profile?.imageUrl ?? "https://randomuser.me/api/portraits/men/9.jpg",
   }
 }
