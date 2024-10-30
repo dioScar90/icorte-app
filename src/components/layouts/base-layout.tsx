@@ -9,20 +9,25 @@ import { useAuth } from "@/providers/authProvider"
 import { ROUTE_ENUM } from "@/types/route"
 import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { Footer } from "../footer"
+import { useEffect } from "react"
 
 export function BaseLayout() {
   const { pathname } = useLocation()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, getMe } = useAuth()
 
   if (pathname === ROUTE_ENUM.ROOT) {
     return <Navigate to={ROUTE_ENUM.HOME} replace />
   }
 
   const isLoginPageOrRegisterPage = pathname.startsWith(ROUTE_ENUM.LOGIN) || pathname.startsWith(ROUTE_ENUM.REGISTER)
-  
+
   if (isAuthenticated && isLoginPageOrRegisterPage) {
     return <Navigate to={ROUTE_ENUM.HOME} replace />
   }
+
+  useEffect(() => {
+    getMe()
+  }, [pathname])
 
   return (
     <SidebarProvider>

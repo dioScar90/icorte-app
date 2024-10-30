@@ -19,13 +19,16 @@ be sent.
 */
 
 httpClient.interceptors.response.use(
-  response => response,
+  response => {
+    console.log('firstResponse', response)
+    return response
+  },
   (error) => {
     console.log('errorrrrrr', error)
     // if (error.code === 'ERR_NETWORK') {
     //   return Promise.reject('Problemas de conexão. Tente novamente mais tarde.')
     // }
-    
+
     const isAuthError = error.config.url !== ROUTE_ENUM.LOGIN && error.response.status === 401
 
     if (!isAuthError) {

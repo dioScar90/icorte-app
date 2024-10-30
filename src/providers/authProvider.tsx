@@ -23,7 +23,8 @@ export type AuthContextType = {
   isAdmin: boolean
   register: (data: UserRegisterType) => Promise<void>
   login: (data: UserLoginType) => Promise<void>
-  logout: () => void
+  getMe: () => Promise<void>
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -167,29 +168,26 @@ export function AuthProvider({ children }: PropsWithChildren) {
     dispatch({ type: 'LOGIN_SUCCESS', payload: user })
   }
 
-  const logout = () => {
+  const logout = async () => {
     authRepository.logout()
     dispatch({ type: 'LOGOUT' })
   }
 
-  useEffect(() => {
-    dispatch({ type: 'SET_LOADING' })
+  const getMe = async () => {
+    try {
+      const res = await userRepository.getMe()
 
-    userRepository.getMe()
-      .then(res => {
-        console.log('getMe', res)
-        if (!res.isSuccess) {
-          dispatch({ type: 'LOGIN_FAILURE' })
-        }
-
-        dispatch({ type: 'LOGIN_SUCCESS', payload: res.value })
-      })
-      .catch(err => {
+      if (!res.isSuccess) {
         dispatch({ type: 'LOGIN_FAILURE' })
-        console.error(err)
-      })
-  }, [])
-  
+      }
+
+      dispatch({ type: 'LOGIN_SUCCESS', payload: res.value })
+    } catch (err) {
+      dispatch({ type: 'LOGIN_FAILURE' })
+      console.error(err)
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -201,6 +199,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         isAdmin: !!state.authUser?.roles?.includes('Admin'),
         register,
         login,
+        getMe,
         logout,
       }}
     >
