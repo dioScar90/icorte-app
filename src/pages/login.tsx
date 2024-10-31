@@ -8,12 +8,14 @@ import { userLoginSchema } from "@/schemas/user";
 import { useAuth } from "@/providers/authProvider";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
+import { useToast } from "@/hooks/use-toast";
 
 type SchemaType = z.infer<typeof userLoginSchema>
 
 export function Login() {
   const navigate = useNavigate()
   const { login, isLoading } = useAuth()
+  const { toast } = useToast()
 
   const form = useForm<SchemaType>({
     resolver: zodResolver(userLoginSchema),
@@ -24,14 +26,25 @@ export function Login() {
   })
 
   async function onSubmit(values: SchemaType) {
-    console.log('values', values)
-
     try {
       const ola = await login(values)
       console.log('olaaaaaaaaa', ola)
+
+      if (!ola.isSuccess) {
+        throw ola.error
+      }
+
       navigate(ROUTE_ENUM.HOME, { replace: true })
     } catch (err) {
-      console.log('oi acabou a agua... ♫')
+      const message = err instanceof Error
+        ? err.message
+        : typeof err === 'string' ? err : 'Erro desconhecido, tente novamente'
+        
+      toast({
+        variant: 'destructive',
+        title: 'Erro no login',
+        description: message,
+      })
     }
   }
 

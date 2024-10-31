@@ -6,6 +6,7 @@ import { UserLoginType, UserRegisterType } from "@/schemas/user"
 import { UserMe } from "@/types/models/user"
 import { createContext, PropsWithChildren, useContext, useMemo, useReducer } from "react"
 import { useProxy } from "./proxyProvider"
+import { Result } from "@/data/result"
 
 export type AuthUser = {
   user: Omit<UserMe, 'roles' | 'profile' | 'barberShop'>
@@ -21,8 +22,8 @@ export type AuthContextType = {
   isClient: boolean
   isBarberShop: boolean
   isAdmin: boolean
-  register: (data: UserRegisterType) => Promise<void>
-  login: (data: UserLoginType) => Promise<void>
+  register: (data: UserRegisterType) => Promise<Result<any>>
+  login: (data: UserLoginType) => Promise<Result<any>>
   getMe: () => Promise<void>
   logout: () => Promise<void>
 }
@@ -110,7 +111,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     if (!authResult.isSuccess) {
       console.error('Failed to fetch user data:', authResult.error)
       dispatch({ type: 'LOGIN_FAILURE' })
-      return
+      return authResult
     }
 
     const userData: UserMe = authResult.value
@@ -127,6 +128,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
 
     dispatch({ type: 'LOGIN_SUCCESS', payload: user })
+    return authResult
   }
 
   const login = async (data: UserLoginType) => {
@@ -139,7 +141,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     if (!authResult.isSuccess) {
       console.error('Failed to fetch user data:', authResult.error)
       dispatch({ type: 'LOGIN_FAILURE' })
-      return
+      return authResult
     }
     
     const userData: UserMe = authResult.value
@@ -156,6 +158,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
 
     dispatch({ type: 'LOGIN_SUCCESS', payload: user })
+    return authResult
   }
 
   const logout = async () => {

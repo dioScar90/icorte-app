@@ -1,6 +1,5 @@
 import { createContext, PropsWithChildren, useContext } from "react"
 import axios, { AxiosInstance } from 'axios'
-import { ROUTE_ENUM } from "@/types/route"
 
 console.log('import.meta.env.VITE_BASE_URL', import.meta.env.VITE_BASE_URL)
 
@@ -18,6 +17,37 @@ once we're using cookies and 'withCredentials: true' the token will automaticall
 be sent.
 */
 
+type EssaBuceta = [string, {
+  message: string | undefined;
+  types: {
+      [k: string]: string;
+  } | undefined;
+}][]
+
+export class UnprocessableEntityError extends Error {
+  constructor(
+    readonly title: string,
+    readonly errors: { string: string[] },
+  ) {
+    super('Problemas...')
+    // this.title = title
+    // this.errors = errors
+  }
+
+  get errorsEntries(): EssaBuceta {
+    return Object.entries(this.errors)
+      .map(([key, values]) => {
+        const name = key
+        const options = {
+          message: values.length > 1 ? undefined : values[0],
+          types: values.length === 1 ? undefined : Object.fromEntries(values.map((value, i) => [`item_${i}`, value])),
+        }
+
+        return [name, options]
+      })
+  }
+}
+
 httpClient.interceptors.response.use(
   response => {
     console.log('firstResponse', response)
@@ -25,21 +55,21 @@ httpClient.interceptors.response.use(
   },
   (error) => {
     console.log('errorrrrrr', error)
-    // if (error.code === 'ERR_NETWORK') {
-    //   return Promise.reject('Problemas de conexão. Tente novamente mais tarde.')
-    // }
-
-    const isAuthError = error.config.url !== ROUTE_ENUM.LOGIN && error.response.status === 401
-
-    if (!isAuthError) {
-      return Promise.reject(error)
+    if (error.code === 'ERR_NETWORK') {
+      return Promise.reject('Problemas de conexão. Tente novamente mais tarde.')
     }
 
-    // const { state } = getStorage('auth-storage')
-    // removeStorage('token', 'auth-storage')
+    if (error.config.url === '/auth/login' && error.response.status === 401) {
+      return Promise.reject('Usuário ou senha inválidos')
+    }
 
-    // const isAdmin = state?.user?.role?.name === 'ADMIN'
-    // location.href = isAdmin ? '/dashboard/login' : '/login'
+    if (error.response.status === 422 && error.response.status.title === 'UnprocessableEntity') {
+      const title = error.response.data.detail
+      const errors = error.response.data.errors
+      return Promise.reject(new UnprocessableEntityError(title, errors))
+    }
+    
+    return Promise.reject(error)
   }
 )
 

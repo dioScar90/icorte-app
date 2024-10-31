@@ -3,18 +3,21 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { userRegisterSchema, UserRegisterType } from "@/schemas/user";
+import { userRegisterSchema, UserRegisterForFormType } from "@/schemas/user";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { Gender } from "@/schemas/profile";
+import { useToast } from "@/hooks/use-toast";
+import { UnprocessableEntityError } from "@/providers/proxyProvider";
 
 export function Register() {
   const navigate = useNavigate()
   const { register, isLoading } = useAuth()
+  const { toast } = useToast()
 
-  const form = useForm<UserRegisterType>({
+  const form = useForm<UserRegisterForFormType>({
     resolver: zodResolver(userRegisterSchema),
     defaultValues: {
       email: '',
@@ -29,19 +32,45 @@ export function Register() {
     }
   })
 
-  async function onSubmit(values: UserRegisterType) {
+  async function onSubmit(values: UserRegisterForFormType) {
     console.log('values', values)
-
+    
     // const gender = values.profile.gender === 'Masculino' ? Gender.Male : Gender.Female
-    // const data: UserRegisterType = { ...values, profile: { ...values.profile, gender }}
+    // const data: UserRegisterForFormType = { ...values, profile: { ...values.profile, gender }}
+
+    const gender = values.profile.gender === 'Masculino' ? Gender.Male : Gender.Female
+    const data = { ...values, profile: { ...values.profile, gender } }
+
+    console.log('data', data)
   
     try {
-      // const ola = await register({ ...values, profile: { ...values.profile, gender }})
-      const ola = await register(values)
+      const ola = await register(data)
+      
+      if (!ola.isSuccess) {
+        throw ola.error
+      }
+
       console.log('olaaaaaaaaa_register', ola)
       navigate(ROUTE_ENUM.HOME, { replace: true })
     } catch (err) {
+      if (err instanceof UnprocessableEntityError) {
+        err.errorsEntries
+          .forEach(([name, messages]) => {
+            form.setError(name as keyof UserRegisterForFormType, { ...messages })
+          })
+        return
+      }
+
       console.log('oi acabou a agua... ♫')
+      const message = err instanceof Error
+        ? err.message
+        : typeof err === 'string' ? err : 'Erro desconhecido, tente novamente'
+        
+      toast({
+        variant: 'destructive',
+        title: 'Erro no cadastro',
+        description: message,
+      })
     }
   }
 

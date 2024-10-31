@@ -34,7 +34,8 @@ export const userRegisterSchema = z.object({
     path: ['confirmPassword']
   })
 
-export type UserRegisterType = Omit<z.infer<typeof userRegisterSchema>, 'profile'> & {
+export type UserRegisterForFormType = z.infer<typeof userRegisterSchema>
+export type UserRegisterType = Omit<UserRegisterForFormType, 'profile'> & {
   profile: ProfileType
 }
 
