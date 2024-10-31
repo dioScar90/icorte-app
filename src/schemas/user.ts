@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { passwordValidator } from './sharedValidators/passwordValidator'
 import { emailValidator } from './sharedValidators/emailValidator'
 import { phoneNumberValidator } from './sharedValidators/phoneNumberValidator'
+import { profileSchema, ProfileType } from './profile'
 
 export const userEmailUpdate = z.object({
   email: emailValidator(),
@@ -26,13 +27,16 @@ export const userRegisterSchema = z.object({
   email: emailValidator(),
   password: passwordValidator(),
   confirmPassword: z.string().min(1, { message: 'Confirmação de senha obrigatória' }),
+  profile: profileSchema,
 })
   .refine(({ password, confirmPassword }) => password === confirmPassword, {
     message: 'Senhas devem ser iguais',
     path: ['confirmPassword']
   })
 
-export type UserRegisterType = z.infer<typeof userRegisterSchema>
+export type UserRegisterType = Omit<z.infer<typeof userRegisterSchema>, 'profile'> & {
+  profile: ProfileType
+}
 
 export const userLoginSchema = z.object({
   email: emailValidator(),

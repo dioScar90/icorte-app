@@ -1,4 +1,4 @@
-const genders = ['Female', 'Male'] as const
+const genders = ['Feminino', 'Masculino'] as const
 type Gender = typeof genders[number]
 
 export type Profile = {

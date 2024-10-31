@@ -4,7 +4,7 @@ import { AuthService } from "@/data/services/AuthService"
 import { UserService } from "@/data/services/UserService"
 import { UserLoginType, UserRegisterType } from "@/schemas/user"
 import { UserMe } from "@/types/models/user"
-import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useReducer } from "react"
+import { createContext, PropsWithChildren, useContext, useMemo, useReducer } from "react"
 import { useProxy } from "./proxyProvider"
 
 export type AuthUser = {
@@ -141,17 +141,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       dispatch({ type: 'LOGIN_FAILURE' })
       return
     }
-
-    // const getMeResult = await userRepository.getMe()
-
-    // console.error('getMeResult', getMeResult)
-
-    // if (!getMeResult.isSuccess) {
-    //   console.error('Failed to fetch user data:', getMeResult.error)
-    //   dispatch({ type: 'LOGIN_FAILURE' })
-    //   return
-    // }
-
+    
     const userData: UserMe = authResult.value
 
     const user: AuthUser = {
@@ -169,7 +159,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }
 
   const logout = async () => {
-    authRepository.logout()
+    await authRepository.logout()
     dispatch({ type: 'LOGOUT' })
   }
 

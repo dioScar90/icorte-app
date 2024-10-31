@@ -1,4 +1,4 @@
-import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements, redirect, useNavigate, useNavigation } from 'react-router-dom'
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
 import { Home } from './pages/home'
 import { Login } from './pages/login'
 import { BaseLayout } from './components/layouts/base-layout'
@@ -11,6 +11,7 @@ import { ProtectedClientRoute } from './protectedRoutes/client-protected-route'
 import { ProtectedBarberShopRoute } from './protectedRoutes/barber-shop-protected-route'
 import { ProtectedAdminRoute } from './protectedRoutes/admin-protected-route'
 import { ROUTE_ENUM } from './types/route'
+import { Logout } from './pages/logout'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -49,6 +50,8 @@ export function App() {
               <Route path="register" element={<Register />} />
             </Route>
           </Route>
+
+          <Route path="logout" element={<Logout />} />
         </Route>
       </Route>
     )
