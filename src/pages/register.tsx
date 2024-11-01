@@ -55,9 +55,9 @@ export function Register() {
     } catch (err) {
       if (err instanceof UnprocessableEntityError) {
         err.errorsEntries
-          .forEach(([name, messages]) => {
-            form.setError(name as keyof UserRegisterForFormType, { ...messages })
-          })
+          .forEach(([name, messages]) =>
+            form.setError(name as keyof UserRegisterForFormType, { ...messages }))
+        // toast()
         return
       }
 
