@@ -1,3 +1,5 @@
+import { AxiosError } from "axios"
+
 export class Result<T> {
   #isSuccess: boolean
   #value?: T
@@ -30,6 +32,9 @@ export class Result<T> {
   }
 
   static Failure<T>(error: Error) {
+    // if (error instanceof AxiosError) {
+    //   //
+    // }
     return new Result<T>(undefined, error)
   }
 }

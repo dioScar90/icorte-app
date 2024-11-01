@@ -9,6 +9,7 @@ import { useAuth } from "@/providers/authProvider";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useToast } from "@/hooks/use-toast";
+import { InvalidUsernameOrPasswordError, NetworkConnectionError } from "@/providers/proxyProvider";
 
 type SchemaType = z.infer<typeof userLoginSchema>
 
@@ -36,13 +37,18 @@ export function Login() {
 
       navigate(ROUTE_ENUM.HOME, { replace: true })
     } catch (err) {
+      if (err instanceof InvalidUsernameOrPasswordError) {
+        err.displayToastAndFormErrors(form.setError)
+        return
+      }
+      
       const message = err instanceof Error
         ? err.message
         : typeof err === 'string' ? err : 'Erro desconhecido, tente novamente'
         
       toast({
         variant: 'destructive',
-        title: 'Erro no login',
+        title: 'Erro no loginnnnnnnn',
         description: message,
       })
     }

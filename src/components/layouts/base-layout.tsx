@@ -26,7 +26,9 @@ export function BaseLayout() {
   }
 
   useEffect(() => {
-    getMe()
+    if (pathname !== ROUTE_ENUM.LOGOUT) {
+      getMe()
+    }
   }, [pathname])
 
   return (

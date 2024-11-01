@@ -1,5 +1,7 @@
 import { createContext, PropsWithChildren, useContext } from "react"
 import axios, { AxiosInstance } from 'axios'
+import { FieldValues, Path, UseFormSetError } from "react-hook-form"
+import { useToast } from "@/hooks/use-toast"
 
 console.log('import.meta.env.VITE_BASE_URL', import.meta.env.VITE_BASE_URL)
 
@@ -17,34 +19,89 @@ once we're using cookies and 'withCredentials: true' the token will automaticall
 be sent.
 */
 
-type EssaBuceta = [string, {
-  message: string | undefined;
-  types: {
-      [k: string]: string;
-  } | undefined;
-}][]
+type UnprocessableEntityToastOptions = {
+  variant: 'destructive',
+  title?: string,
+  description: string,
+}
+
+type UnprocessableEntityToastMatrix<K> = [K, UnprocessableEntityToastOptions][]
+
+function getToastOptions<K extends string = string>(errors: Record<K, string[]>, title?: string) {
+  const vamos: UnprocessableEntityToastMatrix<K> = []
+
+  for (const key in errors) {
+    vamos.push([
+      key,
+      {
+        variant: 'destructive',
+        title: title,
+        description: errors[key][0],
+        // types: values.length === 1 ? undefined : Object.fromEntries(values.map((value, i) => [`item_${i}`, value])),
+      }
+    ])
+  }
+
+  return vamos
+}
+
+function displayToastAndFormErrors<T extends FieldValues, K extends "root" | `root.${string}` | Path<T>>
+  (setError: UseFormSetError<T>, errors: Record<K, string[]>, title?: string) {
+  const { toast } = useToast()
+  
+  return getToastOptions(errors, title)
+    .map(([key, vamos]) => {
+      setError(key, { message: vamos.description })
+      toast(vamos)
+    })
+}
 
 export class UnprocessableEntityError extends Error {
   constructor(
     readonly title: string,
-    readonly errors: { string: string[] },
-  ) {
+    readonly errors: Record<string, string[]>) {
     super('Problemas...')
-    // this.title = title
-    // this.errors = errors
+  }
+  
+  get toastOptions() {
+    return getToastOptions(this.errors)
   }
 
-  get errorsEntries(): EssaBuceta {
-    return Object.entries(this.errors)
-      .map(([key, values]) => {
-        const name = key
-        const options = {
-          message: values.length > 1 ? undefined : values[0],
-          types: values.length === 1 ? undefined : Object.fromEntries(values.map((value, i) => [`item_${i}`, value])),
-        }
+  displayToastAndFormErrors<T extends FieldValues>(setError: UseFormSetError<T>) {
+    displayToastAndFormErrors(setError, this.errors, this.title)
+  }
+  
+  static throwNewPromiseReject(title: string, errors: { string: string[] }) {
+    return Promise.reject(new UnprocessableEntityError(title, errors))
+  }
+}
 
-        return [name, options]
-      })
+export class InvalidUsernameOrPasswordError extends Error {
+  private readonly title
+  private readonly errors: Record<'root', string[]>
+
+  constructor() {
+    super('Usuário ou senha inválidos')
+    this.title = 'Erro no login'
+    this.errors = { root: [this.message] }
+  }
+  
+  get toastOptions() {
+    return getToastOptions(this.errors, this.title)
+  }
+
+  displayToastAndFormErrors<T extends FieldValues>(setError: UseFormSetError<T>) {
+    displayToastAndFormErrors(setError, this.errors, this.title)
+  }
+  
+  static throwNewPromiseReject() {
+    return Promise.reject(new InvalidUsernameOrPasswordError())
+  }
+}
+
+export class NetworkConnectionError extends Error {
+  constructor() {
+    super('Problemas de conexão. Tente novamente mais tarde.')
   }
 }
 
@@ -56,17 +113,17 @@ httpClient.interceptors.response.use(
   (error) => {
     console.log('errorrrrrr', error)
     if (error.code === 'ERR_NETWORK') {
-      return Promise.reject('Problemas de conexão. Tente novamente mais tarde.')
+      return Promise.reject(new NetworkConnectionError())
     }
 
     if (error.config.url === '/auth/login' && error.response.status === 401) {
-      return Promise.reject('Usuário ou senha inválidos')
+      return InvalidUsernameOrPasswordError.throwNewPromiseReject()
     }
 
-    if (error.response.status === 422 && error.response.status.title === 'UnprocessableEntity') {
+    if (error.response.status === 422 && error.response.data.title === 'UnprocessableEntity') {
       const title = error.response.data.detail
       const errors = error.response.data.errors
-      return Promise.reject(new UnprocessableEntityError(title, errors))
+      return UnprocessableEntityError.throwNewPromiseReject(title, errors)
     }
     
     return Promise.reject(error)

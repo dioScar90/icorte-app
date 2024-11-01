@@ -16,7 +16,7 @@ export function Register() {
   const navigate = useNavigate()
   const { register, isLoading } = useAuth()
   const { toast } = useToast()
-
+  
   const form = useForm<UserRegisterForFormType>({
     resolver: zodResolver(userRegisterSchema),
     defaultValues: {
@@ -49,15 +49,12 @@ export function Register() {
       if (!ola.isSuccess) {
         throw ola.error
       }
-
+      
       console.log('olaaaaaaaaa_register', ola)
       navigate(ROUTE_ENUM.HOME, { replace: true })
     } catch (err) {
       if (err instanceof UnprocessableEntityError) {
-        err.errorsEntries
-          .forEach(([name, messages]) => {
-            form.setError(name as keyof UserRegisterForFormType, { ...messages })
-          })
+        err.displayToastAndFormErrors(form.setError)
         return
       }
 
