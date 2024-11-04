@@ -1,13 +1,15 @@
-import { Navigate, Outlet } from "react-router-dom"
+import { Navigate, Outlet, useLocation } from "react-router-dom"
 import { ROUTE_ENUM } from "@/types/route"
 import { BarberShopProvider } from "@/providers/barberShopProvider"
 import { useAuth } from "@/providers/authProvider"
 
 export function ProtectedBarberShopRoute() {
+  console.log('passei loucamente por ProtectedBarberShopRoute')
+  const { pathname } = useLocation()
   const { isBarberShop } = useAuth()
-
-  if (!isBarberShop) {
-    return <Navigate to={ROUTE_ENUM.CLIENT} replace />
+  
+  if (!isBarberShop && pathname !== `${ROUTE_ENUM.BARBER_SHOP}/register`) {
+    return <Navigate to={ROUTE_ENUM.HOME} replace />
   }
 
   return (

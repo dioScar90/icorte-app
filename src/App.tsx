@@ -12,6 +12,7 @@ import { ProtectedBarberShopRoute } from './protectedRoutes/barber-shop-protecte
 import { ProtectedAdminRoute } from './protectedRoutes/admin-protected-route'
 import { ROUTE_ENUM } from './types/route'
 import { Logout } from './pages/logout'
+import { RegisterBarberShop } from './pages/barber-shop/registerBarberShop'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -38,8 +39,9 @@ export function App() {
           <Route element={<ProtectedBarberShopRoute />}>
             <Route path={ROUTE_ENUM.BARBER_SHOP} element={<BarberShopLayout />}>
               <Route index element={<Home />} />
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
+              <Route path=":id" element={<p>Barber Shop</p>} />
+              <Route path=":id/edit" element={<p>Edit Barber Shop</p>} />
+              <Route path="register" element={<RegisterBarberShop />} />
             </Route>
           </Route>
           

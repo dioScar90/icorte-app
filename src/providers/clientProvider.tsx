@@ -25,12 +25,12 @@ export function useClient() {
 
 export function ClientProvider({ children }: PropsWithChildren) {
   const { httpClient } = useProxy()
-  const { authUser } = useAuth()
+  const { user } = useAuth()
 
   return (
     <ClientContext.Provider
       value={{
-        profile: authUser!.profile!,
+        profile: user!.profile!,
         repository: new ProfileRepository(new ProfileService(httpClient)),
       }}
     >

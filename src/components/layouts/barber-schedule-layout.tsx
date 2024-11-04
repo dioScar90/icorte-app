@@ -3,9 +3,9 @@ import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 
 export function BarberScheduleLayout() {
-  const { authUser } = useAuth()
+  const { user } = useAuth()
 
-  if (!authUser?.barberShop) {
+  if (!user?.barberShop) {
     return <Navigate to={ROUTE_ENUM.CLIENT} replace />
   }
 

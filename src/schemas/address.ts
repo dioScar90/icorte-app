@@ -1,9 +1,14 @@
 import { z } from 'zod'
 
-const StateEnum = [
+export const StateEnumAsConst = [
   'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA',
   'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO',
 ] as const
+
+export enum StateEnum {
+  AC, AL, AP, AM, BA, CE, DF, ES, GO, MA, MT, MS, MG, PA,
+  PB, PR, PE, PI, RJ, RN, RS, RO, RR, SC, SP, SE, TO,
+}
 
 export const addressSchema = z.object({
   street: z.string({ required_error: 'Logradouro obrigatório' })
@@ -21,7 +26,7 @@ export const addressSchema = z.object({
   city: z.string({ required_error: 'Cidade obrigatória' })
     .min(3, { message: 'Cidade precisa ter pelo menos 3 caracteres' }),
 
-  state: z.enum(StateEnum, {
+  state: z.enum(StateEnumAsConst, {
     required_error: 'Estado obrigatório',
     message: 'Estado inválido',
   }),
@@ -33,4 +38,7 @@ export const addressSchema = z.object({
     .min(3, { message: 'País precisa ter 8 caracteres' }),
 })
 
-export type AddressType = z.infer<typeof addressSchema>
+export type AddressForFormType = z.infer<typeof addressSchema>
+export type AddressType = Omit<AddressForFormType, 'state'> & {
+  state: StateEnum
+}

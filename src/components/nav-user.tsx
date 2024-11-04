@@ -4,6 +4,7 @@ import {
   ChevronsUpDown,
   LogOut,
   Sparkles,
+  StoreIcon,
 } from "lucide-react"
 import {
   Avatar,
@@ -35,6 +36,7 @@ export function NavUser({
     name: string
     email: string
     avatar: string
+    isBarber: boolean
   }
 }) {
   const { isMobile } = useSidebar()
@@ -88,6 +90,17 @@ export function NavUser({
                 </DropdownMenuItem>
               </Link>
             </DropdownMenuGroup>
+
+            {!user.isBarber && (
+              <DropdownMenuGroup>
+                <Link to={`${ROUTE_ENUM.BARBER_SHOP}/register`}>
+                  <DropdownMenuItem className="cursor-pointer">
+                    <StoreIcon />
+                    Cadastrar Barbearia
+                  </DropdownMenuItem>
+                </Link>
+              </DropdownMenuGroup>
+            )}
 
             <DropdownMenuSeparator />
 

@@ -9,14 +9,16 @@ import { useProxy } from "./proxyProvider"
 import { Result } from "@/data/result"
 
 export type AuthUser = {
-  user: Omit<UserMe, 'roles' | 'profile' | 'barberShop'>
+  id: UserMe['id']
+  email: UserMe['email']
+  phoneNumber: UserMe['phoneNumber']
   roles: UserMe['roles']
   profile?: UserMe['profile']
   barberShop?: UserMe['barberShop']
 }
 
 export type AuthContextType = {
-  authUser: AuthUser | null
+  user: AuthUser | null
   isLoading: boolean
   isAuthenticated: boolean
   isClient: boolean
@@ -43,11 +45,11 @@ export function useAuth() {
 export type AuthState = {
   isLoading: boolean
   isAuthenticated: false
-  authUser: null
+  user: null
 } | {
   isLoading: boolean
   isAuthenticated: true
-  authUser: AuthUser
+  user: AuthUser
 }
 
 export type AuthAction =
@@ -57,26 +59,25 @@ export type AuthAction =
   | { type: 'SET_LOADING' }
 
 function authReducer(state: AuthState, action: AuthAction): AuthState {
-  console.log('type', action.type)
   switch (action.type) {
     case 'LOGIN_SUCCESS':
       return {
         ...state,
-        authUser: action.payload,
+        user: action.payload,
         isAuthenticated: true,
         isLoading: false,
       }
     case 'LOGIN_FAILURE':
       return {
         ...state,
-        authUser: null,
+        user: null,
         isAuthenticated: false,
         isLoading: false,
       }
     case 'LOGOUT':
       return {
         ...state,
-        authUser: null,
+        user: null,
         isAuthenticated: false,
       }
     case 'SET_LOADING':
@@ -90,7 +91,7 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 }
 
 const initialAuthState: AuthState = {
-  authUser: null,
+  user: null,
   isLoading: true,
   isAuthenticated: false,
 }
@@ -117,11 +118,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
     const userData: UserMe = authResult.value
 
     const user: AuthUser = {
-      user: {
-        id: userData.id,
-        email: userData.email,
-        phoneNumber: userData.phoneNumber,
-      },
+      id: userData.id,
+      email: userData.email,
+      phoneNumber: userData.phoneNumber,
       roles: userData.roles,
       profile: userData.profile,
       barberShop: userData.barberShop,
@@ -147,11 +146,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
     const userData: UserMe = authResult.value
 
     const user: AuthUser = {
-      user: {
-        id: userData.id,
-        email: userData.email,
-        phoneNumber: userData.phoneNumber,
-      },
+      id: userData.id,
+      email: userData.email,
+      phoneNumber: userData.phoneNumber,
       roles: userData.roles,
       profile: userData.profile,
       barberShop: userData.barberShop,
@@ -184,12 +181,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
   return (
     <AuthContext.Provider
       value={{
-        authUser: state.authUser,
+        user: state.user,
         isLoading: state.isLoading,
         isAuthenticated: state.isAuthenticated,
-        isClient: !!state.authUser?.roles?.includes('Client'),
-        isBarberShop: !!state.authUser?.roles?.includes('BarberShop'),
-        isAdmin: !!state.authUser?.roles?.includes('Admin'),
+        isClient: !!state.user?.roles?.includes('Client'),
+        isBarberShop: !!state.user?.roles?.includes('BarberShop'),
+        isAdmin: !!state.user?.roles?.includes('Admin'),
         register,
         login,
         getMe,

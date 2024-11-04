@@ -30,15 +30,16 @@ import { AuthContextType, useAuth } from "@/providers/authProvider"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Link } from "react-router-dom"
 
-function getUserInfosToSidebar({ authUser }: AuthContextType) {
+function getUserInfosToSidebar({ user }: AuthContextType) {
   return {
-    name: authUser?.profile?.firstName ?? 'Diogo',
-    email: authUser?.user?.email ?? 'diogols@live.com',
-    avatar: authUser?.profile?.imageUrl ?? "https://randomuser.me/api/portraits/men/9.jpg",
+    name: user?.profile?.firstName ?? 'Diogo',
+    email: user?.email ?? 'diogols@live.com',
+    avatar: user?.profile?.imageUrl ?? "https://randomuser.me/api/portraits/men/9.jpg",
+    isBarber: !!user?.barberShop,
   }
 }
 
-function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, authUser }: AuthContextType) {
+function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: AuthContextType) {
   const items = [{
     title: "Home",
     url: ROUTE_ENUM.HOME,
@@ -80,11 +81,11 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, authUser }:
         },
         // {
         //   title: "Dashboard",
-        //   url: ROUTE_ENUM.BARBER_SHOP + '/' + authUser!.barberShop!.id + '/dashboard',
+        //   url: ROUTE_ENUM.BARBER_SHOP + '/' + user!.barberShop!.id + '/dashboard',
         // },
         // {
         //   title: "Editar",
-        //   url: ROUTE_ENUM.BARBER_SHOP + '/' + authUser!.barberShop!.id + '/edit',
+        //   url: ROUTE_ENUM.BARBER_SHOP + '/' + user!.barberShop!.id + '/edit',
         // },
       ],
     })
@@ -149,8 +150,6 @@ function getNavSecondaryItemsToSidebar() {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const userInfos = useAuth()
   
-  console.log({ ...userInfos })
-
   return (
     <Sidebar collapsible="icon" variant="floating" {...props}>
       <SidebarHeader>
