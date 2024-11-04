@@ -12,7 +12,7 @@ export class AppointmentRepository implements IAppointmentRepository {
       const res = await this.service.createAppointment(data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -21,7 +21,7 @@ export class AppointmentRepository implements IAppointmentRepository {
       const res = await this.service.getAppointment(id);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<Appointment>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -30,7 +30,7 @@ export class AppointmentRepository implements IAppointmentRepository {
       const res = await this.service.getAllAppointments();
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<Appointment[]>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -39,7 +39,7 @@ export class AppointmentRepository implements IAppointmentRepository {
       const res = await this.service.updateAppointment(id, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -48,7 +48,7 @@ export class AppointmentRepository implements IAppointmentRepository {
       const res = await this.service.deleteAppointment(id);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 }

@@ -1,11 +1,11 @@
-import { Result } from "@/data/result";
+import { BaseResult, CreatedResult } from "@/data/result";
 import { AppointmentType } from "@/schemas/appointment";
 import { Appointment } from "@/types/models/appointment";
 
 export interface IAppointmentRepository {
-  createAppointment(data: AppointmentType): Promise<Result<boolean>>;
-  getAppointment(id: number): Promise<Result<Appointment>>;
-  getAllAppointments(): Promise<Result<Appointment[]>>;
-  updateAppointment(id: number, data: AppointmentType): Promise<Result<boolean>>;
-  deleteAppointment(id: number): Promise<Result<boolean>>;
+  createAppointment(data: AppointmentType): CreatedResult<Appointment>;
+  getAppointment(id: number): BaseResult<Appointment>;
+  getAllAppointments(): BaseResult<Appointment[]>;
+  updateAppointment(id: number, data: AppointmentType): BaseResult<boolean>;
+  deleteAppointment(id: number): BaseResult<boolean>;
 }

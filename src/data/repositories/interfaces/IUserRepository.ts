@@ -1,11 +1,11 @@
-import { Result } from "@/data/result";
+import { BaseResult } from "@/data/result";
 import { UserEmailUpdateType, UserPasswordUpdateType, UserPhoneNumberUpdateType } from "@/schemas/user";
 import { UserMe } from "@/types/models/user";
 
 export interface IUserRepository {
-  getMe(): Promise<Result<UserMe>>;
-  changeEmail(data: UserEmailUpdateType): Promise<Result<boolean>>;
-  changePassword(data: UserPasswordUpdateType): Promise<Result<boolean>>;
-  changePhoneNumber(data: UserPhoneNumberUpdateType): Promise<Result<boolean>>;
-  delete(): Promise<Result<boolean>>;
+  getMe(): BaseResult<UserMe>;
+  changeEmail(data: UserEmailUpdateType): BaseResult<boolean>;
+  changePassword(data: UserPasswordUpdateType): BaseResult<boolean>;
+  changePhoneNumber(data: UserPhoneNumberUpdateType): BaseResult<boolean>;
+  delete(): BaseResult<boolean>;
 }

@@ -8,13 +8,18 @@ function dataIsEqualOrGreaterThenToday(informedDate: string) {
 
 export const appointmentSchema = z.object({
   date: z.string({ required_error: 'Data do agendamento obrigatória' })
+    .trim()
     .date('Data do agendamento inválida')
     .refine(dataIsEqualOrGreaterThenToday, { message: 'Data do agendamento precisa ser maior ou igual à data de hoje' }),
 
   startTime: z.string({ required_error: 'Horário de início obrigatório' })
     .time('Horário de início inválido'),
 
-  notes: z.string().optional(),
+  notes: z.string()
+    .trim()
+    .optional()
+    .or(z.literal(''))
+    .transform(value => value || undefined),
 })
 
 export type AppointmentType = z.infer<typeof appointmentSchema>

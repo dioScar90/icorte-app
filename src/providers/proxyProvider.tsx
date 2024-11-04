@@ -2,6 +2,7 @@ import { createContext, PropsWithChildren, useContext } from "react"
 import axios, { AxiosInstance } from 'axios'
 import { FieldValues, Path, UseFormSetError } from "react-hook-form"
 import { useToast } from "@/hooks/use-toast"
+import { Result } from "@/data/result"
 
 console.log('import.meta.env.VITE_BASE_URL', import.meta.env.VITE_BASE_URL)
 
@@ -107,6 +108,13 @@ export class NetworkConnectionError extends Error {
 
 httpClient.interceptors.response.use(
   response => {
+    // Acessando a mensagem e a URI criada
+    // const message = response.data?.message;
+    // const locationUri = response.headers['location']; // A URI que você procura
+  
+    // console.log('data:', response.data);
+    // console.log('Created URI:', locationUri);
+
     console.log('firstResponse', response)
     return response
   },

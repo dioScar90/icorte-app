@@ -9,11 +9,14 @@ function isInRange(value: number) {
 
 export const reportSchema = z.object({
   title: z.string({ required_error: 'Título obrigatório' })
+    .trim()
     .min(3, { message: 'Título precisa ter pelo menos 3 caracteres' }),
 
   content: z.string()
     .min(3, { message: 'Comentário precisa ter pelo menos 3 caracteres' })
-    .optional(),
+    .optional()
+    .or(z.literal(''))
+    .transform(value => value?.trim() || undefined),
 
   rating: z.coerce.number({ required_error: 'Nota obrigatória' })
     .int('Nota inválida')

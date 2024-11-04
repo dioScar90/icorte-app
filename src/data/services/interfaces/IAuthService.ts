@@ -1,8 +1,9 @@
+import { BaseAxiosResult, CreatedAxiosResult } from "@/data/result";
 import { UserLoginType, UserRegisterType } from "@/schemas/user";
-import { AxiosResponse } from "axios";
+import { UserMe } from "@/types/models/user";
 
 export interface IAuthService {
-  register(data: UserRegisterType): Promise<AxiosResponse<any>>;
-  login(data: UserLoginType): Promise<AxiosResponse<any>>;
-  logout(): Promise<AxiosResponse<any>>;
+  register(data: UserRegisterType): CreatedAxiosResult<UserMe>;
+  login(data: UserLoginType): BaseAxiosResult<boolean>;
+  logout(): BaseAxiosResult<boolean>;
 }

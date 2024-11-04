@@ -1,11 +1,11 @@
 const genders = ['Feminino', 'Masculino'] as const
-type Gender = typeof genders[number]
+type GenderEnum = typeof genders[number]
 
 export type Profile = {
   id: number
   firstName: string
   lastName: string
   fullName: string
-  gender: Gender
+  gender: GenderEnum
   imageUrl?: string
 }

@@ -1,11 +1,11 @@
-import { Result } from "@/data/result";
+import { BaseResult, CreatedResult } from "@/data/result";
 import { ReportType } from "@/schemas/report";
 import { Report } from "@/types/models/report";
 
 export interface IReportRepository {
-  createReport(barberShpoId: number, data: ReportType): Promise<Result<boolean>>;
-  getReport(barberShpoId: number, id: number): Promise<Result<Report>>;
-  getAllReports(barberShpoId: number): Promise<Result<Report[]>>;
-  updateReport(barberShpoId: number, id: number, data: ReportType): Promise<Result<boolean>>;
-  deleteReport(barberShpoId: number, id: number): Promise<Result<boolean>>;
+  createReport(barberShpoId: number, data: ReportType): CreatedResult<Report>;
+  getReport(barberShpoId: number, id: number): BaseResult<Report>;
+  getAllReports(barberShpoId: number): BaseResult<Report[]>;
+  updateReport(barberShpoId: number, id: number, data: ReportType): BaseResult<boolean>;
+  deleteReport(barberShpoId: number, id: number): BaseResult<boolean>;
 }

@@ -12,7 +12,7 @@ export class BarberScheduleRepository implements IBarberScheduleRepository {
       const res = await this.service.getAvailableDatesForBarber(barberShopId, dateOfWeek);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<DateOnly[]>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -21,7 +21,7 @@ export class BarberScheduleRepository implements IBarberScheduleRepository {
       const res = await this.service.getAvailableSlots(barberShopId, date);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<TimeOnly[]>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -30,7 +30,7 @@ export class BarberScheduleRepository implements IBarberScheduleRepository {
       const res = await this.service.getTopBarbersWithAvailability(dateOfWeek);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<TopBarberShop[]>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 }

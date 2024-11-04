@@ -1,11 +1,11 @@
+import { BaseAxiosResult, CreatedAxiosResult } from "@/data/result";
 import { AppointmentType } from "@/schemas/appointment";
 import { Appointment } from "@/types/models/appointment";
-import { AxiosResponse } from "axios";
 
 export interface IAppointmentService {
-  createAppointment(data: AppointmentType): Promise<AxiosResponse<boolean>>;
-  getAppointment(id: number): Promise<AxiosResponse<Appointment>>;
-  getAllAppointments(): Promise<AxiosResponse<Appointment[]>>;
-  updateAppointment(id: number, data: AppointmentType): Promise<AxiosResponse<boolean>>;
-  deleteAppointment(id: number): Promise<AxiosResponse<boolean>>;
+  createAppointment(data: AppointmentType): CreatedAxiosResult<Appointment>;
+  getAppointment(id: number): BaseAxiosResult<Appointment>;
+  getAllAppointments(): BaseAxiosResult<Appointment[]>;
+  updateAppointment(id: number, data: AppointmentType): BaseAxiosResult<boolean>;
+  deleteAppointment(id: number): BaseAxiosResult<boolean>;
 }

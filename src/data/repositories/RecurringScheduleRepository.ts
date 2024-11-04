@@ -2,7 +2,6 @@ import { IRecurringScheduleRepository } from "./interfaces/IRecurringScheduleRep
 import { IRecurringScheduleService } from "../services/interfaces/IRecurringScheduleService";
 import { Result } from "@/data/result";
 import { RecurringScheduleType } from "@/schemas/recurringSchedule";
-import { RecurringSchedule } from "@/types/models/recurringSchedule";
 import { DayOfWeek } from "@/types/models/date";
 
 export class RecurringScheduleRepository implements IRecurringScheduleRepository {
@@ -13,7 +12,7 @@ export class RecurringScheduleRepository implements IRecurringScheduleRepository
       const res = await this.service.createRecurringSchedule(barberShpoId, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -22,7 +21,7 @@ export class RecurringScheduleRepository implements IRecurringScheduleRepository
       const res = await this.service.getRecurringSchedule(barberShpoId, dayOfWeek);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<RecurringSchedule>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -31,7 +30,7 @@ export class RecurringScheduleRepository implements IRecurringScheduleRepository
       const res = await this.service.getAllRecurringSchedules(barberShpoId);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<RecurringSchedule[]>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -40,7 +39,7 @@ export class RecurringScheduleRepository implements IRecurringScheduleRepository
       const res = await this.service.updateRecurringSchedule(barberShpoId, dayOfWeek, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -49,7 +48,7 @@ export class RecurringScheduleRepository implements IRecurringScheduleRepository
       const res = await this.service.deleteRecurringSchedule(barberShpoId, dayOfWeek);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 }

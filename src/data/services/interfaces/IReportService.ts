@@ -1,11 +1,11 @@
+import { BaseAxiosResult, CreatedAxiosResult } from "@/data/result";
 import { ReportType } from "@/schemas/report";
 import { Report } from "@/types/models/report";
-import { AxiosResponse } from "axios";
 
 export interface IReportService {
-  createReport(barberShpoId: number, data: ReportType): Promise<AxiosResponse<boolean>>;
-  getReport(barberShpoId: number, id: number): Promise<AxiosResponse<Report>>;
-  getAllReports(barberShpoId: number): Promise<AxiosResponse<Report[]>>;
-  updateReport(barberShpoId: number, id: number, data: ReportType): Promise<AxiosResponse<boolean>>;
-  deleteReport(barberShpoId: number, id: number): Promise<AxiosResponse<boolean>>;
+  createReport(barberShpoId: number, data: ReportType): CreatedAxiosResult<Report>;
+  getReport(barberShpoId: number, id: number): BaseAxiosResult<Report>;
+  getAllReports(barberShpoId: number): BaseAxiosResult<Report[]>;
+  updateReport(barberShpoId: number, id: number, data: ReportType): BaseAxiosResult<boolean>;
+  deleteReport(barberShpoId: number, id: number): BaseAxiosResult<boolean>;
 }

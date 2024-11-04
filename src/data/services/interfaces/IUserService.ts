@@ -1,10 +1,11 @@
+import { BaseAxiosResult } from "@/data/result";
 import { UserEmailUpdateType, UserPasswordUpdateType, UserPhoneNumberUpdateType } from "@/schemas/user"
-import { AxiosResponse } from "axios";
+import { UserMe } from "@/types/models/user";
 
 export interface IUserService {
-  getMe(): Promise<AxiosResponse<any>>;
-  changeEmail(data: UserEmailUpdateType): Promise<AxiosResponse<any>>;
-  changePassword(data: UserPasswordUpdateType): Promise<AxiosResponse<any>>;
-  changePhoneNumber(data: UserPhoneNumberUpdateType): Promise<AxiosResponse<any>>;
-  delete(): Promise<AxiosResponse<any>>;
+  getMe(): BaseAxiosResult<UserMe>;
+  changeEmail(data: UserEmailUpdateType): BaseAxiosResult<boolean>;
+  changePassword(data: UserPasswordUpdateType): BaseAxiosResult<boolean>;
+  changePhoneNumber(data: UserPhoneNumberUpdateType): BaseAxiosResult<boolean>;
+  delete(): BaseAxiosResult<boolean>;
 }

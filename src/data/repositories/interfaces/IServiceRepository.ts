@@ -1,11 +1,11 @@
-import { Result } from "@/data/result";
+import { BaseResult, CreatedResult } from "@/data/result";
 import { ServiceType } from "@/schemas/service";
 import { Service } from "@/types/models/service";
 
 export interface IServiceRepository {
-  createService(barberShpoId: number, data: ServiceType): Promise<Result<boolean>>;
-  getService(barberShpoId: number, id: number): Promise<Result<Service>>;
-  getAllServices(barberShpoId: number): Promise<Result<Service[]>>;
-  updateService(barberShpoId: number, id: number, data: ServiceType): Promise<Result<boolean>>;
-  deleteService(barberShpoId: number, id: number): Promise<Result<boolean>>;
+  createService(barberShpoId: number, data: ServiceType): CreatedResult<Service>;
+  getService(barberShpoId: number, id: number): BaseResult<Service>;
+  getAllServices(barberShpoId: number): BaseResult<Service[]>;
+  updateService(barberShpoId: number, id: number, data: ServiceType): BaseResult<boolean>;
+  deleteService(barberShpoId: number, id: number): BaseResult<boolean>;
 }

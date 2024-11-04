@@ -2,7 +2,6 @@ import { ISpecialScheduleRepository } from "./interfaces/ISpecialScheduleReposit
 import { ISpecialScheduleService } from "../services/interfaces/ISpecialScheduleService";
 import { Result } from "@/data/result";
 import { SpecialScheduleType } from "@/schemas/specialSchedule";
-import { SpecialSchedule } from "@/types/models/specialSchedule";
 import { DateOnly } from "@/types/models/date";
 
 export class SpecialScheduleRepository implements ISpecialScheduleRepository {
@@ -13,7 +12,7 @@ export class SpecialScheduleRepository implements ISpecialScheduleRepository {
       const res = await this.service.createSpecialSchedule(barberShpoId, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -22,7 +21,7 @@ export class SpecialScheduleRepository implements ISpecialScheduleRepository {
       const res = await this.service.getSpecialSchedule(barberShpoId, date);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<SpecialSchedule>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -31,7 +30,7 @@ export class SpecialScheduleRepository implements ISpecialScheduleRepository {
       const res = await this.service.getAllSpecialSchedules(barberShpoId);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<SpecialSchedule[]>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -40,7 +39,7 @@ export class SpecialScheduleRepository implements ISpecialScheduleRepository {
       const res = await this.service.updateSpecialSchedule(barberShpoId, date, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -49,7 +48,7 @@ export class SpecialScheduleRepository implements ISpecialScheduleRepository {
       const res = await this.service.deleteSpecialSchedule(barberShpoId, date);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 }

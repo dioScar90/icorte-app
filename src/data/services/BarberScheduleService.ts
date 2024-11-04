@@ -31,5 +31,4 @@ export class BarberScheduleService implements IBarberScheduleService {
     const url = getUrl(dateOfWeek)
     return await this.httpClient.get(url)
   }
-
 }

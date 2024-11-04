@@ -13,6 +13,7 @@ import { ProtectedAdminRoute } from './protectedRoutes/admin-protected-route'
 import { ROUTE_ENUM } from './types/route'
 import { Logout } from './pages/logout'
 import { RegisterBarberShop } from './pages/barber-shop/registerBarberShop'
+import { BarberShopDashboard } from './pages/barber-shop/dashboardBarberShop'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -42,6 +43,7 @@ export function App() {
               <Route path=":id" element={<p>Barber Shop</p>} />
               <Route path=":id/edit" element={<p>Edit Barber Shop</p>} />
               <Route path="register" element={<RegisterBarberShop />} />
+              <Route path="dashboard" element={<BarberShopDashboard />} />
             </Route>
           </Route>
           

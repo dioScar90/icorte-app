@@ -2,7 +2,6 @@ import { IServiceRepository } from "./interfaces/IServiceRepository";
 import { IServiceService } from "../services/interfaces/IServiceService";
 import { Result } from "@/data/result";
 import { ServiceType } from "@/schemas/service";
-import { Service } from "@/types/models/service";
 
 export class ServiceRepository implements IServiceRepository {
   constructor(private readonly service: IServiceService) { }
@@ -12,7 +11,7 @@ export class ServiceRepository implements IServiceRepository {
       const res = await this.service.createService(barberShpoId, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -21,7 +20,7 @@ export class ServiceRepository implements IServiceRepository {
       const res = await this.service.getService(barberShpoId, id);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<Service>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -30,7 +29,7 @@ export class ServiceRepository implements IServiceRepository {
       const res = await this.service.getAllServices(barberShpoId);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<Service[]>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -39,7 +38,7 @@ export class ServiceRepository implements IServiceRepository {
       const res = await this.service.updateService(barberShpoId, id, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -48,7 +47,7 @@ export class ServiceRepository implements IServiceRepository {
       const res = await this.service.deleteService(barberShpoId, id);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 }

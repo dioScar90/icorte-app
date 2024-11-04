@@ -7,12 +7,15 @@ import {
 import { Toaster } from "@/components/ui/toaster"
 import { useAuth } from "@/providers/authProvider"
 import { ROUTE_ENUM } from "@/types/route"
-import { Navigate, Outlet, useLocation } from "react-router-dom"
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { Footer } from "../footer"
 import { useEffect } from "react"
+import Swal from "sweetalert2"
 
 export function BaseLayout() {
-  const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const { pathname, state } = useLocation()
+  console.log('just to check', { pathname, state })
   const { isAuthenticated, getMe } = useAuth()
 
   if (pathname === ROUTE_ENUM.ROOT) {
@@ -25,7 +28,18 @@ export function BaseLayout() {
     return <Navigate to={ROUTE_ENUM.HOME} replace />
   }
 
+  function checkMessageInState() {
+    if (state?.message) {
+      Swal.fire({
+        icon: "success",
+        title: state?.message,
+      });
+      navigate(pathname, { replace: true });
+    }
+  }
+
   useEffect(() => {
+    checkMessageInState()
     if (pathname !== ROUTE_ENUM.LOGOUT) {
       getMe()
     }

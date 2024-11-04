@@ -4,7 +4,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useToast } from "@/hooks/use-toast";
 import { UnprocessableEntityError } from "@/providers/proxyProvider";
@@ -39,22 +39,17 @@ export function RegisterBarberShop() {
   })
 
   async function onSubmit(values: BarberShopForFormType) {
-    console.log('values', values)
-
     const state = StateEnum[values.address.state]
     const data = { ...values, address: { ...values.address, state } }
-
-    console.log('data', data)
-  
+    
     try {
-      const ba = await register(data)
+      const res = await register(data)
       
-      if (!ba.isSuccess) {
-        throw ba.error
+      if (!res.isSuccess) {
+        throw res.error
       }
       
-      console.log('baaaaaaaaaa_register', ba)
-      navigate(`${ROUTE_ENUM.BARBER_SHOP}/dashboard`, { replace: true })
+      navigate(`${ROUTE_ENUM.BARBER_SHOP}/dashboard`, { replace: true, state: { message: res.value?.message } })
     } catch (err) {
       if (err instanceof UnprocessableEntityError) {
         err.displayToastAndFormErrors(form.setError)

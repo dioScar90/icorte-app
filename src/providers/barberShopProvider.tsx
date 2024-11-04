@@ -5,13 +5,14 @@ import { createContext, PropsWithChildren, useContext } from "react"
 import { useAuth } from "./authProvider"
 import { useProxy } from "./proxyProvider"
 import { BarberShopType } from "@/schemas/barberShop"
-import { Result } from "@/data/result"
+import { CreatedResult } from "@/data/result"
+import { BarberShop } from "@/types/models/barberShop"
 
 export type BarberShopContextType = {
   userId: UserMe['id']
   isBarberShop: boolean
   barberShop?: NonNullable<UserMe['barberShop']>
-  register: (data: BarberShopType) => Promise<Result<boolean>>
+  register: (data: BarberShopType) => CreatedResult<BarberShop>
 }
 
 const BarberShopContext = createContext<BarberShopContextType | undefined>(undefined)

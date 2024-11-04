@@ -1,10 +1,10 @@
-import { Result } from "@/data/result";
+import { BaseResult, CreatedResult } from "@/data/result";
 import { ProfileType } from "@/schemas/profile";
 import { Profile } from "@/types/models/profile";
 
 export interface IProfileRepository {
-  createProfile(data: ProfileType): Promise<Result<boolean>>;
-  getProfileById(id: number): Promise<Result<Profile>>;
-  updateProfile(id: number, data: ProfileType): Promise<Result<boolean>>;
-  updateProfileImage(id: number, file: File): Promise<Result<boolean>>;
+  createProfile(data: ProfileType): CreatedResult<Profile>;
+  getProfileById(id: number): BaseResult<Profile>;
+  updateProfile(id: number, data: ProfileType): BaseResult<boolean>;
+  updateProfileImage(id: number, file: File): BaseResult<boolean>;
 }

@@ -2,7 +2,6 @@ import { IAddressRepository } from "./interfaces/IAddressRepository";
 import { IAddressService } from "../services/interfaces/IAddressService";
 import { Result } from "@/data/result";
 import { AddressType } from "@/schemas/address";
-import { Address } from "@/types/models/address";
 
 export class AddressRepository implements IAddressRepository {
   constructor(private readonly service: IAddressService) { }
@@ -12,7 +11,7 @@ export class AddressRepository implements IAddressRepository {
       const res = await this.service.createAddress(barberShpoId, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -21,7 +20,7 @@ export class AddressRepository implements IAddressRepository {
       const res = await this.service.getAddress(barberShpoId, id);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<Address>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -30,7 +29,7 @@ export class AddressRepository implements IAddressRepository {
       const res = await this.service.updateAddress(barberShpoId, id, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -39,7 +38,7 @@ export class AddressRepository implements IAddressRepository {
       const res = await this.service.deleteAddress(barberShpoId, id);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 }

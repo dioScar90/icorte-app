@@ -1,4 +1,3 @@
-import { BarberShop } from "@/types/models/barberShop";
 import { Result } from "@/data/result";
 import { IBarberShopRepository } from "./interfaces/IBarberShopRepository";
 import { BarberShopType } from "@/schemas/barberShop";
@@ -12,7 +11,7 @@ export class BarberShopRepository implements IBarberShopRepository {
       const res = await this.service.createBarberShop(data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -21,7 +20,7 @@ export class BarberShopRepository implements IBarberShopRepository {
       const res = await this.service.getBarberShop(id);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<BarberShop>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -30,7 +29,7 @@ export class BarberShopRepository implements IBarberShopRepository {
       const res = await this.service.updateBarberShop(id, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -39,7 +38,7 @@ export class BarberShopRepository implements IBarberShopRepository {
       const res = await this.service.deleteBarberShop(id);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 }

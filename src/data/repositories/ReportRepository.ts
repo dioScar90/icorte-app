@@ -2,7 +2,6 @@ import { IReportRepository } from "./interfaces/IReportRepository";
 import { IReportService } from "../services/interfaces/IReportService";
 import { Result } from "@/data/result";
 import { ReportType } from "@/schemas/report";
-import { Report } from "@/types/models/report";
 
 export class ReportRepository implements IReportRepository {
   constructor(private readonly service: IReportService) { }
@@ -12,7 +11,7 @@ export class ReportRepository implements IReportRepository {
       const res = await this.service.createReport(barberShpoId, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -21,7 +20,7 @@ export class ReportRepository implements IReportRepository {
       const res = await this.service.getReport(barberShpoId, id);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<Report>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -30,7 +29,7 @@ export class ReportRepository implements IReportRepository {
       const res = await this.service.getAllReports(barberShpoId);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<Report[]>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -39,7 +38,7 @@ export class ReportRepository implements IReportRepository {
       const res = await this.service.updateReport(barberShpoId, id, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -48,7 +47,7 @@ export class ReportRepository implements IReportRepository {
       const res = await this.service.deleteReport(barberShpoId, id);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 }

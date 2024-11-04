@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
-import { Gender } from "@/schemas/profile";
+import { GenderEnum, GenderEnumAsConst } from "@/schemas/profile";
 import { useToast } from "@/hooks/use-toast";
 import { UnprocessableEntityError } from "@/providers/proxyProvider";
 
@@ -33,25 +33,17 @@ export function Register() {
   })
 
   async function onSubmit(values: UserRegisterForFormType) {
-    console.log('values', values)
-    
-    // const gender = values.profile.gender === 'Masculino' ? Gender.Male : Gender.Female
-    // const data: UserRegisterForFormType = { ...values, profile: { ...values.profile, gender }}
-
-    const gender = values.profile.gender === 'Masculino' ? Gender.Male : Gender.Female
+    const gender = GenderEnum[values.profile.gender]
     const data = { ...values, profile: { ...values.profile, gender } }
-
-    console.log('data', data)
-  
+    
     try {
-      const ola = await register(data)
+      const res = await register(data)
       
-      if (!ola.isSuccess) {
-        throw ola.error
+      if (!res.isSuccess) {
+        throw res.error
       }
       
-      console.log('olaaaaaaaaa_register', ola)
-      navigate(ROUTE_ENUM.HOME, { replace: true })
+      navigate(ROUTE_ENUM.HOME, { replace: true, state: { message: res.value?.message } })
     } catch (err) {
       if (err instanceof UnprocessableEntityError) {
         err.displayToastAndFormErrors(form.setError)
@@ -132,8 +124,9 @@ export function Register() {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Gênero</SelectLabel>
-                      <SelectItem value="Masculino">Masculino</SelectItem>
-                      <SelectItem value="Feminino">Feminino</SelectItem>
+                      {GenderEnumAsConst.map(gender => (
+                        <SelectItem key={gender} value={gender}>{gender}</SelectItem>
+                      ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>

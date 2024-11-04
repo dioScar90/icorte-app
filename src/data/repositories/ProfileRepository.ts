@@ -12,7 +12,7 @@ export class ProfileRepository implements IProfileRepository {
       const res = await this.service.createProfile(data)
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -21,7 +21,7 @@ export class ProfileRepository implements IProfileRepository {
       const res = await this.service.getProfileById(id)
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<Profile>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -30,7 +30,7 @@ export class ProfileRepository implements IProfileRepository {
       const res = await this.service.updateProfile(id, data)
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 
@@ -39,7 +39,7 @@ export class ProfileRepository implements IProfileRepository {
       const res = await this.service.updateProfileImage(id, file)
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure<boolean>(err as Error)
+      return Result.Failure(err as Error)
     }
   }
 }
