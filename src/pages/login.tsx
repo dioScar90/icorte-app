@@ -9,7 +9,7 @@ import { useAuth } from "@/providers/authProvider";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useToast } from "@/hooks/use-toast";
-import { InvalidUsernameOrPasswordError, NetworkConnectionError } from "@/providers/proxyProvider";
+import { InvalidUsernameOrPasswordError } from "@/providers/proxyProvider";
 
 type SchemaType = z.infer<typeof userLoginSchema>
 
@@ -28,11 +28,10 @@ export function Login() {
 
   async function onSubmit(values: SchemaType) {
     try {
-      const ola = await login(values)
-      console.log('olaaaaaaaaa', ola)
+      const result = await login(values)
 
-      if (!ola.isSuccess) {
-        throw ola.error
+      if (!result.isSuccess) {
+        throw result.error
       }
 
       navigate(ROUTE_ENUM.HOME, { replace: true })

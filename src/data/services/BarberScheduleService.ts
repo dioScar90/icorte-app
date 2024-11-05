@@ -2,28 +2,31 @@ import { DateOnly } from "@/types/models/date";
 import { IBarberScheduleService } from "./interfaces/IBarberScheduleService";
 import { AxiosInstance } from "axios";
 
-type Final = 'dates' | 'slots'
+enum STR_BEFORE_DATE {
+  DATES = 'dates',
+  SLOTS = 'slots',
+}
 
-function getUrl(date: DateOnly, final?: Final, barberShopId?: number) {
+function getUrl(date: DateOnly, beforeDate?: STR_BEFORE_DATE, barberShopId?: number) {
   const baseEndpoint = `/barber-schedule`
 
-  if (!final) {
+  if (!beforeDate) {
     return `${baseEndpoint}/top-barbers/${date}`
   }
 
-  return `${baseEndpoint}/${barberShopId!}/${final}/${date}`
+  return `${baseEndpoint}/${barberShopId!}/${beforeDate}/${date}`
 }
 
 export class BarberScheduleService implements IBarberScheduleService {
   constructor(private readonly httpClient: AxiosInstance) { }
 
   async getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateOnly) {
-    const url = getUrl(dateOfWeek, 'dates', barberShopId)
+    const url = getUrl(dateOfWeek, STR_BEFORE_DATE.DATES, barberShopId)
     return await this.httpClient.get(url)
   }
 
   async getAvailableSlots(barberShopId: number, date: DateOnly) {
-    const url = getUrl(date, 'slots', barberShopId)
+    const url = getUrl(date, STR_BEFORE_DATE.SLOTS, barberShopId)
     return await this.httpClient.get(url)
   }
 

@@ -43,13 +43,14 @@ export function RegisterBarberShop() {
     const data = { ...values, address: { ...values.address, state } }
     
     try {
-      const res = await register(data)
+      const result = await register(data)
       
-      if (!res.isSuccess) {
-        throw res.error
+      if (!result.isSuccess) {
+        throw result.error
       }
       
-      navigate(`${ROUTE_ENUM.BARBER_SHOP}/dashboard`, { replace: true, state: { message: res.value?.message } })
+      const options = { replace: true, state: { message: result.value?.message } }
+      navigate(`${ROUTE_ENUM.BARBER_SHOP}/dashboard`, options)
     } catch (err) {
       if (err instanceof UnprocessableEntityError) {
         err.displayToastAndFormErrors(form.setError)

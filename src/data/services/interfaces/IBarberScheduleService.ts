@@ -1,9 +1,9 @@
-import { BaseAxiosResult } from "@/data/result";
+import { PaginationAxiosResult } from "@/data/result";
 import { TopBarberShop } from "@/types/models/barberShop";
 import { DateOnly, TimeOnly } from "@/types/models/date";
 
 export interface IBarberScheduleService {
-  getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateOnly): BaseAxiosResult<DateOnly[]>;
-  getAvailableSlots(barberShopId: number, date: DateOnly): BaseAxiosResult<TimeOnly[]>;
-  getTopBarbersWithAvailability(dateOfWeek: DateOnly): BaseAxiosResult<TopBarberShop[]>;
+  getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateOnly): PaginationAxiosResult<DateOnly>;
+  getAvailableSlots(barberShopId: number, date: DateOnly): PaginationAxiosResult<TimeOnly>;
+  getTopBarbersWithAvailability(dateOfWeek: DateOnly): PaginationAxiosResult<TopBarberShop>;
 }

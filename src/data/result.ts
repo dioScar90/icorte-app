@@ -42,10 +42,18 @@ type CreatedResponse<T> = {
   message?: string
 }
 
+type PaginationResponse<T> = {
+  items: T[]
+  totalItems: number
+  totalPages: number
+  page: number
+  pageSize: number
+}
+
 export type BaseResult<T> = Promise<Result<T | null>>
 export type CreatedResult<T> = Promise<Result<CreatedResponse<T> | null>>
+export type PaginationResult<T> = Promise<Result<PaginationResponse<T> | null>>
 
 export type BaseAxiosResult<T> = Promise<AxiosResponse<T | null>>
 export type CreatedAxiosResult<T> = Promise<AxiosResponse<CreatedResponse<T> | null>>
-
-export type NullableResult<T> = Result<T | null>
+export type PaginationAxiosResult<T> = Promise<AxiosResponse<PaginationResponse<T> | null>>

@@ -37,13 +37,14 @@ export function Register() {
     const data = { ...values, profile: { ...values.profile, gender } }
     
     try {
-      const res = await register(data)
+      const result = await register(data)
       
-      if (!res.isSuccess) {
-        throw res.error
+      if (!result.isSuccess) {
+        throw result.error
       }
       
-      navigate(ROUTE_ENUM.HOME, { replace: true, state: { message: res.value?.message } })
+      const options = { replace: true, state: { message: result.value?.message } }
+      navigate(ROUTE_ENUM.HOME, options)
     } catch (err) {
       if (err instanceof UnprocessableEntityError) {
         err.displayToastAndFormErrors(form.setError)

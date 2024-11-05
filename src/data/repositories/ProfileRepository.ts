@@ -1,4 +1,3 @@
-import { Profile } from "@/types/models/profile";
 import { Result } from "@/data/result";
 import { IProfileRepository } from "./interfaces/IProfileRepository";
 import { ProfileType } from "@/schemas/profile";
