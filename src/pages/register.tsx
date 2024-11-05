@@ -43,8 +43,7 @@ export function Register() {
         throw result.error
       }
       
-      const options = { replace: true, state: { message: result.value?.message } }
-      navigate(ROUTE_ENUM.HOME, options)
+      navigate(ROUTE_ENUM.HOME, { state: { message: result.value?.message } })
     } catch (err) {
       if (err instanceof UnprocessableEntityError) {
         err.displayToastAndFormErrors(form.setError)

@@ -28,16 +28,19 @@ import {
 } from "@/components/ui/sidebar"
 import { Link } from "react-router-dom"
 import { ROUTE_ENUM } from "@/types/route"
+import { Button } from "./ui/button"
 
 export function NavUser({
   user,
+  onClickLogout
 }: {
   user: {
     name: string
     email: string
     avatar: string
     isBarber: boolean
-  }
+  },
+  onClickLogout: () => Promise<void>,
 }) {
   const { isMobile } = useSidebar()
 
@@ -89,19 +92,17 @@ export function NavUser({
                   Seja Pro
                 </DropdownMenuItem>
               </Link>
-            </DropdownMenuGroup>
 
-            {!user.isBarber && (
-              <DropdownMenuGroup>
+              {!user.isBarber && (
                 <Link to={`${ROUTE_ENUM.BARBER_SHOP}/register`}>
                   <DropdownMenuItem className="cursor-pointer">
                     <StoreIcon />
                     Cadastrar Barbearia
                   </DropdownMenuItem>
                 </Link>
-              </DropdownMenuGroup>
-            )}
-
+              )}
+            </DropdownMenuGroup>
+            
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
@@ -122,12 +123,18 @@ export function NavUser({
 
             <DropdownMenuSeparator />
 
-            <Link to={ROUTE_ENUM.LOGOUT}>
-              <DropdownMenuItem className="cursor-pointer">
-                <LogOut />
-                Log out
-              </DropdownMenuItem>
-            </Link>
+            <DropdownMenuGroup>
+              <Button
+                onClick={onClickLogout}
+                className="p-0 w-full block"
+                variant="ghost"
+              >
+                <DropdownMenuItem className="cursor-pointer">
+                  <LogOut />
+                  Logout
+                </DropdownMenuItem>
+              </Button>
+            </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

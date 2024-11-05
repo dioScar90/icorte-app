@@ -49,8 +49,7 @@ export function RegisterBarberShop() {
         throw result.error
       }
       
-      const options = { replace: true, state: { message: result.value?.message } }
-      navigate(`${ROUTE_ENUM.BARBER_SHOP}/dashboard`, options)
+      navigate(`${ROUTE_ENUM.BARBER_SHOP}/dashboard`, { state: { message: result.value?.message } })
     } catch (err) {
       if (err instanceof UnprocessableEntityError) {
         err.displayToastAndFormErrors(form.setError)

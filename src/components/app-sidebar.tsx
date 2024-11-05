@@ -28,7 +28,8 @@ import {
 import { ROUTE_ENUM } from "@/types/route"
 import { AuthContextType, useAuth } from "@/providers/authProvider"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import Swal from "sweetalert2"
 
 function getUserInfosToSidebar({ user }: AuthContextType) {
   return {
@@ -122,7 +123,7 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: Aut
           url: ROUTE_ENUM.ADMIN + '/dashboard',
         },
         {
-          title: "Reset all",
+          title: "Remove all",
           url: ROUTE_ENUM.ADMIN + '/remove-all',
         },
       ],
@@ -149,6 +150,23 @@ function getNavSecondaryItemsToSidebar() {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const userInfos = useAuth()
+  const navigate = useNavigate()
+
+  const onClickLogout = React.useCallback(() => Swal.fire({
+    title: 'Logout',
+    text: 'Deseja realmente sair do sistema?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sim, sair',
+    cancelButtonText: 'Cancelar',
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      userInfos.logout()
+        .then(({ isSuccess }) => isSuccess ? navigate(`${ROUTE_ENUM.LOGIN}`, { state: { message: 'Logout realizado com sucesso' } }) : null)
+    }
+  }), [])
   
   return (
     <Sidebar collapsible="icon" variant="floating" {...props}>
@@ -204,7 +222,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       {userInfos.isAuthenticated && (
         <SidebarFooter>
-          <NavUser user={getUserInfosToSidebar({ ...userInfos })} />
+          <NavUser user={getUserInfosToSidebar({ ...userInfos })} onClickLogout={onClickLogout} />
         </SidebarFooter>
       )}
     </Sidebar>

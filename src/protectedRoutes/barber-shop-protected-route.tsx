@@ -4,7 +4,6 @@ import { BarberShopProvider } from "@/providers/barberShopProvider"
 import { useAuth } from "@/providers/authProvider"
 
 export function ProtectedBarberShopRoute() {
-  console.log('passei loucamente por ProtectedBarberShopRoute')
   const { pathname } = useLocation()
   const { isBarberShop } = useAuth()
   

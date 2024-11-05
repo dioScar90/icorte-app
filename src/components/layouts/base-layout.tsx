@@ -18,9 +18,9 @@ export function BaseLayout() {
   console.log('just to check', { pathname, state })
   const { isAuthenticated, getMe } = useAuth()
 
-  if (pathname === ROUTE_ENUM.ROOT) {
-    return <Navigate to={ROUTE_ENUM.HOME} replace />
-  }
+  // if (pathname === ROUTE_ENUM.ROOT) {
+  //   return <Navigate to={ROUTE_ENUM.HOME} replace />
+  // }
 
   const isLoginPageOrRegisterPage = pathname.startsWith(ROUTE_ENUM.LOGIN) || pathname.startsWith(ROUTE_ENUM.REGISTER)
 

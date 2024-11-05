@@ -1,4 +1,4 @@
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements, redirect } from 'react-router-dom'
 import { Home } from './pages/home'
 import { Login } from './pages/login'
 import { BaseLayout } from './components/layouts/base-layout'
@@ -11,15 +11,18 @@ import { ProtectedClientRoute } from './protectedRoutes/client-protected-route'
 import { ProtectedBarberShopRoute } from './protectedRoutes/barber-shop-protected-route'
 import { ProtectedAdminRoute } from './protectedRoutes/admin-protected-route'
 import { ROUTE_ENUM } from './types/route'
-import { Logout } from './pages/logout'
-import { RegisterBarberShop } from './pages/barber-shop/registerBarberShop'
-import { BarberShopDashboard } from './pages/barber-shop/dashboardBarberShop'
+import { RegisterBarberShop } from './pages/barber-shop/register'
+import { BarberShopDashboard } from './pages/barber-shop/dashboard'
+import { RemoveAll } from './pages/admin/remove-all'
+import { AdminDashboard } from './pages/admin/dashboard'
+import { ErrorRoutePage } from './pages/error-route'
 
 export function App() {
   const browerRouter = createBrowserRouter(
     createRoutesFromElements(
       <Route>
         <Route path={ROUTE_ENUM.ROOT} element={<BaseLayout />}>
+          <Route index loader={async () => redirect(ROUTE_ENUM.HOME)} />
           <Route path="home" element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
@@ -49,14 +52,14 @@ export function App() {
           
           <Route element={<ProtectedAdminRoute />}>
             <Route path={ROUTE_ENUM.ADMIN} element={<AdminLayout />}>
-              <Route index element={<Home />} />
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
+              <Route index loader={async () => redirect(`${ROUTE_ENUM.ADMIN}/dashboard`)} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="remove-all" element={<RemoveAll />} />
             </Route>
           </Route>
-
-          <Route path="logout" element={<Logout />} />
         </Route>
+
+        <Route path="*" element={<ErrorRoutePage />} />
       </Route>
     )
   )
