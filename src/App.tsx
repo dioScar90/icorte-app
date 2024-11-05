@@ -16,12 +16,13 @@ import { BarberShopDashboard } from './pages/barber-shop/dashboard'
 import { RemoveAll } from './pages/admin/remove-all'
 import { AdminDashboard } from './pages/admin/dashboard'
 import { ErrorRoutePage } from './pages/error-route'
+import { baseLoader } from './data/loaders/baseLoader'
 
 export function App() {
   const browerRouter = createBrowserRouter(
     createRoutesFromElements(
       <Route>
-        <Route path={ROUTE_ENUM.ROOT} element={<BaseLayout />}>
+        <Route path={ROUTE_ENUM.ROOT} loader={baseLoader} element={<BaseLayout />}>
           <Route index loader={async () => redirect(ROUTE_ENUM.HOME)} />
           <Route path="home" element={<Home />} />
           <Route path="login" element={<Login />} />

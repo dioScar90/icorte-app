@@ -6,7 +6,7 @@ import { Result } from "@/data/result"
 
 console.log('import.meta.env.VITE_BASE_URL', import.meta.env.VITE_BASE_URL)
 
-const httpClient = axios.create({
+export const httpClient = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
     'Content-Type': 'application/json',

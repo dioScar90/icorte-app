@@ -11,9 +11,9 @@ export function MainProviders({ children }: PropsWithChildren) {
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <QueryClientProvider client={client}>
         <ProxyProvider>
-          <AuthProvider>
+          {/* <AuthProvider> */}
             {children}
-          </AuthProvider>
+          {/* </AuthProvider> */}
         </ProxyProvider>
       </QueryClientProvider>
     </ThemeProvider>
