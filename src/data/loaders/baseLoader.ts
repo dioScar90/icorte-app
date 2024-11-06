@@ -12,13 +12,20 @@ class RedirectorError extends Error {
   }
 }
 
-const BASE_URL = import.meta.env.VITE_BASE_URL
+function getBaseUrlFromFullUrl(fullUrl: string) {
+  const originRegex = /^(https?:\/\/[^\/]+)/
+  return fullUrl.match(originRegex)?.at(0)
+}
 
 function currentUrlStartsWithGivenRoute(currentUrl: string, needleRoute: RouteString) {
-  const toCompare = BASE_URL + needleRoute
+  const baseUrl = getBaseUrlFromFullUrl(currentUrl)
 
-  console.log('loader', { currentUrl, toCompare })
+  if (!baseUrl) {
+    return false
+  }
 
+  const toCompare = baseUrl + needleRoute
+  console.log({currentUrl, toCompare})
   return currentUrl.startsWith(toCompare)
 }
 
@@ -38,9 +45,10 @@ function isPageForUnauthenticatedOnly(currentUrl: string) {
 //     || isRegisterPage(currentUrl)
 // }
 
-export async function baseLoader({ request }: LoaderFunctionArgs) {
-  console.log('rerendered with url =>', request.url)
-  console.log('request prop =>', { request })
+export async function baseLoader({ request, params }: LoaderFunctionArgs) {
+  // console.log('rerendered with url =>', request.url)
+  console.log('request =>', request)
+  console.log('params =>', params)
 
   try {
     if (isRootPage(request.url)) {
@@ -51,6 +59,11 @@ export async function baseLoader({ request }: LoaderFunctionArgs) {
 
     const res = await repository.getMe()
     const isAuthenticated = res.isSuccess
+
+    console.log({
+      isAuthenticated,
+      issss: isPageForUnauthenticatedOnly(request.url)
+    })
     
     if (isAuthenticated && isPageForUnauthenticatedOnly(request.url)) {
       throw new RedirectorError(ROUTE_ENUM.HOME)

@@ -27,7 +27,7 @@ export function App() {
           loader={baseLoader}
           element={<BaseLayout />}
           shouldRevalidate={({ currentUrl, nextUrl }) => {
-            console.log('urls', { currentUrl, nextUrl })
+            console.log({ currentUrl: currentUrl.pathname, nextUrl: nextUrl.pathname })
             return currentUrl.pathname !== nextUrl.pathname
           }}
         >
@@ -66,9 +66,9 @@ export function App() {
               <Route path="remove-all" element={<RemoveAll />} />
             </Route>
           </Route>
-        </Route>
 
-        <Route path="*" element={<ErrorRoutePage />} />
+          <Route path="*" element={<ErrorRoutePage />} />
+        </Route>
       </Route>
     )
   )

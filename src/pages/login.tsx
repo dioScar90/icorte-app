@@ -9,7 +9,7 @@ import { useAuth } from "@/providers/authProvider";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useToast } from "@/hooks/use-toast";
-import { InvalidUsernameOrPasswordError } from "@/providers/proxyProvider";
+// import { InvalidUsernameOrPasswordError } from "@/providers/proxyProvider";
 
 type SchemaType = z.infer<typeof userLoginSchema>
 
@@ -34,16 +34,16 @@ export function Login() {
         throw result.error
       }
 
-      navigate(ROUTE_ENUM.HOME, { replace: true })
+      navigate(ROUTE_ENUM.HOME, { replace: true, state: { message: 'Login realizado com sucesso' } })
     } catch (err) {
-      if (err instanceof InvalidUsernameOrPasswordError) {
-        err.displayToastAndFormErrors(form.setError)
-          .forEach(({ error, toast }) => {
-            form.setError(error.key, { message: error?.message })
-            toast(toast)
-          })
-        return
-      }
+      // if (err instanceof InvalidUsernameOrPasswordError) {
+      //   err.displayToastAndFormErrors(form.setError)
+      //     .forEach(({ error, toast }) => {
+      //       form.setError(error.key, { message: error?.message })
+      //       toast(toast)
+      //     })
+      //   return
+      // }
       
       const message = err instanceof Error
         ? err.message

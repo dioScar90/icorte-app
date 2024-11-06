@@ -8,7 +8,7 @@ export function ProtectedBarberShopRoute() {
   const { isBarberShop } = useAuth()
   
   if (!isBarberShop && pathname !== `${ROUTE_ENUM.BARBER_SHOP}/register`) {
-    return <Navigate to={ROUTE_ENUM.HOME} replace />
+    return <Navigate to={ROUTE_ENUM.LOGIN} replace />
   }
 
   return (

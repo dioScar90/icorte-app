@@ -5,36 +5,17 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar"
 import { Toaster } from "@/components/ui/toaster"
-// import { useAuth } from "@/providers/authProvider"
-// import { ROUTE_ENUM } from "@/types/route"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { Footer } from "../footer"
-import { useCallback, useEffect } from "react"
+import { useEffect } from "react"
 import Swal from "sweetalert2"
 import { AuthProvider } from "@/providers/authProvider"
 
 export function BaseLayout() {
   const navigate = useNavigate()
   const { pathname, state } = useLocation()
-  console.log('just to check', { pathname, state })
-  // const { isAuthenticated } = useAuth()
   
-  // const isLoginPageOrRegisterPage = pathname.startsWith(ROUTE_ENUM.LOGIN) || pathname.startsWith(ROUTE_ENUM.REGISTER)
-
-  // if (isAuthenticated && isLoginPageOrRegisterPage) {
-  //   return <Navigate to={ROUTE_ENUM.HOME} replace />
-  // }
-
-  // if (state?.message) {
-  //   Swal.fire({
-  //     icon: "success",
-  //     title: state?.message,
-  //   });
-  //   navigate(pathname, { replace: true });
-  //   return null
-  // }
-
-  const checkMessageInState = useCallback(() => {
+  useEffect(() => {
     if (state?.message) {
       Swal.fire({
         icon: "success",
@@ -42,12 +23,8 @@ export function BaseLayout() {
       });
       navigate(pathname, { replace: true });
     }
-  }, [])
-
-  useEffect(() => {
-    checkMessageInState()
-  }, [pathname])
-
+  }, [state?.message])
+  
   return (
     <AuthProvider>
       <SidebarProvider>

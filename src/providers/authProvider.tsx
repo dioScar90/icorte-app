@@ -1,13 +1,10 @@
 import { AuthRepository } from "@/data/repositories/AuthRepository"
-// import { UserRepository } from "@/data/repositories/UserRepository"
 import { AuthService } from "@/data/services/AuthService"
-// import { UserService } from "@/data/services/UserService"
 import { UserLoginType, UserRegisterType } from "@/schemas/user"
 import { UserMe } from "@/types/models/user"
-import { createContext, PropsWithChildren, useContext, useMemo, useReducer } from "react"
+import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useReducer } from "react"
 import { useProxy } from "./proxyProvider"
 import { IAuthRepository } from "@/data/repositories/interfaces/IAuthRepository"
-// import { IUserRepository } from "@/data/repositories/interfaces/IUserRepository"
 import { useLoaderData } from "react-router-dom"
 import { baseLoader } from "@/data/loaders/baseLoader"
 
@@ -30,7 +27,6 @@ export type AuthContextType = {
   register: (data: UserRegisterType) => ReturnType<IAuthRepository['register']>
   login: (data: UserLoginType) => ReturnType<IAuthRepository['login']>
   logout: () => ReturnType<IAuthRepository['logout']>
-  // getMe: () => ReturnType<IUserRepository['getMe']>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -96,21 +92,15 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
   }
 }
 
-// const initialAuthState: AuthState = {
-//   user: null,
-//   isLoading: true,
-//   isAuthenticated: false,
-// }
-
 export function AuthProvider({ children }: PropsWithChildren) {
-  const userrrr = useLoaderData() as Exclude<Awaited<ReturnType<typeof baseLoader>>, Response>
+  const userFromLoader = useLoaderData() as Exclude<Awaited<ReturnType<typeof baseLoader>>, Response>
   const { httpClient } = useProxy()
   const authRepository = useMemo(() => new AuthRepository(new AuthService(httpClient)), [])
-  // const userRepository = useMemo(() => new UserRepository(new UserService(httpClient)), [])
-  const [state, dispatch] = useReducer(authReducer, {
-    user: userrrr,
+
+  const [{ user, isLoading, isAuthenticated }, dispatch] = useReducer(authReducer, {
+    user: userFromLoader,
     isLoading: false,
-    isAuthenticated: !!userrrr,
+    isAuthenticated: !!userFromLoader,
   })
   
   const register = async (data: UserRegisterType) => {
@@ -145,27 +135,24 @@ export function AuthProvider({ children }: PropsWithChildren) {
     dispatch({ type: 'LOGOUT' })
     return await authRepository.logout()
   }
+
+  useEffect(() => {
+    if (userFromLoader) {
+      dispatch({ type: 'SET_USER', payload: userFromLoader })
+    } else {
+      dispatch({ type: 'LOGOUT' })
+    }
+  }, [userFromLoader])
   
   return (
     <AuthContext.Provider
-      // value={{
-      //   user: state.user,
-      //   isLoading: state.isLoading,
-      //   isAuthenticated: state.isAuthenticated,
-      //   isClient: !!state.user?.roles?.includes('Client'),
-      //   isBarberShop: !!state.user?.roles?.includes('BarberShop'),
-      //   isAdmin: !!state.user?.roles?.includes('Admin'),
-      //   register,
-      //   login,
-      //   logout,
-      // }}
       value={{
-        user: userrrr,
-        isLoading: state.isLoading,
-        isAuthenticated: state.isAuthenticated,
-        isClient: !!state.user?.roles?.includes('Client'),
-        isBarberShop: !!state.user?.roles?.includes('BarberShop'),
-        isAdmin: !!state.user?.roles?.includes('Admin'),
+        user,
+        isLoading,
+        isAuthenticated,
+        isClient: !!user?.roles?.includes('Client'),
+        isBarberShop: !!user?.roles?.includes('BarberShop'),
+        isAdmin: !!user?.roles?.includes('Admin'),
         register,
         login,
         logout,

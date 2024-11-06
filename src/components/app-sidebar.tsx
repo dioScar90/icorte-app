@@ -54,18 +54,10 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: Aut
     isActive?: boolean,
     items: any[],
   }[]
-
   
-//   <SidebarMenuItem>
-//   <SidebarMenuButton asChild tooltip="Login">
-//     <Link to={ROUTE_ENUM.LOGIN}>
-//       <LogInIcon />
-//       <span>Login</span>
-//     </Link>
-//   </SidebarMenuButton>
-// </SidebarMenuItem>
-
   if (isBarberShop) {
+    const barberShopId = user?.barberShop?.id!
+
     items.push({
       title: "Minha barbearia",
       url: ROUTE_ENUM.BARBER_SHOP,
@@ -74,20 +66,12 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: Aut
       items: [
         {
           title: "Dashboard",
-          url: ROUTE_ENUM.BARBER_SHOP + '/dashboard',
+          url: `${ROUTE_ENUM.BARBER_SHOP}/dashboard`,
         },
         {
           title: "Editar",
-          url: ROUTE_ENUM.BARBER_SHOP + '/edit',
+          url: `${ROUTE_ENUM.BARBER_SHOP}/edit/${barberShopId}`,
         },
-        // {
-        //   title: "Dashboard",
-        //   url: ROUTE_ENUM.BARBER_SHOP + '/' + user!.barberShop!.id + '/dashboard',
-        // },
-        // {
-        //   title: "Editar",
-        //   url: ROUTE_ENUM.BARBER_SHOP + '/' + user!.barberShop!.id + '/edit',
-        // },
       ],
     })
   }
@@ -161,10 +145,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     cancelButtonColor: '#d33',
     confirmButtonText: 'Sim, sair',
     cancelButtonText: 'Cancelar',
-  }).then(async (result) => {
-    if (result.isConfirmed) {
+  }).then(async ({ isConfirmed }) => {
+    if (isConfirmed) {
       userInfos.logout()
-        .then(({ isSuccess }) => isSuccess ? navigate(`${ROUTE_ENUM.LOGIN}`, { state: { message: 'Logout realizado com sucesso' } }) : null)
+        .then(({ isSuccess }) => isSuccess ? navigate(`${ROUTE_ENUM.LOGIN}`) : null)
     }
   }), [])
   
@@ -174,7 +158,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link to={ROUTE_ENUM.ROOT}>
+              <Link to={ROUTE_ENUM.ROOT} state={{ test: 'to root' }}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-full bg-sidebar-primary text-sidebar-primary-foreground">
                   <Avatar>
                     <AvatarImage src={logoImgUrl} />
@@ -199,7 +183,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Login">
-                  <Link to={ROUTE_ENUM.LOGIN}>
+                  <Link to={ROUTE_ENUM.LOGIN} state={{ test: 'to login' }}>
                     <LogInIcon />
                     <span>Login</span>
                   </Link>
@@ -207,7 +191,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Criar conta">
-                  <Link to={ROUTE_ENUM.REGISTER}>
+                  <Link to={ROUTE_ENUM.REGISTER} state={{ test: 'to register' }}>
                     <UserRoundPlusIcon />
                     <span>Criar conta</span>
                   </Link>

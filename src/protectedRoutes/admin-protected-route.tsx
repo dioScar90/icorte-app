@@ -7,7 +7,7 @@ export function ProtectedAdminRoute() {
   const { isAdmin } = useAuth()
   
   if (!isAdmin) {
-    return <Navigate to={ROUTE_ENUM.HOME} replace />
+    return <Navigate to={ROUTE_ENUM.LOGIN} replace />
   }
 
   return (
