@@ -10,12 +10,14 @@ import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { GenderEnum, GenderEnumAsConst } from "@/schemas/profile";
 import { useToast } from "@/hooks/use-toast";
-import { UnprocessableEntityError } from "@/providers/proxyProvider";
+import { useError } from "@/hooks/use.error";
+// import { UnprocessableEntityError } from "@/providers/proxyProvider";
 
 export function Register() {
   const navigate = useNavigate()
   const { register, isLoading } = useAuth()
   const { toast } = useToast()
+  const { handleError } = useError()
   
   const form = useForm<UserRegisterForFormType>({
     resolver: zodResolver(userRegisterSchema),
@@ -45,9 +47,10 @@ export function Register() {
       
       navigate(ROUTE_ENUM.HOME, { state: { message: result.value?.message } })
     } catch (err) {
-      if (err instanceof UnprocessableEntityError) {
-        err.displayToastAndFormErrors(form.setError)
-        return
+      if (err instanceof Error) {
+        const { toastItems, formItems } = handleError(form, err)
+        toastItems.forEach(([um, dois]) => toast(item[0]))
+        formItems.forEach(([um, dois]) => toast(item[0]))
       }
 
       console.log('oi acabou a agua... ♫')

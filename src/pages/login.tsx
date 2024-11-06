@@ -9,6 +9,7 @@ import { useAuth } from "@/providers/authProvider";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useToast } from "@/hooks/use-toast";
+import { useError } from "@/hooks/use.error";
 // import { InvalidUsernameOrPasswordError } from "@/providers/proxyProvider";
 
 type SchemaType = z.infer<typeof userLoginSchema>
@@ -17,6 +18,7 @@ export function Login() {
   const navigate = useNavigate()
   const { login, isLoading } = useAuth()
   const { toast } = useToast()
+  const { handleError } = useError()
 
   const form = useForm<SchemaType>({
     resolver: zodResolver(userLoginSchema),
@@ -36,6 +38,15 @@ export function Login() {
 
       navigate(ROUTE_ENUM.HOME, { replace: true, state: { message: 'Login realizado com sucesso' } })
     } catch (err) {
+      if (err instanceof Error) {
+        const aqui = handleError(form, err)
+
+        if (!aqui) {
+          return
+        }
+
+        aqui
+      }
       // if (err instanceof InvalidUsernameOrPasswordError) {
       //   err.displayToastAndFormErrors(form.setError)
       //     .forEach(({ error, toast }) => {
