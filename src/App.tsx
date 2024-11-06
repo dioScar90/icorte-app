@@ -22,7 +22,15 @@ export function App() {
   const browerRouter = createBrowserRouter(
     createRoutesFromElements(
       <Route>
-        <Route path={ROUTE_ENUM.ROOT} loader={baseLoader} element={<BaseLayout />}>
+        <Route
+          path={ROUTE_ENUM.ROOT}
+          loader={baseLoader}
+          element={<BaseLayout />}
+          shouldRevalidate={({ currentUrl, nextUrl }) => {
+            console.log('urls', { currentUrl, nextUrl })
+            return currentUrl.pathname !== nextUrl.pathname
+          }}
+        >
           <Route index loader={async () => redirect(ROUTE_ENUM.HOME)} />
           <Route path="home" element={<Home />} />
           <Route path="login" element={<Login />} />

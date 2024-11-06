@@ -38,6 +38,10 @@ export function Login() {
     } catch (err) {
       if (err instanceof InvalidUsernameOrPasswordError) {
         err.displayToastAndFormErrors(form.setError)
+          .forEach(({ error, toast }) => {
+            form.setError(error.key, { message: error?.message })
+            toast(toast)
+          })
         return
       }
       

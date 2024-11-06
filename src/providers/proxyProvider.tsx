@@ -51,16 +51,22 @@ function displayToastAndFormErrors<T extends FieldValues, K extends "root" | `ro
   const { toast } = useToast()
   
   return getToastOptions(errors, title)
-    .map(([key, vamos]) => {
-      setError(key, { message: vamos.description })
-      toast(vamos)
-    })
+    .map(([key, vamos]) => ({
+      error: { key, message: vamos.description },
+      toast: vamos,
+      // setError(key, { message: vamos.description })
+      // toast(vamos)
+    }))
 }
 
-export class UnprocessableEntityError extends Error {
+interface IUnprocessableError<T extends Record<K, string[]>> {
+  toastOptions: () => UnprocessableEntityToastMatrix<K>
+}
+
+export class UnprocessableEntityError<T extends Record<string, string[]>> extends Error implements IUnprocessableError<T> {
   constructor(
     readonly title: string,
-    readonly errors: Record<string, string[]>) {
+    readonly errors: T) {
     super('Problemas...')
   }
   
@@ -69,7 +75,7 @@ export class UnprocessableEntityError extends Error {
   }
 
   displayToastAndFormErrors<T extends FieldValues>(setError: UseFormSetError<T>) {
-    displayToastAndFormErrors(setError, this.errors, this.title)
+    return displayToastAndFormErrors(setError, this.errors, this.title)
   }
   
   static throwNewPromiseReject(title: string, errors: { string: string[] }) {
