@@ -10,7 +10,7 @@ import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { GenderEnum, GenderEnumAsConst } from "@/schemas/profile";
 import { useToast } from "@/hooks/use-toast";
-import { useError } from "@/hooks/use.error";
+import { useError } from "@/hooks/use-error";
 // import { UnprocessableEntityError } from "@/providers/proxyProvider";
 
 export function Register() {
@@ -18,7 +18,7 @@ export function Register() {
   const { register, isLoading } = useAuth()
   const { toast } = useToast()
   const { handleError } = useError()
-  
+
   const form = useForm<UserRegisterForFormType>({
     resolver: zodResolver(userRegisterSchema),
     defaultValues: {
@@ -37,18 +37,18 @@ export function Register() {
   async function onSubmit(values: UserRegisterForFormType) {
     const gender = GenderEnum[values.profile.gender]
     const data = { ...values, profile: { ...values.profile, gender } }
-    
+
     try {
       const result = await register(data)
-      
+
       if (!result.isSuccess) {
         throw result.error
       }
-      
+
       navigate(ROUTE_ENUM.HOME, { state: { message: result.value?.message } })
     } catch (err) {
       if (err instanceof Error) {
-        const { toastItems, formItems } = handleError(form, err)
+        const { toastItems, formItems } = handleError(err, form)
         toastItems.forEach(([um, dois]) => toast(item[0]))
         formItems.forEach(([um, dois]) => toast(item[0]))
       }
@@ -57,7 +57,7 @@ export function Register() {
       const message = err instanceof Error
         ? err.message
         : typeof err === 'string' ? err : 'Erro desconhecido, tente novamente'
-        
+
       toast({
         variant: 'destructive',
         title: 'Erro no cadastro',

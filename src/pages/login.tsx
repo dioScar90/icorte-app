@@ -9,7 +9,7 @@ import { useAuth } from "@/providers/authProvider";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useToast } from "@/hooks/use-toast";
-import { useError } from "@/hooks/use.error";
+import { useError } from "@/hooks/use-error";
 // import { InvalidUsernameOrPasswordError } from "@/providers/proxyProvider";
 
 type SchemaType = z.infer<typeof userLoginSchema>
@@ -55,11 +55,11 @@ export function Login() {
       //     })
       //   return
       // }
-      
+
       const message = err instanceof Error
         ? err.message
         : typeof err === 'string' ? err : 'Erro desconhecido, tente novamente'
-        
+
       toast({
         variant: 'destructive',
         title: 'Erro no loginnnnnnnn',
@@ -99,7 +99,7 @@ export function Login() {
               </FormItem>
             )}
           />
-          
+
           <Button type="submit" disabled={isLoading}>Login</Button>
         </form>
       </Form>

@@ -1,4 +1,6 @@
-import { FieldValues, Path, UseFormSetError, UseFormReturn } from "react-hook-form"
+import { FieldValues, Path, UseFormReturn } from "react-hook-form"
+import { useToast } from "./use-toast"
+import { ToastAction } from "@/components/ui/toast"
 
 type PropsToastMustHave<K> = [K, {
   variant: 'destructive',
@@ -103,20 +105,26 @@ export class NetworkConnectionError extends Error {
 function handleError<
     TForm extends FieldValues,
     K extends "root" | `root.${string}` | Path<TForm>,
-  >(_: UseFormReturn<TForm>, error: FieldError<K> | Error): {
-    toastItems: PropsToastMustHave<K>[]
-    formItems: PropsErrorsToDispach<K>[]
-  } {
-  const emptyObjToReturn = { toastItems: [], formItems: [] }
+  >(error: FieldError<K> | Error, reactHookForm?: UseFormReturn<TForm>) {
+  const { toast } = useToast()
 
   if (!error) {
-    return emptyObjToReturn
+    return
   }
   
-  if (error instanceof FieldError) {
-    const toastItems = (error as FieldError<K>).getToastOptions()
+  if (reactHookForm && error instanceof FieldError) {
     const formItems = (error as FieldError<K>).getFormErrorOptions()
-    return { toastItems, formItems }
+    formItems.forEach(([key, value]) => reactHookForm.setError(key, value))
+
+    const toastItems = (error as FieldError<K>).getToastOptions()
+    toastItems.forEach(([key, value]) => {
+      toast({
+        ...value,
+        variant: 'default',
+        action: <ToastAction onClick={() => reactHookForm.setFocus(key)}>Vai</ToastAction>,
+      })
+    })
+    return
   }
 
   return emptyObjToReturn

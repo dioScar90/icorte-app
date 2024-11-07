@@ -1,8 +1,6 @@
 import { createContext, PropsWithChildren, useContext } from "react"
 import axios, { AxiosInstance } from 'axios'
-import { InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from "@/hooks/use.error"
-
-console.log('import.meta.env.VITE_BASE_URL', import.meta.env.VITE_BASE_URL)
+import { InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from "@/hooks/use-error"
 
 export const httpClient = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -23,7 +21,7 @@ httpClient.interceptors.response.use(
     // Acessando a mensagem e a URI criada
     // const message = response.data?.message;
     // const locationUri = response.headers['location']; // A URI que você procura
-  
+
     // console.log('data:', response.data);
     // console.log('Created URI:', locationUri);
 
@@ -45,7 +43,7 @@ httpClient.interceptors.response.use(
       const errors: Record<string, string[]> = error.response.data.errors
       return UnprocessableEntityError.throwNewPromiseReject(errors, title)
     }
-    
+
     return Promise.reject(error)
   }
 )
