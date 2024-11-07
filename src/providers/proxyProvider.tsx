@@ -14,22 +14,18 @@ export const httpClient = axios.create({
 There is no need to set 'config.headers.Authorization = `Bearer ${token}`' because
 once we're using cookies and 'withCredentials: true' the token will automatically
 be sent.
+
+The URL to be redirected is not coming in 201 Created Responses inside
+'response.headers.location' for some reason . Nothing I tried to do worked.
+I'm redirecting it by myself then.
 */
 
 httpClient.interceptors.response.use(
   response => {
-    // Acessando a mensagem e a URI criada
-    // const message = response.data?.message;
-    // const locationUri = response.headers['location']; // A URI que você procura
-
-    // console.log('data:', response.data);
-    // console.log('Created URI:', locationUri);
-
     console.log('firstResponse', response)
     return response
   },
   (error) => {
-    console.log('errorrrrrr', error)
     if (error.code === 'ERR_NETWORK') {
       return Promise.reject(new NetworkConnectionError())
     }

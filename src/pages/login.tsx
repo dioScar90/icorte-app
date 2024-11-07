@@ -8,16 +8,15 @@ import { userLoginSchema } from "@/schemas/user";
 import { useAuth } from "@/providers/authProvider";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
-import { useToast } from "@/hooks/use-toast";
 import { useError } from "@/hooks/use-error";
-// import { InvalidUsernameOrPasswordError } from "@/providers/proxyProvider";
+import Swal from "sweetalert2";
+import { toast } from "@/hooks/use-toast";
 
 type SchemaType = z.infer<typeof userLoginSchema>
 
 export function Login() {
   const navigate = useNavigate()
-  const { login, isLoading } = useAuth()
-  const { toast } = useToast()
+  const { login } = useAuth()
   const { handleError } = useError()
 
   const form = useForm<SchemaType>({
@@ -38,33 +37,10 @@ export function Login() {
 
       navigate(ROUTE_ENUM.HOME, { replace: true, state: { message: 'Login realizado com sucesso' } })
     } catch (err) {
-      if (err instanceof Error) {
-        const aqui = handleError(form, err)
-
-        if (!aqui) {
-          return
-        }
-
-        aqui
-      }
-      // if (err instanceof InvalidUsernameOrPasswordError) {
-      //   err.displayToastAndFormErrors(form.setError)
-      //     .forEach(({ error, toast }) => {
-      //       form.setError(error.key, { message: error?.message })
-      //       toast(toast)
-      //     })
-      //   return
-      // }
-
-      const message = err instanceof Error
-        ? err.message
-        : typeof err === 'string' ? err : 'Erro desconhecido, tente novamente'
-
-      toast({
-        variant: 'destructive',
-        title: 'Erro no loginnnnnnnn',
-        description: message,
-      })
+      const errors = handleError(err, form)
+      errors.form.forEach(item => form.setError(...item))
+      errors.toast.forEach(item => toast(item))
+      errors.swal.forEach(item => Swal.fire(item))
     }
   }
 
@@ -100,7 +76,7 @@ export function Login() {
             )}
           />
 
-          <Button type="submit" disabled={isLoading}>Login</Button>
+          <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>Login</Button>
         </form>
       </Form>
     </>

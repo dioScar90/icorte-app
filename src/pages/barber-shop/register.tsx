@@ -6,17 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
-import { useToast } from "@/hooks/use-toast";
-import { UnprocessableEntityError } from "@/providers/proxyProvider";
 import { barberShopSchema, BarberShopForFormType } from "@/schemas/barberShop";
 import { StateEnum, StateEnumAsConst } from "@/schemas/address";
 import { useBarberShop } from "@/providers/barberShopProvider";
+import { useError } from "@/hooks/use-error";
+import { toast } from "@/hooks/use-toast";
+import Swal from "sweetalert2";
 
 export function RegisterBarberShop() {
-  console.log('passei loucamente por RegisterBarberShop')
   const { register } = useBarberShop()
   const navigate = useNavigate()
-  const { toast } = useToast()
+  const { handleError } = useError()
   
   const form = useForm<BarberShopForFormType>({
     resolver: zodResolver(barberShopSchema),
@@ -51,21 +51,10 @@ export function RegisterBarberShop() {
       
       navigate(`${ROUTE_ENUM.BARBER_SHOP}/dashboard`, { state: { message: result.value?.message } })
     } catch (err) {
-      if (err instanceof UnprocessableEntityError) {
-        err.displayToastAndFormErrors(form.setError)
-        return
-      }
-
-      console.log('oi acabou a agua... ♫')
-      const message = err instanceof Error
-        ? err.message
-        : typeof err === 'string' ? err : 'Erro desconhecido, tente novamente'
-        
-      toast({
-        variant: 'destructive',
-        title: 'Erro no cadastro',
-        description: message,
-      })
+      const errors = handleError(err, form)
+      errors.form.forEach(item => form.setError(...item))
+      errors.toast.forEach(item => toast(item))
+      errors.swal.forEach(item => Swal.fire(item))
     }
   }
 

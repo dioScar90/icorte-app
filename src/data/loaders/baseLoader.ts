@@ -12,44 +12,20 @@ class RedirectorError extends Error {
   }
 }
 
-function getBaseUrlFromFullUrl(fullUrl: string) {
-  const originRegex = /^(https?:\/\/[^\/]+)/
-  return fullUrl.match(originRegex)?.at(0)
-}
-
 function currentUrlStartsWithGivenRoute(currentUrl: string, needleRoute: RouteString) {
-  const baseUrl = getBaseUrlFromFullUrl(currentUrl)
-
-  if (!baseUrl) {
-    return false
-  }
-
-  const toCompare = baseUrl + needleRoute
-  console.log({currentUrl, toCompare})
-  return currentUrl.startsWith(toCompare)
+  const { pathname } = new URL(currentUrl)
+  return pathname === needleRoute
 }
 
 const isRootPage = (currentUrl: string) => currentUrlStartsWithGivenRoute(currentUrl, ROUTE_ENUM.ROOT)
-// const isHomePage = (currentUrl: string) => currentUrlStartsWithGivenRoute(currentUrl, ROUTE_ENUM.HOME)
 const isLoginPage = (currentUrl: string) => currentUrlStartsWithGivenRoute(currentUrl, ROUTE_ENUM.LOGIN)
 const isRegisterPage = (currentUrl: string) => currentUrlStartsWithGivenRoute(currentUrl, ROUTE_ENUM.REGISTER)
 
 function isPageForUnauthenticatedOnly(currentUrl: string) {
-  return isLoginPage(currentUrl)
-    || isRegisterPage(currentUrl)
+  return isLoginPage(currentUrl) || isRegisterPage(currentUrl)
 }
 
-// function isAllowedUnauthenticatedPage(currentUrl: string) {
-//   return isHomePage(currentUrl)
-//     || isLoginPage(currentUrl)
-//     || isRegisterPage(currentUrl)
-// }
-
-export async function baseLoader({ request, params }: LoaderFunctionArgs) {
-  // console.log('rerendered with url =>', request.url)
-  console.log('request =>', request)
-  console.log('params =>', params)
-
+export async function baseLoader({ request }: LoaderFunctionArgs) {
   try {
     if (isRootPage(request.url)) {
       throw new RedirectorError(ROUTE_ENUM.HOME)
@@ -59,19 +35,10 @@ export async function baseLoader({ request, params }: LoaderFunctionArgs) {
 
     const res = await repository.getMe()
     const isAuthenticated = res.isSuccess
-
-    console.log({
-      isAuthenticated,
-      issss: isPageForUnauthenticatedOnly(request.url)
-    })
     
     if (isAuthenticated && isPageForUnauthenticatedOnly(request.url)) {
       throw new RedirectorError(ROUTE_ENUM.HOME)
     }
-    
-    // if (!isAuthenticated && !isAllowedUnauthenticatedPage(request.url)) {
-    //   throw new RedirectorError(ROUTE_ENUM.LOGIN)
-    // }
     
     if (!res.isSuccess) {
       return null

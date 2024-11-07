@@ -26,10 +26,7 @@ export function App() {
           path={ROUTE_ENUM.ROOT}
           loader={baseLoader}
           element={<BaseLayout />}
-          shouldRevalidate={({ currentUrl, nextUrl }) => {
-            console.log({ currentUrl: currentUrl.pathname, nextUrl: nextUrl.pathname })
-            return currentUrl.pathname !== nextUrl.pathname
-          }}
+          shouldRevalidate={({ currentUrl, nextUrl }) => currentUrl.pathname !== nextUrl.pathname}
         >
           <Route index loader={async () => redirect(ROUTE_ENUM.HOME)} />
           <Route path="home" element={<Home />} />

@@ -9,10 +9,8 @@ export class AuthRepository implements IAuthRepository {
   async register(data: UserRegisterType) {
     try {
       const res = await this.service.register(data);
-      console.log('registerAuthRepository', res)
       return Result.Success(res?.data)
     } catch (err) {
-      console.log('registerAuthRepositoryError', err)
       return Result.Failure(err as Error)
     }
   }
@@ -20,10 +18,8 @@ export class AuthRepository implements IAuthRepository {
   async login(data: UserLoginType) {
     try {
       const res = await this.service.login(data);
-      console.log('loginAuthRepository', res)
       return Result.Success(res?.data)
     } catch (err) {
-      console.log('loginAuthRepositoryError', err)
       return Result.Failure(err as Error)
     }
   }

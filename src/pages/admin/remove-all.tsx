@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
-import { useToast } from "@/hooks/use-toast";
-import { InvalidUsernameOrPasswordError } from "@/providers/proxyProvider";
 import { useAdmin } from "@/providers/adminProvider";
+import { useError } from "@/hooks/use-error";
+import { toast } from "@/hooks/use-toast";
+import Swal from "sweetalert2";
 
 const schema = z.object({
   passphrase: z.string().min(1, { message: 'Senha obrigatória' })
@@ -19,7 +20,7 @@ type SchemaType = z.infer<typeof schema>
 export function RemoveAll() {
   const navigate = useNavigate()
   const { removeAllRows } = useAdmin()
-  const { toast } = useToast()
+  const { handleError } = useError()
 
   const form = useForm<SchemaType>({
     resolver: zodResolver(schema),
@@ -38,20 +39,10 @@ export function RemoveAll() {
 
       navigate(`${ROUTE_ENUM.ADMIN}/dashboard`, { state: { message: 'Usuários removidos com sucesso' } })
     } catch (err) {
-      if (err instanceof InvalidUsernameOrPasswordError) {
-        err.displayToastAndFormErrors(form.setError)
-        return
-      }
-      
-      const message = err instanceof Error
-        ? err.message
-        : typeof err === 'string' ? err : 'Erro desconhecido, tente novamente'
-        
-      toast({
-        variant: 'destructive',
-        title: 'Erro no loginnnnnnnn',
-        description: message,
-      })
+      const errors = handleError(err, form)
+      errors.form.forEach(item => form.setError(...item))
+      errors.toast.forEach(item => toast(item))
+      errors.swal.forEach(item => Swal.fire(item))
     }
   }
 

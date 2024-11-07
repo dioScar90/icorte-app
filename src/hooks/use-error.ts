@@ -1,6 +1,6 @@
 import { FieldValues, Path, UseFormReturn } from "react-hook-form"
-import { useToast } from "./use-toast"
-import { ToastAction } from "@/components/ui/toast"
+import { SweetAlertOptions } from "sweetalert2"
+import { ToastProps } from "@/components/ui/toast"
 
 type PropsToastMustHave<K> = [K, {
   variant: 'destructive',
@@ -37,21 +37,6 @@ function getFormErrorOptions<K extends string = string>(errors: Record<K, string
 
   return vamos
 }
-
-// function displayToastAndFormErrors<T extends FieldValues, K extends "root" | `root.${string}` | Path<T>>
-//   (setError: UseFormSetError<T>, errors: Record<K, string[]>, title?: string) {
-//   const { toast } = useToast()
-  
-//   return getToastOptions(errors, title)
-//     .map(([key, vamos]) => {
-//       setError(key, { message: vamos.description })
-//       toast(vamos)
-//     })
-// }
-
-// interface IFieldError<K extends string = string> extends Error {
-//   getToastOptions: () => PropsToastMustHave<K>[]
-// }
 
 class FieldError<K extends string = string> extends Error {
   private readonly title
@@ -102,32 +87,47 @@ export class NetworkConnectionError extends Error {
   }
 }
 
-function handleError<
-    TForm extends FieldValues,
-    K extends "root" | `root.${string}` | Path<TForm>,
-  >(error: FieldError<K> | Error, reactHookForm?: UseFormReturn<TForm>) {
-  const { toast } = useToast()
-
+function handleError<TForm extends FieldValues, K extends "root" | `root.${string}` | Path<TForm>>(
+  error: FieldError<K> | Error | string | unknown, reactHookForm?: UseFormReturn<TForm>)
+{
+  const returnValues = {
+    form: [] as PropsErrorsToDispach<K>[],
+    toast: [] as ToastProps[],
+    swal: [] as SweetAlertOptions[],
+  }
+  
   if (!error) {
-    return
+    return returnValues
   }
   
   if (reactHookForm && error instanceof FieldError) {
-    const formItems = (error as FieldError<K>).getFormErrorOptions()
-    formItems.forEach(([key, value]) => reactHookForm.setError(key, value))
+    const fieldError: FieldError<K> = error
+    
+    fieldError.getFormErrorOptions()
+      .forEach(item => returnValues.form.push(item))
+      
+    fieldError.getToastOptions()
+      .forEach(([_, value]) => returnValues.toast.push(value))
 
-    const toastItems = (error as FieldError<K>).getToastOptions()
-    toastItems.forEach(([key, value]) => {
-      toast({
-        ...value,
-        variant: 'default',
-        action: <ToastAction onClick={() => reactHookForm.setFocus(key)}>Vai</ToastAction>,
-      })
-    })
-    return
+    return returnValues
   }
+  
+  if (error instanceof Error) {
+    returnValues.swal.push({
+      icon: 'error',
+      title: 'title' in error ? (error.title ?? undefined) : undefined,
+      text: error.message,
+    })
 
-  return emptyObjToReturn
+    return returnValues
+  }
+  
+  returnValues.swal.push({
+    icon: 'error',
+    text: error === 'string' ? error : 'Erro desconhecido, tente novamente',
+  })
+  
+  return returnValues
 }
 
 export function useError() {
