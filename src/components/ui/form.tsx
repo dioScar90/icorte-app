@@ -164,6 +164,29 @@ const FormMessage = React.forwardRef<
 })
 FormMessage.displayName = "FormMessage"
 
+const FormRootErrorMessage = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => {
+  const { formState } = useFormContext()
+  // const { errors } = useFormState()
+  const rootErrorMessage = formState.errors.root?.message
+  // const rootError = errors.root
+  if (!rootErrorMessage) {
+    return null
+  }
+  return (
+    <p
+      ref={ref}
+      className={cn("text-destructive text-sm font-medium", className)}
+      {...props}
+    >
+      {rootErrorMessage}
+    </p>
+  )
+})
+FormRootErrorMessage.displayName = "FormRootErrorMessage"
+
 export {
   useFormField,
   Form,
@@ -172,5 +195,6 @@ export {
   FormControl,
   FormDescription,
   FormMessage,
+  FormRootErrorMessage,
   FormField,
 }

@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -61,7 +61,7 @@ export function Login() {
               </FormItem>
             )}
           />
-
+          
           <FormField
             control={form.control}
             name="password"
@@ -75,7 +75,9 @@ export function Login() {
               </FormItem>
             )}
           />
-
+          
+          <FormRootErrorMessage />
+          
           <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>Login</Button>
         </form>
       </Form>

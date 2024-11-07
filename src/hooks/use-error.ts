@@ -87,7 +87,11 @@ export class NetworkConnectionError extends Error {
   }
 }
 
-function handleError<TForm extends FieldValues, K extends "root" | `root.${string}` | Path<TForm>>(
+function handleError
+  <
+    TForm extends FieldValues,
+    K extends "root" | `root.${string}` | Path<TForm>,
+  >(
   error: FieldError<K> | Error | string | unknown, reactHookForm?: UseFormReturn<TForm>)
 {
   const returnValues = {

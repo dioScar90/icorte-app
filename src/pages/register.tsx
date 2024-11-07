@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { userRegisterSchema, UserRegisterForFormType } from "@/schemas/user";
@@ -167,6 +167,8 @@ export function Register() {
               </FormItem>
             )}
           />
+          
+          <FormRootErrorMessage />
 
           <Button type="submit" disabled={isLoading}>Cadastrar</Button>
         </form>
