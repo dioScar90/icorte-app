@@ -9,14 +9,12 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { GenderEnum, GenderEnumAsConst } from "@/schemas/profile";
-import { useError } from "@/hooks/use-error";
-import { toast } from "@/hooks/use-toast";
-import Swal from "sweetalert2";
+import { useHandleErrors } from "@/providers/handleErrorProvider";
 
 export function Register() {
   const navigate = useNavigate()
   const { register, isLoading } = useAuth()
-  const { handleError } = useError()
+  const { handleError } = useHandleErrors()
 
   const form = useForm<UserRegisterForFormType>({
     resolver: zodResolver(userRegisterSchema),
@@ -46,10 +44,7 @@ export function Register() {
 
       navigate(ROUTE_ENUM.HOME, { state: { message: result.value?.message } })
     } catch (err) {
-      const errors = handleError(err, form)
-      errors.form.forEach(item => form.setError(...item))
-      errors.toast.forEach(item => toast(item))
-      errors.swal.forEach(item => Swal.fire(item))
+      handleError(err, form)
     }
   }
 
@@ -167,7 +162,7 @@ export function Register() {
               </FormItem>
             )}
           />
-          
+
           <FormRootErrorMessage />
 
           <Button type="submit" disabled={isLoading}>Cadastrar</Button>

@@ -7,9 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useAdmin } from "@/providers/adminProvider";
-import { useError } from "@/hooks/use-error";
-import { toast } from "@/hooks/use-toast";
-import Swal from "sweetalert2";
+import { useHandleErrors } from "@/providers/handleErrorProvider";
 
 const schema = z.object({
   passphrase: z.string().min(1, { message: 'Senha obrigatória' })
@@ -20,7 +18,7 @@ type SchemaType = z.infer<typeof schema>
 export function RemoveAll() {
   const navigate = useNavigate()
   const { removeAllRows } = useAdmin()
-  const { handleError } = useError()
+  const { handleError } = useHandleErrors()
 
   const form = useForm<SchemaType>({
     resolver: zodResolver(schema),
@@ -39,10 +37,7 @@ export function RemoveAll() {
 
       navigate(`${ROUTE_ENUM.ADMIN}/dashboard`, { state: { message: 'Usuários removidos com sucesso' } })
     } catch (err) {
-      const errors = handleError(err, form)
-      errors.form.forEach(item => form.setError(...item))
-      errors.toast.forEach(item => toast(item))
-      errors.swal.forEach(item => Swal.fire(item))
+      handleError(err, form)
     }
   }
 
@@ -63,9 +58,9 @@ export function RemoveAll() {
               </FormItem>
             )}
           />
-          
+
           <FormRootErrorMessage />
-          
+
           <Button type="submit">Remover tudo</Button>
         </form>
       </Form>

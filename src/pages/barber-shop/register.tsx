@@ -9,15 +9,13 @@ import { ROUTE_ENUM } from "@/types/route";
 import { barberShopSchema, BarberShopForFormType } from "@/schemas/barberShop";
 import { StateEnum, StateEnumAsConst } from "@/schemas/address";
 import { useBarberShop } from "@/providers/barberShopProvider";
-import { useError } from "@/hooks/use-error";
-import { toast } from "@/hooks/use-toast";
-import Swal from "sweetalert2";
+import { useHandleErrors } from "@/providers/handleErrorProvider";
 
 export function RegisterBarberShop() {
   const { register } = useBarberShop()
   const navigate = useNavigate()
-  const { handleError } = useError()
-  
+  const { handleError } = useHandleErrors()
+
   const form = useForm<BarberShopForFormType>({
     resolver: zodResolver(barberShopSchema),
     defaultValues: {
@@ -41,20 +39,17 @@ export function RegisterBarberShop() {
   async function onSubmit(values: BarberShopForFormType) {
     const state = StateEnum[values.address.state]
     const data = { ...values, address: { ...values.address, state } }
-    
+
     try {
       const result = await register(data)
-      
+
       if (!result.isSuccess) {
         throw result.error
       }
-      
+
       navigate(`${ROUTE_ENUM.BARBER_SHOP}/dashboard`, { state: { message: result.value?.message } })
     } catch (err) {
-      const errors = handleError(err, form)
-      errors.form.forEach(item => form.setError(...item))
-      errors.toast.forEach(item => toast(item))
-      errors.swal.forEach(item => Swal.fire(item))
+      handleError(err, form)
     }
   }
 
@@ -244,7 +239,7 @@ export function RegisterBarberShop() {
               </FormItem>
             )}
           />
-          
+
           <FormRootErrorMessage />
 
           <Button type="submit">Cadastrar</Button>

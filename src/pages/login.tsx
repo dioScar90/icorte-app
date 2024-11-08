@@ -8,16 +8,14 @@ import { userLoginSchema } from "@/schemas/user";
 import { useAuth } from "@/providers/authProvider";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
-import { useError } from "@/hooks/use-error";
-import Swal from "sweetalert2";
-import { toast } from "@/hooks/use-toast";
+import { useHandleErrors } from "@/providers/handleErrorProvider";
 
 type SchemaType = z.infer<typeof userLoginSchema>
 
 export function Login() {
   const navigate = useNavigate()
   const { login } = useAuth()
-  const { handleError } = useError()
+  const { handleError } = useHandleErrors()
 
   const form = useForm<SchemaType>({
     resolver: zodResolver(userLoginSchema),
@@ -37,10 +35,7 @@ export function Login() {
 
       navigate(ROUTE_ENUM.HOME, { replace: true, state: { message: 'Login realizado com sucesso' } })
     } catch (err) {
-      const errors = handleError(err, form)
-      errors.form.forEach(item => form.setError(...item))
-      errors.toast.forEach(item => toast(item))
-      errors.swal.forEach(item => Swal.fire(item))
+      handleError(err, form)
     }
   }
 
@@ -61,7 +56,7 @@ export function Login() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="password"
@@ -75,9 +70,9 @@ export function Login() {
               </FormItem>
             )}
           />
-          
+
           <FormRootErrorMessage />
-          
+
           <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>Login</Button>
         </form>
       </Form>

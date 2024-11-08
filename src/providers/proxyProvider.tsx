@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useContext } from "react"
-import axios, { AxiosInstance } from 'axios'
-import { InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from "@/hooks/use-error"
+import axios, { AxiosError, AxiosInstance } from 'axios'
+import { BaseDataError, InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from "@/providers/handleErrorProvider"
 
 export const httpClient = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
@@ -26,6 +26,8 @@ httpClient.interceptors.response.use(
     return response
   },
   (error) => {
+    const suamae = error as AxiosError
+    suamae.response?.data
     if (error.code === 'ERR_NETWORK') {
       return Promise.reject(new NetworkConnectionError())
     }
@@ -38,6 +40,10 @@ httpClient.interceptors.response.use(
       const title: string = error.response.data.detail
       const errors: Record<string, string[]> = error.response.data.errors
       return UnprocessableEntityError.throwNewPromiseReject(errors, title)
+    }
+
+    if ('detail' in error.response.data || 'errors' in error.response.data) {
+      return BaseDataError.throwNewPromiseReject(error.response.data)
     }
 
     return Promise.reject(error)
