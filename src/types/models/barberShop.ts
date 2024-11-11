@@ -1,21 +1,22 @@
-import { Address } from "./address"
+import { Prettify } from "@/utils/types/prettify"
 import { RecurringSchedule } from "./recurringSchedule"
 import { Report } from "./report"
 import { Service } from "./service"
 import { SpecialSchedule } from "./specialSchedule"
+import { BarberShopZod } from "@/schemas/barberShop"
 
-export type BarberShop = {
-  id: number
-  ownerId: number
-  name: string
-  description?: string
-  comercialNumber: string
-  comercialEmail: string
-  address?: Address
-  recurringSchedule: RecurringSchedule[],
-  specialSchedules: SpecialSchedule[],
-  services: Service[],
-  reports: Report[],
-}
+export type BarberShop = Prettify<
+  {
+    id: number
+    ownerId: number
+  }
+  & BarberShopZod
+  & {
+    recurringSchedule: RecurringSchedule[]
+    specialSchedules: SpecialSchedule[]
+    services: Service[]
+    reports: Report[]
+  }
+>
 
-export type TopBarberShop = Pick<BarberShop, 'id' | 'name' | 'description'> & Pick<Report, 'rating'>
+export type TopBarberShop = Prettify<Pick<BarberShop, 'id' | 'name' | 'description'> & Pick<Report, 'rating'>>

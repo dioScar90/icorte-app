@@ -1,32 +1,25 @@
+import { Prettify } from "@/utils/types/prettify"
 import { DateOnly, TimeOnly } from "../../utils/types/date"
 import { Service } from "./service"
+import { AppointmentZod } from "@/schemas/appointment"
 
-const paymentEnum = [
-  'Card',
-  'Cash',
-  'Transfer',
-  'Other',
-] as const
-
-type PaymentType = typeof paymentEnum[number]
-
-const statusEnum = [
-  'Pending',
-  'Completed',
-] as const
-
-type AppointmentStatus = typeof statusEnum[number]
-
-export type Appointment = {
-  id: number
-  clientId: number
-  barberShopId: number
-  date: DateOnly
-  startTime: TimeOnly
-  totalDuration: TimeOnly
-  notes?: string
-  paymentType: PaymentType
-  totalPrice: number
-  services: Service[]
-  status: AppointmentStatus
+enum AppointmentStatusEnum {
+  Pending,
+  Completed,
 }
+
+export type Appointment = Prettify<
+  {
+    id: number
+    clientId: number
+    barberShopId: number
+  }
+  & Omit<AppointmentZod, 'date'>
+  & {
+    date: DateOnly
+    totalDuration: TimeOnly
+    totalPrice: number
+    status: AppointmentStatusEnum
+    services: Service[]
+  }
+>

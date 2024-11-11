@@ -1,12 +1,12 @@
 import { Result } from "@/data/result";
 import { IProfileRepository } from "./interfaces/IProfileRepository";
-import { ProfileType } from "@/schemas/profile";
+import { ProfileZod } from "@/schemas/profile";
 import { IProfileService } from "../services/interfaces/IProfileService";
 
 export class ProfileRepository implements IProfileRepository {
   constructor(private readonly service: IProfileService) { }
 
-  async createProfile(data: ProfileType) {
+  async createProfile(data: ProfileZod) {
     try {
       const res = await this.service.createProfile(data)
       return Result.Success(res.data)
@@ -24,10 +24,10 @@ export class ProfileRepository implements IProfileRepository {
     }
   }
 
-  async updateProfile(id: number, data: ProfileType) {
+  async updateProfile(id: number, data: ProfileZod) {
     try {
-      const res = await this.service.updateProfile(id, data)
-      return Result.Success(res.data)
+      await this.service.updateProfile(id, data)
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }
@@ -35,8 +35,8 @@ export class ProfileRepository implements IProfileRepository {
 
   async updateProfileImage(id: number, file: File) {
     try {
-      const res = await this.service.updateProfileImage(id, file)
-      return Result.Success(res.data)
+      await this.service.updateProfileImage(id, file)
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }

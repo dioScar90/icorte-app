@@ -1,12 +1,12 @@
 import { IAppointmentRepository } from "./interfaces/IAppointmentRepository";
 import { IAppointmentService } from "../services/interfaces/IAppointmentService";
 import { Result } from "@/data/result";
-import { AppointmentType } from "@/schemas/appointment";
+import { AppointmentZod } from "@/schemas/appointment";
 
 export class AppointmentRepository implements IAppointmentRepository {
   constructor(private readonly service: IAppointmentService) { }
 
-  async createAppointment(data: AppointmentType) {
+  async createAppointment(data: AppointmentZod) {
     try {
       const res = await this.service.createAppointment(data);
       return Result.Success(res.data)
@@ -33,10 +33,10 @@ export class AppointmentRepository implements IAppointmentRepository {
     }
   }
 
-  async updateAppointment(id: number, data: AppointmentType) {
+  async updateAppointment(id: number, data: AppointmentZod) {
     try {
-      const res = await this.service.updateAppointment(id, data);
-      return Result.Success(res.data)
+      await this.service.updateAppointment(id, data);
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }
@@ -44,8 +44,8 @@ export class AppointmentRepository implements IAppointmentRepository {
 
   async deleteAppointment(id: number) {
     try {
-      const res = await this.service.deleteAppointment(id);
-      return Result.Success(res.data)
+      await this.service.deleteAppointment(id);
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }

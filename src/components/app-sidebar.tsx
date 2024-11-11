@@ -137,9 +137,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navigate = useNavigate()
 
   const onClickLogout = React.useCallback(() => Swal.fire({
+    icon: 'question',
     title: 'Logout',
     text: 'Deseja realmente sair do sistema?',
-    icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
     cancelButtonColor: '#d33',

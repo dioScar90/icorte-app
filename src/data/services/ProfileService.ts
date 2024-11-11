@@ -1,8 +1,12 @@
 import { IProfileService } from "./interfaces/IProfileService"
-import { ProfileType } from "@/schemas/profile"
+import { ProfileZod } from "@/schemas/profile"
 import { AxiosInstance } from "axios"
 
-function getUrl(id?: number, final?: string) {
+enum UrlType {
+  IMAGE = 'image',
+}
+
+function getUrl(id?: number, final?: UrlType) {
   const baseEndpoint = `/profile`
 
   if (!id) {
@@ -19,7 +23,7 @@ function getUrl(id?: number, final?: string) {
 export class ProfileService implements IProfileService {
   constructor(private readonly httpClient: AxiosInstance) {}
 
-  async createProfile(data: ProfileType) {
+  async createProfile(data: ProfileZod) {
     const url = getUrl()
     return await this.httpClient.post(url, data)
   }
@@ -29,7 +33,7 @@ export class ProfileService implements IProfileService {
     return await this.httpClient.get(url)
   }
 
-  async updateProfile(id: number, data: ProfileType) {
+  async updateProfile(id: number, data: ProfileZod) {
     const url = getUrl(id)
     return await this.httpClient.put(url, data)
   }
@@ -38,7 +42,7 @@ export class ProfileService implements IProfileService {
     const formData = new FormData()
     formData.append('file', file)
     
-    const url = getUrl(id, 'image')
+    const url = getUrl(id, UrlType.IMAGE)
     return await this.httpClient.patch(url, formData)
   }
 }

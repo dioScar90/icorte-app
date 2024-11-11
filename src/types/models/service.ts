@@ -1,10 +1,10 @@
-import { TimeOnly } from "../../utils/types/date"
+import { Prettify } from "@/utils/types/prettify"
+import { ServiceZod } from "@/schemas/service"
 
-export type Service = {
-  id: number
-  barberShopId: number
-  name: string
-  description?: string
-  price: number
-  duration: TimeOnly
-}
+export type Service = Prettify<
+  {
+    id: number
+    barberShopId: number
+  }
+  & ServiceZod
+>

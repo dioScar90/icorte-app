@@ -1,11 +1,11 @@
 import { BaseResult, CreatedResult, PaginationResult } from "@/data/result";
-import { AppointmentType } from "@/schemas/appointment";
+import { AppointmentZod } from "@/schemas/appointment";
 import { Appointment } from "@/types/models/appointment";
 
 export interface IAppointmentRepository {
-  createAppointment(data: AppointmentType): CreatedResult<Appointment>;
+  createAppointment(data: AppointmentZod): CreatedResult<Appointment>;
   getAppointment(id: number): BaseResult<Appointment>;
   getAllAppointments(): PaginationResult<Appointment>;
-  updateAppointment(id: number, data: AppointmentType): BaseResult<boolean>;
-  deleteAppointment(id: number): BaseResult<boolean>;
+  updateAppointment(id: number, data: AppointmentZod): BaseResult<void>;
+  deleteAppointment(id: number): BaseResult<void>;
 }

@@ -30,7 +30,7 @@ export function RegisterBarberShop() {
         complement: '',
         neighborhood: '',
         city: '',
-        state: 'SP',
+        state: StateEnum.SP,
         postalCode: '',
         country: 'Brasil',
       }
@@ -38,11 +38,8 @@ export function RegisterBarberShop() {
   })
 
   async function onSubmit(values: BarberShopZod) {
-    const state = StateEnum[values.address.state]
-    const data = { ...values, address: { ...values.address, state } }
-
     try {
-      const result = await register(data)
+      const result = await register(values)
 
       if (!result.isSuccess) {
         throw result.error
@@ -192,10 +189,10 @@ export function RegisterBarberShop() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Estado</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange}>
                   <FormControl>
                     <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Gênero" />
+                      <SelectValue placeholder="Estado" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>

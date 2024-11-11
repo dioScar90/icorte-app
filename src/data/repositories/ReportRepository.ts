@@ -1,12 +1,12 @@
 import { IReportRepository } from "./interfaces/IReportRepository";
 import { IReportService } from "../services/interfaces/IReportService";
 import { Result } from "@/data/result";
-import { ReportType } from "@/schemas/report";
+import { ReportZod } from "@/schemas/report";
 
 export class ReportRepository implements IReportRepository {
   constructor(private readonly service: IReportService) { }
 
-  async createReport(barberShpoId: number, data: ReportType) {
+  async createReport(barberShpoId: number, data: ReportZod) {
     try {
       const res = await this.service.createReport(barberShpoId, data);
       return Result.Success(res.data)
@@ -33,10 +33,10 @@ export class ReportRepository implements IReportRepository {
     }
   }
 
-  async updateReport(barberShpoId: number, id: number, data: ReportType) {
+  async updateReport(barberShpoId: number, id: number, data: ReportZod) {
     try {
-      const res = await this.service.updateReport(barberShpoId, id, data);
-      return Result.Success(res.data)
+      await this.service.updateReport(barberShpoId, id, data);
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }
@@ -44,8 +44,8 @@ export class ReportRepository implements IReportRepository {
 
   async deleteReport(barberShpoId: number, id: number) {
     try {
-      const res = await this.service.deleteReport(barberShpoId, id);
-      return Result.Success(res.data)
+      await this.service.deleteReport(barberShpoId, id);
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }

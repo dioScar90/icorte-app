@@ -1,12 +1,12 @@
 import { IAddressRepository } from "./interfaces/IAddressRepository";
 import { IAddressService } from "../services/interfaces/IAddressService";
 import { Result } from "@/data/result";
-import { AddressType } from "@/schemas/address";
+import { AddressZod } from "@/schemas/address";
 
 export class AddressRepository implements IAddressRepository {
   constructor(private readonly service: IAddressService) { }
 
-  async createAddress(barberShpoId: number, data: AddressType) {
+  async createAddress(barberShpoId: number, data: AddressZod) {
     try {
       const res = await this.service.createAddress(barberShpoId, data);
       return Result.Success(res.data)
@@ -24,10 +24,10 @@ export class AddressRepository implements IAddressRepository {
     }
   }
 
-  async updateAddress(barberShpoId: number, id: number, data: AddressType) {
+  async updateAddress(barberShpoId: number, id: number, data: AddressZod) {
     try {
-      const res = await this.service.updateAddress(barberShpoId, id, data);
-      return Result.Success(res.data)
+      await this.service.updateAddress(barberShpoId, id, data);
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }
@@ -35,8 +35,8 @@ export class AddressRepository implements IAddressRepository {
 
   async deleteAddress(barberShpoId: number, id: number) {
     try {
-      const res = await this.service.deleteAddress(barberShpoId, id);
-      return Result.Success(res.data)
+      await this.service.deleteAddress(barberShpoId, id);
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }

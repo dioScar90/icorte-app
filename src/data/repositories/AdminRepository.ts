@@ -7,8 +7,8 @@ export class AdminRepository implements IAdminRepository {
 
   async removeAllRows(data: { passphrase: string }) {
     try {
-      const res = await this.service.removeAllRows(data);
-      return Result.Success(res.data)
+      await this.service.removeAllRows(data);
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }

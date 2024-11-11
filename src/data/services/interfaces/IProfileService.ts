@@ -1,10 +1,10 @@
 import { BaseAxiosResult, CreatedAxiosResult } from "@/data/result";
-import { ProfileType } from "@/schemas/profile";
+import { ProfileZod } from "@/schemas/profile";
 import { Profile } from "@/types/models/profile";
 
 export interface IProfileService {
-  createProfile(data: ProfileType): CreatedAxiosResult<Profile>;
+  createProfile(data: ProfileZod): CreatedAxiosResult<Profile>;
   getProfileById(id: number): BaseAxiosResult<Profile>;
-  updateProfile(id: number, data: ProfileType): BaseAxiosResult<boolean>;
-  updateProfileImage(id: number, file: File): BaseAxiosResult<boolean>;
+  updateProfile(id: number, data: ProfileZod): BaseAxiosResult<void>;
+  updateProfileImage(id: number, file: File): BaseAxiosResult<void>;
 }

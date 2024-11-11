@@ -1,13 +1,13 @@
 import { IRecurringScheduleRepository } from "./interfaces/IRecurringScheduleRepository";
 import { IRecurringScheduleService } from "../services/interfaces/IRecurringScheduleService";
 import { Result } from "@/data/result";
-import { RecurringScheduleType } from "@/schemas/recurringSchedule";
+import { RecurringScheduleZod } from "@/schemas/recurringSchedule";
 import { DayOfWeek } from "@/utils/types/date";
 
 export class RecurringScheduleRepository implements IRecurringScheduleRepository {
   constructor(private readonly service: IRecurringScheduleService) { }
 
-  async createRecurringSchedule(barberShpoId: number, data: RecurringScheduleType) {
+  async createRecurringSchedule(barberShpoId: number, data: RecurringScheduleZod) {
     try {
       const res = await this.service.createRecurringSchedule(barberShpoId, data);
       return Result.Success(res.data)
@@ -34,10 +34,10 @@ export class RecurringScheduleRepository implements IRecurringScheduleRepository
     }
   }
 
-  async updateRecurringSchedule(barberShpoId: number, dayOfWeek: DayOfWeek, data: RecurringScheduleType) {
+  async updateRecurringSchedule(barberShpoId: number, dayOfWeek: DayOfWeek, data: RecurringScheduleZod) {
     try {
-      const res = await this.service.updateRecurringSchedule(barberShpoId, dayOfWeek, data);
-      return Result.Success(res.data)
+      await this.service.updateRecurringSchedule(barberShpoId, dayOfWeek, data);
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }
@@ -45,8 +45,8 @@ export class RecurringScheduleRepository implements IRecurringScheduleRepository
 
   async deleteRecurringSchedule(barberShpoId: number, dayOfWeek: DayOfWeek) {
     try {
-      const res = await this.service.deleteRecurringSchedule(barberShpoId, dayOfWeek);
-      return Result.Success(res.data)
+      await this.service.deleteRecurringSchedule(barberShpoId, dayOfWeek);
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }

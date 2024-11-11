@@ -2,27 +2,40 @@ import { z } from 'zod'
 import { passwordValidator } from './sharedValidators/passwordValidator'
 import { emailValidator } from './sharedValidators/emailValidator'
 import { phoneNumberValidator } from './sharedValidators/phoneNumberValidator'
-import { profileSchema, ProfileType } from './profile'
-import { Prettify } from '@/utils/types/prettify'
+import { profileSchema } from './profile'
+
+export enum UserRolesEnum {
+  Guest,
+  Client,
+  BarberShop,
+  Admin,
+}
+
+const roles = [
+  'Guest',
+  'Client',
+  'BarberShop',
+  'Admin',
+] as const
 
 export const userEmailUpdate = z.object({
   email: emailValidator(),
 })
 
-export type UserEmailUpdateType = z.infer<typeof userEmailUpdate>
+export type UserEmailUpdateZod = z.infer<typeof userEmailUpdate>
 
 export const userPhoneNumberUpdate = z.object({
   phoneNumber: phoneNumberValidator(),
 })
 
-export type UserPhoneNumberUpdateType = z.infer<typeof userPhoneNumberUpdate>
+export type UserPhoneNumberUpdateZod = z.infer<typeof userPhoneNumberUpdate>
 
 export const userPasswordUpdate = z.object({
   currentPassword: z.string(),
   newPassword: passwordValidator(),
 })
 
-export type UserPasswordUpdateType = z.infer<typeof userPasswordUpdate>
+export type UserPasswordUpdateZod = z.infer<typeof userPasswordUpdate>
 
 export const userRegisterSchema = z.object({
   email: emailValidator(),
@@ -36,19 +49,16 @@ export const userRegisterSchema = z.object({
   })
 
 export type UserRegisterZod = z.infer<typeof userRegisterSchema>
-export type UserRegisterType = Prettify<Omit<UserRegisterZod, 'profile'> & {
-  profile: ProfileType
-}>
 
 export const userLoginSchema = z.object({
   email: emailValidator(),
   password: z.string().min(1, { message: 'Senha obrigatória' }),
 })
 
-export type UserLoginType = z.infer<typeof userLoginSchema>
+export type UserLoginZod = z.infer<typeof userLoginSchema>
 
 export const userPhoneNumberSchema = z.object({
   phoneNumber: phoneNumberValidator()
 })
 
-export type UserPhoneNumberType = z.infer<typeof userPhoneNumberSchema>
+export type UserPhoneNumberZod = z.infer<typeof userPhoneNumberSchema>

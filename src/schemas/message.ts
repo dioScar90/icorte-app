@@ -1,4 +1,3 @@
-import { Prettify } from '@/utils/types/prettify'
 import { z } from 'zod'
 
 export const messageSchema = z.object({
@@ -9,4 +8,3 @@ export const messageSchema = z.object({
 })
 
 export type MessageZod = z.infer<typeof messageSchema>
-export type MessageType = Prettify<MessageZod>

@@ -1,4 +1,4 @@
-import { AppointmentType } from "@/schemas/appointment";
+import { AppointmentZod } from "@/schemas/appointment";
 import { IAppointmentService } from "./interfaces/IAppointmentService";
 import { AxiosInstance } from "axios";
 
@@ -15,7 +15,7 @@ function getUrl(id?: number) {
 export class AppointmentService implements IAppointmentService {
   constructor(private readonly httpClient: AxiosInstance) {}
   
-  async createAppointment(data: AppointmentType) {
+  async createAppointment(data: AppointmentZod) {
     const url = getUrl()
     return await this.httpClient.post(url, { ...data })
   }
@@ -30,7 +30,7 @@ export class AppointmentService implements IAppointmentService {
     return await this.httpClient.get(url)
   }
 
-  async updateAppointment(id: number, data: AppointmentType) {
+  async updateAppointment(id: number, data: AppointmentZod) {
     const url = getUrl(id)
     return await this.httpClient.put(url, { ...data })
   }

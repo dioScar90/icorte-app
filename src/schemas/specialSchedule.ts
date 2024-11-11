@@ -1,5 +1,6 @@
-import { Prettify } from '@/utils/types/prettify'
 import { z } from 'zod'
+import { getStringAsTimeOnly } from './sharedValidators/timeOnly'
+import { getStringAsDateOnly } from './sharedValidators/dateOnly'
 
 type RefineFuncProps = {
   openTime?: string,
@@ -29,22 +30,26 @@ function closeTimeMustBeGreaterThenOpenTimeIfClosed({ openTime, closeTime, isClo
 
 export const specialScheduleSchema = z.object({
   date: z.string({ required_error: 'Dia obrigatório' })
+    .date('Dia inválido')
+    .transform(getStringAsDateOnly),
+
+  notes: z.string()
     .trim()
-    .date('Dia inválido'),
+    .optional()
+    .or(z.literal(''))
+    .transform(value => value || undefined),
 
   openTime: z.string({ required_error: 'Horário de abertura obrigatório' })
-    .trim()
     .time('Horário de abertura inválido')
     .optional()
     .or(z.literal(''))
-    .transform(value => value || undefined),
+    .transform(value => value ? getStringAsTimeOnly(value) : undefined),
 
   closeTime: z.string({ required_error: 'Horário de encerramento obrigatório' })
-    .trim()
     .time('Horário de encerramento inválido')
     .optional()
     .or(z.literal(''))
-    .transform(value => value || undefined),
+    .transform(value => value ? getStringAsTimeOnly(value) : undefined),
 
   isClosed: z.coerce.boolean(),
 })
@@ -54,4 +59,3 @@ export const specialScheduleSchema = z.object({
   })
 
 export type SpecialScheduleZod = z.infer<typeof specialScheduleSchema>
-export type SpecialScheduleType = Prettify<SpecialScheduleZod>

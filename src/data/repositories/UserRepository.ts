@@ -1,4 +1,4 @@
-import { UserEmailUpdateType, UserPasswordUpdateType, UserPhoneNumberUpdateType } from "@/schemas/user";
+import { UserEmailUpdateZod, UserPasswordUpdateZod, UserPhoneNumberUpdateZod } from "@/schemas/user";
 import { IUserRepository } from "./interfaces/IUserRepository";
 import { Result } from "@/data/result";
 import { IUserService } from "../services/interfaces/IUserService";
@@ -15,16 +15,39 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  changeEmail(data: UserEmailUpdateType): Promise<Result<boolean>> {
-    throw new Error("Method not implemented.");
+  async changeEmail(data: UserEmailUpdateZod) {
+    try {
+      await this.service.changeEmail(data);
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
   }
-  changePassword(data: UserPasswordUpdateType): Promise<Result<boolean>> {
-    throw new Error("Method not implemented.");
+
+  async changePassword(data: UserPasswordUpdateZod) {
+    try {
+      await this.service.changePassword(data);
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
   }
-  changePhoneNumber(data: UserPhoneNumberUpdateType): Promise<Result<boolean>> {
-    throw new Error("Method not implemented.");
+
+  async changePhoneNumber(data: UserPhoneNumberUpdateZod) {
+    try {
+      await this.service.changePhoneNumber(data);
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
   }
-  delete(): Promise<Result<boolean>> {
-    throw new Error("Method not implemented.");
+
+  async delete() {
+    try {
+      await this.service.delete();
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
   }
 }

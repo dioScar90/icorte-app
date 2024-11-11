@@ -1,10 +1,10 @@
+import { ReportZod } from "@/schemas/report"
+import { Prettify } from "@/utils/types/prettify"
 
-export type Rating = 1 | 2 | 3 | 4 | 5
-
-export type Report = {
-  id: number
-  barberShopId: number
-  title?: string,
-  content?: string,
-  rating: Rating
-}
+export type Report = Prettify<
+  {
+    id: number
+    barberShopId: number
+  }
+  & ReportZod
+>

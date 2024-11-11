@@ -1,10 +1,10 @@
 import { BaseAxiosResult, CreatedAxiosResult } from "@/data/result";
-import { BarberShopType } from "@/schemas/barberShop";
+import { BarberShopZod } from "@/schemas/barberShop";
 import { BarberShop } from "@/types/models/barberShop";
 
 export interface IBarberShopService {
-  createBarberShop(data: BarberShopType): CreatedAxiosResult<BarberShop>;
+  createBarberShop(data: BarberShopZod): CreatedAxiosResult<BarberShop>;
   getBarberShop(id: number): BaseAxiosResult<BarberShop>;
-  updateBarberShop(id: number, data: BarberShopType): BaseAxiosResult<boolean>;
-  deleteBarberShop(id: number): BaseAxiosResult<boolean>;
+  updateBarberShop(id: number, data: BarberShopZod): BaseAxiosResult<void>;
+  deleteBarberShop(id: number): BaseAxiosResult<void>;
 }

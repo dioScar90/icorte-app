@@ -28,7 +28,7 @@ export class Result<T = null> {
     return this.#error
   }
 
-  static Success<T>(value: T) {
+  static Success<T = void>(value?: T) {
     return new Result(value)
   }
 

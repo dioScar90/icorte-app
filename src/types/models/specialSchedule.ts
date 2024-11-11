@@ -1,10 +1,12 @@
-import { TimeOnly, DateOnly } from "../../utils/types/date"
+import { Prettify } from "@/utils/types/prettify"
+import { SpecialScheduleZod } from "@/schemas/specialSchedule"
 
-export type SpecialSchedule = {
-  date: DateOnly
-  barberShopId: number
-  notes?: string
-  openTime?: TimeOnly
-  closeTime?: TimeOnly
-  isClosed: boolean
-}
+export type SpecialSchedule = Prettify<
+  {
+    barberShopId: number
+  }
+  & SpecialScheduleZod
+  & {
+    isActive: boolean
+  }
+>

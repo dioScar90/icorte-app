@@ -1,5 +1,5 @@
-import { Prettify } from '@/utils/types/prettify'
 import { z } from 'zod'
+import { getStringAsTimeOnly } from './sharedValidators/timeOnly'
 
 export const serviceSchema = z.object({
   name: z.string({ required_error: 'Nome obrigatório' })
@@ -13,8 +13,9 @@ export const serviceSchema = z.object({
   price: z.coerce.number({ required_error: 'Preço obrigatório' })
     .positive('Preço precisa ser maior que R$ 0,00'),
 
-  duration: z.string({ required_error: 'Duração obrigatória' }),
+  duration: z.string({ required_error: 'Duração obrigatória' })
+    .time('Duração inválida')
+    .transform(getStringAsTimeOnly),
 })
 
 export type ServiceZod = z.infer<typeof serviceSchema>
-export type ServiceType = Prettify<ServiceZod>

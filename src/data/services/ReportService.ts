@@ -1,4 +1,4 @@
-import { ReportType } from "@/schemas/report";
+import { ReportZod } from "@/schemas/report";
 import { IReportService } from "./interfaces/IReportService";
 import { AxiosInstance } from "axios";
 
@@ -15,7 +15,7 @@ function getUrl(barberShpoId: number, id?: number) {
 export class ReportService implements IReportService {
   constructor(private readonly httpClient: AxiosInstance) {}
   
-  async createReport(barberShpoId: number, data: ReportType) {
+  async createReport(barberShpoId: number, data: ReportZod) {
     const url = getUrl(barberShpoId)
     return await this.httpClient.post(url, { ...data })
   }
@@ -30,7 +30,7 @@ export class ReportService implements IReportService {
     return await this.httpClient.get(url)
   }
 
-  async updateReport(barberShpoId: number, id: number, data: ReportType) {
+  async updateReport(barberShpoId: number, id: number, data: ReportZod) {
     const url = getUrl(barberShpoId, id)
     return await this.httpClient.put(url, { ...data })
   }

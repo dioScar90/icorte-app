@@ -8,9 +8,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
-import { GenderEnum, GenderEnumAsConst } from "@/schemas/profile";
+import { GenderEnum } from "@/schemas/profile";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-import { Key } from "lucide-react";
 import { getEnumAsArray } from "@/utils/enum-as-array";
 
 export function Register() {
@@ -34,11 +33,8 @@ export function Register() {
   })
 
   async function onSubmit(values: UserRegisterZod) {
-    const gender = GenderEnum[values.profile.gender]
-    const data = { ...values, profile: { ...values.profile, gender } }
-
     try {
-      const result = await register(data)
+      const result = await register(values)
 
       if (!result.isSuccess) {
         throw result.error
@@ -102,7 +98,7 @@ export function Register() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Gênero</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange}>
                   <FormControl>
                     <SelectTrigger className="w-[180px]">
                       <SelectValue placeholder="Gênero" />
@@ -112,6 +108,8 @@ export function Register() {
                     <SelectGroup>
                       <SelectLabel>Gênero</SelectLabel>
                       {getEnumAsArray(GenderEnum).map(gender => (
+                        // <SelectItem key={gender} value={String(GenderEnum[gender])}>{gender}</SelectItem>
+                        // <SelectItem key={gender} value={GenderEnum[gender]}>{gender}</SelectItem>
                         <SelectItem key={gender} value={gender}>{gender}</SelectItem>
                       ))}
                     </SelectGroup>

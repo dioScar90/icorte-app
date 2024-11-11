@@ -1,9 +1,12 @@
-import { DayOfWeek, TimeOnly } from "../../utils/types/date"
+import { Prettify } from "@/utils/types/prettify"
+import { RecurringScheduleZod } from "@/schemas/recurringSchedule"
 
-export type RecurringSchedule = {
-  dayOfWeek: DayOfWeek
-  barberShopId: number
-  openTime: TimeOnly
-  closeTime: TimeOnly
-  isActive: boolean
-}
+export type RecurringSchedule = Prettify<
+  {
+    barberShopId: number
+  }
+  & RecurringScheduleZod
+  & {
+    isActive: boolean
+  }
+>

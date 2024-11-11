@@ -1,8 +1,14 @@
-import { UserLoginType, UserRegisterType } from "@/schemas/user"
+import { UserLoginZod, UserRegisterZod } from "@/schemas/user"
 import { IAuthService } from "./interfaces/IAuthService"
 import { AxiosInstance } from "axios"
 
-function getUrl(final?: string) {
+enum UrlType {
+  REGISTER = 'register',
+  LOGIN = 'login',
+  LOGOUT = 'logout',
+}
+
+function getUrl(final?: UrlType) {
   const baseEndpoint = `/auth`
   
   if (!final) {
@@ -15,18 +21,18 @@ function getUrl(final?: string) {
 export class AuthService implements IAuthService {
   constructor(private readonly httpClient: AxiosInstance) {}
 
-  async register(data: UserRegisterType) {
-    const url = getUrl('register')
+  async register(data: UserRegisterZod) {
+    const url = getUrl(UrlType.REGISTER)
     return await this.httpClient.post(url, { ...data })
   }
 
-  async login(data: UserLoginType) {
-    const url = getUrl('login')
+  async login(data: UserLoginZod) {
+    const url = getUrl(UrlType.LOGIN)
     return await this.httpClient.post(url, { ...data })
   }
 
   async logout() {
-    const url = getUrl('logout')
+    const url = getUrl(UrlType.LOGOUT)
     return await this.httpClient.post(url)
   }
 }

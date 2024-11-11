@@ -1,12 +1,12 @@
 import { IServiceRepository } from "./interfaces/IServiceRepository";
 import { IServiceService } from "../services/interfaces/IServiceService";
 import { Result } from "@/data/result";
-import { ServiceType } from "@/schemas/service";
+import { ServiceZod } from "@/schemas/service";
 
 export class ServiceRepository implements IServiceRepository {
   constructor(private readonly service: IServiceService) { }
 
-  async createService(barberShpoId: number, data: ServiceType) {
+  async createService(barberShpoId: number, data: ServiceZod) {
     try {
       const res = await this.service.createService(barberShpoId, data);
       return Result.Success(res.data)
@@ -33,10 +33,10 @@ export class ServiceRepository implements IServiceRepository {
     }
   }
 
-  async updateService(barberShpoId: number, id: number, data: ServiceType) {
+  async updateService(barberShpoId: number, id: number, data: ServiceZod) {
     try {
-      const res = await this.service.updateService(barberShpoId, id, data);
-      return Result.Success(res.data)
+      await this.service.updateService(barberShpoId, id, data);
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }
@@ -44,8 +44,8 @@ export class ServiceRepository implements IServiceRepository {
 
   async deleteService(barberShpoId: number, id: number) {
     try {
-      const res = await this.service.deleteService(barberShpoId, id);
-      return Result.Success(res.data)
+      await this.service.deleteService(barberShpoId, id);
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }

@@ -1,12 +1,12 @@
 import { Result } from "@/data/result";
 import { IBarberShopRepository } from "./interfaces/IBarberShopRepository";
-import { BarberShopType } from "@/schemas/barberShop";
+import { BarberShopZod } from "@/schemas/barberShop";
 import { IBarberShopService } from "../services/interfaces/IBarberShopService";
 
 export class BarberShopRepository implements IBarberShopRepository {
   constructor(private readonly service: IBarberShopService) { }
 
-  async createBarberShop(data: BarberShopType) {
+  async createBarberShop(data: BarberShopZod) {
     try {
       const res = await this.service.createBarberShop(data);
       return Result.Success(res.data)
@@ -24,10 +24,10 @@ export class BarberShopRepository implements IBarberShopRepository {
     }
   }
 
-  async updateBarberShop(id: number, data: BarberShopType) {
+  async updateBarberShop(id: number, data: BarberShopZod) {
     try {
-      const res = await this.service.updateBarberShop(id, data);
-      return Result.Success(res.data)
+      await this.service.updateBarberShop(id, data);
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }
@@ -35,8 +35,8 @@ export class BarberShopRepository implements IBarberShopRepository {
 
   async deleteBarberShop(id: number) {
     try {
-      const res = await this.service.deleteBarberShop(id);
-      return Result.Success(res.data)
+      await this.service.deleteBarberShop(id);
+      return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }

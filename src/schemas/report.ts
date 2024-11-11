@@ -1,11 +1,15 @@
-import { Prettify } from '@/utils/types/prettify'
 import { z } from 'zod'
 
 const MIN_RATING = 1
 const MAX_RATING = 5
+export type Rating = 1 | 2 | 3 | 4 | 5
 
 function isInRange(value: number) {
   return value >= MIN_RATING && value <= MAX_RATING
+}
+
+function getNumberAsRating(rating: number) {
+  return rating as Rating
 }
 
 export const reportSchema = z.object({
@@ -22,7 +26,7 @@ export const reportSchema = z.object({
   rating: z.coerce.number({ required_error: 'Nota obrigatória' })
     .int('Nota inválida')
     .refine(isInRange, { message: `Nota precisa estar entre ${MIN_RATING} e ${MAX_RATING}` })
+    .transform(getNumberAsRating),
 })
 
 export type ReportZod = z.infer<typeof reportSchema>
-export type ReportType = Prettify<ReportZod>

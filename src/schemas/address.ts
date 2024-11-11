@@ -1,4 +1,3 @@
-import { Prettify } from '@/utils/types/prettify'
 import { z } from 'zod'
 
 export enum StateEnum {
@@ -36,7 +35,8 @@ export const addressSchema = z.object({
   state: z.enum(StateEnumAsConst, {
     required_error: 'Estado obrigatório',
     message: 'Estado inválido',
-  }),
+  })
+    .transform(state => StateEnum[state]),
 
   postalCode: z.string({ required_error: 'CEP obrigatório' })
     .trim()
@@ -48,6 +48,3 @@ export const addressSchema = z.object({
 })
 
 export type AddressZod = z.infer<typeof addressSchema>
-export type Address = Prettify<Omit<AddressZod, 'state'> & {
-  state: StateEnum
-}>
