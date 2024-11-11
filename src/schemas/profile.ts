@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { phoneNumberValidator } from './sharedValidators/phoneNumberValidator'
+import { Prettify } from '@/utils/types/prettify'
 
 export const GenderEnumAsConst = ['Feminino', 'Masculino'] as const
 
@@ -23,7 +24,7 @@ export const profileSchema = z.object({
   phoneNumber: phoneNumberValidator(),
 })
 
-export type ProfileForFormType = z.infer<typeof profileSchema>
-export type ProfileType = Omit<ProfileForFormType, 'gender'> & {
+export type ProfileZod = z.infer<typeof profileSchema>
+export type ProfileType = Prettify<Omit<ProfileZod, 'gender'> & {
   gender: GenderEnum
-}
+}>

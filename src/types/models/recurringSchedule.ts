@@ -1,4 +1,4 @@
-import { DayOfWeek, TimeOnly } from "./date"
+import { DayOfWeek, TimeOnly } from "../../utils/types/date"
 
 export type RecurringSchedule = {
   dayOfWeek: DayOfWeek

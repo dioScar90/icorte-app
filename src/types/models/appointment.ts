@@ -1,4 +1,4 @@
-import { DateOnly, TimeOnly } from "./date"
+import { DateOnly, TimeOnly } from "../../utils/types/date"
 import { Service } from "./service"
 
 const paymentEnum = [

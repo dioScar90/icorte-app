@@ -8,9 +8,9 @@ export function checkUnprocessableEntityToast(err: unknown) {
 
   err.errorsEntries
     .forEach(([name, messages]) =>
-      form.setError(name as keyof UserRegisterForFormType, { ...messages }))
+      form.setError(name as keyof UserRegisterZod, { ...messages }))
 
-  useToast().toast('aee', )
+  useToast().toast('aee',)
 
   const obj = {
     variant: 'destructive',

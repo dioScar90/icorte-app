@@ -1,3 +1,4 @@
+import { Prettify } from '@/utils/types/prettify'
 import { z } from 'zod'
 
 type RefineFuncProps = {
@@ -30,7 +31,7 @@ export const specialScheduleSchema = z.object({
   date: z.string({ required_error: 'Dia obrigatório' })
     .trim()
     .date('Dia inválido'),
-  
+
   openTime: z.string({ required_error: 'Horário de abertura obrigatório' })
     .trim()
     .time('Horário de abertura inválido')
@@ -52,4 +53,5 @@ export const specialScheduleSchema = z.object({
     path: ['closeTime']
   })
 
-export type SpecialScheduleType = z.infer<typeof specialScheduleSchema>
+export type SpecialScheduleZod = z.infer<typeof specialScheduleSchema>
+export type SpecialScheduleType = Prettify<SpecialScheduleZod>

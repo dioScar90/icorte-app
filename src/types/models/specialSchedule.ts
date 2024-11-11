@@ -1,4 +1,4 @@
-import { TimeOnly, DateOnly } from "./date"
+import { TimeOnly, DateOnly } from "../../utils/types/date"
 
 export type SpecialSchedule = {
   date: DateOnly

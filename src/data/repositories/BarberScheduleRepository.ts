@@ -1,7 +1,7 @@
 import { Result } from "@/data/result";
 import { IBarberScheduleRepository } from "./interfaces/IBarberScheduleRepository";
 import { IBarberScheduleService } from "../services/interfaces/IBarberScheduleService";
-import { DateOnly } from "@/types/models/date";
+import { DateOnly } from "@/utils/types/date";
 
 export class BarberScheduleRepository implements IBarberScheduleRepository {
   constructor(private readonly service: IBarberScheduleService) { }

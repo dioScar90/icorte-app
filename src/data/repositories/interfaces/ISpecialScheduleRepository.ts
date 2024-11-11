@@ -1,6 +1,6 @@
 import { BaseResult, CreatedResult, PaginationResult } from "@/data/result";
 import { SpecialScheduleType } from "@/schemas/specialSchedule";
-import { DateOnly } from "@/types/models/date";
+import { DateOnly } from "@/utils/types/date";
 import { SpecialSchedule } from "@/types/models/specialSchedule";
 
 export interface ISpecialScheduleRepository {

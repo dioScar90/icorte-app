@@ -1,7 +1,8 @@
 import { z } from 'zod'
 import { phoneNumberValidator } from './sharedValidators/phoneNumberValidator'
 import { emailValidator } from './sharedValidators/emailValidator'
-import { addressSchema, AddressType } from './address'
+import { Address, addressSchema } from './address'
+import { Prettify } from '@/utils/types/prettify'
 
 export const barberShopSchema = z.object({
   name: z.string()
@@ -24,7 +25,7 @@ export const barberShopSchema = z.object({
   address: addressSchema,
 })
 
-export type BarberShopForFormType = z.infer<typeof barberShopSchema>
-export type BarberShopType = Omit<BarberShopForFormType, 'address'> & {
-  address: AddressType
-}
+export type BarberShopZod = z.infer<typeof barberShopSchema>
+export type BarberShop = Prettify<Omit<BarberShopZod, 'address'> & {
+  address: Address
+}>

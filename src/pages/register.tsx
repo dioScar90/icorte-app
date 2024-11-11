@@ -3,20 +3,22 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { userRegisterSchema, UserRegisterForFormType } from "@/schemas/user";
+import { userRegisterSchema, UserRegisterZod } from "@/schemas/user";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { GenderEnum, GenderEnumAsConst } from "@/schemas/profile";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
+import { Key } from "lucide-react";
+import { getEnumAsArray } from "@/utils/enum-as-array";
 
 export function Register() {
   const navigate = useNavigate()
   const { register, isLoading } = useAuth()
   const { handleError } = useHandleErrors()
 
-  const form = useForm<UserRegisterForFormType>({
+  const form = useForm<UserRegisterZod>({
     resolver: zodResolver(userRegisterSchema),
     defaultValues: {
       email: '',
@@ -31,7 +33,7 @@ export function Register() {
     }
   })
 
-  async function onSubmit(values: UserRegisterForFormType) {
+  async function onSubmit(values: UserRegisterZod) {
     const gender = GenderEnum[values.profile.gender]
     const data = { ...values, profile: { ...values.profile, gender } }
 
@@ -109,7 +111,7 @@ export function Register() {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Gênero</SelectLabel>
-                      {GenderEnumAsConst.map(gender => (
+                      {getEnumAsArray(GenderEnum).map(gender => (
                         <SelectItem key={gender} value={gender}>{gender}</SelectItem>
                       ))}
                     </SelectGroup>

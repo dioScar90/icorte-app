@@ -1,4 +1,5 @@
 import { getToday } from '@/utils/date'
+import { Prettify } from '@/utils/types/prettify'
 import { z } from 'zod'
 
 function dataIsEqualOrGreaterThenToday(informedDate: string) {
@@ -22,4 +23,5 @@ export const appointmentSchema = z.object({
     .transform(value => value || undefined),
 })
 
-export type AppointmentType = z.infer<typeof appointmentSchema>
+export type AppointmentZod = z.infer<typeof appointmentSchema>
+export type AppointmentType = Prettify<AppointmentZod>

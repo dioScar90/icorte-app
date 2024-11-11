@@ -1,14 +1,15 @@
+import { Prettify } from '@/utils/types/prettify'
 import { z } from 'zod'
-
-export const StateEnumAsConst = [
-  'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA',
-  'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO',
-] as const
 
 export enum StateEnum {
   AC, AL, AP, AM, BA, CE, DF, ES, GO, MA, MT, MS, MG, PA,
   PB, PR, PE, PI, RJ, RN, RS, RO, RR, SC, SP, SE, TO,
 }
+
+export const StateEnumAsConst = [
+  'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA',
+  'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO',
+] as const
 
 export const addressSchema = z.object({
   street: z.string({ required_error: 'Logradouro obrigatório' })
@@ -46,7 +47,7 @@ export const addressSchema = z.object({
     .min(3, { message: 'País precisa ter 8 caracteres' }),
 })
 
-export type AddressForFormType = z.infer<typeof addressSchema>
-export type AddressType = Omit<AddressForFormType, 'state'> & {
+export type AddressZod = z.infer<typeof addressSchema>
+export type Address = Prettify<Omit<AddressZod, 'state'> & {
   state: StateEnum
-}
+}>

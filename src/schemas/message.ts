@@ -1,3 +1,4 @@
+import { Prettify } from '@/utils/types/prettify'
 import { z } from 'zod'
 
 export const messageSchema = z.object({
@@ -7,4 +8,5 @@ export const messageSchema = z.object({
     .max(255, { message: 'Mensagem não pode ser maior que 255 caracteres' }),
 })
 
-export type MessageType = z.infer<typeof messageSchema>
+export type MessageZod = z.infer<typeof messageSchema>
+export type MessageType = Prettify<MessageZod>

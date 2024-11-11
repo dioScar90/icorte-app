@@ -2,7 +2,7 @@ import { IRecurringScheduleRepository } from "./interfaces/IRecurringScheduleRep
 import { IRecurringScheduleService } from "../services/interfaces/IRecurringScheduleService";
 import { Result } from "@/data/result";
 import { RecurringScheduleType } from "@/schemas/recurringSchedule";
-import { DayOfWeek } from "@/types/models/date";
+import { DayOfWeek } from "@/utils/types/date";
 
 export class RecurringScheduleRepository implements IRecurringScheduleRepository {
   constructor(private readonly service: IRecurringScheduleService) { }

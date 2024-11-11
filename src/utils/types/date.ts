@@ -1,4 +1,4 @@
-import { IndexesOf } from "./custom"
+import { IndexesOf } from "./indexes-of"
 
 const zeroToThree = [
   '0', '1', '2', '3',

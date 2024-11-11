@@ -1,4 +1,4 @@
-import { DateOnly } from "@/types/models/date";
+import { DateOnly } from "@/utils/types/date";
 import { IBarberScheduleService } from "./interfaces/IBarberScheduleService";
 import { AxiosInstance } from "axios";
 

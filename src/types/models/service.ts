@@ -1,4 +1,4 @@
-import { TimeOnly } from "./date"
+import { TimeOnly } from "../../utils/types/date"
 
 export type Service = {
   id: number

@@ -1,6 +1,6 @@
 import { SpecialScheduleType } from "@/schemas/specialSchedule";
 import { ISpecialScheduleService } from "./interfaces/ISpecialScheduleService";
-import { DateOnly } from "@/types/models/date";
+import { DateOnly } from "@/utils/types/date";
 import { AxiosInstance } from "axios";
 
 function getUrl(barberShpoId: number, date?: DateOnly) {

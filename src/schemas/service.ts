@@ -1,3 +1,4 @@
+import { Prettify } from '@/utils/types/prettify'
 import { z } from 'zod'
 
 export const serviceSchema = z.object({
@@ -15,4 +16,5 @@ export const serviceSchema = z.object({
   duration: z.string({ required_error: 'Duração obrigatória' }),
 })
 
-export type ServiceType = z.infer<typeof serviceSchema>
+export type ServiceZod = z.infer<typeof serviceSchema>
+export type ServiceType = Prettify<ServiceZod>

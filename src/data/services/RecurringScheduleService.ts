@@ -1,6 +1,6 @@
 import { RecurringScheduleType } from "@/schemas/recurringSchedule";
 import { IRecurringScheduleService } from "./interfaces/IRecurringScheduleService";
-import { DayOfWeek } from "@/types/models/date";
+import { DayOfWeek } from "@/utils/types/date";
 import { AxiosInstance } from "axios";
 
 function getUrl(barberShpoId: number, dayOfWeek?: DayOfWeek) {

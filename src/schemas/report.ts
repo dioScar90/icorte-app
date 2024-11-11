@@ -1,3 +1,4 @@
+import { Prettify } from '@/utils/types/prettify'
 import { z } from 'zod'
 
 const MIN_RATING = 1
@@ -20,7 +21,8 @@ export const reportSchema = z.object({
 
   rating: z.coerce.number({ required_error: 'Nota obrigatória' })
     .int('Nota inválida')
-    .refine(isInRange, { message: `Nota precisa estar entre ${MIN_RATING} e ${MAX_RATING}`})
+    .refine(isInRange, { message: `Nota precisa estar entre ${MIN_RATING} e ${MAX_RATING}` })
 })
 
-export type ReportType = z.infer<typeof reportSchema>
+export type ReportZod = z.infer<typeof reportSchema>
+export type ReportType = Prettify<ReportZod>

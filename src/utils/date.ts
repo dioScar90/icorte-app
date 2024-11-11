@@ -1,4 +1,4 @@
-import { DateOnly, TimeOnly } from "@/types/models/date"
+import { DateOnly, TimeOnly } from "@/utils/types/date"
 
 type GetTodayProps = {
   dateOnly?: DateOnly,

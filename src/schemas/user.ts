@@ -3,6 +3,7 @@ import { passwordValidator } from './sharedValidators/passwordValidator'
 import { emailValidator } from './sharedValidators/emailValidator'
 import { phoneNumberValidator } from './sharedValidators/phoneNumberValidator'
 import { profileSchema, ProfileType } from './profile'
+import { Prettify } from '@/utils/types/prettify'
 
 export const userEmailUpdate = z.object({
   email: emailValidator(),
@@ -34,10 +35,10 @@ export const userRegisterSchema = z.object({
     path: ['confirmPassword']
   })
 
-export type UserRegisterForFormType = z.infer<typeof userRegisterSchema>
-export type UserRegisterType = Omit<UserRegisterForFormType, 'profile'> & {
+export type UserRegisterZod = z.infer<typeof userRegisterSchema>
+export type UserRegisterType = Prettify<Omit<UserRegisterZod, 'profile'> & {
   profile: ProfileType
-}
+}>
 
 export const userLoginSchema = z.object({
   email: emailValidator(),

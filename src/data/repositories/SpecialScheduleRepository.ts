@@ -2,7 +2,7 @@ import { ISpecialScheduleRepository } from "./interfaces/ISpecialScheduleReposit
 import { ISpecialScheduleService } from "../services/interfaces/ISpecialScheduleService";
 import { Result } from "@/data/result";
 import { SpecialScheduleType } from "@/schemas/specialSchedule";
-import { DateOnly } from "@/types/models/date";
+import { DateOnly } from "@/utils/types/date";
 
 export class SpecialScheduleRepository implements ISpecialScheduleRepository {
   constructor(private readonly service: ISpecialScheduleService) { }

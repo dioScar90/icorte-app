@@ -6,17 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
-import { barberShopSchema, BarberShopForFormType } from "@/schemas/barberShop";
-import { StateEnum, StateEnumAsConst } from "@/schemas/address";
+import { barberShopSchema, BarberShopZod } from "@/schemas/barberShop";
+import { StateEnum } from "@/schemas/address";
 import { useBarberShop } from "@/providers/barberShopProvider";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
+import { getEnumAsArray } from "@/utils/enum-as-array";
 
 export function RegisterBarberShop() {
   const { register } = useBarberShop()
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
 
-  const form = useForm<BarberShopForFormType>({
+  const form = useForm<BarberShopZod>({
     resolver: zodResolver(barberShopSchema),
     defaultValues: {
       name: '',
@@ -36,7 +37,7 @@ export function RegisterBarberShop() {
     }
   })
 
-  async function onSubmit(values: BarberShopForFormType) {
+  async function onSubmit(values: BarberShopZod) {
     const state = StateEnum[values.address.state]
     const data = { ...values, address: { ...values.address, state } }
 
@@ -200,7 +201,7 @@ export function RegisterBarberShop() {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Estado</SelectLabel>
-                      {StateEnumAsConst.map(state => (
+                      {getEnumAsArray(StateEnum).map(state => (
                         <SelectItem key={state} value={state}>{state}</SelectItem>
                       ))}
                     </SelectGroup>

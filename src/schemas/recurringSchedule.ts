@@ -1,4 +1,9 @@
+import { Prettify } from '@/utils/types/prettify'
 import { z } from 'zod'
+
+enum DayOfWeekEnum {
+  DOMINGO, SEGUNDA, TERCA, QUARTA, QUINTA, SEXTA, SABADO
+}
 
 const DayOfWeekEnumAsConst = [
   'DOMINGO', 'SEGUNDA', 'TERCA', 'QUARTA', 'QUINTA', 'SEXTA', 'SABADO',
@@ -23,4 +28,7 @@ export const recurringScheduleSchema = z.object({
     path: ['closeTime']
   })
 
-export type RecurringScheduleType = z.infer<typeof recurringScheduleSchema>
+export type RecurringForFormScheduleType = z.infer<typeof recurringScheduleSchema>
+export type RecurringScheduleType = Prettify<Omit<RecurringForFormScheduleType, 'dayOfWeek'> & {
+  dayOfWeek: DayOfWeekEnum
+}>

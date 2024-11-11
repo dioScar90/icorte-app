@@ -1,6 +1,6 @@
 import { BaseAxiosResult, CreatedAxiosResult, PaginationAxiosResult } from "@/data/result";
 import { RecurringScheduleType } from "@/schemas/recurringSchedule";
-import { DayOfWeek } from "@/types/models/date";
+import { DayOfWeek } from "@/utils/types/date";
 import { RecurringSchedule } from "@/types/models/recurringSchedule";
 
 export interface IRecurringScheduleService {
