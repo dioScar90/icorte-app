@@ -33,6 +33,7 @@ import Swal from "sweetalert2"
 
 function getUserInfosToSidebar({ user }: AuthContextType) {
   return {
+    id: user?.profile?.id!,
     name: user?.profile?.firstName ?? 'Diogo',
     email: user?.email ?? 'diogols@live.com',
     avatar: user?.profile?.imageUrl ?? "https://randomuser.me/api/portraits/men/9.jpg",

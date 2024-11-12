@@ -3,7 +3,7 @@ import { Home } from './pages/home'
 import { Login } from './pages/login'
 import { BaseLayout } from './components/layouts/base-layout'
 import { Register } from './pages/register'
-import { ClientLayout } from './components/layouts/client-layout'
+import { ProfileLayout } from './components/layouts/profile-layout'
 import { BarberShopLayout } from './components/layouts/barber-shop-layout'
 import { AdminLayout } from './components/layouts/admin-layout'
 import { BarberScheduleLayout } from './components/layouts/barber-schedule-layout'
@@ -17,6 +17,10 @@ import { RemoveAll } from './pages/admin/remove-all'
 import { AdminDashboard } from './pages/admin/dashboard'
 import { ErrorRoutePage } from './pages/error-route'
 import { baseLoader } from './data/loaders/baseLoader'
+import { profileLoader } from './data/loaders/profileLoader'
+import { Edit } from './pages/profile/edit'
+import { MyProfile } from './pages/profile/my-profile'
+import { barberShopLoader } from './data/loaders/barberShopLoader'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -34,9 +38,9 @@ export function App() {
           <Route path="register" element={<Register />} />
           
           <Route element={<ProtectedClientRoute />}>
-            <Route path={ROUTE_ENUM.PROFILE} element={<ClientLayout />}>
-              <Route path=":id" element={<p>Profile</p>} />
-              <Route path=":id/edit" element={<p>Edit</p>} />
+            <Route path={ROUTE_ENUM.PROFILE} loader={profileLoader} element={<ProfileLayout />}>
+              <Route path=":id" element={<MyProfile />} />
+              <Route path=":id/edit" element={<Edit />} />
             </Route>
 
             <Route path={ROUTE_ENUM.BARBER_SCHEDULE} element={<BarberScheduleLayout />}>
@@ -47,7 +51,7 @@ export function App() {
           </Route>
 
           <Route element={<ProtectedBarberShopRoute />}>
-            <Route path={ROUTE_ENUM.BARBER_SHOP} element={<BarberShopLayout />}>
+            <Route path={ROUTE_ENUM.BARBER_SHOP} loader={barberShopLoader} element={<BarberShopLayout />}>
               <Route index element={<Home />} />
               <Route path=":id" element={<p>Barber Shop</p>} />
               <Route path=":id/edit" element={<p>Edit Barber Shop</p>} />

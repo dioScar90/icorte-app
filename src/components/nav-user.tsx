@@ -35,6 +35,7 @@ export function NavUser({
   onClickLogout
 }: {
   user: {
+    id: number
     name: string
     email: string
     avatar: string
@@ -106,7 +107,7 @@ export function NavUser({
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <Link to={ROUTE_ENUM.ADMIN}>
+              <Link to={`${ROUTE_ENUM.PROFILE}/${user.id}`}>
                 <DropdownMenuItem className="cursor-pointer">
                   <BadgeCheck />
                   Minha conta

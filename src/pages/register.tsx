@@ -1,20 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { userRegisterSchema, UserRegisterZod } from "@/schemas/user";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
-import { GenderEnum } from "@/schemas/profile";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-import { getEnumAsArray } from "@/utils/enum-as-array";
+import { UserForm } from "@/components/user-form";
 
 export function Register() {
   const navigate = useNavigate()
-  const { register, isLoading } = useAuth()
+  const { register } = useAuth()
   const { handleError } = useHandleErrors()
 
   const form = useForm<UserRegisterZod>({
@@ -48,126 +43,7 @@ export function Register() {
 
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="profile.firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nome</FormLabel>
-                <FormControl>
-                  <Input type="text" placeholder="Nome" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="profile.lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Sobrenome</FormLabel>
-                <FormControl>
-                  <Input type="text" placeholder="Sobrenome" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="profile.phoneNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Telefone</FormLabel>
-                <FormControl>
-                  <Input type="tel" placeholder="Telefone" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="profile.gender"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Gênero</FormLabel>
-                <Select onValueChange={field.onChange}>
-                  <FormControl>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Gênero" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Gênero</SelectLabel>
-                      {getEnumAsArray(GenderEnum).map(gender => (
-                        // <SelectItem key={gender} value={String(GenderEnum[gender])}>{gender}</SelectItem>
-                        // <SelectItem key={gender} value={GenderEnum[gender]}>{gender}</SelectItem>
-                        <SelectItem key={gender} value={gender}>{gender}</SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input type="email" placeholder="Digite seu email" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Senha</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="Digite sua senha" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirmação</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="Confirme sua senha" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormRootErrorMessage />
-
-          <Button type="submit" disabled={isLoading}>Cadastrar</Button>
-        </form>
-      </Form>
+      <UserForm form={form} onSubmit={onSubmit} />
     </>
   )
 }

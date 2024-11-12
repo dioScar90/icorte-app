@@ -1,6 +1,6 @@
 import { AuthRepository } from "@/data/repositories/AuthRepository"
 import { AuthService } from "@/data/services/AuthService"
-import { UserLoginType, UserRegisterType } from "@/schemas/user"
+import { UserLoginZod, UserRegisterZod } from "@/schemas/user"
 import { UserMe } from "@/types/models/user"
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useReducer } from "react"
 import { useProxy } from "./proxyProvider"
@@ -24,8 +24,8 @@ export type AuthContextType = {
   isClient: boolean
   isBarberShop: boolean
   isAdmin: boolean
-  register: (data: UserRegisterType) => ReturnType<IAuthRepository['register']>
-  login: (data: UserLoginType) => ReturnType<IAuthRepository['login']>
+  register: (data: UserRegisterZod) => ReturnType<IAuthRepository['register']>
+  login: (data: UserLoginZod) => ReturnType<IAuthRepository['login']>
   logout: () => ReturnType<IAuthRepository['logout']>
 }
 
@@ -103,7 +103,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     isAuthenticated: !!userFromLoader,
   })
   
-  const register = async (data: UserRegisterType) => {
+  const register = async (data: UserRegisterZod) => {
     dispatch({ type: 'SET_LOADING' })
 
     const result = await authRepository.register(data)
@@ -117,7 +117,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     return result
   }
 
-  const login = async (data: UserLoginType) => {
+  const login = async (data: UserLoginZod) => {
     dispatch({ type: 'SET_LOADING' })
 
     const result = await authRepository.login(data)

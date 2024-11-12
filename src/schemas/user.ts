@@ -50,6 +50,12 @@ export const userRegisterSchema = z.object({
 
 export type UserRegisterZod = z.infer<typeof userRegisterSchema>
 
+export const userUpdateSchema = z.object({
+  profile: profileSchema,
+})
+
+export type UserUpdateZod = z.infer<typeof userUpdateSchema>
+
 export const userLoginSchema = z.object({
   email: emailValidator(),
   password: z.string().min(1, { message: 'Senha obrigatória' }),
