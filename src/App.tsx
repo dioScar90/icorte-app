@@ -23,6 +23,10 @@ import { MyProfile } from './pages/profile/my-profile'
 import { barberShopLoader } from './data/loaders/barberShopLoader'
 import { MyBarberShop } from './pages/barber-shop/my-barber-shop'
 import { BarberShopEdit } from './pages/barber-shop/barber-shop-edit'
+import { MyAppointmentsPage } from './pages/barber-schedule/dashboard'
+import { AppointmentPage } from './pages/barber-schedule/appointment'
+import { SchedulePage } from './pages/barber-schedule/schedule'
+import { SchedulePushPage } from './pages/barber-schedule/set-appointment'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -44,11 +48,13 @@ export function App() {
               <Route path=":userId" element={<MyProfile />} />
               <Route path=":userId/edit" element={<ProfileEdit />} />
             </Route>
-
-            <Route path={ROUTE_ENUM.BARBER_SCHEDULE} element={<BarberScheduleLayout />}>
-              <Route index element={<Home />} />
-              <Route path="login" element={<Login />} />
-              <Route path="register" element={<Register />} />
+            
+            <Route path={ROUTE_ENUM.BARBER_SCHEDULE} loader={barberShopLoader} element={<BarberScheduleLayout />}>
+              <Route index action={async () => redirect(`${ROUTE_ENUM.BARBER_SCHEDULE}/dashboard`)} />
+              <Route path="dashboard" element={<MyAppointmentsPage />} />
+              <Route path="dashboard/:appointmentId" element={<AppointmentPage />} />
+              <Route path="schedule" element={<SchedulePage />} />
+              <Route path="schedule/:barberShopId" element={<SchedulePushPage />} />
             </Route>
           </Route>
           

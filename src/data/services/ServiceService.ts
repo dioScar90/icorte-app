@@ -20,8 +20,8 @@ export class ServiceService implements IServiceService {
     return await this.httpClient.post(url, { ...data })
   }
 
-  async getService(barberShpoId: number, id: number) {
-    const url = getUrl(barberShpoId, id)
+  async getService(barberShpoId: number, serviceId: number) {
+    const url = getUrl(barberShpoId, serviceId)
     return await this.httpClient.get(url)
   }
 
@@ -30,13 +30,13 @@ export class ServiceService implements IServiceService {
     return await this.httpClient.get(url)
   }
 
-  async updateService(barberShpoId: number, id: number, data: ServiceZod) {
-    const url = getUrl(barberShpoId, id)
+  async updateService(barberShpoId: number, serviceId: number, data: ServiceZod) {
+    const url = getUrl(barberShpoId, serviceId)
     return await this.httpClient.put(url, { ...data })
   }
 
-  async deleteService(barberShpoId: number, id: number) {
-    const url = getUrl(barberShpoId, id)
+  async deleteService(barberShpoId: number, serviceId: number) {
+    const url = getUrl(barberShpoId, serviceId)
     return await this.httpClient.delete(url)
   }
 }

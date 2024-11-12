@@ -3,7 +3,7 @@ import { LoaderFunctionArgs } from "react-router-dom";
 import { BarberShopRepository } from "../repositories/BarberShopRepository";
 import { BarberShopService } from "../services/BarberShopService";
 
-export async function barberShopLoader({ params }: LoaderFunctionArgs) {
+export async function barberScheduleLoader({ params }: LoaderFunctionArgs) {
   if (!params.barberShopId) {
     return null
   }

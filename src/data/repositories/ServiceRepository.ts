@@ -15,9 +15,9 @@ export class ServiceRepository implements IServiceRepository {
     }
   }
 
-  async getService(barberShpoId: number, id: number) {
+  async getService(barberShpoId: number, serviceId: number) {
     try {
-      const res = await this.service.getService(barberShpoId, id);
+      const res = await this.service.getService(barberShpoId, serviceId);
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err as Error)
@@ -33,18 +33,18 @@ export class ServiceRepository implements IServiceRepository {
     }
   }
 
-  async updateService(barberShpoId: number, id: number, data: ServiceZod) {
+  async updateService(barberShpoId: number, serviceId: number, data: ServiceZod) {
     try {
-      await this.service.updateService(barberShpoId, id, data);
+      await this.service.updateService(barberShpoId, serviceId, data);
       return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }
   }
 
-  async deleteService(barberShpoId: number, id: number) {
+  async deleteService(barberShpoId: number, serviceId: number) {
     try {
-      await this.service.deleteService(barberShpoId, id);
+      await this.service.deleteService(barberShpoId, serviceId);
       return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)

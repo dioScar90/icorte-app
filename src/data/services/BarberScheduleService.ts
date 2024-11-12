@@ -2,36 +2,82 @@ import { DateOnly } from "@/utils/types/date";
 import { IBarberScheduleService } from "./interfaces/IBarberScheduleService";
 import { AxiosInstance } from "axios";
 
-enum STR_BEFORE_DATE {
+enum strBeforeDateEnum {
   DATES = 'dates',
   SLOTS = 'slots',
+  SERVICES = 'services',
 }
 
-function getUrl(date: DateOnly, beforeDate?: STR_BEFORE_DATE, barberShopId?: number) {
+type GetUrlProps = {
+  date?: DateOnly
+  beforeDate?: strBeforeDateEnum
+  barberShopId?: number
+}
+
+function getUrl({ date, beforeDate, barberShopId }: GetUrlProps) {
   const baseEndpoint = `/barber-schedule`
 
+  if (beforeDate === strBeforeDateEnum.SERVICES) {
+    return `${baseEndpoint}/${beforeDate}`
+  }
+  
   if (!beforeDate) {
     return `${baseEndpoint}/top-barbers/${date}`
   }
-
+  
   return `${baseEndpoint}/${barberShopId!}/${beforeDate}/${date}`
+}
+
+type QueryParamsType = Partial<{
+  serviceIds: number[]
+  q: string
+}>
+
+function getQueryParams(params?: QueryParamsType) {
+  if (!params) {
+    return ''
+  }
+  
+  const searchParams = new URLSearchParams()
+  
+  for (const key in params) {
+    const value = params[key as keyof typeof params]
+
+    if (Array.isArray(value)) {
+      value.forEach(item => searchParams.append(key, String(item)))
+    } else {
+      searchParams.append(key, String(value))
+    }
+  }
+  
+  if (searchParams.size === 0) {
+    return ''
+  }
+  
+  return '?' + searchParams.toString()
 }
 
 export class BarberScheduleService implements IBarberScheduleService {
   constructor(private readonly httpClient: AxiosInstance) { }
-
+  
   async getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateOnly) {
-    const url = getUrl(dateOfWeek, STR_BEFORE_DATE.DATES, barberShopId)
+    const url = getUrl({ date: dateOfWeek, beforeDate: strBeforeDateEnum.DATES, barberShopId })
     return await this.httpClient.get(url)
   }
-
-  async getAvailableSlots(barberShopId: number, date: DateOnly) {
-    const url = getUrl(date, STR_BEFORE_DATE.SLOTS, barberShopId)
+  
+  async getAvailableSlots(barberShopId: number, date: DateOnly, serviceIds: number[]) {
+    const url = getUrl({ date, beforeDate: strBeforeDateEnum.SLOTS, barberShopId }) + getQueryParams({ serviceIds })
+    throw new Error(url)
     return await this.httpClient.get(url)
   }
-
+  
   async getTopBarbersWithAvailability(dateOfWeek: DateOnly) {
-    const url = getUrl(dateOfWeek)
+    const url = getUrl({ date: dateOfWeek })
+    return await this.httpClient.get(url)
+  }
+
+  async searchServicesByNameAsync(q: string) {
+    const url = getUrl({ beforeDate: strBeforeDateEnum.SERVICES }) + getQueryParams({ q })
     return await this.httpClient.get(url)
   }
 }
