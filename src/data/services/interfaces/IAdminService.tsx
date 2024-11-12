@@ -1,5 +1,6 @@
+import { RemoveAllZod } from "@/components/layouts/admin-layout";
 import { BaseAxiosResult } from "@/data/result";
 
 export interface IAdminService {
-  removeAllRows(data: { passphrase: string }): BaseAxiosResult<void>;
+  removeAll(data: RemoveAllZod): BaseAxiosResult<void>;
 }

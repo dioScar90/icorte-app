@@ -3,7 +3,7 @@ import { ROUTE_ENUM } from "@/types/route";
 import { BarberShopZod } from "@/schemas/barberShop";
 import { BarberShopRepository } from "@/data/repositories/BarberShopRepository";
 import { barberShopLoader } from "@/data/loaders/barberShopLoader";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { BarberShopService } from "@/data/services/BarberShopService";
 import { httpClient } from "@/providers/proxyProvider";
 
@@ -16,12 +16,11 @@ export type BarberShopLayoutContextType = {
 export function BarberShopLayout() {
   const barberShop = useLoaderData() as Awaited<ReturnType<typeof barberShopLoader>>
   const { pathname } = useLocation()
+  const repository = useMemo(() => new BarberShopRepository(new BarberShopService(httpClient)), [])
   
   if (barberShop && pathname === `${ROUTE_ENUM.BARBER_SHOP}/register`) {
     return <Navigate to={`${ROUTE_ENUM.BARBER_SHOP}/${barberShop?.id}`} replace />
   }
-  
-  const repository = new BarberShopRepository(new BarberShopService(httpClient))
   
   const register = useCallback(async (data: BarberShopZod) => {
     return await repository.createBarberShop(data)

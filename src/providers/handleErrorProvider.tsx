@@ -77,7 +77,7 @@ export class UnprocessableEntityError extends FieldError {
   }
 
   static throwNewPromiseReject(errors: Record<string, string[]>, title: string) {
-    return Promise.reject(new UnprocessableEntityError(errors, title))
+    return Promise.reject<UnprocessableEntityError>(new UnprocessableEntityError(errors, title))
   }
 }
 
@@ -90,7 +90,7 @@ export class InvalidUsernameOrPasswordError extends FieldError {
   }
 
   static throwNewPromiseReject() {
-    return Promise.reject(new InvalidUsernameOrPasswordError())
+    return Promise.reject<InvalidUsernameOrPasswordError>(new InvalidUsernameOrPasswordError())
   }
 }
 
@@ -130,7 +130,7 @@ export class BaseDataError extends Error {
     div.innerHTML = `
       <p>${this.detail}</p>
       <ul>
-        ${Object.entries(this.errors).map(([key, values]) => `
+        ${Object.entries(this.errors).map(([_, values]) => `
           <li>=> ${values[0]}</li>
         `)}
       </ul>
@@ -148,7 +148,7 @@ export class BaseDataError extends Error {
   }
 
   static throwNewPromiseReject(data?: DataResponseError) {
-    return Promise.reject(new BaseDataError(data ?? {}))
+    return Promise.reject<BaseDataError>(new BaseDataError(data ?? {}))
   }
 }
 

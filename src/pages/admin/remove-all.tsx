@@ -1,41 +1,37 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
-import { z } from "zod";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
-import { useAdmin } from "@/providers/adminProvider";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-
-const schema = z.object({
-  passphrase: z.string().min(1, { message: 'Senha obrigatória' })
-})
-
-type SchemaType = z.infer<typeof schema>
+import { Switch } from "@/components/ui/switch";
+import { AdminLayoutContextType, removeAllSchema, RemoveAllZod } from "@/components/layouts/admin-layout";
 
 export function RemoveAll() {
+  const { removeAll } = useOutletContext<AdminLayoutContextType>()
   const navigate = useNavigate()
-  const { removeAllRows } = useAdmin()
   const { handleError } = useHandleErrors()
-
-  const form = useForm<SchemaType>({
-    resolver: zodResolver(schema),
+  
+  const form = useForm<RemoveAllZod>({
+    resolver: zodResolver(removeAllSchema),
     defaultValues: {
       passphrase: '',
     }
   })
-
-  async function onSubmit(values: SchemaType) {
+  
+  async function onSubmit(values: RemoveAllZod) {
     try {
-      const result = await removeAllRows(values)
+      const result = await removeAll(values)
 
       if (!result.isSuccess) {
         throw result.error
       }
-
-      navigate(`${ROUTE_ENUM.ADMIN}/dashboard`, { state: { message: 'Usuários removidos com sucesso' } })
+      
+      const message = 'Usuários removidos com sucesso' + (values.evenMasterAdmin ? ', inclusive você, seu maluco!' : '')
+      const url = `${ROUTE_ENUM.ADMIN}/dashboard`
+      navigate(url, { state: { message } })
     } catch (err) {
       handleError(err, form)
     }
@@ -55,6 +51,29 @@ export function RemoveAll() {
                   <Input type="password" placeholder="Digite sua senha" {...field} />
                 </FormControl>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="evenMasterAdmin"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between gap-x-5 rounded-lg w-fit border p-4">
+                <div className="space-y-0.5">
+                  <FormLabel className="text-base">
+                    All father
+                  </FormLabel>
+                  <FormDescription>
+                    Remove master all father account too
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
               </FormItem>
             )}
           />

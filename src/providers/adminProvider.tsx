@@ -5,7 +5,7 @@ import { useProxy } from "./proxyProvider"
 import { IAdminRepository } from "@/data/repositories/interfaces/IAdminRepository"
 
 export type AdminContextType = {
-  removeAllRows: (data: { passphrase: string }) => ReturnType<IAdminRepository['removeAllRows']>
+  removeAll: (data: { passphrase: string }) => ReturnType<IAdminRepository['removeAll']>
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined)
@@ -24,12 +24,12 @@ export function AdminProvider({ children }: PropsWithChildren) {
   const { httpClient } = useProxy()
   const adminRepository = useMemo(() => new AdminRepository(new AdminService(httpClient)), [])
   
-  const removeAllRows = async (data: { passphrase: string }) => await adminRepository.removeAllRows(data)
+  const removeAll = async (data: { passphrase: string }) => await adminRepository.removeAll(data)
   
   return (
     <AdminContext.Provider
       value={{
-        removeAllRows,
+        removeAll,
       }}
     >
       {children}

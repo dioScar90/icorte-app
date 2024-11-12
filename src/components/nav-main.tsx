@@ -17,7 +17,6 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { Link } from "react-router-dom"
-import { ModeToggle } from "./mode-toggle"
 
 export function NavMain({
   items,

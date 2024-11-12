@@ -3,7 +3,7 @@ import { ProfileRepository } from "@/data/repositories/ProfileRepository";
 import { ProfileService } from "@/data/services/ProfileService";
 import { httpClient } from "@/providers/proxyProvider";
 import { ProfileZod } from "@/schemas/profile";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { Outlet, useLoaderData } from "react-router-dom";
 
 export type ProfileLayoutContextType = {
@@ -13,12 +13,11 @@ export type ProfileLayoutContextType = {
 
 export function ProfileLayout() {
   const profile = useLoaderData() as Awaited<ReturnType<typeof profileLoader>>
+  const repository = useMemo(() => new ProfileRepository(new ProfileService(httpClient)), [])
 
   if (!profile) {
     return <p>Não tem perfil nenhum aqui não</p>
   }
-  
-  const repository = new ProfileRepository(new ProfileService(httpClient))
   
   const updateProfile = useCallback(async (id: number, data: ProfileZod) => {
     return await repository.updateProfile(id, data)

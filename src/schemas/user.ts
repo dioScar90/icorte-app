@@ -11,12 +11,12 @@ export enum UserRolesEnum {
   Admin,
 }
 
-const roles = [
-  'Guest',
-  'Client',
-  'BarberShop',
-  'Admin',
-] as const
+// const roles = [
+//   'Guest',
+//   'Client',
+//   'BarberShop',
+//   'Admin',
+// ] as const
 
 export const userEmailUpdate = z.object({
   email: emailValidator(),
