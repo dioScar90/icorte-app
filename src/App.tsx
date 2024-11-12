@@ -12,15 +12,17 @@ import { ProtectedBarberShopRoute } from './protectedRoutes/barber-shop-protecte
 import { ProtectedAdminRoute } from './protectedRoutes/admin-protected-route'
 import { ROUTE_ENUM } from './types/route'
 import { RegisterBarberShop } from './pages/barber-shop/register'
-import { BarberShopDashboard } from './pages/barber-shop/dashboard'
+import { BarberShopDashboard } from './pages/barber-shop/barber-shop-dashboard'
 import { RemoveAll } from './pages/admin/remove-all'
 import { AdminDashboard } from './pages/admin/dashboard'
 import { ErrorRoutePage } from './pages/error-route'
 import { baseLoader } from './data/loaders/baseLoader'
 import { profileLoader } from './data/loaders/profileLoader'
-import { Edit } from './pages/profile/edit'
+import { ProfileEdit } from './pages/profile/profile-edit'
 import { MyProfile } from './pages/profile/my-profile'
 import { barberShopLoader } from './data/loaders/barberShopLoader'
+import { MyBarberShop } from './pages/barber-shop/my-barber-shop'
+import { BarberShopEdit } from './pages/barber-shop/barber-shop-edit'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -39,8 +41,8 @@ export function App() {
           
           <Route element={<ProtectedClientRoute />}>
             <Route path={ROUTE_ENUM.PROFILE} loader={profileLoader} element={<ProfileLayout />}>
-              <Route path=":id" element={<MyProfile />} />
-              <Route path=":id/edit" element={<Edit />} />
+              <Route path=":userId" element={<MyProfile />} />
+              <Route path=":userId/edit" element={<ProfileEdit />} />
             </Route>
 
             <Route path={ROUTE_ENUM.BARBER_SCHEDULE} element={<BarberScheduleLayout />}>
@@ -49,14 +51,14 @@ export function App() {
               <Route path="register" element={<Register />} />
             </Route>
           </Route>
-
+          
           <Route element={<ProtectedBarberShopRoute />}>
             <Route path={ROUTE_ENUM.BARBER_SHOP} loader={barberShopLoader} element={<BarberShopLayout />}>
-              <Route index element={<Home />} />
-              <Route path=":id" element={<p>Barber Shop</p>} />
-              <Route path=":id/edit" element={<p>Edit Barber Shop</p>} />
+              <Route index loader={async ({ params }) => !params.barberShopId ? redirect(ROUTE_ENUM.HOME) : null} />
               <Route path="register" element={<RegisterBarberShop />} />
-              <Route path="dashboard" element={<BarberShopDashboard />} />
+              <Route path=":barberShopId" element={<MyBarberShop />} />
+              <Route path=":barberShopId/edit" element={<BarberShopEdit />} />
+              <Route path=":barberShopId/dashboard" element={<BarberShopDashboard />} />
             </Route>
           </Route>
           

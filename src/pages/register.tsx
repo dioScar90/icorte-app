@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-import { UserForm } from "@/components/user-form";
+import { UserForm } from "@/components/forms/user-form";
 
 export function Register() {
   const navigate = useNavigate()

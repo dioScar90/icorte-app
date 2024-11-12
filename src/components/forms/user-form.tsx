@@ -1,20 +1,20 @@
 import { UserRegisterZod, UserUpdateZod } from "@/schemas/user"
 import { UseFormReturn } from "react-hook-form"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "./ui/form"
-import { Input } from "./ui/input"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "../ui/form"
+import { Input } from "../ui/input"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { getEnumAsArray, GetEnumAsString } from "@/utils/enum-as-array"
 import { GenderEnum } from "@/schemas/profile"
-import { Button } from "./ui/button"
+import { Button } from "../ui/button"
 
 type RegisterProps = {
-  id: undefined
+  isUpdate?: false
   form: UseFormReturn<UserRegisterZod>
   onSubmit(values: UserRegisterZod): Promise<void>
 }
 
 type UpdateProps = {
-  id: number
+  isUpdate: true
   form: UseFormReturn<UserUpdateZod>
   onSubmit(values: UserUpdateZod): Promise<void>
 }
@@ -22,7 +22,7 @@ type UpdateProps = {
 type Props = RegisterProps | UpdateProps
 
 function isUpdate(props: Props): props is UpdateProps {
-  return typeof props.id === 'number'
+  return !!props.isUpdate
 }
 
 export function UserForm(props: Props) {

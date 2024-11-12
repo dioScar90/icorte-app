@@ -61,17 +61,17 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: Aut
 
     items.push({
       title: "Minha barbearia",
-      url: ROUTE_ENUM.BARBER_SHOP,
+      url: `${ROUTE_ENUM.BARBER_SHOP}/${barberShopId}`,
       icon: StoreIcon,
       isActive: true,
       items: [
         {
           title: "Dashboard",
-          url: `${ROUTE_ENUM.BARBER_SHOP}/dashboard`,
+          url: `${ROUTE_ENUM.BARBER_SHOP}/${barberShopId}/dashboard`,
         },
         {
           title: "Editar",
-          url: `${ROUTE_ENUM.BARBER_SHOP}/edit/${barberShopId}`,
+          url: `${ROUTE_ENUM.BARBER_SHOP}/${barberShopId}/edit`,
         },
       ],
     })

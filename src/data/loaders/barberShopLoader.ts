@@ -1,14 +1,18 @@
 import { httpClient } from "@/providers/proxyProvider";
 import { LoaderFunctionArgs } from "react-router-dom";
-import { ProfileRepository } from "../repositories/ProfileRepository";
-import { ProfileService } from "../services/ProfileService";
+import { BarberShopRepository } from "../repositories/BarberShopRepository";
+import { BarberShopService } from "../services/BarberShopService";
 
 export async function barberShopLoader({ params }: LoaderFunctionArgs) {
-  const userId = +params.id!
+  if (!params.barberShopId) {
+    return null
+  }
+
+  const barberShopId = +params.barberShopId
   
   try {
-    const repository = new ProfileRepository(new ProfileService(httpClient))
-    const res = await repository.getProfileById(userId)
+    const repository = new BarberShopRepository(new BarberShopService(httpClient))
+    const res = await repository.getBarberShop(barberShopId)
     
     if (!res.isSuccess) {
       return null

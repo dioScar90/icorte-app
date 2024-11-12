@@ -4,14 +4,14 @@ import { UserMe } from "@/types/models/user"
 import { createContext, PropsWithChildren, useContext } from "react"
 import { useAuth } from "./authProvider"
 import { useProxy } from "./proxyProvider"
-import { BarberShopType } from "@/schemas/barberShop"
+import { BarberShopZod } from "@/schemas/barberShop"
 import { IBarberShopRepository } from "@/data/repositories/interfaces/IBarberShopRepository"
 
 export type BarberShopContextType = {
   userId: UserMe['id']
   isBarberShop: boolean
   barberShop?: NonNullable<UserMe['barberShop']>
-  register: (data: BarberShopType) => ReturnType<IBarberShopRepository['createBarberShop']>
+  register: (data: BarberShopZod) => ReturnType<IBarberShopRepository['createBarberShop']>
 }
 
 const BarberShopContext = createContext<BarberShopContextType | undefined>(undefined)
@@ -29,13 +29,13 @@ export function useBarberShop() {
 export function BarberShopProvider({ children }: PropsWithChildren) {
   const { httpClient } = useProxy()
   const { user } = useAuth()
-
+  
   const repository = new BarberShopRepository(new BarberShopService(httpClient))
-
-  const register = async (data: BarberShopType) => {
+  
+  const register = async (data: BarberShopZod) => {
     return await repository.createBarberShop(data)
   }
-
+  
   return (
     <BarberShopContext.Provider
       value={{

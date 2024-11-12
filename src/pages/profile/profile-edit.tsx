@@ -5,11 +5,11 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-import { UserForm } from "@/components/user-form";
+import { UserForm } from "@/components/forms/user-form";
 import { ProfileLayoutContextType } from "@/components/layouts/profile-layout";
 import { useCallback } from "react";
 
-export function Edit() {
+export function ProfileEdit() {
   const { updateProfile, profile } = useOutletContext<ProfileLayoutContextType>()
 
   const navigate = useNavigate()
@@ -48,7 +48,7 @@ export function Edit() {
   return (
     <>
       <h3>{profile.fullName}</h3>
-      <UserForm form={form} id={profile.id} onSubmit={onSubmit} />
+      <UserForm form={form} isUpdate onSubmit={onSubmit} />
     </>
   )
 }

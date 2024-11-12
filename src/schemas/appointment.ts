@@ -8,17 +8,15 @@ function dataIsEqualOrGreaterThenToday(informedDate: string) {
 }
 
 enum PaymentTypeEnum {
-  Card,
-  Cash,
-  Transfer,
-  Other
+  Cartão,
+  Dinheiro,
+  Pix,
 }
 
 const paymentTypeAsConst = [
-  'Card',
-  'Cash',
-  'Transfer',
-  'Other',
+  'Cartão',
+  'Dinheiro',
+  'Pix',
 ] as const
 
 export const appointmentSchema = z.object({

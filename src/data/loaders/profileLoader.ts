@@ -4,7 +4,11 @@ import { ProfileRepository } from "../repositories/ProfileRepository";
 import { ProfileService } from "../services/ProfileService";
 
 export async function profileLoader({ params }: LoaderFunctionArgs) {
-  const userId = +params.id!
+  if (!params.userId) {
+    return null
+  }
+
+  const userId = +params.userId
   
   try {
     const repository = new ProfileRepository(new ProfileService(httpClient))

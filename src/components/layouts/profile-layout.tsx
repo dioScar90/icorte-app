@@ -17,11 +17,11 @@ export function ProfileLayout() {
   if (!profile) {
     return <p>Não tem perfil nenhum aqui não</p>
   }
-
-  const profileRepository = new ProfileRepository(new ProfileService(httpClient))
+  
+  const repository = new ProfileRepository(new ProfileService(httpClient))
   
   const updateProfile = useCallback(async (id: number, data: ProfileZod) => {
-    return await profileRepository.updateProfile(id, data)
+    return await repository.updateProfile(id, data)
   }, [])
   
   return (
