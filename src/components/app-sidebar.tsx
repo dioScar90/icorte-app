@@ -86,11 +86,11 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: Aut
       items: [
         {
           title: "Meus agendamentos",
-          url: ROUTE_ENUM.BARBER_SCHEDULE + '/my-own',
+          url: ROUTE_ENUM.BARBER_SCHEDULE + '/dashboard',
         },
         {
           title: "Pesquisar",
-          url: ROUTE_ENUM.BARBER_SCHEDULE + '/seach',
+          url: ROUTE_ENUM.BARBER_SCHEDULE + '/schedule',
         },
       ],
     })
