@@ -1,16 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-import { Switch } from "@/components/ui/switch";
 import { AdminLayoutContextType, baseAdminSchema, BaseAdminZod } from "@/components/layouts/admin-layout";
 
-export function RemoveAll() {
-  const { removeAll } = useOutletContext<AdminLayoutContextType>()
+export function PopulateAll() {
+  const { populateAll } = useOutletContext<AdminLayoutContextType>()
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
   
@@ -23,13 +22,13 @@ export function RemoveAll() {
   
   async function onSubmit(values: BaseAdminZod) {
     try {
-      const result = await removeAll(values)
+      const result = await populateAll(values)
 
       if (!result.isSuccess) {
         throw result.error
       }
       
-      const message = 'Usuários removidos' + (values.evenMasterAdmin ? ', inclusive você, seu maluco!' : '')
+      const message = 'Usuários reinseridos, menos você né pae...'
       const url = `${ROUTE_ENUM.ADMIN}/dashboard`
       navigate(url, { state: { message } })
     } catch (err) {
@@ -39,7 +38,7 @@ export function RemoveAll() {
 
   return (
     <>
-      <h3>Remove all users and their related tables</h3>
+      <h3>Populate all users and their related tables again</h3>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
@@ -55,33 +54,10 @@ export function RemoveAll() {
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="evenMasterAdmin"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between gap-x-5 rounded-lg w-fit border p-4">
-                <div className="space-y-0.5">
-                  <FormLabel className="text-base">
-                    All father
-                  </FormLabel>
-                  <FormDescription>
-                    Remove master all father account too
-                  </FormDescription>
-                </div>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-
+          
           <FormRootErrorMessage />
 
-          <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>Remover tudo</Button>
+          <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>Reinserir tudo</Button>
         </form>
       </Form>
     </>

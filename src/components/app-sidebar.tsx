@@ -30,13 +30,36 @@ import { AuthContextType, useAuth } from "@/providers/authProvider"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Link, useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
+import { GenderEnum } from "@/schemas/profile"
+
+function getRandomInt(seed: number) {
+  // Usa o seed de entrada para gerar um número pseudo-aleatório entre 1 e 99
+  return (Math.abs(Math.sin(seed)) * 99 + 1) | 2;
+}
+
+function getImageUrl(user: AuthContextType['user']) {
+  if (user?.profile?.imageUrl) {
+    return user.profile.imageUrl
+  }
+  
+  if (user?.profile?.gender === undefined || user?.profile?.gender === null) {
+    return undefined
+  }
+  
+  const gender = user.profile.gender === GenderEnum.Masculino ? 'men' : 'women'
+  const imageId = getRandomInt(user.id)
+  return `https://randomuser.me/api/portraits/${gender}/${imageId}.jpg`
+}
 
 function getUserInfosToSidebar({ user }: AuthContextType) {
+  const imageUrl = getImageUrl(user)
+
+  console.log('imageUrl', imageUrl)
   return {
     id: user?.profile?.id!,
     name: user?.profile?.firstName ?? 'Diogo',
     email: user?.email ?? 'diogols@live.com',
-    avatar: user?.profile?.imageUrl ?? "https://randomuser.me/api/portraits/men/9.jpg",
+    avatar: imageUrl,
     isBarber: !!user?.barberShop,
   }
 }
@@ -110,6 +133,14 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: Aut
         {
           title: "Remove all",
           url: ROUTE_ENUM.ADMIN + '/remove-all',
+        },
+        {
+          title: "Populate all",
+          url: ROUTE_ENUM.ADMIN + '/populate-all',
+        },
+        {
+          title: "Reset password",
+          url: ROUTE_ENUM.ADMIN + '/reset-password',
         },
       ],
     })

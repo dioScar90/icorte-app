@@ -38,7 +38,7 @@ export function NavUser({
     id: number
     name: string
     email: string
-    avatar: string
+    avatar?: string
     isBarber: boolean
   },
   onClickLogout: () => Promise<void>,

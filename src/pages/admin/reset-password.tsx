@@ -1,35 +1,35 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-import { Switch } from "@/components/ui/switch";
-import { AdminLayoutContextType, baseAdminSchema, BaseAdminZod } from "@/components/layouts/admin-layout";
+import { AdminLayoutContextType, resetPasswordSchema, ResetPasswordZod } from "@/components/layouts/admin-layout";
 
-export function RemoveAll() {
-  const { removeAll } = useOutletContext<AdminLayoutContextType>()
+export function ResetPassword() {
+  const { resetPassword } = useOutletContext<AdminLayoutContextType>()
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
   
-  const form = useForm<BaseAdminZod>({
-    resolver: zodResolver(baseAdminSchema),
+  const form = useForm<ResetPasswordZod>({
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       passphrase: '',
+      email: '',
     }
   })
   
-  async function onSubmit(values: BaseAdminZod) {
+  async function onSubmit(values: ResetPasswordZod) {
     try {
-      const result = await removeAll(values)
+      const result = await resetPassword(values)
 
       if (!result.isSuccess) {
         throw result.error
       }
       
-      const message = 'Usuários removidos' + (values.evenMasterAdmin ? ', inclusive você, seu maluco!' : '')
+      const message = 'Senha resetada'
       const url = `${ROUTE_ENUM.ADMIN}/dashboard`
       navigate(url, { state: { message } })
     } catch (err) {
@@ -39,7 +39,7 @@ export function RemoveAll() {
 
   return (
     <>
-      <h3>Remove all users and their related tables</h3>
+      <h3>Reset user's password</h3>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
@@ -55,30 +55,21 @@ export function RemoveAll() {
               </FormItem>
             )}
           />
-
+          
           <FormField
             control={form.control}
-            name="evenMasterAdmin"
+            name="email"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between gap-x-5 rounded-lg w-fit border p-4">
-                <div className="space-y-0.5">
-                  <FormLabel className="text-base">
-                    All father
-                  </FormLabel>
-                  <FormDescription>
-                    Remove master all father account too
-                  </FormDescription>
-                </div>
+              <FormItem>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
+                  <Input type="email" placeholder="Digite o email do usuário" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
-
+          
           <FormRootErrorMessage />
 
           <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>Remover tudo</Button>

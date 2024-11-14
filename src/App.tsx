@@ -27,6 +27,8 @@ import { MyAppointmentsPage } from './pages/barber-schedule/dashboard'
 import { AppointmentPage } from './pages/barber-schedule/appointment'
 import { SchedulePage } from './pages/barber-schedule/schedule'
 import { SchedulePushPage } from './pages/barber-schedule/set-appointment'
+import { PopulateAll } from './pages/admin/populate-all'
+import { ResetPassword } from './pages/admin/reset-password'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -73,6 +75,8 @@ export function App() {
               <Route index loader={async () => redirect(`${ROUTE_ENUM.ADMIN}/dashboard`)} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="remove-all" element={<RemoveAll />} />
+              <Route path="populate-all" element={<PopulateAll />} />
+              <Route path="reset-password" element={<ResetPassword />} />
             </Route>
           </Route>
 
