@@ -1,4 +1,4 @@
-import { BaseAdminZod, ResetPasswordZod } from "@/components/layouts/admin-layout";
+import { AppointmentsAdminZod, BaseAdminZod, ResetPasswordZod } from "@/components/layouts/admin-layout";
 import { IAdminService } from "./interfaces/IAdminService";
 import { AxiosInstance } from "axios";
 
@@ -14,12 +14,38 @@ function getUrl(type: UrlType) {
   return `${baseEndpoint}/${type}`
 }
 
-function getEvenMasterAdminQueryParams(evenMasterAdmin?: boolean) {
-  if (evenMasterAdmin !== true) {
+type QueryParamsType = Partial<{
+  evenMasterAdmin: boolean
+  firstDate: string
+  limitDate: string
+}>
+
+function getQueryParams(params?: QueryParamsType) {
+  if (!params) {
     return ''
   }
   
-  return '?' + (new URLSearchParams({ evenMasterAdmin: 'true' }).toString())
+  const searchParams = new URLSearchParams()
+  
+  for (const key in params) {
+    const value = params[key as keyof typeof params]
+    
+    if (value === undefined) {
+      continue
+    }
+    
+    if (Array.isArray(value)) {
+      value.forEach(item => searchParams.append(key, String(item)))
+    } else {
+      searchParams.append(key, String(value))
+    }
+  }
+  
+  if (searchParams.size === 0) {
+    return ''
+  }
+  
+  return '?' + searchParams.toString()
 }
 
 function getPassphraseAsCustomizedHeader(passphrase: string) {
@@ -36,7 +62,7 @@ export class AdminService implements IAdminService {
   constructor(private readonly httpClient: AxiosInstance) { }
   
   async removeAll({ passphrase, evenMasterAdmin }: BaseAdminZod) {
-    const url = getUrl(UrlType.RemoveAll) + getEvenMasterAdminQueryParams(evenMasterAdmin)
+    const url = getUrl(UrlType.RemoveAll) + getQueryParams({ evenMasterAdmin })
     return await this.httpClient.delete(url, getPassphraseAsCustomizedHeader(passphrase))
   }
   
@@ -45,13 +71,14 @@ export class AdminService implements IAdminService {
     return await this.httpClient.post(url, null, getPassphraseAsCustomizedHeader(passphrase))
   }
   
-  async populateWithAppointments({ passphrase }: BaseAdminZod) {
-    const url = getUrl(UrlType.Appointments)
+  async populateWithAppointments({ passphrase, firstDate, limitDate }: AppointmentsAdminZod) {
+    const url = getUrl(UrlType.Appointments) + getQueryParams({ firstDate, limitDate })
     return await this.httpClient.post(url, null, getPassphraseAsCustomizedHeader(passphrase))
   }
   
   async resetPasswordForSomeUser({ passphrase, email }: ResetPasswordZod) {
     const url = getUrl(UrlType.ResetPassword)
+    console.log('url', url)
     return await this.httpClient.post(url, { email }, getPassphraseAsCustomizedHeader(passphrase))
   }
 }

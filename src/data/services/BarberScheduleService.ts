@@ -42,6 +42,11 @@ function getQueryParams(params?: QueryParamsType) {
   
   for (const key in params) {
     const value = params[key as keyof typeof params]
+    
+    if (value === undefined) {
+      continue
+    }
+    
 
     if (Array.isArray(value)) {
       value.forEach(item => searchParams.append(key, String(item)))

@@ -1,4 +1,10 @@
+import { getToday } from "@/utils/date";
 import { DateOnly } from "@/utils/types/date";
+
+export function dataIsEqualOrGreaterThenToday(informedDate: string) {
+  const todayDate = getToday({ isDateIso: true }) as string
+  return informedDate >= todayDate
+}
 
 const isValidYear = (year: string) => !isNaN(+year) && +year > 2000
 const isValidMonth = (month: string) => !isNaN(+month) && +month > 0 && +month <= 12

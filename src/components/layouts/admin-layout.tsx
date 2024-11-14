@@ -13,18 +13,29 @@ export const baseAdminSchema = z.object({
   evenMasterAdmin,
 })
 
+export const appointmentsAdminSchema = z.object({
+  passphrase,
+  firstDate: z.date()
+    .transform(value => !value ? undefined : value.toISOString().split('T')[0] )
+    .optional(),
+  limitDate: z.date()
+    .transform(value => !value ? undefined : value.toISOString().split('T')[0])
+    .optional(),
+})
+
 export const resetPasswordSchema = z.object({
   passphrase,
   email: z.string().email('Email inválido'),
 })
 
 export type BaseAdminZod = z.infer<typeof baseAdminSchema>
+export type AppointmentsAdminZod = z.infer<typeof appointmentsAdminSchema>
 export type ResetPasswordZod = z.infer<typeof resetPasswordSchema>
 
 export type AdminLayoutContextType = {
   removeAll: (data: BaseAdminZod) => Promise<ReturnType<AdminRepository['removeAll']>>
   populateAll: (data: BaseAdminZod) => Promise<ReturnType<AdminRepository['populateAll']>>
-  popAppointments: (data: BaseAdminZod) => Promise<ReturnType<AdminRepository['populateWithAppointments']>>
+  popAppointments: (data: AppointmentsAdminZod) => Promise<ReturnType<AdminRepository['populateWithAppointments']>>
   resetPassword: (data: ResetPasswordZod) => Promise<ReturnType<AdminRepository['resetPasswordForSomeUser']>>
 }
 
@@ -39,7 +50,7 @@ export function AdminLayout() {
     return await repository.populateAll(data)
   }, [])
   
-  const popAppointments = useCallback(async (data: BaseAdminZod) => {
+  const popAppointments = useCallback(async (data: AppointmentsAdminZod) => {
     return await repository.populateWithAppointments(data)
   }, [])
   

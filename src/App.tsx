@@ -29,6 +29,7 @@ import { SchedulePage } from './pages/barber-schedule/schedule'
 import { SchedulePushPage } from './pages/barber-schedule/set-appointment'
 import { PopulateAll } from './pages/admin/populate-all'
 import { ResetPassword } from './pages/admin/reset-password'
+import { PopulateAppointments } from './pages/admin/populate-appointments'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -76,6 +77,7 @@ export function App() {
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="remove-all" element={<RemoveAll />} />
               <Route path="populate-all" element={<PopulateAll />} />
+              <Route path="populate-appointments" element={<PopulateAppointments />} />
               <Route path="reset-password" element={<ResetPassword />} />
             </Route>
           </Route>

@@ -1,11 +1,5 @@
-import { getToday } from '@/utils/date'
 import { z } from 'zod'
-import { getStringAsDateOnly } from './sharedValidators/dateOnly'
-
-function dataIsEqualOrGreaterThenToday(informedDate: string) {
-  const todayDate = getToday({ isDateIso: true }) as string
-  return informedDate >= todayDate
-}
+import { dataIsEqualOrGreaterThenToday, getStringAsDateOnly } from './sharedValidators/dateOnly'
 
 enum PaymentTypeEnum {
   Cartão,

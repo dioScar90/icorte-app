@@ -1,7 +1,7 @@
 import { Result } from "@/data/result";
 import { IAdminRepository } from "./interfaces/IAdminRepository";
 import { IAdminService } from "../services/interfaces/IAdminService";
-import { BaseAdminZod, ResetPasswordZod } from "@/components/layouts/admin-layout";
+import { AppointmentsAdminZod, BaseAdminZod, ResetPasswordZod } from "@/components/layouts/admin-layout";
 
 export class AdminRepository implements IAdminRepository {
   constructor(private readonly service: IAdminService) { }
@@ -24,7 +24,7 @@ export class AdminRepository implements IAdminRepository {
     }
   }
 
-  async populateWithAppointments(data: BaseAdminZod) {
+  async populateWithAppointments(data: AppointmentsAdminZod) {
     try {
       await this.service.populateWithAppointments(data);
       return Result.Success()

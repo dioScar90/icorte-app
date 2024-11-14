@@ -139,6 +139,10 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: Aut
           url: ROUTE_ENUM.ADMIN + '/populate-all',
         },
         {
+          title: "Populate appointments",
+          url: ROUTE_ENUM.ADMIN + '/populate-appointments',
+        },
+        {
           title: "Reset password",
           url: ROUTE_ENUM.ADMIN + '/reset-password',
         },
