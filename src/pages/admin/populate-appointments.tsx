@@ -148,7 +148,7 @@ export function PopulateAppointments() {
           
           <FormRootErrorMessage />
 
-          <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>Reinserir tudo</Button>
+          <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>Marcar horários</Button>
         </form>
       </Form>
     </>
