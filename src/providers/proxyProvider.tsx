@@ -3,7 +3,7 @@ import axios, { AxiosError, AxiosInstance } from 'axios'
 import { BaseDataError, InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from "@/providers/handleErrorProvider"
 
 export const httpClient = axios.create({
-  baseURL: process.env.BASE_URL ?? import.meta.env.VITE_BASE_URL,
+  baseURL: process.env.APP_BASE_URL ?? import.meta.env.VITE_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
