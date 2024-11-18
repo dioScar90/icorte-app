@@ -24,11 +24,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
 import { ROUTE_ENUM } from "@/types/route"
 import { AuthContextType, useAuth } from "@/providers/authProvider"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 import { GenderEnum } from "@/schemas/profile"
 
@@ -169,9 +170,11 @@ function getNavSecondaryItemsToSidebar() {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { setOpen } = useSidebar()
+  const { pathname } = useLocation()
   const userInfos = useAuth()
   const navigate = useNavigate()
-
+  
   const onClickLogout = React.useCallback(() => Swal.fire({
     icon: 'question',
     title: 'Logout',
@@ -187,6 +190,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         .then(({ isSuccess }) => isSuccess ? navigate(`${ROUTE_ENUM.LOGIN}`) : null)
     }
   }), [])
+  
+  React.useLayoutEffect(() => {
+    setOpen(pathname === ROUTE_ENUM.ROOT || pathname === ROUTE_ENUM.HOME)
+  }, [pathname])
   
   return (
     <Sidebar collapsible="icon" variant="floating" {...props}>

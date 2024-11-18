@@ -41,6 +41,8 @@ import { Service } from "@/types/models/service"
 import { ServiceByName } from "@/types/custom-models/service-by-name"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
 import { debounce } from "@/utils/debounce"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Prettify } from "@/utils/types/prettify"
 
 const data: Payment[] = [
   {
@@ -184,10 +186,10 @@ function getNotFoundState() {
     description: NOT_FOUND_TEXT,
     price: 0.00,
     duration: '00:00:00',
-  }
+  } as const
 }
 
-type InitialState = ReturnType<typeof getInitialValue>
+type InitialState = Prettify<ReturnType<typeof getInitialValue>>
 
 const INITIAL_TEXT = 'Digite para começar'
 
@@ -200,15 +202,16 @@ function getInitialValue() {
     description: INITIAL_TEXT,
     price: 0.00,
     duration: '00:00:00',
-  }
+  } as const
 }
 
-type NotFoundState = ReturnType<typeof getNotFoundState>
+type NotFoundState = Prettify<ReturnType<typeof getNotFoundState>>
 
-type ServiceState = ServiceByName[] | InitialState | NotFoundState
+type OneOrMoreServices = [ServiceByName, ...ServiceByName[]]
+type ServiceState = OneOrMoreServices | [InitialState] | [NotFoundState]
 
 type ServiceAction =
-  | { type: 'SET_MANY', payload: ServiceByName[] }
+  | { type: 'SET_MANY', payload: OneOrMoreServices }
   | { type: 'SET_NOT_FOUND' }
   | { type: 'CLEAR' }
 
@@ -217,248 +220,121 @@ function serviceReducer(_: ServiceState, action: ServiceAction): ServiceState {
     case 'SET_MANY':
       return [...action.payload]
     case 'SET_NOT_FOUND':
-      return getNotFoundState()
+      return [getNotFoundState()]
     case 'CLEAR':
-      return getInitialValue()
+      return [getInitialValue()]
     default:
-      return getNotFoundState()
+      return [getNotFoundState()]
   }
 }
 
-function getServicesTableRow(state: ServiceState) {
-  const isInitial = (_st: ServiceState): _st is InitialState => !Array.isArray(_st) && _st.name === INITIAL_TEXT
-  const isNotFound = (_st: ServiceState): _st is NotFoundState => !Array.isArray(_st) && _st.name === NOT_FOUND_TEXT
-
-  if (isInitial(state) || isNotFound(state)) {
+function getServiceTableRow<T extends ServiceState[number]>(stateItem: T) {
+  const isInitial = (_st: ServiceState[number]): _st is InitialState => _st.name === INITIAL_TEXT
+  const isNotFound = (_st: ServiceState[number]): _st is NotFoundState => _st.name === NOT_FOUND_TEXT
+  
+  if (isInitial(stateItem)) {
     return (
-      <TableRow key={state.id}>
-        <TableCell colSpan={100}>{state.name}</TableCell>
+      <TableRow key={stateItem.id}>
+        <TableCell colSpan={100}>{stateItem.name}</TableCell>
       </TableRow>
-    )
+    );
   }
   
-  return state.map(item => {
+  if (isNotFound(stateItem)) {
     return (
-      <TableRow key={item.id}>
-        <TableCell className="font-medium">{item.barberShopName}</TableCell>
-        <TableCell>{item.name}</TableCell>
-        <TableCell>{item.description}</TableCell>
-        <TableCell className="text-right">{item.price}</TableCell>
+      <TableRow key={stateItem.id}>
+        <TableCell colSpan={100}>{stateItem.name}</TableCell>
       </TableRow>
-    )
-  })
+    );
+  }
+  
+  return (
+    <TableRow key={stateItem.id}>
+      <TableCell className="font-medium">{stateItem.barberShopName}</TableCell>
+      <TableCell>{stateItem.name}</TableCell>
+      <TableCell className="line-clamp-2">{stateItem.description}</TableCell>
+      <TableCell className="text-right">{stateItem.price}</TableCell>
+    </TableRow>
+  );
 }
 
 export function SchedulePage() {
   const { handleError } = useHandleErrors()
   const { servicesByName } = useOutletContext<BarberScheduleLayoutContextType>()
-  const [state, dispatch] = useReducer(serviceReducer, getInitialValue())
+  const [state, dispatch] = useReducer(serviceReducer, [getInitialValue()])
   const [value, setValue] = useState('')
   const [valueToDebounce, setValueToDebounce] = useState('')
-  
-  // const [sorting, setSorting] = useState<SortingState>([])
-  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
-  //   []
-  // )
-  // const [columnVisibility, setColumnVisibility] =
-  //   useState<VisibilityState>({})
-  // const [rowSelection, setRowSelection] = useState({})
-
-  // const table = useReactTable({
-  //   data,
-  //   columns,
-  //   onSortingChange: setSorting,
-  //   onColumnFiltersChange: setColumnFilters,
-  //   getCoreRowModel: getCoreRowModel(),
-  //   getPaginationRowModel: getPaginationRowModel(),
-  //   getSortedRowModel: getSortedRowModel(),
-  //   getFilteredRowModel: getFilteredRowModel(),
-  //   onColumnVisibilityChange: setColumnVisibility,
-  //   onRowSelectionChange: setRowSelection,
-  //   state: {
-  //     sorting,
-  //     columnFilters,
-  //     columnVisibility,
-  //     rowSelection,
-  //   },
-  // })
 
   const setValueeeee = useCallback(debounce(function(val: string) {
     setValueToDebounce(val)
   }), [])
   
   useEffect(() => {
-    // setTimeout(() => {
-      // servicesByName('   cort   mESSi   cR7 ')
-      servicesByName(valueToDebounce)
-        .then(resp => resp)
-        .then(resp => {console.log('resp_vaaaaaai', resp);
-          if (!resp.isSuccess) {
-            dispatch({ type: 'CLEAR' })
-            handleError(resp.error)
-            return
-          }
-          
-          if (!resp.value.items.length) {
-            dispatch({ type: 'SET_NOT_FOUND' })
-            return
-          }
-          
-          dispatch({ type: 'SET_MANY', payload: resp.value.items })
-        })
-        .catch(err => {
+    servicesByName(valueToDebounce)
+      .then(resp => resp)
+      .then(resp => {//console.log('resp_vaaaaaai', resp);
+        if (!resp.isSuccess) {
           dispatch({ type: 'CLEAR' })
-          handleError(err)
-        })
-    // }, 2_000)
+          handleError(resp.error)
+          return
+        }
+        
+        if (!resp.value.items.length) {
+          dispatch({ type: 'SET_NOT_FOUND' })
+          return
+        }
+        
+        dispatch({ type: 'SET_MANY', payload: resp.value.items as OneOrMoreServices })
+      })
+      .catch(err => {
+        dispatch({ type: 'CLEAR' })
+        handleError(err)
+      })
   }, [valueToDebounce])
   
   return (
     <>
-      <Input
-        placeholder="Digite qual serviço deseja"
-        value={value}
-        onChange={e => {
-          setValue(e.currentTarget.value)
-          setValueeeee(e.currentTarget.value)
-        }}
-        className="max-w-sm"
-      />
-      <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Barbearia</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {getServicesTableRow(state)}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right">$2,500.00</TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
+      <div className="flex h-screen w-full items-start justify-center py-4 px-4">
+        <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
+          <CardHeader>
+            <CardTitle className="text-2xl">Serviços</CardTitle>
+            <CardDescription>
+              Pesquise um serviço desejado para continuar
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Input
+                  placeholder="Digite qual serviço deseja"
+                  value={value}
+                  onChange={e => {
+                    setValue(e.currentTarget.value)
+                    setValueeeee(e.currentTarget.value)
+                  }}
+                  className="max-w-sm"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[100px]">Barbearia</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Method</TableHead>
+                      <TableHead className="text-right">Amount</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {state.map(getServiceTableRow)}
+                    {/* {getServiceTableRow(state)} */}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </>
   )
-
-  // return (
-  //   <div className="w-full">
-  //     <div className="flex items-center py-4">
-  //       <Input
-  //         placeholder="Filter emails..."
-  //         value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-  //         onChange={(event) =>
-  //           table.getColumn("email")?.setFilterValue(event.target.value)
-  //         }
-  //         className="max-w-sm"
-  //       />
-  //       <DropdownMenu>
-  //         <DropdownMenuTrigger asChild>
-  //           <Button variant="outline" className="ml-auto">
-  //             Columns <ChevronDown />
-  //           </Button>
-  //         </DropdownMenuTrigger>
-  //         <DropdownMenuContent align="end">
-  //           {table
-  //             .getAllColumns()
-  //             .filter((column) => column.getCanHide())
-  //             .map((column) => {
-  //               return (
-  //                 <DropdownMenuCheckboxItem
-  //                   key={column.id}
-  //                   className="capitalize"
-  //                   checked={column.getIsVisible()}
-  //                   onCheckedChange={(value) =>
-  //                     column.toggleVisibility(!!value)
-  //                   }
-  //                 >
-  //                   {column.id}
-  //                 </DropdownMenuCheckboxItem>
-  //               )
-  //             })}
-  //         </DropdownMenuContent>
-  //       </DropdownMenu>
-  //     </div>
-  //     <div className="rounded-md border">
-  //       <Table>
-  //         <TableHeader>
-  //           {table.getHeaderGroups().map((headerGroup) => (
-  //             <TableRow key={headerGroup.id}>
-  //               {headerGroup.headers.map((header) => {
-  //                 return (
-  //                   <TableHead key={header.id}>
-  //                     {header.isPlaceholder
-  //                       ? null
-  //                       : flexRender(
-  //                           header.column.columnDef.header,
-  //                           header.getContext()
-  //                         )}
-  //                   </TableHead>
-  //                 )
-  //               })}
-  //             </TableRow>
-  //           ))}
-  //         </TableHeader>
-  //         <TableBody>
-  //           {table.getRowModel().rows?.length ? (
-  //             table.getRowModel().rows.map((row) => (
-  //               <TableRow
-  //                 key={row.id}
-  //                 data-state={row.getIsSelected() && "selected"}
-  //               >
-  //                 {row.getVisibleCells().map((cell) => (
-  //                   <TableCell key={cell.id}>
-  //                     {flexRender(
-  //                       cell.column.columnDef.cell,
-  //                       cell.getContext()
-  //                     )}
-  //                   </TableCell>
-  //                 ))}
-  //               </TableRow>
-  //             ))
-  //           ) : (
-  //             <TableRow>
-  //               <TableCell
-  //                 colSpan={columns.length}
-  //                 className="h-24 text-center"
-  //               >
-  //                 No results.
-  //               </TableCell>
-  //             </TableRow>
-  //           )}
-  //         </TableBody>
-  //       </Table>
-  //     </div>
-  //     <div className="flex items-center justify-end space-x-2 py-4">
-  //       <div className="flex-1 text-sm text-muted-foreground">
-  //         {table.getFilteredSelectedRowModel().rows.length} of{" "}
-  //         {table.getFilteredRowModel().rows.length} row(s) selected.
-  //       </div>
-  //       <div className="space-x-2">
-  //         <Button
-  //           variant="outline"
-  //           size="sm"
-  //           onClick={() => table.previousPage()}
-  //           disabled={!table.getCanPreviousPage()}
-  //         >
-  //           Previous
-  //         </Button>
-  //         <Button
-  //           variant="outline"
-  //           size="sm"
-  //           onClick={() => table.nextPage()}
-  //           disabled={!table.getCanNextPage()}
-  //         >
-  //           Next
-  //         </Button>
-  //       </div>
-  //     </div>
-  //   </div>
-  // )
 }
