@@ -3,7 +3,7 @@ import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
-import { Loader2, LucideIcon } from "lucide-react"
+import { Loader2 } from "lucide-react"
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
@@ -40,11 +40,12 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   isLoading?: boolean
-  Icon?: ReactNode
+  IconLeft?: ReactNode
+  IconRight?: ReactNode
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, isLoading, Icon, children, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, isLoading, IconLeft, IconRight, children, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
       <Comp
@@ -53,8 +54,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         <>
-          {Icon && (!isLoading ? Icon : <Loader2 className="animate-spin" />)}
+          {IconLeft && (!isLoading ? IconLeft : <Loader2 className="animate-spin" />)}
           {children}
+          {IconRight && (!isLoading ? IconRight : <Loader2 className="animate-spin" />)}
         </>
       </Comp>
     )

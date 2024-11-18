@@ -45,13 +45,13 @@ export function LoginForm() {
           </div>
           <Button
             type="submit" className="w-full"
-            Icon={<LogInIcon />}
+            IconLeft={<LogInIcon />}
           >
             Login
           </Button>
           <Button
             variant="outline" className="w-full"
-            Icon={<GoogleSvg />}
+            IconLeft={<GoogleSvg />}
           >
             Login with Google
           </Button>

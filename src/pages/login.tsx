@@ -99,7 +99,7 @@ export function Login() {
 
                   <Button
                     type="submit" className="w-full"
-                    Icon={<LogInIcon />}
+                    IconLeft={<LogInIcon />}
                   >
                     Login
                   </Button>
@@ -110,7 +110,7 @@ export function Login() {
                       variant: "destructive",
                       description: "Indisponível no momento",
                     })}
-                    Icon={<GoogleSvg />}
+                    IconLeft={<GoogleSvg />}
                   >
                     Login with Google
                   </Button>
