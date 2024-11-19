@@ -11,4 +11,14 @@ export default defineConfig({
     },
   },
   base: "/icorte-app/",
+  build: {
+    rollupOptions: {
+      output: {
+        // Isso garante que as páginas de erro 404 sejam redirecionadas para o index.html
+        entryFileNames: `[name].[hash].js`,
+        chunkFileNames: `[name].[hash].js`,
+        assetFileNames: `[name].[hash].[ext]`,
+      },
+    },
+  },
 })
