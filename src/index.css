@@ -111,8 +111,7 @@
   main {
     --header-height: 4rem;
     --footer-height: 50px;
-    /* --role-main-min-height: calc(50vh - var(--header-height) - var(--footer-height)); */
-    --role-main-min-height: 50vh;
+    --role-main-min-height: calc(100vh - var(--header-height) - var(--footer-height));
     
     > header {
       @apply flex h-[--header-height] shrink-0 items-center gap-2;
@@ -125,8 +124,8 @@
     > section[role="main"] {
       @apply flex flex-1 flex-col gap-3 p-2 md:pl-1 pt-0 min-h-[--role-main-min-height];
 
-      &.loading-page {
-        @apply opacity-25 transition-opacity duration-200 delay-200;
+      &.loading-new-page {
+        @apply opacity-35 transition-opacity duration-200 delay-75;
       }
 
       > .before-outlet {

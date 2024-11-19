@@ -8,7 +8,7 @@ import { BarberShopLayoutContextType } from "@/components/layouts/barber-shop-la
 import { BarberShopForm } from "@/components/forms/barber-shop-form";
 
 export function RegisterBarberShop() {
-  const { register, barberShop } = useOutletContext<BarberShopLayoutContextType>()
+  const { register } = useOutletContext<BarberShopLayoutContextType>()
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
   
@@ -35,12 +35,14 @@ export function RegisterBarberShop() {
   async function onSubmit(values: BarberShopZod) {
     try {
       const result = await register(values)
-
+      
       if (!result.isSuccess) {
         throw result.error
       }
-
-      navigate(`${ROUTE_ENUM.BARBER_SHOP}/${barberShop.id}/dashboard`, { state: { message: result.value?.message } })
+      
+      const url = `${ROUTE_ENUM.BARBER_SHOP}/${result.value.item.id}/dashboard`
+      const message = result.value?.message
+      navigate(url, { state: { message } })
     } catch (err) {
       handleError(err, form)
     }

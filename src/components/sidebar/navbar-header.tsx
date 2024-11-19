@@ -1,7 +1,7 @@
-import { ModeToggle } from "./mode-toggle";
-import { SidebarTrigger } from "./ui/sidebar";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "./ui/breadcrumb";
-import { Separator } from "./ui/separator";
+import { ModeToggle } from "../mode-toggle";
+import { SidebarTrigger } from "../ui/sidebar";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "../ui/breadcrumb";
+import { Separator } from "../ui/separator";
 
 export function NavbarHeader() {
   return (

@@ -143,7 +143,7 @@ function getNotFoundState() {
   } as const
 }
 
-type InitialState = Prettify<ReturnType<typeof getInitialValue>>
+type NotFoundState = Prettify<ReturnType<typeof getNotFoundState>>
 
 const INITIAL_TEXT = 'Digite para começar'
 
@@ -159,7 +159,7 @@ function getInitialValue() {
   } as const
 }
 
-type NotFoundState = Prettify<ReturnType<typeof getNotFoundState>>
+type InitialState = Prettify<ReturnType<typeof getInitialValue>>
 
 type OneOrMoreServices = [ServiceByName, ...ServiceByName[]]
 type ServiceState = OneOrMoreServices | [InitialState] | [NotFoundState]
@@ -170,6 +170,7 @@ type ServiceAction =
   | { type: 'CLEAR' }
 
 function serviceReducer(_: ServiceState, action: ServiceAction): ServiceState {
+  console.log('action.type', action.type)
   switch (action.type) {
     case 'SET_MANY':
       return [...action.payload]
@@ -212,38 +213,40 @@ function getServiceTableRow<T extends ServiceState[number]>(stateItem: T) {
   );
 }
 
+const initialState: [InitialState] = [getInitialValue()]
+
 export function SchedulePage() {
   const { handleError } = useHandleErrors()
   const { servicesByName } = useOutletContext<BarberScheduleLayoutContextType>()
-  const [state, dispatch] = useReducer(serviceReducer, [getInitialValue()])
+  const [state, dispatch] = useReducer(serviceReducer, initialState)
   const [value, setValue] = useState('')
   const [valueToDebounce, setValueToDebounce] = useState('')
-
-  const setValueeeee = useCallback(debounce(function(val: string) {
-    setValueToDebounce(val)
-  }), [])
+  
+  const setValueeeee = useCallback(debounce(setValueToDebounce), [])
   
   useEffect(() => {
-    servicesByName(valueToDebounce)
-      .then(resp => resp)
-      .then(resp => {//console.log('resp_vaaaaaai', resp);
-        if (!resp.isSuccess) {
+    if (!valueToDebounce.length) {
+      dispatch({ type: 'CLEAR' })
+    } else {
+      servicesByName(valueToDebounce)
+        .then(resp => resp)
+        .then(resp => {
+          if (!resp.isSuccess) {
+            throw resp.error
+          }
+          
+          if (!resp.value.items.length) {
+            dispatch({ type: 'SET_NOT_FOUND' })
+            return
+          }
+          
+          dispatch({ type: 'SET_MANY', payload: resp.value.items as OneOrMoreServices })
+        })
+        .catch(err => {
           dispatch({ type: 'CLEAR' })
-          handleError(resp.error)
-          return
-        }
-        
-        if (!resp.value.items.length) {
-          dispatch({ type: 'SET_NOT_FOUND' })
-          return
-        }
-        
-        dispatch({ type: 'SET_MANY', payload: resp.value.items as OneOrMoreServices })
-      })
-      .catch(err => {
-        dispatch({ type: 'CLEAR' })
-        handleError(err)
-      })
+          handleError(err)
+        })
+    }
   }, [valueToDebounce])
   
   return (
@@ -264,7 +267,7 @@ export function SchedulePage() {
                   value={value}
                   onChange={e => {
                     setValue(e.currentTarget.value)
-                    setValueeeee(e.currentTarget.value)
+                    setValueeeee(e.currentTarget.value?.trim() ?? '')
                   }}
                   className="max-w-sm"
                 />
@@ -281,7 +284,6 @@ export function SchedulePage() {
                   </TableHeader>
                   <TableBody>
                     {state.map(getServiceTableRow)}
-                    {/* {getServiceTableRow(state)} */}
                   </TableBody>
                 </Table>
               </div>

@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Link } from "react-router-dom"
 import { ROUTE_ENUM } from "@/types/route"
-import { Button } from "./ui/button"
+import { Button } from "../ui/button"
 
 export function NavUser({
   user,
@@ -41,7 +41,7 @@ export function NavUser({
     avatar?: string
     isBarber: boolean
   },
-  onClickLogout: () => Promise<void>,
+  onClickLogout: () => void,
 }) {
   const { isMobile } = useSidebar()
 

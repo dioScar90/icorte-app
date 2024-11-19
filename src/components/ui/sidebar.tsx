@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
@@ -190,10 +190,15 @@ const Sidebar = React.forwardRef<
         </div>
       )
     }
-
+    
     if (isMobile) {
       return (
         <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+          {/* These two components bellow is important for some reason to not display console error message when on mobile. */}
+          {/* This solution was gotten in 'https://github.com/shadcn-ui/ui/issues/5746#issuecomment-2480835326' */}
+          <SheetTitle className="hidden"></SheetTitle> {/* 👈🏻 */}
+          <SheetDescription className="hidden"></SheetDescription> {/* 👈🏻 */}
+          
           <SheetContent
             data-sidebar="sidebar"
             data-mobile="true"

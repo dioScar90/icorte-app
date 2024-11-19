@@ -1,4 +1,4 @@
-import { ComponentProps, useCallback, useEffect } from "react"
+import { ComponentProps, useCallback, useLayoutEffect, useState } from "react"
 import logoImgUrl from '/barber.png'
 import {
   BriefcaseBusinessIcon,
@@ -12,9 +12,9 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/sidebar/nav-main"
+import { NavSecondary } from "@/components/sidebar/nav-secondary"
+import { NavUser } from "@/components/sidebar/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/sidebar"
 import { ROUTE_ENUM } from "@/types/route"
 import { AuthContextType, useAuth } from "@/providers/authProvider"
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 import { GenderEnum } from "@/schemas/profile"
@@ -170,30 +170,40 @@ function getNavSecondaryItemsToSidebar() {
 }
 
 export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
-  const { setOpen, isMobile } = useSidebar()
+  const { setOpen, setOpenMobile, isMobile } = useSidebar()
   const { pathname } = useLocation()
+  const [closeSidebarEverytimeThisIncrements, setCloseSidebarEverytimeThisIncrements] = useState(0)
   const userInfos = useAuth()
   const navigate = useNavigate()
   
-  const onClickLogout = useCallback(() => Swal.fire({
-    icon: 'question',
-    title: 'Logout',
-    text: 'Deseja realmente sair do sistema?',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Sim, sair',
-    cancelButtonText: 'Cancelar',
-  }).then(async ({ isConfirmed }) => {
-    if (isConfirmed) {
-      userInfos.logout()
-        .then(({ isSuccess }) => isSuccess ? navigate(`${ROUTE_ENUM.LOGIN}`) : null)
-    }
-  }), [])
+  const onClickLogout = useCallback(function() {
+    setCloseSidebarEverytimeThisIncrements(prev => prev + 1)
+    
+    Swal.fire({
+      icon: 'question',
+      title: 'Logout',
+      text: 'Deseja realmente sair do sistema?',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, sair',
+      cancelButtonText: 'Cancelar',
+    })
+      .then(async ({ isConfirmed }) => {
+        if (isConfirmed) {
+          userInfos.logout()
+            .then(({ isSuccess }) => isSuccess ? navigate(`${ROUTE_ENUM.LOGIN}`) : null)
+        }
+      })
+  }, [])
   
-  useEffect(() => {
-    setOpen(!!isMobile && pathname === ROUTE_ENUM.ROOT || pathname === ROUTE_ENUM.HOME)
-  }, [isMobile, pathname])
+  useLayoutEffect(() => {
+    if (isMobile) {
+      setOpenMobile(false)
+    } else {
+      setOpen(pathname === ROUTE_ENUM.ROOT || pathname === ROUTE_ENUM.HOME)
+    }
+  }, [isMobile, pathname, closeSidebarEverytimeThisIncrements])
   
   return (
     <Sidebar collapsible="icon" variant="floating" {...props}>
@@ -217,7 +227,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-
+      
       <SidebarContent>
         <NavMain items={getNavMainItemsToSidebar({ ...userInfos })} />
 

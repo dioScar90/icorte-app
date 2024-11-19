@@ -1,5 +1,5 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { NavbarHeader } from "@/components/navbar-header"
+import { AppSidebar } from "@/components/sidebar/app-sidebar"
+import { NavbarHeader } from "@/components/sidebar/navbar-header"
 import {
   SidebarInset,
   SidebarProvider,
@@ -34,7 +34,7 @@ export function BaseLayout() {
         <SidebarInset> {/* Here is the <main> tag */}
           <NavbarHeader />
 
-          <section role="main" className={`main-container ${navigation.state !== 'idle' ? 'loading-page' : ''}`}>
+          <section role="main" className={`main-container ${navigation.state !== 'idle' && 'loading-new-page'}`}>
             <div className="before-outlet">
               <Outlet />
             </div>

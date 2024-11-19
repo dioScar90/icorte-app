@@ -22,10 +22,6 @@ type UpdateProps = {
 
 type Props = UpdateProps
 
-// function isUpdate(props: Props): props is UpdateProps {
-//   return typeof props.id === 'number'
-// }
-
 export function BarberShopForm(props: Props) {
   const { form, isUpdate, onSubmit } = props
 
@@ -218,7 +214,7 @@ export function BarberShopForm(props: Props) {
           <FormRootErrorMessage />
           
           <Button
-            type="submit" variant={isUpdate ? 'default' : 'outline'}
+            type="submit" variant={isUpdate ? 'outline' : 'default'}
             isLoading={form.formState.isLoading || form.formState.isSubmitting}
             IconLeft={<StoreIcon />}
           >
