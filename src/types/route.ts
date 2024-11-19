@@ -1,5 +1,6 @@
 
-const BASE_ROUTE = '/icorte-app' as const
+// const BASE_ROUTE = '/icorte-app' as const
+const BASE_ROUTE = '' as const
 
 export const ROUTE_ENUM = {
   ROOT: `${BASE_ROUTE}/`,
