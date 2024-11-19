@@ -8,6 +8,7 @@ import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { Switch } from "@/components/ui/switch";
 import { AdminLayoutContextType, baseAdminSchema, BaseAdminZod } from "@/components/layouts/admin-layout";
+import { Bomb } from "lucide-react";
 
 export function RemoveAll() {
   const { removeAll } = useOutletContext<AdminLayoutContextType>()
@@ -81,7 +82,13 @@ export function RemoveAll() {
 
           <FormRootErrorMessage />
 
-          <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>Remover tudo</Button>
+          <Button
+            type="submit"
+            isLoading={form.formState.isLoading || form.formState.isSubmitting}
+            IconLeft={<Bomb />}
+          >
+            Remover tudo
+          </Button>
         </form>
       </Form>
     </>

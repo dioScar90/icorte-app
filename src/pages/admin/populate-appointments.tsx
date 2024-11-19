@@ -8,7 +8,7 @@ import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { AdminLayoutContextType, appointmentsAdminSchema, AppointmentsAdminZod } from "@/components/layouts/admin-layout";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarArrowUp, CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -148,7 +148,13 @@ export function PopulateAppointments() {
           
           <FormRootErrorMessage />
 
-          <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>Marcar horários</Button>
+          <Button
+            type="submit"
+            isLoading={form.formState.isLoading || form.formState.isSubmitting}
+            IconLeft={<CalendarArrowUp />}
+          >
+            Marcar horários
+          </Button>
         </form>
       </Form>
     </>

@@ -45,12 +45,13 @@ export interface ButtonProps
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, isLoading, IconLeft, IconRight, children, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, isLoading, IconLeft, IconRight, children, disabled, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        disabled={!!disabled || isLoading}
         {...props}
       >
         <>

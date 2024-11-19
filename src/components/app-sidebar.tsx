@@ -1,4 +1,4 @@
-import * as React from "react"
+import { ComponentProps, useCallback, useEffect } from "react"
 import logoImgUrl from '/barber.png'
 import {
   BriefcaseBusinessIcon,
@@ -32,6 +32,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 import { GenderEnum } from "@/schemas/profile"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 function getRandomInt(seed: number) {
   // Usa o seed de entrada para gerar um número pseudo-aleatório entre 1 e 99
@@ -169,13 +170,14 @@ function getNavSecondaryItemsToSidebar() {
   ]
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const { setOpen } = useSidebar()
+  const isMobile = useIsMobile()
   const { pathname } = useLocation()
   const userInfos = useAuth()
   const navigate = useNavigate()
   
-  const onClickLogout = React.useCallback(() => Swal.fire({
+  const onClickLogout = useCallback(() => Swal.fire({
     icon: 'question',
     title: 'Logout',
     text: 'Deseja realmente sair do sistema?',
@@ -191,9 +193,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
   }), [])
   
-  React.useLayoutEffect(() => {
-    setOpen(pathname === ROUTE_ENUM.ROOT || pathname === ROUTE_ENUM.HOME)
-  }, [pathname])
+  useEffect(() => {
+    setOpen(!isMobile && pathname === ROUTE_ENUM.ROOT || pathname === ROUTE_ENUM.HOME)
+  }, [isMobile, pathname])
   
   return (
     <Sidebar collapsible="icon" variant="floating" {...props}>

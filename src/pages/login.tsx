@@ -99,6 +99,7 @@ export function Login() {
 
                   <Button
                     type="submit" className="w-full"
+                    isLoading={form.formState.isLoading || form.formState.isSubmitting}
                     IconLeft={<LogInIcon />}
                   >
                     Login
@@ -110,6 +111,7 @@ export function Login() {
                       variant: "destructive",
                       description: "Indisponível no momento",
                     })}
+                    isLoading={form.formState.isLoading || form.formState.isSubmitting}
                     IconLeft={<GoogleSvg />}
                   >
                     Login with Google

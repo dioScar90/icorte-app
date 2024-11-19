@@ -7,6 +7,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { AdminLayoutContextType, baseAdminSchema, BaseAdminZod } from "@/components/layouts/admin-layout";
+import { BetweenHorizonalStart } from "lucide-react";
 
 export function PopulateAll() {
   const { populateAll } = useOutletContext<AdminLayoutContextType>()
@@ -57,7 +58,13 @@ export function PopulateAll() {
           
           <FormRootErrorMessage />
 
-          <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>Reinserir tudo</Button>
+          <Button
+            type="submit"
+            isLoading={form.formState.isLoading || form.formState.isSubmitting}
+            IconLeft={<BetweenHorizonalStart />}
+          >
+            Reinserir tudo
+          </Button>
         </form>
       </Form>
     </>

@@ -7,6 +7,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { AdminLayoutContextType, resetPasswordSchema, ResetPasswordZod } from "@/components/layouts/admin-layout";
+import { ListRestart } from "lucide-react";
 
 export function ResetPassword() {
   const { resetPassword } = useOutletContext<AdminLayoutContextType>()
@@ -72,7 +73,13 @@ export function ResetPassword() {
           
           <FormRootErrorMessage />
 
-          <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>Remover tudo</Button>
+          <Button
+            type="submit"
+            isLoading={form.formState.isLoading || form.formState.isSubmitting}
+            IconLeft={<ListRestart />}
+          >
+            Resetar senha
+          </Button>
         </form>
       </Form>
     </>

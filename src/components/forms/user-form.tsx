@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { getEnumAsArray, GetEnumAsString } from "@/utils/enum-as-array"
 import { GenderEnum } from "@/schemas/profile"
 import { Button } from "../ui/button"
+import { UserRoundPlusIcon } from "lucide-react"
 
 type RegisterProps = {
   isUpdate?: false
@@ -103,7 +104,11 @@ export function UserForm(props: Props) {
             
             <FormRootErrorMessage />
             
-            <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>
+            <Button
+              type="submit"
+              isLoading={form.formState.isLoading || form.formState.isSubmitting}
+              IconLeft={<UserRoundPlusIcon />}
+            >
               Salvar
             </Button>
           </form>
@@ -229,7 +234,11 @@ export function UserForm(props: Props) {
             
             <FormRootErrorMessage />
             
-            <Button type="submit" disabled={form.formState.isLoading || form.formState.isSubmitting}>
+            <Button
+              type="submit"
+              isLoading={form.formState.isLoading || form.formState.isSubmitting}
+              IconLeft={<UserRoundPlusIcon />}
+            >
               Cadastrar
             </Button>
           </form>
