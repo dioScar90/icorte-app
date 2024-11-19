@@ -6,6 +6,8 @@ import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { UserForm } from "@/components/forms/user-form";
+import { useEffect } from "react";
+import { applyMask, MaskTypeEnum } from "@/utils/mask";
 
 export function Register() {
   const navigate = useNavigate()
@@ -41,6 +43,12 @@ export function Register() {
     }
   }
 
+  const phoneNumber = form.watch('profile.phoneNumber')
+  
+  useEffect(() => {
+    form.setValue('profile.phoneNumber', applyMask(MaskTypeEnum.PHONE_NUMBER, phoneNumber))
+  }, [phoneNumber])
+  
   return (
     <>
       <UserForm form={form} onSubmit={onSubmit} />

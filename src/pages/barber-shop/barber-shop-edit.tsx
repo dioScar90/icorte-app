@@ -3,10 +3,11 @@ import { useForm } from "react-hook-form";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { BarberShopLayoutContextType } from "@/components/layouts/barber-shop-layout";
 import { barberShopSchema, BarberShopZod } from "@/schemas/barberShop";
 import { BarberShopForm } from "@/components/forms/barber-shop-form";
+import { applyMask, MaskTypeEnum } from "@/utils/mask";
 
 export function BarberShopEdit() {
   const { update, barberShop } = useOutletContext<BarberShopLayoutContextType>()
@@ -19,7 +20,7 @@ export function BarberShopEdit() {
       name: barberShop.name,
       description: barberShop.description,
       comercialNumber: barberShop.comercialNumber,
-      comercialEmail: barberShop.comercialEmail,
+      comercialEmail: applyMask(MaskTypeEnum.PHONE_NUMBER, barberShop.comercialEmail),
       address: {
         street: barberShop.address.street,
         number: barberShop.address.number,
@@ -27,7 +28,7 @@ export function BarberShopEdit() {
         neighborhood: barberShop.address.neighborhood,
         city: barberShop.address.city,
         state: barberShop.address.state,
-        postalCode: barberShop.address.postalCode,
+        postalCode: applyMask(MaskTypeEnum.CEP, barberShop.address.postalCode),
         country: barberShop.address.country,
       }
     }
@@ -48,6 +49,17 @@ export function BarberShopEdit() {
       handleError(err, form)
     }
   }, [])
+  
+  const comercialNumber = form.watch('comercialNumber')
+  const postalCode = form.watch('address.postalCode')
+  
+  useEffect(() => {
+    form.setValue('comercialNumber', applyMask(MaskTypeEnum.PHONE_NUMBER, comercialNumber))
+  }, [comercialNumber])
+  
+  useEffect(() => {
+    form.setValue('address.postalCode', applyMask(MaskTypeEnum.CEP, postalCode))
+  }, [postalCode])
   
   return (
     <>

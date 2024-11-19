@@ -6,6 +6,8 @@ import { barberShopSchema, BarberShopZod } from "@/schemas/barberShop";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { BarberShopLayoutContextType } from "@/components/layouts/barber-shop-layout";
 import { BarberShopForm } from "@/components/forms/barber-shop-form";
+import { useEffect } from "react";
+import { applyMask, MaskTypeEnum } from "@/utils/mask";
 
 export function RegisterBarberShop() {
   const { register } = useOutletContext<BarberShopLayoutContextType>()
@@ -25,7 +27,7 @@ export function RegisterBarberShop() {
         complement: '',
         neighborhood: '',
         city: '',
-        // state: '',
+        state: undefined,
         postalCode: '',
         country: 'Brasil',
       }
@@ -47,6 +49,17 @@ export function RegisterBarberShop() {
       handleError(err, form)
     }
   }
+
+  const comercialNumber = form.watch('comercialNumber')
+  const postalCode = form.watch('address.postalCode')
+  
+  useEffect(() => {
+    form.setValue('comercialNumber', applyMask(MaskTypeEnum.PHONE_NUMBER, comercialNumber))
+  }, [comercialNumber])
+
+  useEffect(() => {
+    form.setValue('address.postalCode', applyMask(MaskTypeEnum.CEP, postalCode))
+  }, [postalCode])
 
   return (
     <BarberShopForm form={form} onSubmit={onSubmit} />

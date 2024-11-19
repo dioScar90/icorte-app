@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { postalCodeValidator } from './sharedValidators/postalCodeValidator'
 
 export enum StateEnum {
   AC, AL, AP, AM, BA, CE, DF, ES, GO, MA, MT, MS, MG, PA,
@@ -38,9 +39,7 @@ export const addressSchema = z.object({
   })
     .transform(state => StateEnum[state]),
 
-  postalCode: z.string({ required_error: 'CEP obrigatório' })
-    .trim()
-    .length(8, { message: 'CEP precisa ter 8 dígitos' }),
+  postalCode: postalCodeValidator(),
 
   country: z.string({ required_error: 'País obrigatório' })
     .trim()

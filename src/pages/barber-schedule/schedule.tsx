@@ -264,7 +264,7 @@ export function SchedulePage() {
               <div className="grid gap-2">
                 <Input
                   placeholder="Digite qual serviço deseja"
-                  value={value}
+                  value={value} type="search" inputMode="search"
                   onChange={e => {
                     setValue(e.currentTarget.value)
                     setValueeeee(e.currentTarget.value?.trim() ?? '')

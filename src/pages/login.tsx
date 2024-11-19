@@ -10,13 +10,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogInIcon } from "lucide-react";
+import { Eye, EyeOff, LogInIcon } from "lucide-react";
 import { GoogleSvg } from "@/components/ui/google-svg";
 import { toast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 type SchemaType = z.infer<typeof userLoginSchema>
 
 export function Login() {
+  const [isViewPassword, setIsViewPassword] = useState(false)
+  const EyeViewPasswordIcon = isViewPassword ? Eye : EyeOff
   const navigate = useNavigate()
   const { login } = useAuth()
   const { handleError } = useHandleErrors()
@@ -65,7 +68,7 @@ export function Login() {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="Digite seu email" {...field} />
+                            <Input type="email" inputMode="email" placeholder="Digite seu email" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -87,7 +90,13 @@ export function Login() {
                               </Button>
                             </div>
                             <FormControl>
-                              <Input type="password" placeholder="Digite sua senha" {...field} />
+                              <div className="relative">
+                                <Input type={isViewPassword ? 'text' : 'password'} placeholder="Digite sua senha" {...field} />
+                                <EyeViewPasswordIcon
+                                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 cursor-pointer text-gray-500"
+                                  onClick={() => setIsViewPassword(!isViewPassword)}
+                                />
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>

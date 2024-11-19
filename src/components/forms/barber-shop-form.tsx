@@ -64,7 +64,7 @@ export function BarberShopForm(props: Props) {
               <FormItem>
                 <FormLabel>Telefone Comercial</FormLabel>
                 <FormControl>
-                  <Input type="tel" placeholder="Telefone comercial" {...field} />
+                  <Input type="tel" inputMode="tel" placeholder="Telefone comercial" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -78,7 +78,7 @@ export function BarberShopForm(props: Props) {
               <FormItem>
                 <FormLabel>Email Comercial</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="Email comercial" {...field} />
+                  <Input type="email" inputMode="email" placeholder="Email comercial" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -108,7 +108,7 @@ export function BarberShopForm(props: Props) {
               <FormItem>
                 <FormLabel>Número</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="Número" {...field} />
+                  <Input type="text" inputMode="numeric" placeholder="Número" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -190,7 +190,7 @@ export function BarberShopForm(props: Props) {
               <FormItem>
                 <FormLabel>CEP</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="CEP" {...field} />
+                  <Input type="text" inputMode="numeric" placeholder="CEP" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

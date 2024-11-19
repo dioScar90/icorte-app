@@ -6,7 +6,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { getEnumAsArray, GetEnumAsString } from "@/utils/enum-as-array"
 import { GenderEnum } from "@/schemas/profile"
 import { Button } from "../ui/button"
-import { UserRoundPlusIcon } from "lucide-react"
+import { Eye, EyeOff, UserRoundPlusIcon } from "lucide-react"
+import { memo, useState } from "react"
 
 type RegisterProps = {
   isUpdate?: false
@@ -26,7 +27,10 @@ function isUpdate(props: Props): props is UpdateProps {
   return !!props.isUpdate
 }
 
-export function UserForm(props: Props) {
+export const UserForm = memo(function UserForm(props: Props) {
+  const [isViewPassword, setIsViewPassword] = useState(false)
+  const EyeViewPasswordIcon = isViewPassword ? Eye : EyeOff
+  
   if (isUpdate(props)) {
     const { form, onSubmit } = props
 
@@ -69,7 +73,7 @@ export function UserForm(props: Props) {
                 <FormItem>
                   <FormLabel>Telefone</FormLabel>
                   <FormControl>
-                    <Input type="tel" placeholder="Telefone" {...field} />
+                    <Input type="tel" inputMode="tel" placeholder="Telefone" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -157,7 +161,7 @@ export function UserForm(props: Props) {
                 <FormItem>
                   <FormLabel>Telefone</FormLabel>
                   <FormControl>
-                    <Input type="tel" placeholder="Telefone" {...field} />
+                    <Input type="tel" inputMode="tel" placeholder="Telefone" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -197,7 +201,7 @@ export function UserForm(props: Props) {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="Digite seu email" {...field} />
+                    <Input type="email" inputMode="email" placeholder="Digite seu email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -211,7 +215,13 @@ export function UserForm(props: Props) {
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Digite sua senha" {...field} />
+                    <div className="relative">
+                      <Input type={isViewPassword ? 'text' : 'password'} placeholder="Digite sua senha" {...field} />
+                      <EyeViewPasswordIcon
+                        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 cursor-pointer text-gray-500"
+                        onClick={() => setIsViewPassword(!isViewPassword)}
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -246,4 +256,4 @@ export function UserForm(props: Props) {
       </>
     )
   }
-}
+})

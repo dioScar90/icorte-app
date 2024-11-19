@@ -7,7 +7,8 @@ import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { UserForm } from "@/components/forms/user-form";
 import { ProfileLayoutContextType } from "@/components/layouts/profile-layout";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import { applyMask, MaskTypeEnum } from "@/utils/mask";
 
 export function ProfileEdit() {
   const { updateProfile, profile } = useOutletContext<ProfileLayoutContextType>()
@@ -22,7 +23,7 @@ export function ProfileEdit() {
       profile: {
         firstName: profile.firstName,
         lastName: profile.lastName,
-        phoneNumber: user!.phoneNumber,
+        phoneNumber: applyMask(MaskTypeEnum.PHONE_NUMBER, user!.phoneNumber),
         gender: profile.gender,
       }
     }
@@ -44,6 +45,12 @@ export function ProfileEdit() {
       handleError(err, form)
     }
   }, [])
+
+  const phoneNumber = form.watch('profile.phoneNumber')
+  
+  useEffect(() => {
+    form.setValue('profile.phoneNumber', applyMask(MaskTypeEnum.PHONE_NUMBER, phoneNumber))
+  }, [phoneNumber])
 
   return (
     <>
