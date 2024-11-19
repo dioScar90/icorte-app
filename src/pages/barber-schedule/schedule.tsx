@@ -248,7 +248,7 @@ export function SchedulePage() {
   
   return (
     <>
-      <div className="flex h-screen w-full items-start justify-center py-4 px-4">
+      <div className="flex h-screen w-full items-start justify-center p-4">
         <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
           <CardHeader>
             <CardTitle className="text-2xl">Serviços</CardTitle>

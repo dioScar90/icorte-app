@@ -1,8 +1,6 @@
 import { z } from 'zod'
 import { phoneNumberValidator } from './sharedValidators/phoneNumberValidator'
 
-export const GenderEnumAsConst = ['Feminino', 'Masculino'] as const
-
 export enum GenderEnum {
   // Deixar em pt-br mesmo, porque sim. Isso já foi testado, apenas aceite.
   Feminino,

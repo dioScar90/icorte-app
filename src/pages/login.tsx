@@ -47,7 +47,7 @@ export function Login() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="flex h-screen w-full items-center justify-center px-4">
+          <div className="flex h-screen w-full items-start justify-center p-4">
             <Card className="mx-auto max-w-sm">
               <CardHeader>
                 <CardTitle className="text-2xl">Login</CardTitle>
