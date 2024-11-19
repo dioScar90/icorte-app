@@ -39,7 +39,7 @@ export function BarberShopProvider({ children }: PropsWithChildren) {
   return (
     <BarberShopContext.Provider
       value={{
-        userId: user!.id,
+        userId: user?.id!,
         isBarberShop: !!user?.barberShop,
         barberShop: user?.barberShop,
         register,

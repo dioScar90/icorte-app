@@ -107,29 +107,44 @@
   body {
     @apply bg-background text-foreground;
   }
-  
-  main > header {
-    @apply flex h-16 shrink-0 items-center gap-2;
+
+  main {
+    --header-height: 4rem;
+    --footer-height: 50px;
+    /* --role-main-min-height: calc(50vh - var(--header-height) - var(--footer-height)); */
+    --role-main-min-height: 50vh;
     
-    > .header-container {
-      @apply flex items-center gap-2 px-2;
+    > header {
+      @apply flex h-[--header-height] shrink-0 items-center gap-2;
+      
+      > .header-container {
+        @apply flex items-center gap-2 px-2;
+      }
+    }
+
+    > section[role="main"] {
+      @apply flex flex-1 flex-col gap-3 p-2 md:pl-1 pt-0 min-h-[--role-main-min-height];
+
+      &.loading-page {
+        @apply opacity-25 transition-opacity duration-200 delay-200;
+      }
+
+      > .before-outlet {
+        @apply flex-1 rounded-xl;
+      }
+    }
+    
+    > footer {
+      @apply rounded-lg shadow mx-2 md:ml-1 py-2 mb-2 flex items-center justify-center h-[--footer-height];
+      
+      > .footer-container {
+        @apply w-full mx-auto max-w-screen-xl px-4 text-center;
+      }
     }
   }
-
-  main > section[role=main] {
-    @apply flex flex-1 flex-col gap-3 p-2 md:pl-1 pt-0;
-
-    &.loading-page {
-      @apply opacity-25 transition-opacity duration-200 delay-200;
-    }
-  }
-
-  main > footer {
-    @apply bg-white rounded-lg shadow mx-2 md:ml-1 py-2 mb-2 dark:bg-gray-800;
-
-    > .footer-container {
-      @apply w-full mx-auto max-w-screen-xl px-4 md:flex md:items-center md:justify-between;
-    }
+  
+  .before-card {
+    @apply flex w-full items-start justify-center py-4 px-1 md:px-2 lg:px-4;
   }
 }
 

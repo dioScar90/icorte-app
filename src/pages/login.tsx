@@ -47,12 +47,12 @@ export function Login() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="flex h-screen w-full items-start justify-center p-4">
-            <Card className="mx-auto max-w-sm">
+          <div className="before-card">
+            <Card className="w-full md:max-w-96">
               <CardHeader>
                 <CardTitle className="text-2xl">Login</CardTitle>
                 <CardDescription>
-                  Digite seu email abaixo para logar com sua conta
+                  Digite seu email abaixo
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -118,7 +118,7 @@ export function Login() {
                   </Button>
                 </div>
                 <div className="mt-4 text-center text-sm">
-                  Ainda não tem uma conta?{' '}
+                  <span>Não tem conta?</span>{' '}
                   <Link to={ROUTE_ENUM.REGISTER} className="underline">
                     Cadastre-se
                   </Link>
