@@ -8,12 +8,6 @@ import { BarberShopZod } from "@/schemas/barberShop"
 import { StateEnum } from "@/schemas/address"
 import { StoreIcon } from "lucide-react"
 
-// type RegisterProps = {
-//   id: undefined
-//   form: UseFormReturn<UserRegisterZod>
-//   onSubmit(values: UserRegisterZod): Promise<void>
-// }
-
 type UpdateProps = {
   isUpdate?: boolean
   form: UseFormReturn<BarberShopZod>
