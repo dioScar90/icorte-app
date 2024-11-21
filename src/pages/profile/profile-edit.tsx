@@ -57,7 +57,11 @@ export function ProfileEdit() {
   useEffect(() => {
     form.setValue('profile.phoneNumber', applyMask(MaskTypeEnum.PHONE_NUMBER, phoneNumber))
   }, [phoneNumber])
-
+  
+  // useEffect(() => {
+  //   form.setValue('profile.gender', profile.gender)
+  // }, [])
+  
   return (
     <>
       <h3>{profile.fullName}</h3>
@@ -112,16 +116,19 @@ export function ProfileEdit() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Gênero</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={GetEnumAsString(GenderEnum, field.value)}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={GetEnumAsString(GenderEnum, field.value)}
+                >
                   <FormControl>
                     <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Gênero" defaultValue={GetEnumAsString(GenderEnum, field.value)} />
+                      <SelectValue placeholder="Gênero" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     <SelectGroup>
                       {getEnumAsArray(GenderEnum).map(gender => (
-                        <SelectItem key={gender} value={gender}>{gender}</SelectItem>
+                        <SelectItem key={gender} value={gender} >{gender}</SelectItem>
                       ))}
                     </SelectGroup>
                   </SelectContent>
