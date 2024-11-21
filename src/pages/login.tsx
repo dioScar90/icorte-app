@@ -13,7 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Eye, EyeOff, LogInIcon } from "lucide-react";
 import { GoogleSvg } from "@/components/ui/google-svg";
 import { toast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 
 type SchemaType = z.infer<typeof userLoginSchema>
 
@@ -31,6 +31,11 @@ export function Login() {
       password: '',
     }
   })
+  
+  function unavailableForNow(e: MouseEvent) {
+    e.preventDefault()
+    toast({ variant: "destructive", description: "Indisponível no momento" })
+  }
 
   async function onSubmit(values: SchemaType) {
     try {
@@ -60,7 +65,7 @@ export function Login() {
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4">
-                  <div className="grid gap-2">
+                  <div className="grid gap-3">
                     <FormField
                       control={form.control}
                       name="email"
@@ -74,8 +79,7 @@ export function Login() {
                         </FormItem>
                       )}
                     />
-                  </div>
-                  <div className="grid gap-2">
+                    
                     <FormField
                         control={form.control}
                         name="password"
@@ -84,7 +88,12 @@ export function Login() {
                             <div className="flex items-center">
                               <FormLabel>Senha</FormLabel>
                               <Button variant="link" asChild>
-                                <Link to="#" className="ml-auto inline-block text-sm underline" title="Indisponível no momento" tabIndex={-1}>
+                                <Link
+                                  to="#" tabIndex={-1}
+                                  onClick={unavailableForNow}
+                                  className="ml-auto inline-block text-sm underline"
+                                  title="Indisponível no momento"
+                                >
                                   Esqueceu sua senha?
                                 </Link>
                               </Button>
@@ -116,10 +125,8 @@ export function Login() {
                   <Button
                     type="button"
                     variant="outline" className="w-full"
-                    onClick={() => toast({
-                      variant: "destructive",
-                      description: "Indisponível no momento",
-                    })}
+                    title="Indisponível no momento"
+                    onClick={unavailableForNow}
                     isLoading={form.formState.isLoading || form.formState.isSubmitting}
                     IconLeft={<GoogleSvg />}
                   >

@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { applyMask, MaskTypeEnum } from "@/utils/mask";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -40,6 +40,11 @@ export function Register() {
       }
     }
   })
+
+  function unavailableForNow(e: MouseEvent) {
+    e.preventDefault()
+    toast({ variant: "destructive", description: "Indisponível no momento" })
+  }
   
   async function onSubmit(values: UserRegisterZod) {
     try {
@@ -63,8 +68,6 @@ export function Register() {
   
   return (
     <>
-      {/* <h3>Novo usuário</h3> */}
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="before-card">
@@ -81,10 +84,7 @@ export function Register() {
                     <Button
                       type="button"
                       variant="outline" className="w-full"
-                      onClick={() => toast({
-                        variant: "destructive",
-                        description: "Indisponível no momento",
-                      })}
+                      onClick={unavailableForNow}
                       isLoading={form.formState.isLoading || form.formState.isSubmitting}
                       IconLeft={<GoogleSvg />}
                     >
@@ -98,7 +98,7 @@ export function Register() {
                     <Separator className="flex-1" />
                   </div>
 
-                  <div className="grid gap-2">
+                  <div className="grid gap-3">
                     <FormField
                       control={form.control}
                       name="profile.firstName"
@@ -112,9 +112,7 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                  </div>
-
-                  <div className="grid gap-2">
+                    
                     <FormField
                       control={form.control}
                       name="profile.lastName"
@@ -128,9 +126,7 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                  </div>
-
-                  <div className="grid gap-2">
+                    
                     <FormField
                       control={form.control}
                       name="profile.phoneNumber"
@@ -144,9 +140,7 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                  </div>
-
-                  <div className="grid gap-2">
+                    
                     <FormField
                       control={form.control}
                       name="profile.gender"
@@ -172,9 +166,7 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                  </div>
-
-                  <div className="grid gap-2">
+                    
                     <FormField
                       control={form.control}
                       name="email"
@@ -188,9 +180,7 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                  </div>
-
-                  <div className="grid gap-2">
+                    
                     <FormField
                       control={form.control}
                       name="password"
@@ -210,9 +200,7 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                  </div>
-
-                  <div className="grid gap-2">
+                    
                     <FormField
                       control={form.control}
                       name="confirmPassword"
@@ -226,13 +214,11 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                  </div>
-
-                  <div className="grid gap-2">
+                    
                     <FormRootErrorMessage />
                   </div>
 
-                  <div className="grid gap-2">
+                  <div className="mt-3 grid gap-3">
                     <Button
                       type="submit"
                       isLoading={form.formState.isLoading || form.formState.isSubmitting}
@@ -241,10 +227,10 @@ export function Register() {
                       Cadastrar
                     </Button>
                     
-                    <div className="mt-4 text-center text-sm">
-                      <span>Já tem conta?</span>{' '}
+                    <div className="text-center text-sm">
+                      <span>Já possui uma conta?</span>{' '}
                       <Link to={ROUTE_ENUM.LOGIN} className="underline">
-                        Faça Login
+                        Login
                       </Link>
                     </div>
                   </div>
