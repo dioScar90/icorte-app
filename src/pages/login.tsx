@@ -123,7 +123,7 @@ export function Login() {
                     isLoading={form.formState.isLoading || form.formState.isSubmitting}
                     IconLeft={<GoogleSvg />}
                   >
-                    Login with Google
+                    Fazer login com Google
                   </Button>
                 </div>
                 <div className="mt-4 text-center text-sm">
