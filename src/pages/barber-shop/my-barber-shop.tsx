@@ -1,7 +1,7 @@
 import { BarberShopLayoutContextType } from "@/components/layouts/barber-shop-layout";
 import { getBarberShopImageUrl } from "@/components/sidebar/app-sidebar";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useAuth } from "@/providers/authProvider";
 import { StateEnum } from "@/schemas/address";
 import { ROUTE_ENUM } from "@/types/route";
@@ -23,7 +23,7 @@ export function MyBarberShop() {
       
       {showPre && <pre>{JSON.stringify(barberShop, undefined, 2)}</pre>}
       
-      <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <div className="max-w-3xl mx-auto p-6 rounded-lg shadow-lg">
         <AspectRatio ratio={6} className="relative rounded-lg overflow-hidden">
           <img
             src={getBarberShopImageUrl(user)}
@@ -96,13 +96,15 @@ export function MyBarberShop() {
         </div>
       </div>
       
-      <Button variant="secondary" onClick={() => setShowPre(prev => !prev)}>
-        Toggle JSON
-      </Button>
-
-      <Button variant="link" asChild>
-        <Link to={`${ROUTE_ENUM.BARBER_SHOP}/${barberShop.id}/edit`}>Editar minha barbearia</Link>
-      </Button>
+      <div className="flex justify-center align-center gap-x-3">
+        <Button variant="secondary" onClick={() => setShowPre(prev => !prev)}>
+          Toggle JSON
+        </Button>
+        
+        <Link to={`${ROUTE_ENUM.BARBER_SHOP}/${barberShop.id}/edit`} className={buttonVariants({ variant: "link" })}>
+          Editar minha barbearia
+        </Link>
+      </div>
     </>
   )
 }

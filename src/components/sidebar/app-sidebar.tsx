@@ -59,7 +59,7 @@ export function getImageUrl(user: AuthContextType['user']) {
   }
   
   const gender = user.profile.gender === GenderEnum.Masculino ? 'men' : 'women'
-  const imageId = getRandomInt(user.id)
+  const imageId = user.roles.includes('Admin') ? 83 : getRandomInt(user.id)
   return `https://randomuser.me/api/portraits/${gender}/${imageId}.jpg`
 }
 

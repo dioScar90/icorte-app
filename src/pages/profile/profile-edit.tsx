@@ -58,10 +58,6 @@ export function ProfileEdit() {
     form.setValue('profile.phoneNumber', applyMask(MaskTypeEnum.PHONE_NUMBER, phoneNumber))
   }, [phoneNumber])
   
-  // useEffect(() => {
-  //   form.setValue('profile.gender', profile.gender)
-  // }, [])
-  
   return (
     <>
       <h3>{profile.fullName}</h3>

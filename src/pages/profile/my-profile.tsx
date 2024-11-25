@@ -1,7 +1,7 @@
 import { ProfileLayoutContextType } from "@/components/layouts/profile-layout";
 import { getImageUrl } from "@/components/sidebar/app-sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { useState } from "react";
@@ -18,7 +18,7 @@ export function MyProfile() {
       
       {showPre && <pre>{JSON.stringify(profile, undefined, 2)}</pre>}
       
-      <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <div className="max-w-3xl mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex items-center space-x-4">
           <Avatar className="w-24 h-24 rounded-full">
             <AvatarImage src={getImageUrl(user)} alt={profile.fullName} />
@@ -49,13 +49,15 @@ export function MyProfile() {
         </div>
       </div>
       
-      <Button variant="secondary" onClick={() => setShowPre(prev => !prev)}>
-        Toggle JSON
-      </Button>
-      
-      <Button variant="link" asChild>
-        <Link to={`${ROUTE_ENUM.PROFILE}/${profile.id}/edit`}>Editar</Link>
-      </Button>
+      <div className="flex justify-center align-center gap-x-3">
+        <Button variant="secondary" className="w-fit" onClick={() => setShowPre(prev => !prev)}>
+          Toggle JSON
+        </Button>
+        
+        <Link to={`${ROUTE_ENUM.PROFILE}/${profile.id}/edit`} className={buttonVariants({ variant: "link" })}>
+          Editar
+        </Link>
+      </div>
     </>
   )
 }
