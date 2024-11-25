@@ -23,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useOutletContext } from "react-router-dom"
+import { useOutletContext, useSearchParams } from "react-router-dom"
 import { BarberScheduleLayoutContextType } from "@/components/layouts/barber-schedule-layout"
 import { ServiceByName } from "@/types/custom-models/service-by-name"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
@@ -170,7 +170,6 @@ type ServiceAction =
   | { type: 'CLEAR' }
 
 function serviceReducer(_: ServiceState, action: ServiceAction): ServiceState {
-  console.log('action.type', action.type)
   switch (action.type) {
     case 'SET_MANY':
       return [...action.payload]
@@ -208,7 +207,7 @@ function getServiceTableRow<T extends ServiceState[number]>(stateItem: T) {
       <TableCell className="font-medium">{stateItem.barberShopName}</TableCell>
       <TableCell>{stateItem.name}</TableCell>
       <TableCell className="line-clamp-2">{stateItem.description}</TableCell>
-      <TableCell className="text-right">{stateItem.price}</TableCell>
+      <TableCell className="text-right">{stateItem.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</TableCell>
     </TableRow>
   );
 }
@@ -219,16 +218,20 @@ export function SchedulePage() {
   const { handleError } = useHandleErrors()
   const { servicesByName } = useOutletContext<BarberScheduleLayoutContextType>()
   const [state, dispatch] = useReducer(serviceReducer, initialState)
-  const [value, setValue] = useState('')
-  const [valueToDebounce, setValueToDebounce] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const q = searchParams.get('q')
+  const [value, setValue] = useState(q ?? '')
   
-  const setValueeeee = useCallback(debounce(setValueToDebounce), [])
+  const handleValueToSearchParam = useCallback(debounce((q?: string) => {
+    console.log({ q })
+    setSearchParams(!q?.length ? undefined : { q })
+  }), [])
   
   useEffect(() => {
-    if (!valueToDebounce.length) {
+    if (!q?.length) {
       dispatch({ type: 'CLEAR' })
     } else {
-      servicesByName(valueToDebounce)
+      servicesByName(q)
         .then(resp => resp)
         .then(resp => {
           if (!resp.isSuccess) {
@@ -247,7 +250,7 @@ export function SchedulePage() {
           handleError(err)
         })
     }
-  }, [valueToDebounce])
+  }, [q])
   
   return (
     <>
@@ -267,7 +270,7 @@ export function SchedulePage() {
                   value={value} type="search" inputMode="search"
                   onChange={e => {
                     setValue(e.currentTarget.value)
-                    setValueeeee(e.currentTarget.value?.trim() ?? '')
+                    handleValueToSearchParam(e.currentTarget.value)
                   }}
                   className="max-w-sm"
                 />
@@ -277,9 +280,9 @@ export function SchedulePage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-[100px]">Barbearia</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Method</TableHead>
-                      <TableHead className="text-right">Amount</TableHead>
+                      <TableHead>Serviço</TableHead>
+                      <TableHead>Descrição</TableHead>
+                      <TableHead className="text-right">Preço</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

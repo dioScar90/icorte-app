@@ -16,6 +16,7 @@ export type BarberShop = Prettify<
     specialSchedules: SpecialSchedule[]
     services: Service[]
     reports: Report[]
+    imageUrl?: string
   }
 >
 

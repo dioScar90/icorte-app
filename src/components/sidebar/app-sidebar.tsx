@@ -33,12 +33,23 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 import { GenderEnum } from "@/schemas/profile"
 
-function getRandomInt(seed: number) {
-  // Usa o seed de entrada para gerar um número pseudo-aleatório entre 1 e 99
-  return (Math.abs(Math.sin(seed)) * 99 + 1) | 2;
+function getRandomInt(seed?: number, isBarberShop?: boolean) {
+  const MINIMUM = 1
+  const LIMIT = !!isBarberShop ? 950 : 99
+  seed = !!isBarberShop || !seed ? Math.round(Math.random() * 100) : seed
+  return (Math.abs(Math.sin(seed)) * LIMIT + MINIMUM) | 2;
 }
 
-function getImageUrl(user: AuthContextType['user']) {
+export function getBarberShopImageUrl(user: AuthContextType['user']) {
+  if (user?.barberShop?.imageUrl) {
+    return user.barberShop.imageUrl
+  }
+  
+  const imageId = getRandomInt(user?.barberShop?.id!, true)
+  return `https://placebear.com/${imageId}/300.jpg`
+}
+
+export function getImageUrl(user: AuthContextType['user']) {
   if (user?.profile?.imageUrl) {
     return user.profile.imageUrl
   }
