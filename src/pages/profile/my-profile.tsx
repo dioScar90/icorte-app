@@ -1,5 +1,5 @@
+import { JsonDebugger } from "@/components/json-debugger";
 import { ProfileLayoutContextType } from "@/components/layouts/profile-layout";
-import { getImageUrl } from "@/components/sidebar/app-sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useAuth } from "@/providers/authProvider";
@@ -16,12 +16,10 @@ export function MyProfile() {
     <>
       <h3>{profile.fullName}</h3>
       
-      {showPre && <pre>{JSON.stringify(profile, undefined, 2)}</pre>}
-      
       <div className="max-w-3xl mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex items-center space-x-4">
           <Avatar className="w-24 h-24 rounded-full">
-            <AvatarImage src={getImageUrl(user)} alt={profile.fullName} />
+            <AvatarImage src={user?.profile?.imageUrl} alt={profile.fullName} />
             <AvatarFallback>iCorte</AvatarFallback>
           </Avatar>
           <div>
@@ -58,6 +56,8 @@ export function MyProfile() {
           Editar
         </Link>
       </div>
+      
+      {showPre && <JsonDebugger obj={profile} />}
     </>
   )
 }

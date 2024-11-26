@@ -1,8 +1,6 @@
 import { BarberShopLayoutContextType } from "@/components/layouts/barber-shop-layout";
-import { getBarberShopImageUrl } from "@/components/sidebar/app-sidebar";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useAuth } from "@/providers/authProvider";
 import { StateEnum } from "@/schemas/address";
 import { ROUTE_ENUM } from "@/types/route";
 import { GetEnumAsString } from "@/utils/enum-as-array";
@@ -10,9 +8,9 @@ import { applyMask, MaskTypeEnum } from "@/utils/mask";
 import { useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
+import { JsonDebugger } from "@/components/json-debugger";
 
 export function MyBarberShop() {
-  const { user } = useAuth()
   const { barberShop } = useOutletContext<BarberShopLayoutContextType>()
   const [showPre, setShowPre] = useState(false)
   
@@ -21,13 +19,10 @@ export function MyBarberShop() {
       <h3>{barberShop.name}</h3>
       {barberShop.description && <p>{barberShop.description}</p>}
       
-      {showPre && <pre>{JSON.stringify(barberShop, undefined, 2)}</pre>}
-      
       <div className="max-w-3xl mx-auto p-6 rounded-lg shadow-lg">
         <AspectRatio ratio={6} className="relative rounded-lg overflow-hidden">
           <img
-            src={getBarberShopImageUrl(user)}
-            // src="https://thebarbersonline.com/wp-content/uploads/2019/03/IMG_0216-1.jpg"
+            src={barberShop.imageUrl}
             alt={barberShop.name}
             className="w-full h-full object-cover"
           />
@@ -105,6 +100,8 @@ export function MyBarberShop() {
           Editar minha barbearia
         </Link>
       </div>
+      
+      {showPre && <JsonDebugger obj={barberShop} />}
     </>
   )
 }

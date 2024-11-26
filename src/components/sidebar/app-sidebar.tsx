@@ -31,47 +31,13 @@ import { AuthContextType, useAuth } from "@/providers/authProvider"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
-import { GenderEnum } from "@/schemas/profile"
-
-function getRandomInt(seed?: number, isBarberShop?: boolean) {
-  const MINIMUM = 1
-  const LIMIT = !!isBarberShop ? 950 : 99
-  seed = !!isBarberShop || !seed ? Math.round(Math.random() * 100) : seed
-  return (Math.abs(Math.sin(seed)) * LIMIT + MINIMUM) | 2;
-}
-
-export function getBarberShopImageUrl(user: AuthContextType['user']) {
-  if (user?.barberShop?.imageUrl) {
-    return user.barberShop.imageUrl
-  }
-  
-  const imageId = getRandomInt(user?.barberShop?.id!, true)
-  return `https://placebear.com/${imageId}/300.jpg`
-}
-
-export function getImageUrl(user: AuthContextType['user']) {
-  if (user?.profile?.imageUrl) {
-    return user.profile.imageUrl
-  }
-  
-  if (user?.profile?.gender === undefined || user?.profile?.gender === null) {
-    return undefined
-  }
-  
-  const gender = user.profile.gender === GenderEnum.Masculino ? 'men' : 'women'
-  const imageId = user.roles.includes('Admin') ? 83 : getRandomInt(user.id)
-  return `https://randomuser.me/api/portraits/${gender}/${imageId}.jpg`
-}
 
 function getUserInfosToSidebar({ user }: AuthContextType) {
-  const imageUrl = getImageUrl(user)
-
-  console.log('imageUrl', imageUrl)
   return {
     id: user?.profile?.id!,
     name: user?.profile?.firstName ?? 'Diogo',
     email: user?.email ?? 'diogols@live.com',
-    avatar: imageUrl,
+    avatar: user?.profile?.imageUrl,
     isBarber: !!user?.barberShop,
   }
 }
