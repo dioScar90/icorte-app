@@ -2,8 +2,8 @@ import { AddressZod } from "@/schemas/address";
 import { IAddressService } from "./interfaces/IAddressService";
 import { AxiosInstance } from "axios";
 
-function getUrl(barberShpoId: number, id?: number) {
-  const baseEndpoint = `/barber-shop/${barberShpoId}/address`
+function getUrl(barberShopId: number, id?: number) {
+  const baseEndpoint = `/barber-shop/${barberShopId}/address`
 
   if (!id) {
     return baseEndpoint
@@ -15,23 +15,23 @@ function getUrl(barberShpoId: number, id?: number) {
 export class AddressService implements IAddressService {
   constructor(private readonly httpClient: AxiosInstance) {}
   
-  async createAddress(barberShpoId: number, data: AddressZod) {
-    const url = getUrl(barberShpoId)
+  async createAddress(barberShopId: number, data: AddressZod) {
+    const url = getUrl(barberShopId)
     return await this.httpClient.post(url, { ...data })
   }
 
-  async getAddress(barberShpoId: number, id: number) {
-    const url = getUrl(barberShpoId, id)
+  async getAddress(barberShopId: number, id: number) {
+    const url = getUrl(barberShopId, id)
     return await this.httpClient.get(url)
   }
 
-  async updateAddress(barberShpoId: number, id: number, data: AddressZod) {
-    const url = getUrl(barberShpoId, id)
+  async updateAddress(barberShopId: number, id: number, data: AddressZod) {
+    const url = getUrl(barberShopId, id)
     return await this.httpClient.put(url, { ...data })
   }
 
-  async deleteAddress(barberShpoId: number, id: number) {
-    const url = getUrl(barberShpoId, id)
+  async deleteAddress(barberShopId: number, id: number) {
+    const url = getUrl(barberShopId, id)
     return await this.httpClient.delete(url)
   }
 }

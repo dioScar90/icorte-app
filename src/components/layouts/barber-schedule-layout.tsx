@@ -16,8 +16,8 @@ export type BarberScheduleLayoutContextType = {
   getAbailableSlots: (barberShopId: number, date: DateOnly, serviceIds: number[]) => Promise<ReturnType<BarberScheduleRepository['getAvailableSlots']>>
   servicesByName: (q: string) => Promise<ReturnType<BarberScheduleRepository['searchServicesByNameAsync']>>
 
-  getService: (barberShpoId: number, serviceId: number) => Promise<ReturnType<ServiceRepository['getService']>>
-  getAllServices: (barberShpoId: number) => Promise<ReturnType<ServiceRepository['getAllServices']>>
+  getService: (barberShopId: number, serviceId: number) => Promise<ReturnType<ServiceRepository['getService']>>
+  getAllServices: (barberShopId: number) => Promise<ReturnType<ServiceRepository['getAllServices']>>
 
   createAppointment: (data: AppointmentZod) => Promise<ReturnType<AppointmentRepository['createAppointment']>>
   getAppointment: (id: number) => Promise<ReturnType<AppointmentRepository['getAppointment']>>
@@ -47,12 +47,12 @@ export function BarberScheduleLayout() {
     return await barberScheduleRep.searchServicesByNameAsync(q)
   }, [])
   
-  const getService = useCallback(async function(serviceId: number, barberShpoId: number) {
-    return await serviceRep.getService(serviceId, barberShpoId)
+  const getService = useCallback(async function(serviceId: number, barberShopId: number) {
+    return await serviceRep.getService(serviceId, barberShopId)
   }, [])
   
-  const getAllServices = useCallback(async function(barberShpoId: number) {
-    return await serviceRep.getAllServices(barberShpoId)
+  const getAllServices = useCallback(async function(barberShopId: number) {
+    return await serviceRep.getAllServices(barberShopId)
   }, [])
   
   const createAppointment = useCallback(async function(data: AppointmentZod) {

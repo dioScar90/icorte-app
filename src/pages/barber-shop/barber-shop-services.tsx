@@ -1,16 +1,85 @@
-import { BarberShopLayoutContextType } from "@/components/layouts/barber-shop-layout";
 import { Button } from "@/components/ui/button";
-import { useLoaderData, useOutletContext } from "react-router-dom";
-import { servicesLoader } from "@/data/loaders/servicesLoader";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { getNumberAsCurrency } from "@/utils/currency";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, Edit, ShoppingBag, Trash2 } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Edit, ShoppingBag, Trash2 } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { BarberShopServicesLayoutContextType } from "@/components/layouts/barber-shop-services-layout";
+import { useRef } from "react";
+import { ServiceZod } from "@/schemas/service";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import Swal from "sweetalert2";
+import { useHandleErrors } from "@/providers/handleErrorProvider";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { userRegisterSchema } from "@/schemas/user";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
 
 export function BarberShopServices() {
-  const { barberShop } = useOutletContext<BarberShopLayoutContextType>()
-  const services = useLoaderData() as Awaited<ReturnType<typeof servicesLoader>>
+  const { barberShop, services, register, remove } = useOutletContext<BarberShopServicesLayoutContextType>()
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
+  const { handleError } = useHandleErrors()
+  const openModalBtnRef = useRef<HTMLButtonElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
+  
+  const form = useForm<ServiceZod>({
+    resolver: zodResolver(userRegisterSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      price: 0.0,
+      duration: '00:00:00',
+    }
+  })
+  
+  async function onSubmit(data: ServiceZod) {
+    try {
+      console.log('ora ora ora se não são as minhas escolhas...', data)
+      const result = await register(barberShop.id, data)
+      
+      if (!result.isSuccess) {
+        throw result.error
+      }
+      
+      navigate(pathname, { replace: true, state: { message: result.value.message }})
+    } catch (err) {
+      handleError(err, form)
+    }
+  }
+  
+  function handleRemove(serviceId: number) {
+    Swal.fire({
+      icon: 'question',
+      title: 'Excluir',
+      text: 'Deseja realmente remover o serviço?',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, remover',
+      cancelButtonText: 'Cancelar',
+    })
+      .then(async ({ isConfirmed }) => {
+        if (isConfirmed) {
+          try {
+            const res = await remove(barberShop.id, serviceId)
+
+            if (!res.isSuccess) {
+              throw res.error
+            }
+
+            navigate(pathname, { replace: true, state: { message: 'Serviço removido com sucesso' }})
+          } catch (err) {
+            handleError(err)
+          }
+        }
+      })
+  }
+
+  const FORM_REGISTER_ID = "form-register"
   
   return (
     <>
@@ -37,19 +106,19 @@ export function BarberShopServices() {
                 </TableHeader>
                 <TableBody>
                   {Array.isArray(services?.items) && services.items.length > 0
-                    ? services.items.map(({ id, barberShopId, name, description, price, duration }) => (
-                      <TableRow key={id} data-barber-shop-id={barberShopId}>
-                        <TableCell className="font-medium">{name}</TableCell>
-                        <TableCell className="line-clamp-2">{description}</TableCell>
-                        <TableCell>{getNumberAsCurrency(price)}</TableCell>
-                        <TableCell>{duration}</TableCell>
+                    ? services.items.map(({ id: serviceId, barberShopId, ...service }) => (
+                      <TableRow key={serviceId} data-barber-shop-id={barberShopId}>
+                        <TableCell className="font-medium">{service.name}</TableCell>
+                        <TableCell className="line-clamp-2">{service.description}</TableCell>
+                        <TableCell>{getNumberAsCurrency(service.price)}</TableCell>
+                        <TableCell>{service.duration}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-between gap-x-2">
                             <Button
                               size="icon"
                               variant="outline"
                               title="Editar"
-                              onClick={() => alert(JSON.stringify({ id, barberShopId, name, description, price, duration }))}
+                              onClick={() => toast({ variant: "destructive", description: "Indisponível no momento" })}
                             >
                               <Edit />
                             </Button>
@@ -57,7 +126,7 @@ export function BarberShopServices() {
                               size="icon"
                               variant="destructive"
                               title="Remover"
-                              onClick={() => alert(JSON.stringify({ id, barberShopId, name, description, price, duration }))}
+                              onClick={() => handleRemove(serviceId)}
                             >
                               <Trash2 />
                             </Button>
@@ -78,9 +147,12 @@ export function BarberShopServices() {
                   )}
                 </TableBody>
               </Table>
-
+              
               <div className="w-full h-14 relative">
-                <Button type="button" className="absolute-middle-y right-0" onClick={() => alert('Novo')}>
+                <Button
+                  type="button" className="absolute-middle-y right-0"
+                  onClick={() => openModalBtnRef.current?.click()}
+                >
                   <ShoppingBag />
                   Novo
                 </Button>
@@ -89,6 +161,101 @@ export function BarberShopServices() {
           </Card>
         </div>
       </div>
+      
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button style={{ display: 'none' }} ref={openModalBtnRef}>Vai</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-md">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} id={FORM_REGISTER_ID} ref={formRef} className="space-y-6">
+              <DialogHeader>
+                <DialogTitle>Novo serviço</DialogTitle>
+                <DialogDescription>
+                  Preencha os campos abaixo para criar um novo serviço.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-3">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nome</FormLabel>
+                      <FormControl>
+                        <Input type="text" placeholder="Nome" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sobrenome</FormLabel>
+                      <FormControl>
+                        <Input type="text" placeholder="Descrição (opcional)" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Preço</FormLabel>
+                      <FormControl>
+                        <Input type="text" inputMode="decimal" placeholder="Preço" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="duration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Duração</FormLabel>
+                      <FormControl>
+                        <Input type="text" inputMode="numeric" placeholder="Duração" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormRootErrorMessage />
+                
+                <DialogFooter className="sm:justify-start">
+                  <DialogClose asChild>
+                    <Button type="button" variant="secondary">
+                      Close
+                    </Button>
+                  </DialogClose>
+                  
+                  <Button
+                    type="submit"
+                    form={FORM_REGISTER_ID}
+                    isLoading={form.formState.isLoading || form.formState.isSubmitting}
+                    IconLeft={<ShoppingBag />}
+                  >
+                    Cadastrar
+                  </Button>
+                </DialogFooter>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

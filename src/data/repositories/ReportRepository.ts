@@ -6,45 +6,45 @@ import { ReportZod } from "@/schemas/report";
 export class ReportRepository implements IReportRepository {
   constructor(private readonly service: IReportService) { }
 
-  async createReport(barberShpoId: number, data: ReportZod) {
+  async createReport(barberShopId: number, data: ReportZod) {
     try {
-      const res = await this.service.createReport(barberShpoId, data);
+      const res = await this.service.createReport(barberShopId, data);
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err as Error)
     }
   }
 
-  async getReport(barberShpoId: number, id: number) {
+  async getReport(barberShopId: number, id: number) {
     try {
-      const res = await this.service.getReport(barberShpoId, id);
+      const res = await this.service.getReport(barberShopId, id);
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err as Error)
     }
   }
 
-  async getAllReports(barberShpoId: number) {
+  async getAllReports(barberShopId: number) {
     try {
-      const res = await this.service.getAllReports(barberShpoId);
+      const res = await this.service.getAllReports(barberShopId);
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err as Error)
     }
   }
 
-  async updateReport(barberShpoId: number, id: number, data: ReportZod) {
+  async updateReport(barberShopId: number, id: number, data: ReportZod) {
     try {
-      await this.service.updateReport(barberShpoId, id, data);
+      await this.service.updateReport(barberShopId, id, data);
       return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)
     }
   }
 
-  async deleteReport(barberShpoId: number, id: number) {
+  async deleteReport(barberShopId: number, id: number) {
     try {
-      await this.service.deleteReport(barberShpoId, id);
+      await this.service.deleteReport(barberShopId, id);
       return Result.Success()
     } catch (err) {
       return Result.Failure(err as Error)

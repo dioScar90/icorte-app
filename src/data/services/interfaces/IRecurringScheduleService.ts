@@ -4,9 +4,9 @@ import { DayOfWeek } from "@/utils/types/date";
 import { RecurringSchedule } from "@/types/models/recurringSchedule";
 
 export interface IRecurringScheduleService {
-  createRecurringSchedule(barberShpoId: number, data: RecurringScheduleZod): CreatedAxiosResult<RecurringSchedule>;
-  getRecurringSchedule(barberShpoId: number, dayOfWeek: DayOfWeek): BaseAxiosResult<RecurringSchedule>;
-  getAllRecurringSchedules(barberShpoId: number): PaginationAxiosResult<RecurringSchedule>;
-  updateRecurringSchedule(barberShpoId: number, dayOfWeek: DayOfWeek, data: RecurringScheduleZod): BaseAxiosResult<void>;
-  deleteRecurringSchedule(barberShpoId: number, dayOfWeek: DayOfWeek): BaseAxiosResult<void>;
+  createRecurringSchedule(barberShopId: number, data: RecurringScheduleZod): CreatedAxiosResult<RecurringSchedule>;
+  getRecurringSchedule(barberShopId: number, dayOfWeek: DayOfWeek): BaseAxiosResult<RecurringSchedule>;
+  getAllRecurringSchedules(barberShopId: number): PaginationAxiosResult<RecurringSchedule>;
+  updateRecurringSchedule(barberShopId: number, dayOfWeek: DayOfWeek, data: RecurringScheduleZod): BaseAxiosResult<void>;
+  deleteRecurringSchedule(barberShopId: number, dayOfWeek: DayOfWeek): BaseAxiosResult<void>;
 }

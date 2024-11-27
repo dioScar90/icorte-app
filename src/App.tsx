@@ -32,6 +32,7 @@ import { ResetPassword } from './pages/admin/reset-password'
 import { PopulateAppointments } from './pages/admin/populate-appointments'
 import { BarberShopServices } from './pages/barber-shop/barber-shop-services'
 import { servicesLoader } from './data/loaders/servicesLoader'
+import { BarberShopServicesLayout } from './components/layouts/barber-shop-services-layout'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -72,7 +73,9 @@ export function App() {
               <Route path="register" element={<RegisterBarberShop />} />
               <Route path=":barberShopId" element={<MyBarberShop />} />
               <Route path=":barberShopId/edit" element={<BarberShopEdit />} />
-              <Route path=":barberShopId/services" loader={servicesLoader} element={<BarberShopServices />} />
+              <Route path=":barberShopId/services" loader={servicesLoader} element={<BarberShopServicesLayout />}>
+                <Route index element={<BarberShopServices />} />
+              </Route>
               <Route path=":barberShopId/dashboard" element={<BarberShopDashboard />} />
             </Route>
           </Route>

@@ -4,9 +4,9 @@ import { DateOnly } from "@/utils/types/date";
 import { SpecialSchedule } from "@/types/models/specialSchedule";
 
 export interface ISpecialScheduleRepository {
-  createSpecialSchedule(barberShpoId: number, data: SpecialScheduleZod): CreatedResult<SpecialSchedule>;
-  getSpecialSchedule(barberShpoId: number, date: DateOnly): BaseResult<SpecialSchedule>;
-  getAllSpecialSchedules(barberShpoId: number): PaginationResult<SpecialSchedule>;
-  updateSpecialSchedule(barberShpoId: number, date: DateOnly, data: SpecialScheduleZod): BaseResult<void>;
-  deleteSpecialSchedule(barberShpoId: number, date: DateOnly): BaseResult<void>;
+  createSpecialSchedule(barberShopId: number, data: SpecialScheduleZod): CreatedResult<SpecialSchedule>;
+  getSpecialSchedule(barberShopId: number, date: DateOnly): BaseResult<SpecialSchedule>;
+  getAllSpecialSchedules(barberShopId: number): PaginationResult<SpecialSchedule>;
+  updateSpecialSchedule(barberShopId: number, date: DateOnly, data: SpecialScheduleZod): BaseResult<void>;
+  deleteSpecialSchedule(barberShopId: number, date: DateOnly): BaseResult<void>;
 }
