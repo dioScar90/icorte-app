@@ -6,28 +6,27 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Edit, ShoppingBag, Trash2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { BarberShopServicesLayoutContextType } from "@/components/layouts/barber-shop-services-layout";
-import { useRef } from "react";
-import { ServiceZod } from "@/schemas/service";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import Swal from "sweetalert2";
+import { useRef, useState } from "react";
+import { serviceSchema, ServiceZod } from "@/schemas/service";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userRegisterSchema } from "@/schemas/user";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
+import Swal from "sweetalert2";
 
 export function BarberShopServices() {
   const { barberShop, services, register, remove } = useOutletContext<BarberShopServicesLayoutContextType>()
+  const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { handleError } = useHandleErrors()
-  const openModalBtnRef = useRef<HTMLButtonElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   
   const form = useForm<ServiceZod>({
-    resolver: zodResolver(userRegisterSchema),
+    resolver: zodResolver(serviceSchema),
     defaultValues: {
       name: '',
       description: '',
@@ -45,6 +44,7 @@ export function BarberShopServices() {
         throw result.error
       }
       
+      setOpen(false)
       navigate(pathname, { replace: true, state: { message: result.value.message }})
     } catch (err) {
       handleError(err, form)
@@ -70,7 +70,7 @@ export function BarberShopServices() {
             if (!res.isSuccess) {
               throw res.error
             }
-
+            
             navigate(pathname, { replace: true, state: { message: 'Serviço removido com sucesso' }})
           } catch (err) {
             handleError(err)
@@ -78,7 +78,16 @@ export function BarberShopServices() {
         }
       })
   }
+  
+  function handleDialogOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      form.reset()
+      form.clearErrors()
+    }
 
+    setOpen(isOpen)
+  }
+  
   const FORM_REGISTER_ID = "form-register"
   
   return (
@@ -151,7 +160,7 @@ export function BarberShopServices() {
               <div className="w-full h-14 relative">
                 <Button
                   type="button" className="absolute-middle-y right-0"
-                  onClick={() => openModalBtnRef.current?.click()}
+                  onClick={() => setOpen(true)}
                 >
                   <ShoppingBag />
                   Novo
@@ -162,10 +171,7 @@ export function BarberShopServices() {
         </div>
       </div>
       
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button style={{ display: 'none' }} ref={openModalBtnRef}>Vai</Button>
-        </DialogTrigger>
+      <Dialog open={open} onOpenChange={handleDialogOpenChange}>
         <DialogContent className="sm:max-w-md">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} id={FORM_REGISTER_ID} ref={formRef} className="space-y-6">
@@ -235,10 +241,10 @@ export function BarberShopServices() {
                 
                 <FormRootErrorMessage />
                 
-                <DialogFooter className="sm:justify-start">
+                <DialogFooter className="gap-x-1">
                   <DialogClose asChild>
                     <Button type="button" variant="secondary">
-                      Close
+                      Cancelar
                     </Button>
                   </DialogClose>
                   
