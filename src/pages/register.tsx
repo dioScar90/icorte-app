@@ -191,7 +191,7 @@ export function Register() {
                             <div className="relative">
                               <Input type={isViewPassword ? 'text' : 'password'} placeholder="Digite sua senha" {...field} />
                               <EyeViewPasswordIcon
-                                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 cursor-pointer text-gray-500"
+                                className="absolute-middle-y right-4 z-10 cursor-pointer text-gray-500"
                                 onClick={() => setIsViewPassword(!isViewPassword)}
                               />
                             </div>

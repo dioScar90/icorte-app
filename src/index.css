@@ -145,5 +145,13 @@
   .before-card {
     @apply flex w-full items-start justify-center py-4 px-1 md:px-2 lg:px-4;
   }
+
+  .absolute-middle-y {
+    @apply absolute top-1/2 -translate-y-1/2
+  }
+
+  .absolute-middle-x {
+    @apply absolute left-1/2 -translate-x-1/2
+  }
 }
 

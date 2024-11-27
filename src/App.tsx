@@ -30,6 +30,8 @@ import { SchedulePushPage } from './pages/barber-schedule/set-appointment'
 import { PopulateAll } from './pages/admin/populate-all'
 import { ResetPassword } from './pages/admin/reset-password'
 import { PopulateAppointments } from './pages/admin/populate-appointments'
+import { BarberShopServices } from './pages/barber-shop/barber-shop-services'
+import { servicesLoader } from './data/loaders/servicesLoader'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -61,12 +63,16 @@ export function App() {
             </Route>
           </Route>
           
-          <Route element={<ProtectedBarberShopRoute />}>
+          <Route
+            loader={async ({ params }) => ({ barberShopId: params?.barberShopId ? +params.barberShopId : undefined })}
+            element={<ProtectedBarberShopRoute />}
+          >
             <Route path={ROUTE_ENUM.BARBER_SHOP} loader={barberShopLoader} element={<BarberShopLayout />}>
               <Route index loader={async ({ params }) => !params.barberShopId ? redirect(ROUTE_ENUM.HOME) : null} />
               <Route path="register" element={<RegisterBarberShop />} />
               <Route path=":barberShopId" element={<MyBarberShop />} />
               <Route path=":barberShopId/edit" element={<BarberShopEdit />} />
+              <Route path=":barberShopId/services" loader={servicesLoader} element={<BarberShopServices />} />
               <Route path=":barberShopId/dashboard" element={<BarberShopDashboard />} />
             </Route>
           </Route>

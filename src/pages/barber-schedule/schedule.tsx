@@ -30,6 +30,7 @@ import { useHandleErrors } from "@/providers/handleErrorProvider"
 import { debounce } from "@/utils/debounce"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Prettify } from "@/utils/types/prettify"
+import { getNumberAsCurrency } from "@/utils/currency"
 
 export type Payment = {
   id: string
@@ -207,7 +208,7 @@ function getServiceTableRow<T extends ServiceState[number]>(stateItem: T) {
       <TableCell className="font-medium">{stateItem.barberShopName}</TableCell>
       <TableCell>{stateItem.name}</TableCell>
       <TableCell className="line-clamp-2">{stateItem.description}</TableCell>
-      <TableCell className="text-right">{stateItem.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</TableCell>
+      <TableCell className="text-right">{getNumberAsCurrency(stateItem.price)}</TableCell>
     </TableRow>
   );
 }

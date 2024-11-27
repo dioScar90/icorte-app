@@ -71,6 +71,10 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: Aut
           url: `${ROUTE_ENUM.BARBER_SHOP}/${barberShopId}/dashboard`,
         },
         {
+          title: "Serviços",
+          url: `${ROUTE_ENUM.BARBER_SHOP}/${barberShopId}/services`,
+        },
+        {
           title: "Editar",
           url: `${ROUTE_ENUM.BARBER_SHOP}/${barberShopId}/edit`,
         },
