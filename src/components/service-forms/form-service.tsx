@@ -8,15 +8,26 @@ import { BarberShopServicesLayoutContextType } from "../layouts/barber-shop-serv
 import { useLocation, useNavigate } from "react-router-dom"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
 
+type RegisterProps = {
+  action: BarberShopServicesLayoutContextType['register']
+  serviceId?: undefined
+  service?: undefined
+}
+
+type UpdateProps = {
+  action: BarberShopServicesLayoutContextType['update']
+  serviceId: number
+  service: ServiceZod
+}
+
 type Props = {
-  register: BarberShopServicesLayoutContextType['register']
   formId: string
   closeModal: () => void
   setLoadingState: (arg: boolean) => void
   barberShopId: number
-}
+} & (RegisterProps | UpdateProps)
 
-export function FormRegisterService({ register, formId, closeModal, setLoadingState, barberShopId }: Props) {
+export function FormService({ formId, action, closeModal, setLoadingState, barberShopId, serviceId, service }: Props) {
   console.log('tentei abrir FormRegisterService')
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -25,31 +36,31 @@ export function FormRegisterService({ register, formId, closeModal, setLoadingSt
   const form = useForm<ServiceZod>({
     resolver: zodResolver(serviceSchema),
     defaultValues: {
-      name: '',
-      description: '',
-      price: 0.0,
-      duration: '00:00:00',
+      name: !serviceId ? '' : service.name,
+      description: !serviceId ? '' : service.description,
+      price: !serviceId ? 0.0 : service.price,
+      duration: !serviceId ? '00:00:00' : service.duration,
     }
   })
   
   async function onSubmit(data: ServiceZod) {
     try {
-      const result = await register(barberShopId, data)
+      const result = serviceId === undefined ? await action(barberShopId, data) : await action(barberShopId, serviceId, data)
       
       if (!result.isSuccess) {
         throw result.error
       }
       
       closeModal()
-      navigate(pathname, { replace: true, state: { message: result.value?.message }})
+      navigate(pathname, { replace: true, state: { message: result.value?.message ?? 'Serviço atualizado com sucesso!' }})
     } catch (err) {
       handleError(err, form)
     }
   }
   
   useEffect(() => {
-    setLoadingState(form.formState.isLoading)
-  }, [form.formState.isLoading])
+    setLoadingState(form.formState.isSubmitting)
+  }, [form.formState])
   
   return (
     <Form {...form}>

@@ -10,9 +10,8 @@ import { useCallback, useEffect, useReducer, useState } from "react";
 import { ServiceZod } from "@/schemas/service";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
+import { FormService } from "@/components/service-forms/form-service";
 import Swal from "sweetalert2";
-import { FormRegisterService } from "@/components/service-forms/register-service";
-import { FormUpdateService } from "@/components/service-forms/update-service";
 
 type AllClosedState = {
   open: false
@@ -214,12 +213,23 @@ export function BarberShopServices() {
             </DialogDescription>
           </DialogHeader>
           
-          {state.open && state?.formId === 'register-form' && (
-            <FormRegisterService { ...state } register={register} closeModal={closeModal} setLoadingState={setLoadingState} />
-          )}
-          
-          {state.open && state?.formId === 'update-form' && (
-          <FormUpdateService { ...state } update={update} closeModal={closeModal} setLoadingState={setLoadingState} />
+          {state.open && (
+            state?.formId === 'update-form'
+            ? (
+              <FormService
+                { ...state }
+                action={update}
+                closeModal={closeModal}
+                setLoadingState={setLoadingState}
+              />
+            ) : (
+              <FormService
+                { ...state }
+                action={register}
+                closeModal={closeModal}
+                setLoadingState={setLoadingState}
+              />
+            )
           )}
           
           <DialogFooter className="gap-x-1">
