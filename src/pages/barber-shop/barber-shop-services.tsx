@@ -6,50 +6,83 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Edit, ShoppingBag, Trash2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { BarberShopServicesLayoutContextType } from "@/components/layouts/barber-shop-services-layout";
-import { useRef, useState } from "react";
-import { serviceSchema, ServiceZod } from "@/schemas/service";
+import { useCallback, useEffect, useReducer, useState } from "react";
+import { ServiceZod } from "@/schemas/service";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@/components/ui/input";
-import { toast } from "@/hooks/use-toast";
 import Swal from "sweetalert2";
+import { FormRegisterService } from "@/components/service-forms/register-service";
+import { FormUpdateService } from "@/components/service-forms/update-service";
 
+type AllClosedState = {
+  open: false
+}
+
+type DialogRegisterState = {
+  open: true
+  formId: 'register-form'
+  submitBtnInnerText: 'Cadastrar'
+  barberShopId: number
+}
+
+type DialogUpdateState = {
+  open: true
+  formId: 'update-form'
+  submitBtnInnerText: 'Atualizar'
+  barberShopId: number
+  serviceId: number
+  service: ServiceZod
+}
+
+type DialogState =
+  | AllClosedState
+  | DialogRegisterState
+  | DialogUpdateState
+  
+type DialogRegisterAction = Pick<DialogRegisterState, 'barberShopId'>
+type DialogUpdateAction = Pick<DialogUpdateState, 'barberShopId' | 'serviceId' | 'service'>
+
+type DialogAction =
+  | { type: 'ALL_CLOSED' }
+  | { type: 'REGISTER_FORM', payload: DialogRegisterAction }
+  | { type: 'UPDATE_FORM', payload: DialogUpdateAction }
+
+function dialogReducer(state: DialogState, action: DialogAction): DialogState {
+  switch (action.type) {
+    case 'REGISTER_FORM':
+      return {
+        ...state,
+        ...action.payload,
+        open: true,
+        formId: 'register-form',
+        submitBtnInnerText: 'Cadastrar',
+      }
+    case 'UPDATE_FORM':
+      return {
+        ...state,
+        ...action.payload,
+        open: true,
+        formId: 'update-form',
+        submitBtnInnerText: 'Atualizar',
+      }
+    case 'ALL_CLOSED':
+      return {
+        open: false,
+      }
+  }
+}
+  
 export function BarberShopServices() {
-  const { barberShop, services, register, remove } = useOutletContext<BarberShopServicesLayoutContextType>()
-  const [open, setOpen] = useState(false)
+  const { barberShop, services, register, update, remove } = useOutletContext<BarberShopServicesLayoutContextType>()
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { handleError } = useHandleErrors()
-  const formRef = useRef<HTMLFormElement>(null)
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [state, dispatch] = useReducer(dialogReducer, { open: false })
   
-  const form = useForm<ServiceZod>({
-    resolver: zodResolver(serviceSchema),
-    defaultValues: {
-      name: '',
-      description: '',
-      price: 0.0,
-      duration: '00:00:00',
-    }
-  })
-  
-  async function onSubmit(data: ServiceZod) {
-    try {
-      console.log('ora ora ora se não são as minhas escolhas...', data)
-      const result = await register(barberShop.id, data)
-      
-      if (!result.isSuccess) {
-        throw result.error
-      }
-      
-      setOpen(false)
-      navigate(pathname, { replace: true, state: { message: result.value.message }})
-    } catch (err) {
-      handleError(err, form)
-    }
-  }
+  const setLoadingState = useCallback((arg: boolean) => setIsLoading(arg), [])
+  const closeModal = useCallback(() => dispatch({ type: 'ALL_CLOSED' }), [])
   
   function handleRemove(serviceId: number) {
     Swal.fire({
@@ -79,22 +112,23 @@ export function BarberShopServices() {
       })
   }
   
+  useEffect(() => {
+    if (!state.open) {
+      setIsLoading(false)
+    }
+  }, [state.open])
+  
   function handleDialogOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      form.reset()
-      form.clearErrors()
+      dispatch({ type: 'ALL_CLOSED' })
     }
-
-    setOpen(isOpen)
   }
-  
-  const FORM_REGISTER_ID = "form-register"
   
   return (
     <>
       <div className="space-y-6">
         <div className="before-card">
-          <Card className="w-full md:max-w-xl">
+          <Card className="w-full md:max-w-96">
             <CardHeader>
               <CardTitle className="text-2xl">Serviços - {barberShop.name}</CardTitle>
               <CardDescription>
@@ -127,7 +161,7 @@ export function BarberShopServices() {
                               size="icon"
                               variant="outline"
                               title="Editar"
-                              onClick={() => toast({ variant: "destructive", description: "Indisponível no momento" })}
+                              onClick={() => dispatch({ type: 'UPDATE_FORM', payload: { barberShopId, serviceId, service }})}
                             >
                               <Edit />
                             </Button>
@@ -160,7 +194,7 @@ export function BarberShopServices() {
               <div className="w-full h-14 relative">
                 <Button
                   type="button" className="absolute-middle-y right-0"
-                  onClick={() => setOpen(true)}
+                  onClick={() => dispatch({ type: 'REGISTER_FORM', payload: { barberShopId: barberShop.id } })}
                 >
                   <ShoppingBag />
                   Novo
@@ -171,95 +205,41 @@ export function BarberShopServices() {
         </div>
       </div>
       
-      <Dialog open={open} onOpenChange={handleDialogOpenChange}>
-        <DialogContent className="sm:max-w-md">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} id={FORM_REGISTER_ID} ref={formRef} className="space-y-6">
-              <DialogHeader>
-                <DialogTitle>Novo serviço</DialogTitle>
-                <DialogDescription>
-                  Preencha os campos abaixo para criar um novo serviço.
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className="grid gap-3">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nome</FormLabel>
-                      <FormControl>
-                        <Input type="text" placeholder="Nome" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Sobrenome</FormLabel>
-                      <FormControl>
-                        <Input type="text" placeholder="Descrição (opcional)" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Preço</FormLabel>
-                      <FormControl>
-                        <Input type="text" inputMode="decimal" placeholder="Preço" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="duration"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Duração</FormLabel>
-                      <FormControl>
-                        <Input type="text" inputMode="numeric" placeholder="Duração" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormRootErrorMessage />
-                
-                <DialogFooter className="gap-x-1">
-                  <DialogClose asChild>
-                    <Button type="button" variant="secondary">
-                      Cancelar
-                    </Button>
-                  </DialogClose>
-                  
-                  <Button
-                    type="submit"
-                    form={FORM_REGISTER_ID}
-                    isLoading={form.formState.isLoading || form.formState.isSubmitting}
-                    IconLeft={<ShoppingBag />}
-                  >
-                    Cadastrar
-                  </Button>
-                </DialogFooter>
-              </div>
-            </form>
-          </Form>
+      <Dialog open={state.open} onOpenChange={handleDialogOpenChange}>
+        <DialogContent className="sm:max-w-96">
+          <DialogHeader>
+            <DialogTitle>Novo serviço</DialogTitle>
+            <DialogDescription>
+              Preencha os campos abaixo para criar um novo serviço.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {state.open && state?.formId === 'register-form' && (
+            <FormRegisterService { ...state } register={register} closeModal={closeModal} setLoadingState={setLoadingState} />
+          )}
+          
+          {state.open && state?.formId === 'update-form' && (
+          <FormUpdateService { ...state } update={update} closeModal={closeModal} setLoadingState={setLoadingState} />
+          )}
+          
+          <DialogFooter className="gap-x-1">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Cancelar
+              </Button>
+            </DialogClose>
+            
+            {state.open && (
+              <Button
+                type="submit"
+                form={state.formId}
+                isLoading={isLoading}
+                IconLeft={<ShoppingBag />}
+              >
+                {state.submitBtnInnerText}
+              </Button>
+            )}
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
