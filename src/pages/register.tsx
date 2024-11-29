@@ -10,7 +10,7 @@ import { applyMask, MaskTypeEnum } from "@/utils/mask";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { getEnumAsArray, GetEnumAsString } from "@/utils/enum-as-array";
+import { getEnumAsArray, getEnumAsString } from "@/utils/enum-as-array";
 import { GenderEnum } from "@/schemas/profile";
 import { Eye, EyeOff, UserRoundPlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -45,7 +45,7 @@ export function Register() {
     e.preventDefault()
     toast({ variant: "destructive", description: "Indisponível no momento" })
   }
-  
+
   async function onSubmit(values: UserRegisterZod) {
     try {
       const result = await register(values)
@@ -61,11 +61,11 @@ export function Register() {
   }
 
   const phoneNumber = form.watch('profile.phoneNumber')
-  
+
   useEffect(() => {
     form.setValue('profile.phoneNumber', applyMask(MaskTypeEnum.PHONE_NUMBER, phoneNumber))
   }, [phoneNumber])
-  
+
   return (
     <>
       <Form {...form}>
@@ -112,7 +112,7 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="profile.lastName"
@@ -126,7 +126,7 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="profile.phoneNumber"
@@ -140,14 +140,14 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="profile.gender"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Gênero</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={GetEnumAsString(GenderEnum, field.value)}>
+                          <Select onValueChange={field.onChange} defaultValue={getEnumAsString(GenderEnum, field.value)}>
                             <FormControl>
                               <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Gênero" />
@@ -166,7 +166,7 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="email"
@@ -180,7 +180,7 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="password"
@@ -200,7 +200,7 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="confirmPassword"
@@ -214,7 +214,7 @@ export function Register() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormRootErrorMessage />
                   </div>
 
@@ -226,7 +226,7 @@ export function Register() {
                     >
                       Cadastrar
                     </Button>
-                    
+
                     <div className="text-center text-sm">
                       <span>Já possui uma conta?</span>{' '}
                       <Link to={ROUTE_ENUM.LOGIN} className="underline">

@@ -4,27 +4,27 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { serviceSchema, ServiceZod } from "@/schemas/service"
 import { useEffect } from "react"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "../ui/form"
-import { BarberShopServicesLayoutContextType } from "../layouts/barber-shop-services-layout"
+import { useServicesLayout } from "../layouts/barber-shop-services-layout"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
 
 export type RegisterProps = {
   formId: 'register-form'
-  action: BarberShopServicesLayoutContextType['register']
+  action: ReturnType<typeof useServicesLayout>['register']
   serviceId?: undefined
   service?: undefined
 }
 
 export type UpdateProps = {
   formId: 'update-form'
-  action: BarberShopServicesLayoutContextType['update']
+  action: ReturnType<typeof useServicesLayout>['update']
   serviceId: number
   service: ServiceZod
 }
 
 export type RemoveProps = {
   formId: 'remove-form'
-  action: BarberShopServicesLayoutContextType['remove']
+  action: ReturnType<typeof useServicesLayout>['remove']
   serviceId: number
   service: ServiceZod
 }

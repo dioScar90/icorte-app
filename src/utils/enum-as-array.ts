@@ -9,7 +9,7 @@ export const getEnumAsArray: Func = (enumItself) => {
 
 type Func2 = <T extends EnumObj>(enumItself: T, enumVal?: number) => keyof T | undefined
 
-export const GetEnumAsString: Func2 = (enumItself, enumVal) => {
+export const getEnumAsString: Func2 = (enumItself, enumVal) => {
   if (enumVal === undefined) {
     return undefined
   }
@@ -20,6 +20,6 @@ export const GetEnumAsString: Func2 = (enumItself, enumVal) => {
   if (!record) {
     return undefined
   }
-    
+
   return record[0]
 }

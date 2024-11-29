@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getStringAsTimeOnly } from './sharedValidators/timeOnly'
 
-enum DayOfWeekEnum {
+export enum DayOfWeekEnum {
   DOMINGO, SEGUNDA, TERCA, QUARTA, QUINTA, SEXTA, SÁBADO
 }
 

@@ -33,6 +33,9 @@ import { PopulateAppointments } from './pages/admin/populate-appointments'
 import { BarberShopServices } from './pages/barber-shop/barber-shop-services'
 import { servicesLoader } from './data/loaders/servicesLoader'
 import { BarberShopServicesLayout } from './components/layouts/barber-shop-services-layout'
+import { BarberShopSchedules } from './pages/barber-shop/barber-shop-schedules'
+import { schedulesLoader } from './data/loaders/schedulesLoader'
+import { BarberShopSchedulesLayout } from './components/layouts/barber-shop-schedules-layout'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -73,9 +76,15 @@ export function App() {
               <Route path="register" element={<RegisterBarberShop />} />
               <Route path=":barberShopId" element={<MyBarberShop />} />
               <Route path=":barberShopId/edit" element={<BarberShopEdit />} />
+
               <Route path=":barberShopId/services" loader={servicesLoader} element={<BarberShopServicesLayout />}>
                 <Route index element={<BarberShopServices />} />
               </Route>
+
+              <Route path=":barberShopId/schedules" loader={schedulesLoader} element={<BarberShopSchedulesLayout />}>
+                <Route index element={<BarberShopSchedules />} />
+              </Route>
+              
               <Route path=":barberShopId/dashboard" element={<BarberShopDashboard />} />
             </Route>
           </Route>

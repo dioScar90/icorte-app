@@ -10,7 +10,7 @@ import { applyMask, MaskTypeEnum } from "@/utils/mask";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { getEnumAsArray, GetEnumAsString } from "@/utils/enum-as-array";
+import { getEnumAsArray, getEnumAsString } from "@/utils/enum-as-array";
 import { StateEnum } from "@/schemas/address";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ChevronLeft, StoreIcon } from "lucide-react";
@@ -20,7 +20,7 @@ export function BarberShopEdit() {
   const { update, barberShop } = useOutletContext<BarberShopLayoutContextType>()
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
-  console.log('barberShop', {barberShop})
+  console.log('barberShop', { barberShop })
   const form = useForm<BarberShopZod>({
     resolver: zodResolver(barberShopSchema),
     defaultValues: {
@@ -48,7 +48,7 @@ export function BarberShopEdit() {
       if (!result.isSuccess) {
         throw result.error
       }
-      
+
       const url = `${ROUTE_ENUM.BARBER_SHOP}/${barberShop.id}`
       const message = 'Barbearia alterada com sucesso'
       navigate(url, { state: { message } })
@@ -56,18 +56,18 @@ export function BarberShopEdit() {
       handleError(err, form)
     }
   }
-  
+
   const comercialNumber = form.watch('comercialNumber')
   const postalCode = form.watch('address.postalCode')
-  
+
   useEffect(() => {
     form.setValue('comercialNumber', applyMask(MaskTypeEnum.PHONE_NUMBER, comercialNumber))
   }, [comercialNumber])
-  
+
   useEffect(() => {
     form.setValue('address.postalCode', applyMask(MaskTypeEnum.CEP, postalCode))
   }, [postalCode])
-  
+
   return (
     <>
       <Form {...form}>
@@ -138,7 +138,7 @@ export function BarberShopEdit() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="address.street"
@@ -215,7 +215,7 @@ export function BarberShopEdit() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Estado</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={GetEnumAsString(StateEnum, field.value)}>
+                          <Select onValueChange={field.onChange} defaultValue={getEnumAsString(StateEnum, field.value)}>
                             <FormControl>
                               <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Estado" />
@@ -262,7 +262,7 @@ export function BarberShopEdit() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormRootErrorMessage />
                   </div>
 
@@ -271,7 +271,7 @@ export function BarberShopEdit() {
                       <ChevronLeft />
                       Cancelar
                     </Link>
-                    
+
                     <Button
                       type="submit" variant="default"
                       isLoading={form.formState.isLoading || form.formState.isSubmitting}

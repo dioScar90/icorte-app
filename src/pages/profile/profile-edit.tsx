@@ -11,7 +11,7 @@ import { applyMask, MaskTypeEnum } from "@/utils/mask";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { getEnumAsArray, GetEnumAsString } from "@/utils/enum-as-array";
+import { getEnumAsArray, getEnumAsString } from "@/utils/enum-as-array";
 import { GenderEnum } from "@/schemas/profile";
 import { Button } from "@/components/ui/button";
 import { UserRoundPlusIcon } from "lucide-react";
@@ -22,7 +22,7 @@ export function ProfileEdit() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { handleError } = useHandleErrors()
-  
+
   const form = useForm<UserUpdateZod>({
     resolver: zodResolver(userUpdateSchema),
     defaultValues: {
@@ -39,11 +39,11 @@ export function ProfileEdit() {
     try {
       console.log('submetasse', values)
       const result = await updateProfile(profile.id, values.profile)
-      
+
       if (!result.isSuccess) {
         throw result.error
       }
-      
+
       const url = `${ROUTE_ENUM.PROFILE}/${profile.id}`
       const message = 'Perfil alterado com sucesso'
       navigate(url, { state: { message } })
@@ -53,15 +53,15 @@ export function ProfileEdit() {
   }
 
   const phoneNumber = form.watch('profile.phoneNumber')
-  
+
   useEffect(() => {
     form.setValue('profile.phoneNumber', applyMask(MaskTypeEnum.PHONE_NUMBER, phoneNumber))
   }, [phoneNumber])
-  
+
   return (
     <>
       <h3>{profile.fullName}</h3>
-      
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
@@ -114,7 +114,7 @@ export function ProfileEdit() {
                 <FormLabel>Gênero</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={GetEnumAsString(GenderEnum, field.value)}
+                  defaultValue={getEnumAsString(GenderEnum, field.value)}
                 >
                   <FormControl>
                     <SelectTrigger className="w-[180px]">
@@ -134,9 +134,9 @@ export function ProfileEdit() {
               </FormItem>
             )}
           />
-          
+
           <FormRootErrorMessage />
-          
+
           <Button
             type="submit" formNoValidate
             isLoading={form.formState.isLoading || form.formState.isSubmitting}

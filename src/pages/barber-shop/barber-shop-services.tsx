@@ -1,14 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { useOutletContext } from "react-router-dom";
 import { getNumberAsCurrency } from "@/utils/currency";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit, ShoppingBag, Trash2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { BarberShopServicesLayoutContextType } from "@/components/layouts/barber-shop-services-layout";
+import { useServicesLayout } from "@/components/layouts/barber-shop-services-layout";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { FormService, RegisterProps, RemoveProps, UpdateProps } from "@/components/service-forms/form-service";
+import { FormService, RegisterProps, RemoveProps, UpdateProps } from "@/components/forms/form-service";
 import { LineClamp } from "@/components/line-clamp";
 
 type AllClosedState = {
@@ -47,7 +46,7 @@ type DialogState =
   | DialogRegisterState
   | DialogUpdateState
   | DialogRemoveState
-  
+
 type DialogRegisterAction = Pick<DialogRegisterState, 'action' | 'barberShopId'>
 type DialogUpdateAction = Pick<DialogUpdateState, 'action' | 'barberShopId' | 'serviceId' | 'service'>
 type DialogRemoveAction = Pick<DialogRemoveState, 'action' | 'barberShopId' | 'serviceId' | 'service'>
@@ -66,7 +65,7 @@ function dialogReducer(state: DialogState, action: DialogAction): DialogState {
         open: true,
         formId: 'register-form',
         submitBtnInnerText: 'Cadastrar',
-  submitBtnVariant: 'default',
+        submitBtnVariant: 'default',
         dialogTitle: 'Novo serviço',
         dialogDescription: 'Preencha os campos abaixo para criar um novo serviço.',
       }
@@ -77,7 +76,7 @@ function dialogReducer(state: DialogState, action: DialogAction): DialogState {
         open: true,
         formId: 'update-form',
         submitBtnInnerText: 'Atualizar',
-  submitBtnVariant: 'default',
+        submitBtnVariant: 'default',
         dialogTitle: 'Atualizar serviço',
         dialogDescription: 'Confira os campos abaixo para atualizar o serviço.',
       }
@@ -97,28 +96,28 @@ function dialogReducer(state: DialogState, action: DialogAction): DialogState {
       }
   }
 }
-  
+
 export function BarberShopServices() {
-  const { barberShop, services, register, update, remove } = useOutletContext<BarberShopServicesLayoutContextType>()
+  const { barberShop, services, register, update, remove } = useServicesLayout()
 
   const [isLoading, setIsLoading] = useState(false)
   const [state, dispatch] = useReducer(dialogReducer, { open: false })
-  
+
   const setLoadingState = useCallback((arg: boolean) => setIsLoading(arg), [])
   const closeModal = useCallback(() => dispatch({ type: 'ALL_CLOSED' }), [])
-  
+
   useEffect(() => {
     if (!state.open) {
       setIsLoading(false)
     }
   }, [state.open])
-  
+
   function handleDialogOpenChange(isOpen: boolean) {
     if (!isOpen) {
       dispatch({ type: 'ALL_CLOSED' })
     }
   }
-  
+
   return (
     <>
       <div className="before-card">
@@ -159,7 +158,7 @@ export function BarberShopServices() {
                             size="icon"
                             variant="outline"
                             title="Editar"
-                            onClick={() => dispatch({ type: 'UPDATE_FORM', payload: { action: update, barberShopId, serviceId, service }})}
+                            onClick={() => dispatch({ type: 'UPDATE_FORM', payload: { action: update, barberShopId, serviceId, service } })}
                           >
                             <Edit />
                           </Button>
@@ -167,7 +166,7 @@ export function BarberShopServices() {
                             size="icon"
                             variant="destructive"
                             title="Remover"
-                            onClick={() => dispatch({ type: 'REMOVE_FORM', payload: { action: remove, barberShopId, serviceId, service }})}
+                            onClick={() => dispatch({ type: 'REMOVE_FORM', payload: { action: remove, barberShopId, serviceId, service } })}
                           >
                             <Trash2 />
                           </Button>
@@ -185,10 +184,10 @@ export function BarberShopServices() {
                         </Alert>
                       </TableCell>
                     </TableRow>
-                )}
+                  )}
               </TableBody>
             </Table>
-            
+
             <div className="w-full h-14 relative">
               <Button
                 type="button" className="absolute-middle-y right-0"
@@ -201,7 +200,7 @@ export function BarberShopServices() {
           </CardContent>
         </Card>
       </div>
-      
+
       <Dialog open={state.open} onOpenChange={handleDialogOpenChange}>
         <DialogContent>
           <DialogHeader>
@@ -210,22 +209,22 @@ export function BarberShopServices() {
               {state.open && state.dialogDescription}
             </DialogDescription>
           </DialogHeader>
-          
+
           {state.open && (
             <FormService
-              { ...state }
+              {...state}
               closeModal={closeModal}
               setLoadingState={setLoadingState}
             />
           )}
-          
+
           <DialogFooter className="grid grid-cols-2 md:flex md:justify-end gap-2">
             <DialogClose asChild>
               <Button type="button" variant="secondary">
                 Cancelar
               </Button>
             </DialogClose>
-            
+
             {state.open && (
               <Button
                 type="submit"
