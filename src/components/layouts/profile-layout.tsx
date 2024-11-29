@@ -2,32 +2,40 @@ import { profileLoader } from "@/data/loaders/profileLoader";
 import { ProfileRepository } from "@/data/repositories/ProfileRepository";
 import { ProfileService } from "@/data/services/ProfileService";
 import { httpClient } from "@/providers/proxyProvider";
-import { ProfileZod } from "@/schemas/profile";
 import { useCallback, useMemo } from "react";
-import { Outlet, useLoaderData } from "react-router-dom";
+import { Outlet, useLoaderData, useOutletContext } from "react-router-dom";
 
-export type ProfileLayoutContextType = {
-  updateProfile: (id: number, data: ProfileZod) => Promise<ReturnType<ProfileRepository['updateProfile']>>
+type ProfileLayoutContextType = {
+  updateProfile: ProfileRepository['updateProfile']
   profile: NonNullable<Awaited<ReturnType<typeof profileLoader>>>
 }
 
 export function ProfileLayout() {
   const profile = useLoaderData() as Awaited<ReturnType<typeof profileLoader>>
   const repository = useMemo(() => new ProfileRepository(new ProfileService(httpClient)), [])
-
+  
   if (!profile) {
     return <p>Não tem perfil nenhum aqui não</p>
   }
   
-  const updateProfile = useCallback(async (id: number, data: ProfileZod) => {
-    return await repository.updateProfile(id, data)
+  const updateProfile = useCallback(async function(...args: Parameters<typeof repository.updateProfile>) {
+    return await repository.updateProfile(...args)
   }, [])
+  
+  const props: ProfileLayoutContextType = {
+    updateProfile,
+    profile,
+  }
   
   return (
     <>
       <div className="flex-1 flex flex-col h-full">
-        <Outlet context={{ updateProfile, profile }} />
+        <Outlet context={props} />
       </div>
     </>
   )
+}
+
+export function useProfileLayout() {
+  return useOutletContext<ProfileLayoutContextType>()
 }

@@ -3,14 +3,14 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-import { AdminLayoutContextType, resetPasswordSchema, ResetPasswordZod } from "@/components/layouts/admin-layout";
+import { resetPasswordSchema, ResetPasswordZod, useAdminLayout } from "@/components/layouts/admin-layout";
 import { ListRestart } from "lucide-react";
 
 export function ResetPassword() {
-  const { resetPassword } = useOutletContext<AdminLayoutContextType>()
+  const { resetPassword } = useAdminLayout()
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
   

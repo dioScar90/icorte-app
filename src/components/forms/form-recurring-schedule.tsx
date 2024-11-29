@@ -60,7 +60,7 @@ export function FormRecurringSchedule({ formId, action, closeModal, setLoadingSt
     try {
       let result: Awaited<ReturnType<typeof action>>
       let message: string
-
+      
       switch (formId) {
         case 'recurring-register-form':
           result = await action(barberShopId, data)
@@ -74,15 +74,16 @@ export function FormRecurringSchedule({ formId, action, closeModal, setLoadingSt
           result = await action(barberShopId, dayOfWeek)
           message = result.value?.message ?? 'Serviço removido com sucesso'
       }
-
+      
       if (!result.isSuccess) {
         throw result.error
       }
-
-      closeModal()
+      
       navigate(pathname, { replace: true, state: { message } })
     } catch (err) {
       handleError(err, form)
+    } finally {
+      closeModal()
     }
   }
 

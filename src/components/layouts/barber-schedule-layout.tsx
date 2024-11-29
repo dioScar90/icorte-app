@@ -1,29 +1,27 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useOutletContext } from "react-router-dom";
 import { BarberScheduleRepository } from "@/data/repositories/BarberScheduleRepository";
-import { DateOnly } from "@/utils/types/date";
 import { ServiceRepository } from "@/data/repositories/ServiceRepository";
 import { AppointmentRepository } from "@/data/repositories/AppointmentRepository";
-import { AppointmentZod } from "@/schemas/appointment";
 import { BarberScheduleService } from "@/data/services/BarberScheduleService";
 import { httpClient } from "@/providers/proxyProvider";
 import { useCallback, useMemo } from "react";
 import { ServiceService } from "@/data/services/ServiceService";
 import { AppointmentService } from "@/data/services/AppointmentService";
 
-export type BarberScheduleLayoutContextType = {
-  getTopBarbers: (dateOfWeek: DateOnly) => Promise<ReturnType<BarberScheduleRepository['getTopBarbersWithAvailability']>>
-  getAvailableDates: (barberShopId: number, dateOfWeek: DateOnly) => Promise<ReturnType<BarberScheduleRepository['getAvailableDatesForBarber']>>
-  getAbailableSlots: (barberShopId: number, date: DateOnly, serviceIds: number[]) => Promise<ReturnType<BarberScheduleRepository['getAvailableSlots']>>
-  servicesByName: (q: string) => Promise<ReturnType<BarberScheduleRepository['searchServicesByNameAsync']>>
+type BarberScheduleLayoutContextType = {
+  getTopBarbers: BarberScheduleRepository['getTopBarbersWithAvailability']
+  getAvailableDates: BarberScheduleRepository['getAvailableDatesForBarber']
+  getAbailableSlots: BarberScheduleRepository['getAvailableSlots']
+  servicesByName: BarberScheduleRepository['searchServicesByNameAsync']
 
-  getService: (barberShopId: number, serviceId: number) => Promise<ReturnType<ServiceRepository['getService']>>
-  getAllServices: (barberShopId: number) => Promise<ReturnType<ServiceRepository['getAllServices']>>
+  getService: ServiceRepository['getService']
+  getAllServices: ServiceRepository['getAllServices']
 
-  createAppointment: (data: AppointmentZod) => Promise<ReturnType<AppointmentRepository['createAppointment']>>
-  getAppointment: (id: number) => Promise<ReturnType<AppointmentRepository['getAppointment']>>
-  getAllAppointments: () => Promise<ReturnType<AppointmentRepository['getAllAppointments']>>
-  updateAppointment: (id: number, data: AppointmentZod) => Promise<ReturnType<AppointmentRepository['updateAppointment']>>
-  deleteAppointment: (id: number) => Promise<ReturnType<AppointmentRepository['deleteAppointment']>>
+  createAppointment: AppointmentRepository['createAppointment']
+  getAppointment: AppointmentRepository['getAppointment']
+  getAllAppointments: AppointmentRepository['getAllAppointments']
+  updateAppointment: AppointmentRepository['updateAppointment']
+  deleteAppointment: AppointmentRepository['deleteAppointment']
 }
 
 export function BarberScheduleLayout() {
@@ -31,51 +29,51 @@ export function BarberScheduleLayout() {
   const serviceRep = useMemo(() => new ServiceRepository(new ServiceService(httpClient)), [])
   const appointmentRep = useMemo(() => new AppointmentRepository(new AppointmentService(httpClient)), [])
   
-  const getTopBarbers = useCallback(async function(dateOfWeek: DateOnly) {
-    return await barberScheduleRep.getTopBarbersWithAvailability(dateOfWeek)
+  const getTopBarbers = useCallback(async function(...args: Parameters<typeof barberScheduleRep.getTopBarbersWithAvailability>) {
+    return await barberScheduleRep.getTopBarbersWithAvailability(...args)
   }, [])
 
-  const getAvailableDates = useCallback(async function(barberShopId: number, dateOfWeek: DateOnly) {
-    return await barberScheduleRep.getAvailableDatesForBarber(barberShopId, dateOfWeek)
+  const getAvailableDates = useCallback(async function(...args: Parameters<typeof barberScheduleRep.getAvailableDatesForBarber>) {
+    return await barberScheduleRep.getAvailableDatesForBarber(...args)
   }, [])
 
-  const getAbailableSlots = useCallback(async function(barberShopId: number, date: DateOnly, serviceIds: number[]) {
-    return await barberScheduleRep.getAvailableSlots(barberShopId, date, serviceIds)
+  const getAbailableSlots = useCallback(async function(...args: Parameters<typeof barberScheduleRep.getAvailableSlots>) {
+    return await barberScheduleRep.getAvailableSlots(...args)
   }, [])
 
-  const servicesByName = useCallback(async function(q: string) {
-    return await barberScheduleRep.searchServicesByNameAsync(q)
+  const servicesByName = useCallback(async function(...args: Parameters<typeof barberScheduleRep.searchServicesByNameAsync>) {
+    return await barberScheduleRep.searchServicesByNameAsync(...args)
   }, [])
   
-  const getService = useCallback(async function(serviceId: number, barberShopId: number) {
-    return await serviceRep.getService(serviceId, barberShopId)
+  const getService = useCallback(async function(...args: Parameters<typeof serviceRep.getService>) {
+    return await serviceRep.getService(...args)
   }, [])
   
-  const getAllServices = useCallback(async function(barberShopId: number) {
-    return await serviceRep.getAllServices(barberShopId)
+  const getAllServices = useCallback(async function(...args: Parameters<typeof serviceRep.getAllServices>) {
+    return await serviceRep.getAllServices(...args)
   }, [])
   
-  const createAppointment = useCallback(async function(data: AppointmentZod) {
-    return await appointmentRep.createAppointment(data)
+  const createAppointment = useCallback(async function(...args: Parameters<typeof appointmentRep.createAppointment>) {
+    return await appointmentRep.createAppointment(...args)
   }, [])
 
-  const getAppointment = useCallback(async function(id: number) {
-    return await appointmentRep.getAppointment(id)
+  const getAppointment = useCallback(async function(...args: Parameters<typeof appointmentRep.getAppointment>) {
+    return await appointmentRep.getAppointment(...args)
   }, [])
 
-  const getAllAppointments = useCallback(async function() {
-    return await appointmentRep.getAllAppointments()
+  const getAllAppointments = useCallback(async function(...args: Parameters<typeof appointmentRep.getAllAppointments>) {
+    return await appointmentRep.getAllAppointments(...args)
   }, [])
 
-  const updateAppointment = useCallback(async function(id: number, data: AppointmentZod) {
-    return await appointmentRep.updateAppointment(id, data)
+  const updateAppointment = useCallback(async function(...args: Parameters<typeof appointmentRep.updateAppointment>) {
+    return await appointmentRep.updateAppointment(...args)
   }, [])
 
-  const deleteAppointment = useCallback(async function(id: number) {
-    return await appointmentRep.deleteAppointment(id)
+  const deleteAppointment = useCallback(async function(...args: Parameters<typeof appointmentRep.deleteAppointment>) {
+    return await appointmentRep.deleteAppointment(...args)
   }, [])
-  
-  return <Outlet context={{
+
+  const props: BarberScheduleLayoutContextType = {
     getTopBarbers,
     getAvailableDates,
     getAbailableSlots,
@@ -87,5 +85,13 @@ export function BarberScheduleLayout() {
     getAllAppointments,
     updateAppointment,
     deleteAppointment,
-  }} />
+  }
+  
+  return (
+    <Outlet context={props} />
+  )
+}
+
+export function useBarberScheduleLayout() {
+  return useOutletContext<BarberScheduleLayoutContextType>()
 }

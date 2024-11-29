@@ -6,7 +6,7 @@ import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { MouseEvent, useEffect, useState } from "react";
-import { applyMask, MaskTypeEnum } from "@/utils/mask";
+import { applyMask } from "@/utils/mask";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -63,7 +63,7 @@ export function Register() {
   const phoneNumber = form.watch('profile.phoneNumber')
 
   useEffect(() => {
-    form.setValue('profile.phoneNumber', applyMask(MaskTypeEnum.PHONE_NUMBER, phoneNumber))
+    form.setValue('profile.phoneNumber', applyMask('PHONE_NUMBER', phoneNumber))
   }, [phoneNumber])
 
   return (

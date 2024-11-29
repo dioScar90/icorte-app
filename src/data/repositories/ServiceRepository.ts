@@ -14,7 +14,7 @@ export class ServiceRepository implements IServiceRepository {
       return Result.Failure(err as Error)
     }
   }
-
+  
   async getService(barberShopId: number, serviceId: number) {
     try {
       const res = await this.service.getService(barberShopId, serviceId);

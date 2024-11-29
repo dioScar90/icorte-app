@@ -23,8 +23,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useOutletContext, useSearchParams } from "react-router-dom"
-import { BarberScheduleLayoutContextType } from "@/components/layouts/barber-schedule-layout"
+import { useSearchParams } from "react-router-dom"
+import { useBarberScheduleLayout } from "@/components/layouts/barber-schedule-layout"
 import { ServiceByName } from "@/types/custom-models/service-by-name"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
 import { debounce } from "@/utils/debounce"
@@ -217,7 +217,7 @@ const initialState: [InitialState] = [getInitialValue()]
 
 export function SchedulePage() {
   const { handleError } = useHandleErrors()
-  const { servicesByName } = useOutletContext<BarberScheduleLayoutContextType>()
+  const { servicesByName } = useBarberScheduleLayout()
   const [state, dispatch] = useReducer(serviceReducer, initialState)
   const [searchParams, setSearchParams] = useSearchParams()
   const q = searchParams.get('q')

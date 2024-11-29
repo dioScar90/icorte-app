@@ -2,7 +2,7 @@ import { AdminRepository } from "@/data/repositories/AdminRepository";
 import { AdminService } from "@/data/services/AdminService";
 import { httpClient } from "@/providers/proxyProvider";
 import { useCallback, useMemo } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useOutletContext } from "react-router-dom";
 import { z } from "zod";
 
 const passphrase = z.string().min(1, { message: 'Senha obrigatória' })
@@ -32,36 +32,47 @@ export type BaseAdminZod = z.infer<typeof baseAdminSchema>
 export type AppointmentsAdminZod = z.infer<typeof appointmentsAdminSchema>
 export type ResetPasswordZod = z.infer<typeof resetPasswordSchema>
 
-export type AdminLayoutContextType = {
-  removeAll: (data: BaseAdminZod) => Promise<ReturnType<AdminRepository['removeAll']>>
-  populateAll: (data: BaseAdminZod) => Promise<ReturnType<AdminRepository['populateAll']>>
-  popAppointments: (data: AppointmentsAdminZod) => Promise<ReturnType<AdminRepository['populateWithAppointments']>>
-  resetPassword: (data: ResetPasswordZod) => Promise<ReturnType<AdminRepository['resetPasswordForSomeUser']>>
+type AdminLayoutContextType = {
+  removeAll: AdminRepository['removeAll']
+  populateAll: AdminRepository['populateAll']
+  popAppointments: AdminRepository['populateWithAppointments']
+  resetPassword: AdminRepository['resetPasswordForSomeUser']
 }
 
 export function AdminLayout() {
   const repository = useMemo(() => new AdminRepository(new AdminService(httpClient)), [])
   
-  const removeAll = useCallback(async (data: BaseAdminZod) => {
-    return await repository.removeAll(data)
+  const removeAll = useCallback(async function(...args: Parameters<typeof repository.removeAll>) {
+    return await repository.removeAll(...args)
   }, [])
   
-  const populateAll = useCallback(async (data: BaseAdminZod) => {
-    return await repository.populateAll(data)
+  const populateAll = useCallback(async function(...args: Parameters<typeof repository.populateAll>) {
+    return await repository.populateAll(...args)
   }, [])
   
-  const popAppointments = useCallback(async (data: AppointmentsAdminZod) => {
-    return await repository.populateWithAppointments(data)
+  const popAppointments = useCallback(async function(...args: Parameters<typeof repository.populateWithAppointments>) {
+    return await repository.populateWithAppointments(...args)
   }, [])
   
-  const resetPassword = useCallback(async (data: ResetPasswordZod) => {
-    return await repository.resetPasswordForSomeUser(data)
+  const resetPassword = useCallback(async function(...args: Parameters<typeof repository.resetPasswordForSomeUser>) {
+    return await repository.resetPasswordForSomeUser(...args)
   }, [])
+
+  const props: AdminLayoutContextType = {
+    removeAll,
+    populateAll,
+    popAppointments,
+    resetPassword,
+  }
   
   return (
     <>
       <h3>Admin's space</h3>
-      <Outlet context={{ removeAll, populateAll, popAppointments, resetPassword }} />
+      <Outlet context={props} />
     </>
   )
+}
+
+export function useAdminLayout() {
+  return useOutletContext<AdminLayoutContextType>()
 }

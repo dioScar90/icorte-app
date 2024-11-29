@@ -1,3 +1,5 @@
+import { getNumberAsCurrency } from "./currency"
+
 function getPhone(value: string) {
   return value
     .replace(/[\D]/g, '')
@@ -32,30 +34,78 @@ function getCep(value: string) {
     .replace(/(-\d{3})(\d+?)/, '$1')
 }
 
-export enum MaskTypeEnum {
-  CPF = 1,
-  CNPJ,
-  CEP,
-  PHONE_NUMBER,
+function getTimeOnly(value: string) {
+  return value
+    .replace(/\D/g, '')
+    .padStart(6, '0')
+    .slice(-6)
+    .replace(/(\d{2})(\d)/, '$1:$2')
+    .replace(/(\d{2})(\d)/, '$1:$2')
 }
 
-export function applyMask(type: MaskTypeEnum, value?: string) {
-  if (!value || !value.length) {
+function getMoney(value: number | string) {
+  value = (typeof value === 'string' ? value : String(value * 100))
+    .replace(/\D/g, '')
+    .padStart(3, '0')
+    .replace(/(\d)(?=\d{2}$)/, '$1.')
+  
+  const money = +value
+  
+  if (!money) {
+    return getNumberAsCurrency(0)
+  }
+  
+  return getNumberAsCurrency(money)
+}
+
+const types = [
+  'CPF',
+  'CNPJ',
+  'CEP',
+  'PHONE_NUMBER',
+  'TIME_ONLY',
+  'MONEY',
+] as const
+
+type MaskType = typeof types[number]
+
+type MaskFunc =
+  <
+    TType extends MaskType,
+    TValue extends TType extends 'MONEY' ? number | string : string,
+  >
+  (type: TType, value?: TValue) => string
+
+export const applyMask: MaskFunc = (type, value) => {
+  if (value === undefined) {
     return ''
   }
   
-  value = value!.trim()
+  const isMoneyType = (t: typeof type, v: unknown): v is number | string => t === 'MONEY' && (typeof v === 'number' || typeof v === 'string')
   
-  switch (type) {
-    case MaskTypeEnum.CPF:
-      return getCpf(value)
-    case MaskTypeEnum.CNPJ:
-      return getCnpj(value)
-    case MaskTypeEnum.CEP:
-      return getCep(value)
-    case MaskTypeEnum.PHONE_NUMBER:
-      return getPhone(value)
-    default:
-      return ''
+  if (isMoneyType(type, value)) {
+    return getMoney(value)
   }
+  
+  if (type === 'CPF') {
+    return getCpf(value)
+  }
+
+  if (type === 'CNPJ') {
+    return getCnpj(value)
+  }
+
+  if (type === 'CEP') {
+    return getCep(value)
+  }
+
+  if (type === 'PHONE_NUMBER') {
+    return getPhone(value)
+  }
+
+  if (type === 'TIME_ONLY') {
+    return getTimeOnly(value)
+  }
+  
+  return ''
 }

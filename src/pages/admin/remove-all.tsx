@@ -3,15 +3,15 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { Switch } from "@/components/ui/switch";
-import { AdminLayoutContextType, baseAdminSchema, BaseAdminZod } from "@/components/layouts/admin-layout";
+import { baseAdminSchema, BaseAdminZod, useAdminLayout } from "@/components/layouts/admin-layout";
 import { Bomb } from "lucide-react";
 
 export function RemoveAll() {
-  const { removeAll } = useOutletContext<AdminLayoutContextType>()
+  const { removeAll } = useAdminLayout()
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
   

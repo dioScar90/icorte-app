@@ -3,14 +3,14 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-import { AdminLayoutContextType, baseAdminSchema, BaseAdminZod } from "@/components/layouts/admin-layout";
+import { baseAdminSchema, BaseAdminZod, useAdminLayout } from "@/components/layouts/admin-layout";
 import { BetweenHorizonalStart } from "lucide-react";
 
 export function PopulateAll() {
-  const { populateAll } = useOutletContext<AdminLayoutContextType>()
+  const { populateAll } = useAdminLayout()
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
   

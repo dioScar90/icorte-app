@@ -20,7 +20,10 @@ export async function schedulesLoader({ params }: LoaderFunctionArgs) {
     const specialRes = await specialRep.getAllSpecialSchedules(barberShopId)
     
     if (!recurringRes.isSuccess || !specialRes.isSuccess) {
-      return null
+      return {
+        recurringSchedules: null,
+        specialSchedules: null,
+      }
     }
     
     return {
@@ -28,6 +31,9 @@ export async function schedulesLoader({ params }: LoaderFunctionArgs) {
       specialSchedules: specialRes.value,
     }
   } catch (err) {
-    return null
+    return {
+      recurringSchedules: null,
+      specialSchedules: null,
+    }
   }
 }

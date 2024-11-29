@@ -1,17 +1,17 @@
-import { BarberShopLayoutContextType } from "@/components/layouts/barber-shop-layout";
+import { useBarberShopLayout } from "@/components/layouts/barber-shop-layout";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { StateEnum } from "@/schemas/address";
 import { ROUTE_ENUM } from "@/types/route";
 import { getEnumAsString } from "@/utils/enum-as-array";
-import { applyMask, MaskTypeEnum } from "@/utils/mask";
+import { applyMask } from "@/utils/mask";
 import { useState } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { JsonDebugger } from "@/components/json-debugger";
 
 export function MyBarberShop() {
-  const { barberShop } = useOutletContext<BarberShopLayoutContextType>()
+  const { barberShop } = useBarberShopLayout()
   const [showPre, setShowPre] = useState(false)
 
   return (
@@ -41,7 +41,7 @@ export function MyBarberShop() {
           <div className="space-y-4 mt-4">
             <div className="flex justify-between">
               <span className="font-semibold">Número Comercial</span>
-              <span className="text-gray-600">{applyMask(MaskTypeEnum.PHONE_NUMBER, barberShop.comercialNumber)}</span>
+              <span className="text-gray-600">{applyMask('PHONE_NUMBER', barberShop.comercialNumber)}</span>
             </div>
             <div className="flex justify-between">
               <span className="font-semibold">E-mail Comercial</span>
@@ -81,7 +81,7 @@ export function MyBarberShop() {
             </div>
             <div className="flex justify-between">
               <span className="font-semibold">CEP</span>
-              <span className="text-gray-600">{applyMask(MaskTypeEnum.CEP, barberShop.address.postalCode)}</span>
+              <span className="text-gray-600">{applyMask('CEP', barberShop.address.postalCode)}</span>
             </div>
             <div className="flex justify-between">
               <span className="font-semibold">País</span>

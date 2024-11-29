@@ -2,11 +2,14 @@ import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { serviceSchema, ServiceZod } from "@/schemas/service"
-import { useEffect } from "react"
+import { ChangeEvent, useEffect } from "react"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "../ui/form"
 import { useServicesLayout } from "../layouts/barber-shop-services-layout"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
+import { applyMask } from "@/utils/mask"
+import { navigateToEndOfInput } from "@/utils/cursor-end-of-input"
+import { TimeOnly } from "@/utils/types/date"
 
 export type RegisterProps = {
   formId: 'register-form'
@@ -46,8 +49,8 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
     defaultValues: {
       name: service?.name || '',
       description: service?.description || '',
-      price: service?.price || 0.0,
-      duration: service?.duration || '00:30:00',
+      price: service?.price ? applyMask('MONEY', service?.price) : undefined,
+      duration: service?.duration || undefined,
     }
   })
   
@@ -74,11 +77,30 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
         throw result.error
       }
       
-      closeModal()
       navigate(pathname, { replace: true, state: { message }})
     } catch (err) {
       handleError(err, form)
+    } finally {
+      closeModal()
     }
+  }
+  
+  function handlePriceChange(e: ChangeEvent<HTMLInputElement>) {
+    const maskedValue = applyMask('MONEY', e.currentTarget.value)
+    
+    form.setValue('price', maskedValue) // Atualiza o valor do campo no React Hook Form
+    e.currentTarget.value = maskedValue // Define o valor no input
+    
+    navigateToEndOfInput(e.currentTarget)
+  }
+  
+  function handleDurationChange(e: ChangeEvent<HTMLInputElement>) {
+    const maskedValue = applyMask('TIME_ONLY', e.currentTarget.value) as TimeOnly
+    
+    form.setValue('duration', maskedValue) // Atualiza o valor do campo no React Hook Form
+    e.currentTarget.value = maskedValue // Define o valor no input
+    
+    navigateToEndOfInput(e.currentTarget)
   }
   
   useEffect(() => {
@@ -124,7 +146,7 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
               <FormItem>
                 <FormLabel>Preço</FormLabel>
                 <FormControl>
-                  <Input type="text" inputMode="decimal" placeholder="Preço" {...field} disabled={formId === 'remove-form'} />
+                  <Input type="text" inputMode="decimal" placeholder="R$ 45,00" {...field} onChange={handlePriceChange} disabled={formId === 'remove-form'} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -138,7 +160,7 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
               <FormItem>
                 <FormLabel>Duração</FormLabel>
                 <FormControl>
-                  <Input type="text" inputMode="numeric" placeholder="Duração" {...field} disabled={formId === 'remove-form'} />
+                  <Input type="text" inputMode="numeric" placeholder="00:30:00" {...field} onChange={handleDurationChange} disabled={formId === 'remove-form'} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

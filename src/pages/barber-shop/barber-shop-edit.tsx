@@ -1,12 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { useEffect } from "react";
-import { BarberShopLayoutContextType } from "@/components/layouts/barber-shop-layout";
+import { useBarberShopLayout } from "@/components/layouts/barber-shop-layout";
 import { barberShopSchema, BarberShopZod } from "@/schemas/barberShop";
-import { applyMask, MaskTypeEnum } from "@/utils/mask";
+import { applyMask } from "@/utils/mask";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -17,7 +17,7 @@ import { ChevronLeft, StoreIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function BarberShopEdit() {
-  const { update, barberShop } = useOutletContext<BarberShopLayoutContextType>()
+  const { update, barberShop } = useBarberShopLayout()
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
   console.log('barberShop', { barberShop })
@@ -27,7 +27,7 @@ export function BarberShopEdit() {
       name: barberShop.name,
       description: barberShop.description,
       comercialNumber: barberShop.comercialNumber,
-      comercialEmail: applyMask(MaskTypeEnum.PHONE_NUMBER, barberShop.comercialEmail),
+      comercialEmail: applyMask('PHONE_NUMBER', barberShop.comercialEmail),
       address: {
         street: barberShop.address.street,
         number: barberShop.address.number,
@@ -35,7 +35,7 @@ export function BarberShopEdit() {
         neighborhood: barberShop.address.neighborhood,
         city: barberShop.address.city,
         state: barberShop.address.state,
-        postalCode: applyMask(MaskTypeEnum.CEP, barberShop.address.postalCode),
+        postalCode: applyMask('CEP', barberShop.address.postalCode),
         country: barberShop.address.country,
       }
     }
@@ -61,11 +61,11 @@ export function BarberShopEdit() {
   const postalCode = form.watch('address.postalCode')
 
   useEffect(() => {
-    form.setValue('comercialNumber', applyMask(MaskTypeEnum.PHONE_NUMBER, comercialNumber))
+    form.setValue('comercialNumber', applyMask('PHONE_NUMBER', comercialNumber))
   }, [comercialNumber])
 
   useEffect(() => {
-    form.setValue('address.postalCode', applyMask(MaskTypeEnum.CEP, postalCode))
+    form.setValue('address.postalCode', applyMask('CEP', postalCode))
   }, [postalCode])
 
   return (

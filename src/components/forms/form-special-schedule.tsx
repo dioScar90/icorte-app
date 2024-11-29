@@ -86,10 +86,11 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
         throw result.error
       }
       
-      closeModal()
       navigate(pathname, { replace: true, state: { message }})
     } catch (err) {
       handleError(err, form)
+    } finally {
+      closeModal()
     }
   }
   

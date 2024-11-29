@@ -1,13 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
 import { userUpdateSchema, UserUpdateZod } from "@/schemas/user";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-import { ProfileLayoutContextType } from "@/components/layouts/profile-layout";
+import { useProfileLayout } from "@/components/layouts/profile-layout";
 import { useEffect } from "react";
-import { applyMask, MaskTypeEnum } from "@/utils/mask";
+import { applyMask } from "@/utils/mask";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { UserRoundPlusIcon } from "lucide-react";
 
 export function ProfileEdit() {
-  const { updateProfile, profile } = useOutletContext<ProfileLayoutContextType>()
+  const { updateProfile, profile } = useProfileLayout()
 
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -30,7 +30,7 @@ export function ProfileEdit() {
         firstName: profile.firstName,
         lastName: profile.lastName,
         gender: profile.gender,
-        phoneNumber: applyMask(MaskTypeEnum.PHONE_NUMBER, user!.phoneNumber),
+        phoneNumber: applyMask('PHONE_NUMBER', user!.phoneNumber),
       }
     }
   })
@@ -55,7 +55,7 @@ export function ProfileEdit() {
   const phoneNumber = form.watch('profile.phoneNumber')
 
   useEffect(() => {
-    form.setValue('profile.phoneNumber', applyMask(MaskTypeEnum.PHONE_NUMBER, phoneNumber))
+    form.setValue('profile.phoneNumber', applyMask('PHONE_NUMBER', phoneNumber))
   }, [phoneNumber])
 
   return (

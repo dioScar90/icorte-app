@@ -1,20 +1,19 @@
-import { Navigate, Outlet, useLoaderData, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLoaderData, useLocation, useOutletContext } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
-import { BarberShopZod } from "@/schemas/barberShop";
 import { BarberShopRepository } from "@/data/repositories/BarberShopRepository";
 import { barberShopLoader } from "@/data/loaders/barberShopLoader";
 import { useCallback, useMemo } from "react";
 import { BarberShopService } from "@/data/services/BarberShopService";
 import { httpClient } from "@/providers/proxyProvider";
 
-export type BarberShopLayoutContextType = {
-  register: (data: BarberShopZod) => Promise<ReturnType<BarberShopRepository['createBarberShop']>>
-  update: (id: number, data: BarberShopZod) => Promise<ReturnType<BarberShopRepository['updateBarberShop']>>
+type BarberShopLayoutContextType = {
+  register: BarberShopRepository['createBarberShop']
+  update: BarberShopRepository['updateBarberShop']
   barberShop: NonNullable<Awaited<ReturnType<typeof barberShopLoader>>>
 }
 
 export function BarberShopLayout() {
-  const barberShop = useLoaderData() as Awaited<ReturnType<typeof barberShopLoader>>
+  const barberShop = useLoaderData() as NonNullable<Awaited<ReturnType<typeof barberShopLoader>>>
   const { pathname } = useLocation()
   const repository = useMemo(() => new BarberShopRepository(new BarberShopService(httpClient)), [])
   
@@ -22,13 +21,23 @@ export function BarberShopLayout() {
     return <Navigate to={`${ROUTE_ENUM.BARBER_SHOP}/${barberShop?.id}`} replace />
   }
   
-  const register = useCallback(async (data: BarberShopZod) => {
-    return await repository.createBarberShop(data)
+  const register = useCallback(async function(...args: Parameters<typeof repository.createBarberShop>) {
+    return await repository.createBarberShop(...args)
   }, [])
   
-  const update = useCallback(async (id: number, data: BarberShopZod) => {
-    return await repository.updateBarberShop(id, data)
+  const update = useCallback(async function(...args: Parameters<typeof repository.updateBarberShop>) {
+    return await repository.updateBarberShop(...args)
   }, [])
+
+  const props: BarberShopLayoutContextType = {
+    register,
+    update,
+    barberShop,
+  }
   
-  return <Outlet context={{ register, update, barberShop }} />
+  return <Outlet context={props} />
+}
+
+export function useBarberShopLayout() {
+  return useOutletContext<BarberShopLayoutContextType>()
 }

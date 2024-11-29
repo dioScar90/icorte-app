@@ -1,15 +1,15 @@
 import { JsonDebugger } from "@/components/json-debugger";
-import { ProfileLayoutContextType } from "@/components/layouts/profile-layout";
+import { useProfileLayout } from "@/components/layouts/profile-layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { useState } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export function MyProfile() {
   const { user } = useAuth()
-  const { profile } = useOutletContext<ProfileLayoutContextType>()
+  const { profile } = useProfileLayout()
   const [showPre, setShowPre] = useState(false)
   
   return (

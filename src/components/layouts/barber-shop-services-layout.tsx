@@ -1,13 +1,13 @@
 import { Outlet, useLoaderData, useOutletContext } from "react-router-dom";
 import { servicesLoader } from "@/data/loaders/servicesLoader";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { httpClient } from "@/providers/proxyProvider";
 import { ServiceRepository } from "@/data/repositories/ServiceRepository";
 import { ServiceService } from "@/data/services/ServiceService";
-import { BarberShopLayoutContextType } from "./barber-shop-layout";
+import { useBarberShopLayout } from "./barber-shop-layout";
 
-export type BarberShopServicesLayoutContextType = {
-  barberShop: BarberShopLayoutContextType['barberShop']
+type BarberShopServicesLayoutContextType = {
+  barberShop: ReturnType<typeof useBarberShopLayout>['barberShop']
   services: Awaited<ReturnType<typeof servicesLoader>>
   register: ServiceRepository['createService']
   update: ServiceRepository['updateService']
@@ -15,20 +15,32 @@ export type BarberShopServicesLayoutContextType = {
 }
 
 export function BarberShopServicesLayout() {
-  const { barberShop } = useOutletContext<BarberShopLayoutContextType>()
+  const { barberShop } = useBarberShopLayout()
   const services = useLoaderData() as Awaited<ReturnType<typeof servicesLoader>>
   const repository = useMemo(() => new ServiceRepository(new ServiceService(httpClient)), [])
   
+  const register = useCallback(async function(...args: Parameters<typeof repository.createService>) {
+    return await repository.createService(...args)
+  }, [])
+  
+  const update = useCallback(async function(...args: Parameters<typeof repository.updateService>) {
+    return await repository.updateService(...args)
+  }, [])
+  
+  const remove = useCallback(async function(...args: Parameters<typeof repository.deleteService>) {
+    return await repository.deleteService(...args)
+  }, [])
+  
+  const props: BarberShopServicesLayoutContextType = {
+    barberShop,
+    services,
+    register,
+    update,
+    remove,
+  }
+  
   return (
-    <Outlet
-      context={{
-        barberShop,
-        services,
-        register: repository.createService,
-        update: repository.updateService,
-        remove: repository.deleteService,
-      }}
-    />
+    <Outlet context={props} />
   )
 }
 

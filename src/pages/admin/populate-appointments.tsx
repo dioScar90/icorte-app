@@ -3,10 +3,10 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
-import { AdminLayoutContextType, appointmentsAdminSchema, AppointmentsAdminZod } from "@/components/layouts/admin-layout";
+import { appointmentsAdminSchema, AppointmentsAdminZod, useAdminLayout } from "@/components/layouts/admin-layout";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarArrowUp, CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
 export function PopulateAppointments() {
-  const { popAppointments } = useOutletContext<AdminLayoutContextType>()
+  const { popAppointments } = useAdminLayout()
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
   
