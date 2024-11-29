@@ -1,20 +1,17 @@
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useEffect } from "react"
+import { ChangeEvent, useEffect } from "react"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "../ui/form"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
 import { SpecialScheduleZod, specialScheduleSchema } from "@/schemas/specialSchedule"
 import { useSchedulesLayout } from "../layouts/barber-shop-schedules-layout"
-import { DateOnly } from "@/utils/types/date"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { Button } from "../ui/button"
-import { cn } from "@/lib/utils"
-import { Calendar } from "../ui/calendar"
-import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
+import { DateOnly, TimeOnly } from "@/utils/types/date"
 import { Switch } from "../ui/switch"
+import { getFormattedDate } from "@/schemas/sharedValidators/dateOnly"
+import { applyMask } from "@/utils/mask"
+import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
 
 type ActionType<KItem extends keyof ReturnType<typeof useSchedulesLayout>['special']> =
   ReturnType<typeof useSchedulesLayout>['special'][KItem]
@@ -47,7 +44,6 @@ type Props = {
 } & (SpecialScheduleRegisterProps | SpecialScheduleUpdateProps | SpecialScheduleRemoveProps)
 
 export function FormSpecialSchedule({ formId, action, closeModal, setLoadingState, barberShopId, date, schedule }: Props) {
-  console.log('tentei abrir FormRegisterService')
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { handleError } = useHandleErrors()
@@ -55,10 +51,10 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
   const form = useForm<SpecialScheduleZod>({
     resolver: formId !== 'special-remove-form' ? zodResolver(specialScheduleSchema) : undefined,
     defaultValues: {
-      date: schedule?.date ?? '2024-12-05',
+      date: schedule?.date ? getFormattedDate(schedule.date) as DateOnly : undefined,
       notes: schedule?.notes ?? undefined,
-      openTime: schedule?.openTime ?? '08:00:00',
-      closeTime: schedule?.closeTime ?? '18:00:00',
+      openTime: schedule?.openTime ?? undefined,
+      closeTime: schedule?.closeTime ?? undefined,
       isClosed: schedule?.isClosed ?? false,
     }
   })
@@ -94,10 +90,29 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
     }
   }
   
+  function handleDateChange(e: ChangeEvent<HTMLInputElement>) {
+    const maskedValue = applyMask('DATE_ISO', e.currentTarget.value) as DateOnly
+    
+    form.setValue('date', maskedValue) // Atualiza o valor do campo no React Hook Form
+    e.currentTarget.value = maskedValue // Define o valor no input
+    
+    e.currentTarget.focus()
+  }
+  
+  function handleTimeChange(e: ChangeEvent<HTMLInputElement>) {
+    const maskedValue = applyMask('TIME_ONLY', e.currentTarget.value) as TimeOnly
+    const name = e.currentTarget.name as 'openTime' | 'closeTime'
+    
+    form.setValue(name, maskedValue) // Atualiza o valor do campo no React Hook Form
+    e.currentTarget.value = maskedValue // Define o valor no input
+    
+    e.currentTarget.focus()
+  }
+  
   useEffect(() => {
     setLoadingState(form.formState.isSubmitting)
   }, [form.formState])
-
+  
   const isClosed = form.watch('isClosed')
   
   return (
@@ -108,40 +123,21 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
             control={form.control}
             name="date"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Data limite</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, 'dd/MM/yyyy')
-                        ) : (
-                          <span>Escolha</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      onSelect={field.onChange}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+              <FormItem>
+                <FormLabel>Data</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="text" inputMode="numeric" placeholder="06/12/2024"
+                    onChange={handleDateChange} onFocus={navigateToEndAfterFocus}
+                    disabled={formId === 'special-remove-form'}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
+          
           <FormField
             control={form.control}
             name="notes"
@@ -155,7 +151,7 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
               </FormItem>
             )}
           />
-
+          
           <FormField
             control={form.control}
             name="openTime"
@@ -163,7 +159,12 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
               <FormItem>
                 <FormLabel>Hora de abertura</FormLabel>
                 <FormControl>
-                  <Input type="text" inputMode="numeric" placeholder="Hora de abertura (opcional)" {...field} disabled={formId === 'special-remove-form' || isClosed} />
+                  <Input
+                    {...field}
+                    type="text" inputMode="numeric" placeholder="08:00:00 (opcional)"
+                    onChange={handleTimeChange} onFocus={navigateToEndAfterFocus}
+                    disabled={formId === 'special-remove-form' || isClosed}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -177,7 +178,12 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
               <FormItem>
                 <FormLabel>Hora de fechamento</FormLabel>
                 <FormControl>
-                  <Input type="text" inputMode="numeric" placeholder="Hora de fechamento (opcional)" {...field} disabled={formId === 'special-remove-form' || isClosed} />
+                  <Input
+                    {...field}
+                    type="text" inputMode="numeric" placeholder="18:00:00 (opcional)"
+                    onChange={handleTimeChange} onFocus={navigateToEndAfterFocus}
+                    disabled={formId === 'special-remove-form' || isClosed}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

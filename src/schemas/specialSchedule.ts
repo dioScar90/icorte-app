@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { getStringAsTimeOnly } from './sharedValidators/timeOnly'
-import { getStringAsDateOnly } from './sharedValidators/dateOnly'
+import { getStringAsDateOnly, isCorrectDateString, isDateGreaterThenToday } from './sharedValidators/dateOnly'
 
 type RefineFuncProps = {
   openTime?: string,
@@ -30,7 +30,8 @@ function closeTimeMustBeGreaterThenOpenTimeIfClosed({ openTime, closeTime, isClo
 
 export const specialScheduleSchema = z.object({
   date: z.string({ required_error: 'Dia obrigatório' })
-    .date('Dia inválido')
+    .refine(isCorrectDateString, 'Dia inválido')
+    .refine(isDateGreaterThenToday, 'Dia não pode ser inferior ou igual a hoje')
     .transform(getStringAsDateOnly),
 
   notes: z.string()

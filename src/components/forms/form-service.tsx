@@ -8,7 +8,7 @@ import { useServicesLayout } from "../layouts/barber-shop-services-layout"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
 import { applyMask } from "@/utils/mask"
-import { navigateToEndOfInput } from "@/utils/cursor-end-of-input"
+import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
 import { TimeOnly } from "@/utils/types/date"
 
 export type RegisterProps = {
@@ -91,7 +91,7 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
     form.setValue('price', maskedValue) // Atualiza o valor do campo no React Hook Form
     e.currentTarget.value = maskedValue // Define o valor no input
     
-    navigateToEndOfInput(e.currentTarget)
+    e.currentTarget.focus()
   }
   
   function handleDurationChange(e: ChangeEvent<HTMLInputElement>) {
@@ -100,7 +100,7 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
     form.setValue('duration', maskedValue) // Atualiza o valor do campo no React Hook Form
     e.currentTarget.value = maskedValue // Define o valor no input
     
-    navigateToEndOfInput(e.currentTarget)
+    e.currentTarget.focus()
   }
   
   useEffect(() => {
@@ -146,7 +146,12 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
               <FormItem>
                 <FormLabel>Preço</FormLabel>
                 <FormControl>
-                  <Input type="text" inputMode="decimal" placeholder="R$ 45,00" {...field} onChange={handlePriceChange} disabled={formId === 'remove-form'} />
+                  <Input
+                    {...field}
+                    type="text" inputMode="decimal" placeholder="R$ 45,00"
+                    onChange={handlePriceChange} onFocus={navigateToEndAfterFocus}
+                    disabled={formId === 'remove-form'}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -160,7 +165,12 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
               <FormItem>
                 <FormLabel>Duração</FormLabel>
                 <FormControl>
-                  <Input type="text" inputMode="numeric" placeholder="00:30:00" {...field} onChange={handleDurationChange} disabled={formId === 'remove-form'} />
+                  <Input
+                    {...field}
+                    type="text" inputMode="numeric" placeholder="00:30:00"
+                    onChange={handleDurationChange} onFocus={navigateToEndAfterFocus}
+                    disabled={formId === 'remove-form'}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

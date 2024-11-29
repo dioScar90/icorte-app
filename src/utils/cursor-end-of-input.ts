@@ -1,5 +1,10 @@
+import { FocusEvent } from "react"
 
-export function navigateToEndOfInput(input: HTMLInputElement) {
-  input.focus()
-  input.setSelectionRange(input.value.length, input.value.length)
+export function navigateToEndAfterFocus(e: FocusEvent<HTMLInputElement>) {
+  setTimeout(() =>
+    e.currentTarget.setSelectionRange(
+      e.currentTarget.value.length,
+      e.currentTarget.value.length
+    )
+  , 50)
 }

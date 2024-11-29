@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Edit, ShoppingBag, Trash2 } from "lucide-react";
+import { DoorClosed, DoorOpen, Edit, ShoppingBag, Trash2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -10,6 +10,9 @@ import { FormSpecialSchedule, SpecialScheduleRegisterProps, SpecialScheduleRemov
 import { useSchedulesLayout } from "@/components/layouts/barber-shop-schedules-layout";
 import { getEnumAsString } from "@/utils/enum-as-array";
 import { DayOfWeekEnum } from "@/schemas/recurringSchedule";
+import { Separator } from "@/components/ui/separator";
+import { TimeOnly } from "@/utils/types/date";
+import { getFormattedDate } from "@/schemas/sharedValidators/dateOnly";
 
 type AllClosedState = {
   open: false
@@ -178,14 +181,19 @@ function dialogReducer(state: DialogState, action: DialogAction): DialogState {
 }
 
 export function BarberShopSchedules() {
-  const { barberShop, recurring, special: _ } = useSchedulesLayout()
-
+  const { barberShop, recurring, special } = useSchedulesLayout()
+  
   const [isLoading, setIsLoading] = useState(false)
   const [state, dispatch] = useReducer(dialogReducer, { open: false })
 
   const setLoadingState = useCallback((arg: boolean) => setIsLoading(arg), [])
   const closeModal = useCallback(() => dispatch({ type: 'ALL_CLOSED' }), [])
 
+  const formatTimeOnly = useCallback((time: TimeOnly) => {
+    const [hh, mm] = time.split(':')
+    return hh + 'h' + mm
+  }, [])
+  
   useEffect(() => {
     if (!state.open) {
       setIsLoading(false)
@@ -203,30 +211,30 @@ export function BarberShopSchedules() {
       <div className="before-card">
         <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
           <CardHeader className="py-4 px-2 md:px-3 lg:px-4">
-            <CardTitle className="text-2xl">Serviços - {barberShop.name}</CardTitle>
+            <CardTitle className="text-2xl">Horários recorrentes - {barberShop.name}</CardTitle>
             <CardDescription>
-              Visualize e gerencia os serviços que aparecerão aos clientes.
+              Adicione os dias da semana e horários que você atenderá.
             </CardDescription>
           </CardHeader>
           <CardContent className="py-4 px-2 md:px-3 lg:px-4">
             <Table>
-              <TableCaption>Sua lista de serviços oferecidos.</TableCaption>
+              <TableCaption>Sua lista de horários recorrentes.</TableCaption>
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-center">Dia</TableHead>
                   <TableHead className="text-center">Abertura</TableHead>
                   <TableHead className="text-center">Fechamento</TableHead>
-                  <TableHead className="text-center">Ação</TableHead>
+                  <TableHead className="text-center w-[100px]">Ação</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {Array.isArray(recurring.schedules?.items) && recurring.schedules.items.length > 0
                   ? recurring.schedules.items.map(({ barberShopId, ...schedule }) => (
                     <TableRow key={schedule.dayOfWeek} data-barber-shop-id={barberShopId}>
-                      <TableCell>{getEnumAsString(DayOfWeekEnum, schedule.dayOfWeek)}</TableCell>
-                      <TableCell>{schedule.openTime}</TableCell>
-                      <TableCell>{schedule.closeTime}</TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-center">{getEnumAsString(DayOfWeekEnum, schedule.dayOfWeek)}</TableCell>
+                      <TableCell className="text-center">{formatTimeOnly(schedule.openTime)}</TableCell>
+                      <TableCell className="text-center">{formatTimeOnly(schedule.closeTime)}</TableCell>
+                      <TableCell className="text-center w-[100px]">
                         <div className="flex justify-between gap-x-2">
                           <Button
                             size="icon"
@@ -253,7 +261,7 @@ export function BarberShopSchedules() {
                       <TableCell colSpan={100}>
                         <Alert variant="warning">
                           <AlertDescription className="text-center my-1">
-                            Nenhum serviço cadastrado
+                            Nenhum horário recorrente cadastrado
                           </AlertDescription>
                         </Alert>
                       </TableCell>
@@ -272,9 +280,93 @@ export function BarberShopSchedules() {
               </Button>
             </div>
           </CardContent>
+          
+          <Separator />
+          
+          <CardHeader className="py-4 px-2 md:px-3 lg:px-4">
+            <CardTitle className="text-2xl">Horários especiais - {barberShop.name}</CardTitle>
+            <CardDescription>
+              Adicione horários diferentes do habitual, ou informe o fechamento de algum dia específico.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="py-4 px-2 md:px-3 lg:px-4">
+            <Table>
+              <TableCaption>Sua lista de horários especiais.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-center">Dia</TableHead>
+                  <TableHead className="text-center">Comentário</TableHead>
+                  <TableHead className="text-center">Abertura</TableHead>
+                  <TableHead className="text-center">Fechamento</TableHead>
+                  <TableHead className="text-center">Fechado</TableHead>
+                  <TableHead className="text-center w-[100px]">Ação</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {Array.isArray(special.schedules?.items) && special.schedules.items.length > 0
+                  ? special.schedules.items.map(({ barberShopId, ...schedule }) => (
+                    <TableRow key={schedule.date} data-barber-shop-id={barberShopId}>
+                      <TableCell className="text-center">{getFormattedDate(schedule.date)}</TableCell>
+                      <TableCell className="text-center">{schedule.notes ?? '---'}</TableCell>
+                      <TableCell className="text-center">{schedule.isClosed || !schedule.openTime ? '---' : formatTimeOnly(schedule.openTime)}</TableCell>
+                      <TableCell className="text-center">{schedule.isClosed || !schedule.closeTime ? '---' : formatTimeOnly(schedule.closeTime)}</TableCell>
+                      <TableCell className="text-center">
+                        <div className="flex justify-center">
+                          {schedule.isClosed
+                            ? <DoorClosed className="text-red-600" />
+                            : <DoorOpen className="text-green-600" />
+                          }
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center w-[100px]">
+                        <div className="flex justify-between gap-x-2">
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            title="Editar"
+                            onClick={() => dispatch({ type: 'SPECIAL_UPDATE_FORM', payload: { action: special.update, barberShopId, date: schedule.date, schedule } })}
+                          >
+                            <Edit />
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="destructive"
+                            title="Remover"
+                            onClick={() => dispatch({ type: 'SPECIAL_REMOVE_FORM', payload: { action: special.remove, barberShopId, date: schedule.date, schedule } })}
+                          >
+                            <Trash2 />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                  : (
+                    <TableRow>
+                      <TableCell colSpan={100}>
+                        <Alert variant="warning">
+                          <AlertDescription className="text-center my-1">
+                            Nenhum horário especial cadastrado
+                          </AlertDescription>
+                        </Alert>
+                      </TableCell>
+                    </TableRow>
+                  )}
+              </TableBody>
+            </Table>
+            
+            <div className="w-full h-14 relative">
+              <Button
+                type="button" className="absolute-middle-y right-0"
+                onClick={() => dispatch({ type: 'SPECIAL_REGISTER_FORM', payload: { action: special.register, barberShopId: barberShop.id } })}
+              >
+                <ShoppingBag />
+                Novo
+              </Button>
+            </div>
+          </CardContent>
         </Card>
       </div>
-
+      
       <Dialog open={state.open} onOpenChange={handleDialogOpenChange}>
         <DialogContent>
           <DialogHeader>

@@ -43,6 +43,23 @@ function getTimeOnly(value: string) {
     .replace(/(\d{2})(\d)/, '$1:$2')
 }
 
+function getDateOnly(value: string) {
+  value = value.replace(/\D/g, '').slice(0, 8)
+
+  const putFirstBar = value.length > 2
+  const putSecondBar = value.length > 4
+
+  if (putSecondBar) {
+    value = value.slice(0, 4) + '/' + value.slice(4)
+  }
+
+  if (putFirstBar) {
+    value = value.slice(0, 2) + '/' + value.slice(2)
+  }
+
+  return value
+}
+
 function getMoney(value: number | string) {
   value = (typeof value === 'string' ? value : String(value * 100))
     .replace(/\D/g, '')
@@ -65,6 +82,7 @@ const types = [
   'PHONE_NUMBER',
   'TIME_ONLY',
   'MONEY',
+  'DATE_ISO',
 ] as const
 
 type MaskType = typeof types[number]
@@ -105,6 +123,10 @@ export const applyMask: MaskFunc = (type, value) => {
 
   if (type === 'TIME_ONLY') {
     return getTimeOnly(value)
+  }
+
+  if (type === 'DATE_ISO') {
+    return getDateOnly(value)
   }
   
   return ''

@@ -42,7 +42,6 @@ type Props = {
 } & (RecurringScheduleRegisterProps | RecurringScheduleUpdateProps | RecurringScheduleRemoveProps)
 
 export function FormRecurringSchedule({ formId, action, closeModal, setLoadingState, barberShopId, dayOfWeek, schedule }: Props) {
-  console.log('tentei abrir FormRegisterService')
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { handleError } = useHandleErrors()
