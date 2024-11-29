@@ -98,7 +98,7 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: Aut
           url: ROUTE_ENUM.BARBER_SCHEDULE + '/dashboard',
         },
         {
-          title: "Pesquisar",
+          title: "Marcar um corte",
           url: ROUTE_ENUM.BARBER_SCHEDULE + '/schedule',
         },
       ],
