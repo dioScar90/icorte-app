@@ -1,18 +1,11 @@
 import { httpClient } from "@/providers/proxyProvider";
-import { LoaderFunctionArgs } from "react-router-dom";
-import { BarberShopRepository } from "../repositories/BarberShopRepository";
-import { BarberShopService } from "../services/BarberShopService";
+import { AppointmentRepository } from "../repositories/AppointmentRepository";
+import { AppointmentService } from "../services/AppointmentService";
 
-export async function barberScheduleLoader({ params }: LoaderFunctionArgs) {
-  if (!params.barberShopId) {
-    return null
-  }
-  
-  const barberShopId = +params.barberShopId
-  
+export async function barberScheduleLoader() {
   try {
-    const repository = new BarberShopRepository(new BarberShopService(httpClient))
-    const res = await repository.getBarberShop(barberShopId)
+    const repository = new AppointmentRepository(new AppointmentService(httpClient))
+    const res = await repository.getAllAppointments()
     
     if (!res.isSuccess) {
       return null

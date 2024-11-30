@@ -36,6 +36,7 @@ import { BarberShopServicesLayout } from './components/layouts/barber-shop-servi
 import { BarberShopSchedules } from './pages/barber-shop/barber-shop-schedules'
 import { schedulesLoader } from './data/loaders/schedulesLoader'
 import { BarberShopSchedulesLayout } from './components/layouts/barber-shop-schedules-layout'
+import { barberScheduleLoader } from './data/loaders/barberScheduleLoader'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -58,7 +59,11 @@ export function App() {
               <Route path=":userId/edit" element={<ProfileEdit />} />
             </Route>
             
-            <Route path={ROUTE_ENUM.BARBER_SCHEDULE} loader={barberShopLoader} element={<BarberScheduleLayout />}>
+            <Route
+              path={ROUTE_ENUM.BARBER_SCHEDULE}
+              loader={barberScheduleLoader}
+              element={<BarberScheduleLayout />}
+            >
               <Route index action={async () => redirect(`${ROUTE_ENUM.BARBER_SCHEDULE}/dashboard`)} />
               <Route path="dashboard" element={<MyAppointmentsPage />} />
               <Route path="dashboard/:appointmentId" element={<AppointmentPage />} />
@@ -68,7 +73,7 @@ export function App() {
           </Route>
           
           <Route
-            loader={async ({ params }) => ({ barberShopId: params?.barberShopId ? +params.barberShopId : undefined })}
+            loader={async ({ params: { barberShopId } }) => ({ barberShopId })}
             element={<ProtectedBarberShopRoute />}
           >
             <Route path={ROUTE_ENUM.BARBER_SHOP} loader={barberShopLoader} element={<BarberShopLayout />}>

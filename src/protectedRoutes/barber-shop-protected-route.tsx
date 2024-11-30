@@ -5,7 +5,7 @@ import { useAuth } from "@/providers/authProvider"
 
 export function ProtectedBarberShopRoute() {
   const { pathname } = useLocation()
-  const { barberShopId } = useLoaderData() as { barberShopId?: number }
+  const { barberShopId } = useLoaderData() as { barberShopId?: string }
   const { user, isAuthenticated, isBarberShop } = useAuth()
   
   if (!isAuthenticated) {
@@ -16,7 +16,7 @@ export function ProtectedBarberShopRoute() {
     return <Navigate to={ROUTE_ENUM.HOME} replace />
   }
 
-  if (barberShopId !== user?.barberShop?.id) {
+  if (user?.barberShop?.id !== +barberShopId!) {
     return <Navigate to={ROUTE_ENUM.HOME} replace />
   }
 

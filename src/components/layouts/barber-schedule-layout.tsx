@@ -1,4 +1,4 @@
-import { Outlet, useOutletContext } from "react-router-dom";
+import { Outlet, useLoaderData, useOutletContext } from "react-router-dom";
 import { BarberScheduleRepository } from "@/data/repositories/BarberScheduleRepository";
 import { ServiceRepository } from "@/data/repositories/ServiceRepository";
 import { AppointmentRepository } from "@/data/repositories/AppointmentRepository";
@@ -7,8 +7,11 @@ import { httpClient } from "@/providers/proxyProvider";
 import { useCallback, useMemo } from "react";
 import { ServiceService } from "@/data/services/ServiceService";
 import { AppointmentService } from "@/data/services/AppointmentService";
+import { barberScheduleLoader } from "@/data/loaders/barberScheduleLoader";
 
 type BarberScheduleLayoutContextType = {
+  appointments: Awaited<ReturnType<typeof barberScheduleLoader>>
+
   getTopBarbers: BarberScheduleRepository['getTopBarbersWithAvailability']
   getAvailableDates: BarberScheduleRepository['getAvailableDatesForBarber']
   getAbailableSlots: BarberScheduleRepository['getAvailableSlots']
@@ -25,6 +28,7 @@ type BarberScheduleLayoutContextType = {
 }
 
 export function BarberScheduleLayout() {
+  const appointments = useLoaderData() as Awaited<ReturnType<typeof barberScheduleLoader>>
   const barberScheduleRep = useMemo(() => new BarberScheduleRepository(new BarberScheduleService(httpClient)), [])
   const serviceRep = useMemo(() => new ServiceRepository(new ServiceService(httpClient)), [])
   const appointmentRep = useMemo(() => new AppointmentRepository(new AppointmentService(httpClient)), [])
@@ -74,6 +78,7 @@ export function BarberScheduleLayout() {
   }, [])
 
   const props: BarberScheduleLayoutContextType = {
+    appointments,
     getTopBarbers,
     getAvailableDates,
     getAbailableSlots,
