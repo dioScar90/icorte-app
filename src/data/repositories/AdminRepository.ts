@@ -41,4 +41,13 @@ export class AdminRepository implements IAdminRepository {
       return Result.Failure(err as Error)
     }
   }
+  
+  async searchUserByName(q: string) {
+    try {
+      const res = await this.service.searchUserByName(q);
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
+  }
 }

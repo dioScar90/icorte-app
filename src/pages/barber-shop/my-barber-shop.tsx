@@ -1,24 +1,18 @@
 import { useBarberShopLayout } from "@/components/layouts/barber-shop-layout";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { StateEnum } from "@/schemas/address";
 import { ROUTE_ENUM } from "@/types/route";
 import { getEnumAsString } from "@/utils/enum-as-array";
 import { applyMask } from "@/utils/mask";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
-import { JsonDebugger } from "@/components/json-debugger";
 
 export function MyBarberShop() {
   const { barberShop } = useBarberShopLayout()
-  const [showPre, setShowPre] = useState(false)
 
   return (
     <>
-      <h3>{barberShop.name}</h3>
-      {barberShop.description && <p>{barberShop.description}</p>}
-
       <div className="max-w-3xl mx-auto p-6 rounded-lg shadow-lg">
         <AspectRatio ratio={6} className="relative rounded-lg overflow-hidden">
           <img
@@ -92,16 +86,10 @@ export function MyBarberShop() {
       </div>
 
       <div className="flex justify-center align-center gap-x-3">
-        <Button variant="secondary" onClick={() => setShowPre(prev => !prev)}>
-          Toggle JSON
-        </Button>
-
         <Link to={`${ROUTE_ENUM.BARBER_SHOP}/${barberShop.id}/edit`} className={buttonVariants({ variant: "link" })}>
           Editar minha barbearia
         </Link>
       </div>
-
-      {showPre && <JsonDebugger obj={barberShop} />}
     </>
   )
 }

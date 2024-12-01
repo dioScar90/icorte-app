@@ -132,6 +132,10 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: Aut
           title: "Reset password",
           url: ROUTE_ENUM.ADMIN + '/reset-password',
         },
+        {
+          title: "Search users",
+          url: ROUTE_ENUM.ADMIN + '/search-users',
+        },
       ],
     })
   }

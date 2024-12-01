@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
 import { userUpdateSchema, UserUpdateZod } from "@/schemas/user";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
@@ -13,8 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getEnumAsArray, getEnumAsString } from "@/utils/enum-as-array";
 import { GenderEnum } from "@/schemas/profile";
-import { Button } from "@/components/ui/button";
-import { UserRoundPlusIcon } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { ChevronLeft, UserRoundPlusIcon } from "lucide-react";
 
 export function ProfileEdit() {
   const { updateProfile, profile } = useProfileLayout()
@@ -137,13 +137,22 @@ export function ProfileEdit() {
 
           <FormRootErrorMessage />
 
-          <Button
-            type="submit" formNoValidate
-            isLoading={form.formState.isLoading || form.formState.isSubmitting}
-            IconLeft={<UserRoundPlusIcon />}
-          >
-            Salvar
-          </Button>
+          <div className="flex justify-center align-center gap-x-3">
+            <Link
+              className={buttonVariants({ variant: "secondary" })}
+              to={`${ROUTE_ENUM.PROFILE}/${profile.id}`}
+            >
+              <ChevronLeft />
+              Voltar
+            </Link>
+            <Button
+              type="submit" formNoValidate
+              isLoading={form.formState.isLoading || form.formState.isSubmitting}
+              IconLeft={<UserRoundPlusIcon />}
+            >
+              Salvar
+            </Button>
+          </div>
         </form>
       </Form>
     </>

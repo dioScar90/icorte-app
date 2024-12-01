@@ -37,6 +37,7 @@ import { BarberShopSchedules } from './pages/barber-shop/barber-shop-schedules'
 import { schedulesLoader } from './data/loaders/schedulesLoader'
 import { BarberShopSchedulesLayout } from './components/layouts/barber-shop-schedules-layout'
 import { barberScheduleLoader } from './data/loaders/barberScheduleLoader'
+import { SearchUsersByNamePage } from './pages/admin/search-users'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -102,6 +103,7 @@ export function App() {
               <Route path="populate-all" element={<PopulateAll />} />
               <Route path="populate-appointments" element={<PopulateAppointments />} />
               <Route path="reset-password" element={<ResetPassword />} />
+              <Route path="search-users" element={<SearchUsersByNamePage />} />
             </Route>
           </Route>
 

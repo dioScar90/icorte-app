@@ -37,6 +37,7 @@ type AdminLayoutContextType = {
   populateAll: AdminRepository['populateAll']
   popAppointments: AdminRepository['populateWithAppointments']
   resetPassword: AdminRepository['resetPasswordForSomeUser']
+  searchByName: AdminRepository['searchUserByName']
 }
 
 export function AdminLayout() {
@@ -57,12 +58,17 @@ export function AdminLayout() {
   const resetPassword = useCallback(async function(...args: Parameters<typeof repository.resetPasswordForSomeUser>) {
     return await repository.resetPasswordForSomeUser(...args)
   }, [])
+  
+  const searchByName = useCallback(async function(...args: Parameters<typeof repository.searchUserByName>) {
+    return await repository.searchUserByName(...args)
+  }, [])
 
   const props: AdminLayoutContextType = {
     removeAll,
     populateAll,
     popAppointments,
     resetPassword,
+    searchByName,
   }
   
   return (

@@ -7,6 +7,7 @@ enum UrlType {
   PopulateAll = 'populate-all',
   Appointments = 'populate-appointments',
   ResetPassword = 'reset-password',
+  SearchByName = 'search-users'
 }
 
 function getUrl(type: UrlType) {
@@ -18,6 +19,7 @@ type QueryParamsType = Partial<{
   evenMasterAdmin: boolean
   firstDate: string
   limitDate: string
+  q: string
 }>
 
 function getQueryParams(params?: QueryParamsType) {
@@ -78,7 +80,11 @@ export class AdminService implements IAdminService {
   
   async resetPasswordForSomeUser({ passphrase, email }: ResetPasswordZod) {
     const url = getUrl(UrlType.ResetPassword)
-    console.log('url', url)
     return await this.httpClient.post(url, { email }, getPassphraseAsCustomizedHeader(passphrase))
+  }
+
+  async searchUserByName(q: string) {
+    const url = getUrl(UrlType.SearchByName) + getQueryParams({ q })
+    return await this.httpClient.get(url)
   }
 }
