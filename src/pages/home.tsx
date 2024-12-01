@@ -2,7 +2,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
-import { CalendarCheck2, CalendarIcon, LogInIcon, ScissorsIcon, StoreIcon, UserIcon, UserRoundPlusIcon } from "lucide-react";
+import { CalendarIcon, LogInIcon, ScissorsIcon, StoreIcon, UserIcon, UserRoundPlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function Home() {
