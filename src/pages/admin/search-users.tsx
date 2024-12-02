@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useSearchParams } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
 import { debounce } from "@/utils/debounce"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -19,6 +19,10 @@ import { CopyToClipboard } from "@/components/ui/copy-to-clipboard"
 import { useClipBoard } from "@/utils/copy-to-clipboard"
 import { useAdminLayout } from "@/components/layouts/admin-layout"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { ListEnd } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
+import { ROUTE_ENUM } from "@/types/route"
 
 const NOT_FOUND_TEXT = 'Não encontrado'
 
@@ -198,7 +202,18 @@ export function SearchUsersByNamePage() {
                 </Table>
               </div>
             </div>
+            
+            <div className="flex justify-center align-center mt-4">
+              <Link
+                className={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}
+                to={`${ROUTE_ENUM.ADMIN}/last-users`}
+              >
+                <ListEnd />
+                Last users
+              </Link>
+            </div>
           </CardContent>
+
         </Card>
       </div>
     </>

@@ -24,7 +24,7 @@ export function LastUsersPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const takeParam = searchParams.get('take')
   const [take, setTake] = useState<number | undefined>(+takeParam! || undefined)
-  const [users, setUsers] = useState(lastUsers.value)
+  const [users, setUsers] = useState(lastUsers?.value ?? [])
   const { copyToClipboard } = useClipBoard()
   
   const handleValueToSearchParam = useCallback(debounce((take?: number) => {
@@ -32,7 +32,7 @@ export function LastUsersPage() {
   }), [])
   
   useEffect(() => {
-    if (takeParam === undefined) {
+    if (take === undefined) {
       return
     }
     
@@ -61,7 +61,7 @@ export function LastUsersPage() {
         setUsers([])
         handleError(err)
       })
-  }, [take, takeParam])
+  }, [takeParam])
   
   return (
     <>
