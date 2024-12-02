@@ -95,13 +95,13 @@ type DialogSpecialScheduleUpdateAction = Pick<DialogSpecialScheduleUpdateState, 
 type DialogSpecialScheduleRemoveAction = Pick<DialogSpecialScheduleRemoveState, 'action' | 'barberShopId' | 'date' | 'schedule'>
 
 type DialogAction =
-  | { type: 'ALL_CLOSED' }
   | { type: 'RECURRING_REGISTER_FORM', payload: DialogRecurringScheduleRegisterAction }
   | { type: 'RECURRING_UPDATE_FORM', payload: DialogRecurringScheduleUpdateAction }
   | { type: 'RECURRING_REMOVE_FORM', payload: DialogRecurringScheduleRemoveAction }
   | { type: 'SPECIAL_REGISTER_FORM', payload: DialogSpecialScheduleRegisterAction }
   | { type: 'SPECIAL_UPDATE_FORM', payload: DialogSpecialScheduleUpdateAction }
   | { type: 'SPECIAL_REMOVE_FORM', payload: DialogSpecialScheduleRemoveAction }
+  | { type: 'CLEAR' }
 
 function dialogReducer(state: DialogState, action: DialogAction): DialogState {
   switch (action.type) {
@@ -173,7 +173,7 @@ function dialogReducer(state: DialogState, action: DialogAction): DialogState {
         dialogTitle: 'Remover serviço',
         dialogDescription: 'ATENÇÃO - Serviço será removido.',
       }
-    case 'ALL_CLOSED':
+    case 'CLEAR':
       return {
         open: false,
       }
@@ -187,7 +187,7 @@ export function BarberShopSchedules() {
   const [state, dispatch] = useReducer(dialogReducer, { open: false })
 
   const setLoadingState = useCallback((arg: boolean) => setIsLoading(arg), [])
-  const closeModal = useCallback(() => dispatch({ type: 'ALL_CLOSED' }), [])
+  const closeModal = useCallback(() => dispatch({ type: 'CLEAR' }), [])
 
   const formatTimeOnly = useCallback((time: TimeOnly) => {
     const [hh, mm] = time.split(':')
@@ -202,7 +202,7 @@ export function BarberShopSchedules() {
 
   function handleDialogOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      dispatch({ type: 'ALL_CLOSED' })
+      dispatch({ type: 'CLEAR' })
     }
   }
 

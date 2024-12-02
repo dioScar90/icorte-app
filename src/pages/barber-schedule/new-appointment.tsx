@@ -17,6 +17,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Prettify } from "@/utils/types/prettify"
 import { getNumberAsCurrency } from "@/utils/currency"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { FormNewAppointment, NewAppointmentProps } from "@/components/forms/form-new-appointment"
+import { Scissors } from "lucide-react"
+import { LineClamp } from "@/components/line-clamp"
+import { useAuth } from "@/providers/authProvider"
 
 const NOT_FOUND_TEXT = 'Não encontrado'
 
@@ -71,6 +77,19 @@ function serviceReducer(_: ServiceState, action: ServiceAction): ServiceState {
   }
 }
 
+const EVENT_OPEN_MODAL_TYPE = 'open-modal'
+
+type OpenModalEventDetail = {
+  barberShopId: number;
+}
+
+function dispatchOpenModalEvent(barberShopId: number) {
+  const event = new CustomEvent<OpenModalEventDetail>(EVENT_OPEN_MODAL_TYPE, {
+    detail: { barberShopId }
+  })
+  dispatchEvent(event)
+}
+
 function getServiceTableRow<T extends ServiceState[number]>(stateItem: T) {
   const isInitial = (_st: ServiceState[number]): _st is InitialState => _st.name === INITIAL_TEXT
   const isNotFound = (_st: ServiceState[number]): _st is NotFoundState => _st.name === NOT_FOUND_TEXT
@@ -86,7 +105,7 @@ function getServiceTableRow<T extends ServiceState[number]>(stateItem: T) {
           </Alert>
         </TableCell>
       </TableRow>
-    );
+    )
   }
   
   if (isNotFound(stateItem)) {
@@ -100,32 +119,72 @@ function getServiceTableRow<T extends ServiceState[number]>(stateItem: T) {
           </Alert>
         </TableCell>
       </TableRow>
-    );
+    )
   }
   
   return (
     <TableRow key={stateItem.id}>
-      <TableCell className="font-medium">{stateItem.barberShopName}</TableCell>
-      <TableCell>{stateItem.name}</TableCell>
-      <TableCell className="line-clamp-2">{stateItem.description}</TableCell>
-      <TableCell className="text-right">{getNumberAsCurrency(stateItem.price)}</TableCell>
+      <TableCell className="text-center">{stateItem.barberShopName}</TableCell>
+      <TableCell className="text-center">{stateItem.name}</TableCell>
+      <TableCell className="text-center">
+        <LineClamp limit={2}>
+          {stateItem.description}
+        </LineClamp>
+      </TableCell>
+      <TableCell className="text-center">{getNumberAsCurrency(stateItem.price)}</TableCell>
+      <TableCell className="text-center">
+        <Button
+          onClick={() => dispatchOpenModalEvent(stateItem.barberShopId)}
+        >
+          Mostrar tudo
+        </Button>
+      </TableCell>
     </TableRow>
-  );
+  )
 }
 
 const initialState: [InitialState] = [getInitialValue()]
 
-export function SchedulePage() {
+export function NewAppointmentPage() {
+  const { isAdmin } = useAuth()
+  
+  if (!isAdmin) {
+    return (
+      <p>Página ainda em construção...</p>
+    )
+  }
+  
   const { handleError } = useHandleErrors()
-  const { servicesByName } = useBarberScheduleLayout()
+  const { servicesByName, createAppointment, getAvailableDates, getAbailableSlots, getAllServices } = useBarberScheduleLayout()
   const [state, dispatch] = useReducer(serviceReducer, initialState)
   const [searchParams, setSearchParams] = useSearchParams()
   const q = searchParams.get('q')
   const [value, setValue] = useState(q ?? '')
+  const [chosedBarberId, setChosedBarberId] = useState<NewAppointmentProps | null>(null)
   
   const handleValueToSearchParam = useCallback(debounce((q?: string) => {
     setSearchParams(!q?.length ? undefined : { q })
   }), [])
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  const setLoadingState = useCallback((arg: boolean) => setIsLoading(arg), [])
+  const closeModal = useCallback(() => dispatch({ type: 'CLEAR' }), [])
+  
+  const openModal = useCallback((barberShopId: number) => {
+    if (barberShopId > 0) {
+      setChosedBarberId({
+        formId: 'register-appointment',
+        barberShopId,
+        closeModal,
+        setLoadingState,
+        getAvailableDates,
+        getAbailableSlots,
+        getAllServices,
+        register: createAppointment,
+      })
+    }
+  }, [])
   
   useEffect(() => {
     if (!q?.length) {
@@ -151,6 +210,19 @@ export function SchedulePage() {
         })
     }
   }, [q])
+  
+  function handleDialogOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      dispatch({ type: 'CLEAR' })
+    }
+  }
+  
+  useEffect(() => {
+    const listener = (event: Event) => openModal((event as CustomEvent<OpenModalEventDetail>).detail.barberShopId);
+    window.addEventListener(EVENT_OPEN_MODAL_TYPE, listener)
+    
+    return () => window.removeEventListener(EVENT_OPEN_MODAL_TYPE, listener)
+  }, [])
   
   return (
     <>
@@ -179,10 +251,11 @@ export function SchedulePage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-[100px]">Barbearia</TableHead>
-                      <TableHead>Serviço</TableHead>
-                      <TableHead>Descrição</TableHead>
-                      <TableHead className="text-right">Preço</TableHead>
+                      <TableHead className="w-[100px] text-center">Barbearia</TableHead>
+                      <TableHead className="text-center">Serviço</TableHead>
+                      <TableHead className="text-center">Descrição</TableHead>
+                      <TableHead className="text-center">Preço</TableHead>
+                      <TableHead className="text-center">Ação</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -194,6 +267,40 @@ export function SchedulePage() {
           </CardContent>
         </Card>
       </div>
+      
+      <Dialog open={!!chosedBarberId} onOpenChange={handleDialogOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Agendar horário</DialogTitle>
+            <DialogDescription>
+              Vai minha filha vamos...
+            </DialogDescription>
+          </DialogHeader>
+          
+          {!!chosedBarberId && (
+            <FormNewAppointment {...chosedBarberId} />
+          )}
+          
+          <DialogFooter className="grid grid-cols-2 md:flex md:justify-end gap-2">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Cancelar
+              </Button>
+            </DialogClose>
+            
+            {!!chosedBarberId && (
+              <Button
+                type="submit"
+                form={chosedBarberId.formId}
+                isLoading={isLoading}
+                IconLeft={<Scissors />}
+              >
+                Agendar
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

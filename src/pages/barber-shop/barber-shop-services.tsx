@@ -52,10 +52,10 @@ type DialogUpdateAction = Pick<DialogUpdateState, 'action' | 'barberShopId' | 's
 type DialogRemoveAction = Pick<DialogRemoveState, 'action' | 'barberShopId' | 'serviceId' | 'service'>
 
 type DialogAction =
-  | { type: 'ALL_CLOSED' }
   | { type: 'REGISTER_FORM', payload: DialogRegisterAction }
   | { type: 'UPDATE_FORM', payload: DialogUpdateAction }
   | { type: 'REMOVE_FORM', payload: DialogRemoveAction }
+  | { type: 'CLEAR' }
 
 function dialogReducer(state: DialogState, action: DialogAction): DialogState {
   switch (action.type) {
@@ -90,7 +90,7 @@ function dialogReducer(state: DialogState, action: DialogAction): DialogState {
         dialogTitle: 'Remover serviço',
         dialogDescription: 'ATENÇÃO - Serviço será removido.',
       }
-    case 'ALL_CLOSED':
+    case 'CLEAR':
       return {
         open: false,
       }
@@ -104,7 +104,7 @@ export function BarberShopServices() {
   const [state, dispatch] = useReducer(dialogReducer, { open: false })
 
   const setLoadingState = useCallback((arg: boolean) => setIsLoading(arg), [])
-  const closeModal = useCallback(() => dispatch({ type: 'ALL_CLOSED' }), [])
+  const closeModal = useCallback(() => dispatch({ type: 'CLEAR' }), [])
 
   useEffect(() => {
     if (!state.open) {
@@ -114,7 +114,7 @@ export function BarberShopServices() {
 
   function handleDialogOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      dispatch({ type: 'ALL_CLOSED' })
+      dispatch({ type: 'CLEAR' })
     }
   }
 

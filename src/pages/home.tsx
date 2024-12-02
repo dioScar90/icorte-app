@@ -44,7 +44,7 @@ export function Home() {
                 </Link>
                 <Link
                   className={cn(buttonVariants({ size: 'lg' }), 'w-full md:w-auto')}
-                  to={`${ROUTE_ENUM.BARBER_SCHEDULE}/schedule`}
+                  to={`${ROUTE_ENUM.BARBER_SCHEDULE}/new-appointment`}
                 >
                   <ScissorsIcon className="mr-2 h-5 w-5" />
                   Marcar um corte

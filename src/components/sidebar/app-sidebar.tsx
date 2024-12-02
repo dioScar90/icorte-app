@@ -99,7 +99,7 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: Aut
         },
         {
           title: "Marcar um corte",
-          url: ROUTE_ENUM.BARBER_SCHEDULE + '/schedule',
+          url: ROUTE_ENUM.BARBER_SCHEDULE + '/new-appointment',
         },
       ],
     })

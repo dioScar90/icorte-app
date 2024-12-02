@@ -1,7 +1,8 @@
 import { z } from 'zod'
 import { dataIsEqualOrGreaterThenToday, getStringAsDateOnly } from './sharedValidators/dateOnly'
+import { serviceSchema } from './service'
 
-enum PaymentTypeEnum {
+export enum PaymentTypeEnum {
   Cartão,
   Dinheiro,
   Pix,
@@ -35,6 +36,16 @@ export const appointmentSchema = z.object({
     .optional()
     .or(z.literal(''))
     .transform(value => value || undefined),
+
+  serviceIds: z.array(
+    z.object({
+      id: z.number()
+    })
+    .merge(
+      serviceSchema
+    )
+  )
+    .transform(values => values.map(({ id }) => id))
 })
 
 export type AppointmentZod = z.infer<typeof appointmentSchema>

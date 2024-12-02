@@ -25,8 +25,7 @@ import { MyBarberShop } from './pages/barber-shop/my-barber-shop'
 import { BarberShopEdit } from './pages/barber-shop/barber-shop-edit'
 import { MyAppointmentsPage } from './pages/barber-schedule/dashboard'
 import { AppointmentPage } from './pages/barber-schedule/appointment'
-import { SchedulePage } from './pages/barber-schedule/schedule'
-import { SchedulePushPage } from './pages/barber-schedule/set-appointment'
+import { NewAppointmentPage } from './pages/barber-schedule/new-appointment'
 import { PopulateAll } from './pages/admin/populate-all'
 import { ResetPassword } from './pages/admin/reset-password'
 import { PopulateAppointments } from './pages/admin/populate-appointments'
@@ -63,23 +62,19 @@ export function App() {
               <Route path=":userId/edit" element={<ProfileEdit />} />
             </Route>
             
-            <Route
-              path={ROUTE_ENUM.BARBER_SCHEDULE}
-              loader={barberScheduleLoader}
-              element={<BarberScheduleLayout />}
-            >
+            <Route path={ROUTE_ENUM.BARBER_SCHEDULE} loader={barberScheduleLoader} element={<BarberScheduleLayout />}>
               <Route index action={async () => redirect(`${ROUTE_ENUM.BARBER_SCHEDULE}/dashboard`)} />
               <Route path="dashboard" element={<MyAppointmentsPage />} />
               <Route path="dashboard/:appointmentId" element={<AppointmentPage />} />
-              <Route path="schedule" element={<SchedulePage />} />
-              <Route path="schedule/:barberShopId" element={<SchedulePushPage />} />
+              <Route path="new-appointment" element={<NewAppointmentPage />} />
+              
+              {/* <Route path="new-appointment" loader={newAppointmentLoader} element={<NewAppointmentLayout />}>
+                <Route index element={<NewAppointmentPage />} />
+              </Route> */}
             </Route>
           </Route>
           
-          <Route
-            loader={async ({ params: { barberShopId } }) => ({ barberShopId })}
-            element={<ProtectedBarberShopRoute />}
-          >
+          <Route loader={async ({ params: { barberShopId } }) => ({ barberShopId })} element={<ProtectedBarberShopRoute />}>
             <Route path={ROUTE_ENUM.BARBER_SHOP} loader={barberShopLoader} element={<BarberShopLayout />}>
               <Route index loader={async ({ params }) => !params.barberShopId ? redirect(ROUTE_ENUM.HOME) : null} />
               <Route path="register" element={<RegisterBarberShop />} />
