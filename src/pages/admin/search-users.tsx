@@ -82,7 +82,6 @@ export function SearchUsersByNamePage() {
   const { copyToClipboard } = useClipBoard()
   
   const handleValueToSearchParam = useCallback(debounce((q?: string) => {
-    console.log({ q })
     setSearchParams(!q?.length ? undefined : { q })
   }), [])
   
@@ -117,7 +116,7 @@ export function SearchUsersByNamePage() {
         </TableRow>
       )
     }
-
+    
     const fullName = stateItem.firstName + ' ' + stateItem.lastName
     
     return (
@@ -125,7 +124,7 @@ export function SearchUsersByNamePage() {
         <TableCell className="font-medium text-center">{fullName}</TableCell>
         <TableCell className="text-center">{stateItem.email}</TableCell>
         <TableCell className="text-center">
-          <CopyToClipboard onClick={() => copyToClipboard(stateItem.email)} innerText="Copiar Email" />
+          <CopyToClipboard onClick={() => copyToClipboard(stateItem.email)} innerText="Copiar email" />
         </TableCell>
         <TableCell className="text-center">{applyMask('PHONE_NUMBER', stateItem.phoneNumber)}</TableCell>
         <TableCell className="text-center">{stateItem.isBarberShop ? 'Barbeiro' : 'Cliente'}</TableCell>
@@ -138,7 +137,7 @@ export function SearchUsersByNamePage() {
       dispatch({ type: 'CLEAR' })
     } else {
       searchByName(q)
-        .then(resp => {console.log('resp', resp); return resp})
+        .then(resp => resp)
         .then(resp => {
           console.log('items', resp.value)
           if (!resp.isSuccess) {

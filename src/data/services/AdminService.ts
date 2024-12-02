@@ -7,7 +7,8 @@ enum UrlType {
   PopulateAll = 'populate-all',
   Appointments = 'populate-appointments',
   ResetPassword = 'reset-password',
-  SearchByName = 'search-users'
+  SearchByName = 'search-users',
+  GetLastUsers = 'last-users',
 }
 
 function getUrl(type: UrlType) {
@@ -20,6 +21,7 @@ type QueryParamsType = Partial<{
   firstDate: string
   limitDate: string
   q: string
+  take: number
 }>
 
 function getQueryParams(params?: QueryParamsType) {
@@ -85,6 +87,11 @@ export class AdminService implements IAdminService {
 
   async searchUserByName(q: string) {
     const url = getUrl(UrlType.SearchByName) + getQueryParams({ q })
+    return await this.httpClient.get(url)
+  }
+
+  async getLastUsers(take?: number) {
+    const url = getUrl(UrlType.GetLastUsers) + getQueryParams({ take })
     return await this.httpClient.get(url)
   }
 }

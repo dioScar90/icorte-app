@@ -50,4 +50,13 @@ export class AdminRepository implements IAdminRepository {
       return Result.Failure(err as Error)
     }
   }
+  
+  async getLastUsers(take?: number) {
+    try {
+      const res = await this.service.getLastUsers(take);
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
+  }
 }

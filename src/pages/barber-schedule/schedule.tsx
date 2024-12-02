@@ -124,7 +124,6 @@ export function SchedulePage() {
   const [value, setValue] = useState(q ?? '')
   
   const handleValueToSearchParam = useCallback(debounce((q?: string) => {
-    console.log({ q })
     setSearchParams(!q?.length ? undefined : { q })
   }), [])
   

@@ -38,6 +38,7 @@ type AdminLayoutContextType = {
   popAppointments: AdminRepository['populateWithAppointments']
   resetPassword: AdminRepository['resetPasswordForSomeUser']
   searchByName: AdminRepository['searchUserByName']
+  getLastUsers: AdminRepository['getLastUsers']
 }
 
 export function AdminLayout() {
@@ -62,6 +63,10 @@ export function AdminLayout() {
   const searchByName = useCallback(async function(...args: Parameters<typeof repository.searchUserByName>) {
     return await repository.searchUserByName(...args)
   }, [])
+  
+  const getLastUsers = useCallback(async function(...args: Parameters<typeof repository.getLastUsers>) {
+    return await repository.getLastUsers(...args)
+  }, [])
 
   const props: AdminLayoutContextType = {
     removeAll,
@@ -69,11 +74,12 @@ export function AdminLayout() {
     popAppointments,
     resetPassword,
     searchByName,
+    getLastUsers,
   }
   
   return (
     <>
-      <h3>Admin's space</h3>
+      {/* <h3>Admin's space</h3> */}
       <Outlet context={props} />
     </>
   )

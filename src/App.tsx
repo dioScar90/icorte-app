@@ -38,6 +38,9 @@ import { schedulesLoader } from './data/loaders/schedulesLoader'
 import { BarberShopSchedulesLayout } from './components/layouts/barber-shop-schedules-layout'
 import { barberScheduleLoader } from './data/loaders/barberScheduleLoader'
 import { SearchUsersByNamePage } from './pages/admin/search-users'
+import { LastUsersPage } from './pages/admin/last-users'
+import { LastUsersLayout } from './components/layouts/last-users-layout'
+import { lastUsersLoader } from './data/loaders/lastUsersLoader'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -103,6 +106,11 @@ export function App() {
               <Route path="populate-all" element={<PopulateAll />} />
               <Route path="populate-appointments" element={<PopulateAppointments />} />
               <Route path="reset-password" element={<ResetPassword />} />
+
+              <Route path="last-users" loader={lastUsersLoader} element={<LastUsersLayout />}>
+                <Route index element={<LastUsersPage />} />
+              </Route>
+              
               <Route path="search-users" element={<SearchUsersByNamePage />} />
             </Route>
           </Route>

@@ -8,4 +8,5 @@ export interface IAdminRepository {
   populateWithAppointments(data: AppointmentsAdminZod): BaseResult<void>;
   resetPasswordForSomeUser(data: ResetPasswordZod): BaseResult<void>;
   searchUserByName(q: string): BaseResult<UserByName[]>;
+  getLastUsers(take?: number):  BaseResult<UserByName[]>;
 }

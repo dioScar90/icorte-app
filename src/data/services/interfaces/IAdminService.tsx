@@ -8,4 +8,5 @@ export interface IAdminService {
   populateWithAppointments(data: AppointmentsAdminZod): BaseAxiosResult<void>;
   resetPasswordForSomeUser(data: ResetPasswordZod): BaseAxiosResult<void>;
   searchUserByName(q: string): BaseAxiosResult<UserByName[]>;
+  getLastUsers(take?: number): BaseAxiosResult<UserByName[]>;
 }
