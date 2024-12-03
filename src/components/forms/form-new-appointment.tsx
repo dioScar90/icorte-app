@@ -11,6 +11,7 @@ import { ROUTE_ENUM } from "@/types/route"
 import { useBarberScheduleLayout } from "../layouts/barber-schedule-layout"
 import { appointmentSchema, AppointmentZod, PaymentTypeEnum } from "@/schemas/appointment"
 import { CheckboxFieldsServices } from "./checkbox-fields-services"
+import { InputFieldsDatesAndTimeSpans } from "./dates-and-time-spans-fields-services"
 
 type ActionType<KItem extends keyof ReturnType<typeof useBarberScheduleLayout>> =
   ReturnType<typeof useBarberScheduleLayout>[KItem]
@@ -20,35 +21,30 @@ export type NewAppointmentProps = {
   closeModal: () => void
   setLoadingState: (arg: boolean) => void
   barberShopId: number
+  defaultServiceId: number
   register: ActionType<'createAppointment'>
-  getAvailableDates: ActionType<'getAvailableDates'>
   getAbailableSlots: ActionType<'getAbailableSlots'>
   getAllServices: ActionType<'getAllServices'>
 }
 
 export function FormNewAppointment({
-  formId, register, getAvailableDates, getAbailableSlots, getAllServices, closeModal, setLoadingState, barberShopId }: NewAppointmentProps
+  formId, register, getAbailableSlots, getAllServices, closeModal, setLoadingState, barberShopId, defaultServiceId }: NewAppointmentProps
 ) {
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
   
-  console.log('unusual props', {
-    getAvailableDates, getAbailableSlots, getAllServices, barberShopId
-  })
-  
   const form = useForm<AppointmentZod>({
     resolver: zodResolver(appointmentSchema),
     defaultValues: {
-      date: '2024-01-01',
-      startTime: '12:30:00',
-      paymentType: PaymentTypeEnum.Pix,
+      date: undefined,
+      startTime: undefined,
+      paymentType: undefined,
       notes: undefined,
-      serviceIds: [],
+      serviceIds: [defaultServiceId],
     }
   })
   
   async function onSubmit({ serviceIds, ...values }: AppointmentZod) {
-    // const data = { ...values, serviceIds: services.map(({ id }) => id) }
     const data = { ...values, serviceIds: [...serviceIds] }
     
     try {
@@ -67,6 +63,8 @@ export function FormNewAppointment({
       closeModal()
     }
   }
+
+  const serviceIds = form.watch('serviceIds')
   
   useEffect(() => {
     setLoadingState(form.formState.isSubmitting)
@@ -75,33 +73,12 @@ export function FormNewAppointment({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} id={formId} className="space-y-6">
-        <div className="grid gap-3">
-          <FormField
+        <div className="grid gap-1">
+          <InputFieldsDatesAndTimeSpans
+            barberShopId={barberShopId}
+            serviceIds={serviceIds}
             control={form.control}
-            name="date"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Hora de abertura</FormLabel>
-                <FormControl>
-                  <Input type="text" inputMode="numeric" placeholder="Data" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="startTime"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Hora de abertura</FormLabel>
-                <FormControl>
-                  <Input type="text" inputMode="numeric" placeholder="Hora de início" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            getAbailableSlots={getAbailableSlots}
           />
           
           <FormField
@@ -109,11 +86,11 @@ export function FormNewAppointment({
             name="paymentType"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Gênero</FormLabel>
+                <FormLabel>Forma de pagamento</FormLabel>
                 <Select onValueChange={field.onChange}>
                   <FormControl>
                     <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Gênero" />
+                      <SelectValue placeholder="Escolha" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>

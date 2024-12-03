@@ -20,14 +20,14 @@ function getNewDateObject(dateOnly?: DateOnly, timeOnly?: TimeOnly) {
 }
 
 export function getToday({
-  dateOnly = undefined,
-  timeOnly = undefined,
-  isDateIso = undefined,
-  isTimeIso = undefined,
-  isFullIso = undefined,
-  isString = undefined,
-  locale = undefined,
-}: GetTodayProps) {
+  dateOnly,
+  timeOnly,
+  isDateIso,
+  isTimeIso,
+  isFullIso,
+  isString,
+  locale,
+}: Partial<GetTodayProps> = {}) {
   const date = getNewDateObject(dateOnly, timeOnly)
 
   if (isString) {

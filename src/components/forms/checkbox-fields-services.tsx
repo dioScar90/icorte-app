@@ -64,27 +64,13 @@ function LoadedFieldsServices({ barberShopId, control, getAllServices }: NewAppo
         <p>Nenhum item para exibir</p>
       )}
     </>
-  );
-}
-
-function CheckboxFieldsWithEnvolvedBySuspense({ barberShopId, control, getAllServices }: NewAppointmentProps) {
-  return (
-    <Suspense fallback={<LoadingServices />}>
-      <LoadedFieldsServices
-        barberShopId={barberShopId}
-        control={control}
-        getAllServices={getAllServices}
-      />
-    </Suspense>
   )
 }
 
-export function CheckboxFieldsServices({ barberShopId, control, getAllServices }: NewAppointmentProps) {
+export function CheckboxFieldsServices(props: NewAppointmentProps) {
   return (
-    <CheckboxFieldsWithEnvolvedBySuspense
-      barberShopId={barberShopId}
-      control={control}
-      getAllServices={getAllServices}
-    />
+    <Suspense fallback={<LoadingServices />}>
+      <LoadedFieldsServices { ...props } />
+    </Suspense>
   )
 }

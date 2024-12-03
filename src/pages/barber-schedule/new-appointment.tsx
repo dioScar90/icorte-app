@@ -17,7 +17,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Prettify } from "@/utils/types/prettify"
 import { getNumberAsCurrency } from "@/utils/currency"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { FormNewAppointment, NewAppointmentProps } from "@/components/forms/form-new-appointment"
 import { Scissors } from "lucide-react"
@@ -80,12 +80,13 @@ function serviceReducer(_: ServiceState, action: ServiceAction): ServiceState {
 const EVENT_OPEN_MODAL_TYPE = 'open-modal'
 
 type OpenModalEventDetail = {
-  barberShopId: number;
+  barberShopId: number
+  defaultServiceId: number
 }
 
-function dispatchOpenModalEvent(barberShopId: number) {
+function dispatchOpenModalEvent(barberShopId: number, defaultServiceId: number) {
   const event = new CustomEvent<OpenModalEventDetail>(EVENT_OPEN_MODAL_TYPE, {
-    detail: { barberShopId }
+    detail: { barberShopId, defaultServiceId }
   })
   dispatchEvent(event)
 }
@@ -125,6 +126,13 @@ function getServiceTableRow<T extends ServiceState[number]>(stateItem: T) {
   return (
     <TableRow key={stateItem.id}>
       <TableCell className="text-center">{stateItem.barberShopName}</TableCell>
+      <TableCell className="text-center">
+        <Button
+          onClick={() => dispatchOpenModalEvent(stateItem.barberShopId, stateItem.id)}
+        >
+          Abrir
+        </Button>
+      </TableCell>
       <TableCell className="text-center">{stateItem.name}</TableCell>
       <TableCell className="text-center">
         <LineClamp limit={2}>
@@ -132,13 +140,6 @@ function getServiceTableRow<T extends ServiceState[number]>(stateItem: T) {
         </LineClamp>
       </TableCell>
       <TableCell className="text-center">{getNumberAsCurrency(stateItem.price)}</TableCell>
-      <TableCell className="text-center">
-        <Button
-          onClick={() => dispatchOpenModalEvent(stateItem.barberShopId)}
-        >
-          Mostrar tudo
-        </Button>
-      </TableCell>
     </TableRow>
   )
 }
@@ -155,7 +156,7 @@ export function NewAppointmentPage() {
   }
   
   const { handleError } = useHandleErrors()
-  const { servicesByName, createAppointment, getAvailableDates, getAbailableSlots, getAllServices } = useBarberScheduleLayout()
+  const { servicesByName, createAppointment, getAbailableSlots, getAllServices } = useBarberScheduleLayout()
   const [state, dispatch] = useReducer(serviceReducer, initialState)
   const [searchParams, setSearchParams] = useSearchParams()
   const q = searchParams.get('q')
@@ -171,14 +172,14 @@ export function NewAppointmentPage() {
   const setLoadingState = useCallback((arg: boolean) => setIsLoading(arg), [])
   const closeModal = useCallback(() => setChosedBarberId(null), [])
   
-  const openModal = useCallback((barberShopId: number) => {
+  const openModal = useCallback((barberShopId: number, defaultServiceId: number) => {
     if (barberShopId > 0) {
       setChosedBarberId({
         formId: 'register-appointment',
         barberShopId,
+        defaultServiceId,
         closeModal,
         setLoadingState,
-        getAvailableDates,
         getAbailableSlots,
         getAllServices,
         register: createAppointment,
@@ -218,7 +219,10 @@ export function NewAppointmentPage() {
   }
   
   useEffect(() => {
-    const listener = (event: Event) => openModal((event as CustomEvent<OpenModalEventDetail>).detail.barberShopId);
+    const listener = (event: Event) => openModal(
+      (event as CustomEvent<OpenModalEventDetail>).detail.barberShopId,
+      (event as CustomEvent<OpenModalEventDetail>).detail.defaultServiceId
+    )
     window.addEventListener(EVENT_OPEN_MODAL_TYPE, listener)
     
     return () => window.removeEventListener(EVENT_OPEN_MODAL_TYPE, listener)
@@ -252,10 +256,10 @@ export function NewAppointmentPage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-[100px] text-center">Barbearia</TableHead>
+                      <TableHead className="text-center"></TableHead>
                       <TableHead className="text-center">Serviço</TableHead>
                       <TableHead className="text-center">Descrição</TableHead>
                       <TableHead className="text-center">Preço</TableHead>
-                      <TableHead className="text-center">Ação</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -272,9 +276,6 @@ export function NewAppointmentPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Agendar horário</DialogTitle>
-            <DialogDescription>
-              Vai minha filha vamos...
-            </DialogDescription>
           </DialogHeader>
           
           {!!chosedBarberId && (

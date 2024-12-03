@@ -72,7 +72,6 @@ export class BarberScheduleService implements IBarberScheduleService {
   
   async getAvailableSlots(barberShopId: number, date: DateOnly, serviceIds: number[]) {
     const url = getUrl({ date, beforeDate: strBeforeDateEnum.SLOTS, barberShopId }) + getQueryParams({ serviceIds })
-    throw new Error(url)
     return await this.httpClient.get(url)
   }
   
