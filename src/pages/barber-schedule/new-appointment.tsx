@@ -169,7 +169,7 @@ export function NewAppointmentPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   const setLoadingState = useCallback((arg: boolean) => setIsLoading(arg), [])
-  const closeModal = useCallback(() => dispatch({ type: 'CLEAR' }), [])
+  const closeModal = useCallback(() => setChosedBarberId(null), [])
   
   const openModal = useCallback((barberShopId: number) => {
     if (barberShopId > 0) {
@@ -213,7 +213,7 @@ export function NewAppointmentPage() {
   
   function handleDialogOpenChange(isOpen: boolean) {
     if (!isOpen) {
-      dispatch({ type: 'CLEAR' })
+      setChosedBarberId(null)
     }
   }
   

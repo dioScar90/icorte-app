@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "../ui/form"
 import { useNavigate } from "react-router-dom"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
@@ -10,8 +10,7 @@ import { getEnumAsArray } from "@/utils/enum-as-array"
 import { ROUTE_ENUM } from "@/types/route"
 import { useBarberScheduleLayout } from "../layouts/barber-schedule-layout"
 import { appointmentSchema, AppointmentZod, PaymentTypeEnum } from "@/schemas/appointment"
-import { Service } from "@/types/models/service"
-import { Checkbox } from "../ui/checkbox"
+import { CheckboxFieldsServices } from "./checkbox-fields-services"
 
 type ActionType<KItem extends keyof ReturnType<typeof useBarberScheduleLayout>> =
   ReturnType<typeof useBarberScheduleLayout>[KItem]
@@ -32,12 +31,11 @@ export function FormNewAppointment({
 ) {
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
-  const [services, setServices] = useState<Service[]>([])
-
+  
   console.log('unusual props', {
-    getAvailableDates, getAbailableSlots, getAllServices, barberShopId, setServices
+    getAvailableDates, getAbailableSlots, getAllServices, barberShopId
   })
-
+  
   const form = useForm<AppointmentZod>({
     resolver: zodResolver(appointmentSchema),
     defaultValues: {
@@ -156,40 +154,14 @@ export function FormNewAppointment({
                   <FormDescription>
                     Selecione os serviços desejados.
                   </FormDescription>
-                </div>
-                {services.map((item) => (
-                  <FormField
-                    key={item.id}
+                  </div>
+                  
+                  <CheckboxFieldsServices
+                    barberShopId={barberShopId}
                     control={form.control}
-                    name="serviceIds"
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={item.id}
-                          className="flex flex-row items-start space-x-3 space-y-0"
-                        >
-                          <FormControl>
-                            <Checkbox
-                              // checked={field.value?.some(({ id }) => id === item.id)}
-                              checked={field.value?.includes(item.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, item.id])
-                                  : field.onChange(
-                                      // field.value?.filter(({ id }) => id !== item.id)
-                                      field.value?.filter(id => id !== item.id)
-                                    )
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            {item.name}
-                          </FormLabel>
-                        </FormItem>
-                      )
-                    }}
+                    getAllServices={getAllServices}
                   />
-                ))}
+                  
                 <FormMessage />
               </FormItem>
             )}
