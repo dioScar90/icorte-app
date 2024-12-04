@@ -34,13 +34,17 @@ function getCep(value: string) {
     .replace(/(-\d{3})(\d+?)/, '$1')
 }
 
+const hasOnlyZerosAfterExcludeNonNumerics = (value: string) => !(+(value.replace(/\D/g, '')))
+
 function getTimeOnly(value: string) {
-  return value
+  value = value
     .replace(/\D/g, '')
     .padStart(6, '0')
     .slice(-6)
     .replace(/(\d{2})(\d)/, '$1:$2')
     .replace(/(\d{2})(\d)/, '$1:$2')
+
+  return hasOnlyZerosAfterExcludeNonNumerics(value) ? '' : value
 }
 
 function getDateOnly(value: string) {
@@ -56,8 +60,8 @@ function getDateOnly(value: string) {
   if (putFirstBar) {
     value = value.slice(0, 2) + '/' + value.slice(2)
   }
-
-  return value
+  
+  return hasOnlyZerosAfterExcludeNonNumerics(value) ? '' : value
 }
 
 function getMoney(value: number | string) {

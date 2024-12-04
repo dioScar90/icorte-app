@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ChangeEvent, useEffect } from "react"
+import { ChangeEvent, useEffect, useRef } from "react"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "../ui/form"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
@@ -47,6 +47,8 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { handleError } = useHandleErrors()
+  const openTimeInputRef = useRef<HTMLInputElement>(null)
+  const closeTimeInputRef = useRef<HTMLInputElement>(null)
   
   const form = useForm<SpecialScheduleZod>({
     resolver: formId !== 'special-remove-form' ? zodResolver(specialScheduleSchema) : undefined,
@@ -61,6 +63,10 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
   
   async function onSubmit(data: SpecialScheduleZod) {
     try {
+      if (typeof isClosed === 'boolean') {
+        throw new Error('Cala bocaaaaaa')
+      }
+
       let result: Awaited<ReturnType<typeof action>>
       let message: string
       
@@ -109,11 +115,23 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
     e.currentTarget.focus()
   }
   
+  function handleIsCloseChange(isChecked: boolean) {
+    if (isChecked) {
+      const names = ['openTime', 'closeTime'] as const
+      names.forEach(name => form.setValue(name, undefined))
+      
+      openTimeInputRef.current!.value = ''
+      closeTimeInputRef.current!.value = ''
+
+      form.clearErrors([...names])
+    }
+  }
+
+  const isClosed = form.watch('isClosed')
+  
   useEffect(() => {
     setLoadingState(form.formState.isSubmitting)
   }, [form.formState])
-  
-  const isClosed = form.watch('isClosed')
   
   return (
     <Form {...form}>
@@ -160,7 +178,7 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
                 <FormLabel>Hora de abertura</FormLabel>
                 <FormControl>
                   <Input
-                    {...field}
+                    {...field} ref={openTimeInputRef}
                     type="text" inputMode="numeric" placeholder="08:00:00 (opcional)"
                     onChange={handleTimeChange} onFocus={navigateToEndAfterFocus}
                     disabled={formId === 'special-remove-form' || isClosed}
@@ -179,7 +197,7 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
                 <FormLabel>Hora de fechamento</FormLabel>
                 <FormControl>
                   <Input
-                    {...field}
+                    {...field} ref={closeTimeInputRef}
                     type="text" inputMode="numeric" placeholder="18:00:00 (opcional)"
                     onChange={handleTimeChange} onFocus={navigateToEndAfterFocus}
                     disabled={formId === 'special-remove-form' || isClosed}
@@ -206,7 +224,11 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
                 <FormControl>
                   <Switch
                     checked={field.value}
-                    onCheckedChange={field.onChange}
+                    onCheckedChange={value => {
+                      handleIsCloseChange(value)
+                      field.onChange(value)
+                    }}
+                    disabled={formId === 'special-remove-form'}
                   />
                 </FormControl>
               </FormItem>

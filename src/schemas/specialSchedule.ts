@@ -2,32 +2,6 @@ import { z } from 'zod'
 import { getStringAsTimeOnly } from './sharedValidators/timeOnly'
 import { getStringAsDateOnly, isCorrectDateString, isDateGreaterThenToday } from './sharedValidators/dateOnly'
 
-type RefineFuncProps = {
-  openTime?: string,
-  closeTime?: string,
-  isClosed: boolean,
-}
-
-function closeTimeMustBeGreaterThenOpenTimeIfClosed({ openTime, closeTime, isClosed }: RefineFuncProps) {
-  if (isClosed) {
-    return true
-  }
-
-  if (!openTime && !closeTime) {
-    return false
-  }
-
-  if (!closeTime) {
-    return true
-  }
-
-  if (openTime && openTime > closeTime) {
-    return true
-  }
-
-  return false
-}
-
 export const specialScheduleSchema = z.object({
   date: z.string({ required_error: 'Dia obrigatório' })
     .refine(isCorrectDateString, 'Dia inválido')
@@ -54,9 +28,33 @@ export const specialScheduleSchema = z.object({
 
   isClosed: z.coerce.boolean(),
 })
-  .refine(closeTimeMustBeGreaterThenOpenTimeIfClosed, {
-    message: 'Horário de encerramento precisa ser superior ao horário de abertura',
-    path: ['closeTime']
+  .superRefine(({ openTime, closeTime, isClosed }, ctx) => {
+    if (isClosed) {
+      return
+    }
+    
+    if (openTime && closeTime && openTime >= closeTime) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Horário de encerramento precisa ser maior que horário de abertura',
+        path: ['closeTime'],
+      })
+      return
+    }
+    
+    if (!openTime && !closeTime) {
+      const pathes = ['openTime', 'closeTime']
+      
+      pathes.forEach(path =>
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'É preciso informar pelo menos um dos novos horários',
+          path: [path],
+        })
+      )
+      
+      return
+    }
   })
 
 export type SpecialScheduleZod = z.infer<typeof specialScheduleSchema>

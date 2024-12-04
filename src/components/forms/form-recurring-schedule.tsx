@@ -1,15 +1,17 @@
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useEffect } from "react"
+import { ChangeEvent, useEffect } from "react"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "../ui/form"
 import { useSchedulesLayout } from "../layouts/barber-shop-schedules-layout"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
 import { DayOfWeekEnum, recurringScheduleSchema, RecurringScheduleZod } from "@/schemas/recurringSchedule"
-import { DayOfWeek } from "@/utils/types/date"
+import { DayOfWeek, TimeOnly } from "@/utils/types/date"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { getEnumAsArray, getEnumAsString } from "@/utils/enum-as-array"
+import { applyMask } from "@/utils/mask"
+import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
 
 type ActionType<KItem extends keyof ReturnType<typeof useSchedulesLayout>['recurring']> =
   ReturnType<typeof useSchedulesLayout>['recurring'][KItem]
@@ -45,13 +47,13 @@ export function FormRecurringSchedule({ formId, action, closeModal, setLoadingSt
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { handleError } = useHandleErrors()
-
+  
   const form = useForm<RecurringScheduleZod>({
     resolver: formId !== 'recurring-remove-form' ? zodResolver(recurringScheduleSchema) : undefined,
     defaultValues: {
       dayOfWeek: schedule?.dayOfWeek ?? DayOfWeekEnum.SEGUNDA,
-      openTime: schedule?.openTime ?? '08:00:00',
-      closeTime: schedule?.closeTime ?? '18:00:00',
+      openTime: schedule?.openTime ?? undefined,
+      closeTime: schedule?.closeTime ?? undefined,
     }
   })
 
@@ -85,6 +87,16 @@ export function FormRecurringSchedule({ formId, action, closeModal, setLoadingSt
       closeModal()
     }
   }
+  
+  function handleTimeChange(e: ChangeEvent<HTMLInputElement>) {
+    const maskedValue = applyMask('TIME_ONLY', e.currentTarget.value) as TimeOnly
+    const name = e.currentTarget.name as 'openTime' | 'closeTime'
+    
+    form.setValue(name, maskedValue) // Atualiza o valor do campo no React Hook Form
+    e.currentTarget.value = maskedValue // Define o valor no input
+    
+    e.currentTarget.focus()
+  }
 
   useEffect(() => {
     setLoadingState(form.formState.isSubmitting)
@@ -100,7 +112,11 @@ export function FormRecurringSchedule({ formId, action, closeModal, setLoadingSt
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Gênero</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={getEnumAsString(DayOfWeekEnum, field.value)}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={getEnumAsString(DayOfWeekEnum, field.value)}
+                  disabled={formId === 'recurring-remove-form'}
+                >
                   <FormControl>
                     <SelectTrigger className="w-[180px]">
                       <SelectValue placeholder="Gênero" />
@@ -119,7 +135,7 @@ export function FormRecurringSchedule({ formId, action, closeModal, setLoadingSt
               </FormItem>
             )}
           />
-
+          
           <FormField
             control={form.control}
             name="openTime"
@@ -127,13 +143,18 @@ export function FormRecurringSchedule({ formId, action, closeModal, setLoadingSt
               <FormItem>
                 <FormLabel>Hora de abertura</FormLabel>
                 <FormControl>
-                  <Input type="text" inputMode="numeric" placeholder="Hora de abertura (opcional)" {...field} disabled={formId === 'recurring-remove-form'} />
+                  <Input
+                    {...field}
+                    inputMode="numeric" placeholder="08:00:00"
+                    onChange={handleTimeChange} onFocus={navigateToEndAfterFocus}
+                    disabled={formId === 'recurring-remove-form'}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
+          
           <FormField
             control={form.control}
             name="closeTime"
@@ -141,7 +162,12 @@ export function FormRecurringSchedule({ formId, action, closeModal, setLoadingSt
               <FormItem>
                 <FormLabel>Hora de fechamento</FormLabel>
                 <FormControl>
-                  <Input type="text" inputMode="numeric" placeholder="Hora de fechamento (opcional)" {...field} disabled={formId === 'recurring-remove-form'} />
+                  <Input
+                    {...field}
+                    inputMode="numeric" placeholder="18:00:00"
+                    onChange={handleTimeChange} onFocus={navigateToEndAfterFocus}
+                    disabled={formId === 'recurring-remove-form'}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
