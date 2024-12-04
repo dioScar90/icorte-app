@@ -1,23 +1,28 @@
 import { useBarberScheduleLayout } from "@/components/layouts/barber-schedule-layout"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { cn } from "@/lib/utils"
 import { useAuth } from "@/providers/authProvider"
+import { PaymentTypeEnum } from "@/schemas/appointment"
 import { getFormattedDate } from "@/schemas/sharedValidators/dateOnly"
+import { ROUTE_ENUM } from "@/types/route"
+import { getEnumAsString } from "@/utils/enum-as-array"
 import { TimeOnly } from "@/utils/types/date"
 import { DoorClosed, DoorOpen, Edit, ShoppingBag, Trash2 } from "lucide-react"
 import { useCallback } from "react"
+import { Link } from "react-router-dom"
 
 export function MyAppointmentsPage() {
   const { user } = useAuth()
   const { appointments } = useBarberScheduleLayout()
-
+  
   const formatTimeOnly = useCallback((time: TimeOnly) => {
     const [hh, mm] = time.split(':')
     return hh + 'h' + mm
   }, [])
-
+  
   return (
     <>
       <div className="before-card">
@@ -42,12 +47,14 @@ export function MyAppointmentsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {Array.isArray(appointments?.items) && appointments.items.length > 0
-                  ? appointments.items.map(({ barberShopId, ...schedule }) => (
+                {Array.isArray(appointments) && appointments.length > 0
+                  ? appointments.map(({ barberShopId, ...schedule }) => (
                     <TableRow key={schedule.date} data-barber-shop-id={barberShopId}>
                       <TableCell className="text-center">{getFormattedDate(schedule.date)}</TableCell>
                       <TableCell className="text-center">{schedule.notes ?? '---'}</TableCell>
-                      <TableCell className="text-center">{schedule.paymentType}</TableCell>
+                      <TableCell className="text-center">
+                        {getEnumAsString(PaymentTypeEnum, schedule.paymentType)}
+                      </TableCell>
                       <TableCell className="text-center">{formatTimeOnly(schedule.startTime as TimeOnly)}</TableCell>
                       <TableCell className="text-center">
                         <div className="flex justify-center">
@@ -63,7 +70,6 @@ export function MyAppointmentsPage() {
                             size="icon"
                             variant="outline"
                             title="Editar"
-                            // onClick={() => dispatch({ type: 'SPECIAL_UPDATE_FORM', payload: { action: special.update, barberShopId, date: schedule.date, schedule } })}
                           >
                             <Edit />
                           </Button>
@@ -71,7 +77,6 @@ export function MyAppointmentsPage() {
                             size="icon"
                             variant="destructive"
                             title="Remover"
-                            // onClick={() => dispatch({ type: 'SPECIAL_REMOVE_FORM', payload: { action: special.remove, barberShopId, date: schedule.date, schedule } })}
                           >
                             <Trash2 />
                           </Button>
@@ -94,13 +99,13 @@ export function MyAppointmentsPage() {
             </Table>
             
             <div className="w-full h-14 relative">
-              <Button
-                type="button" className="absolute-middle-y right-0"
-                // onClick={() => dispatch({ type: 'SPECIAL_REGISTER_FORM', payload: { action: special.register, barberShopId: barberShop.id } })}
+              <Link
+                className={cn(buttonVariants({ size: 'lg' }), 'w-full md:w-auto', 'absolute-middle-y right-0')}
+                to={`${ROUTE_ENUM.BARBER_SCHEDULE}/new-appointment`}
               >
                 <ShoppingBag />
                 Novo
-              </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>

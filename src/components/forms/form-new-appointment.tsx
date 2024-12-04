@@ -32,7 +32,7 @@ export function FormNewAppointment({
 ) {
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
-  const [serviceIds, setServiceIds] = useState<number[]>([])
+  const [serviceIds, setServiceIds] = useState([defaultServiceId])
   
   const form = useForm<AppointmentZod>({
     resolver: zodResolver(appointmentSchema),
@@ -64,8 +64,6 @@ export function FormNewAppointment({
       closeModal()
     }
   }
-
-  // const serviceIds = form.watch('serviceIds')
   
   useEffect(() => {
     if (form.formState.errors) {
@@ -122,7 +120,7 @@ export function FormNewAppointment({
               </FormItem>
             )}
           />
-
+          
           <FormField
             control={form.control}
             name="notes"
@@ -130,7 +128,7 @@ export function FormNewAppointment({
               <FormItem>
                 <FormLabel>Hora de abertura</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="Comentário (opcional)" {...field} />
+                  <Input placeholder="Comentário (opcional)" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

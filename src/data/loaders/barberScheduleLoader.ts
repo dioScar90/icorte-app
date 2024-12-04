@@ -17,7 +17,7 @@ export async function barberScheduleLoader({ request }: LoaderFunctionArgs) {
       return null
     }
     
-    return res.value
+    return res.value.items
   } catch (err) {
     return err instanceof RedirectorError ? redirect(err.url) : null
   }

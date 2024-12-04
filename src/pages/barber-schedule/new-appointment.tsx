@@ -22,7 +22,6 @@ import { Button } from "@/components/ui/button"
 import { FormNewAppointment, NewAppointmentProps } from "@/components/forms/form-new-appointment"
 import { Scissors } from "lucide-react"
 import { LineClamp } from "@/components/line-clamp"
-import { useAuth } from "@/providers/authProvider"
 
 const NOT_FOUND_TEXT = 'Não encontrado'
 
@@ -128,6 +127,7 @@ function getServiceTableRow<T extends ServiceState[number]>(stateItem: T) {
       <TableCell className="text-center">{stateItem.barberShopName}</TableCell>
       <TableCell className="text-center">
         <Button
+          size="sm"
           onClick={() => dispatchOpenModalEvent(stateItem.barberShopId, stateItem.id)}
         >
           Abrir
@@ -147,14 +147,6 @@ function getServiceTableRow<T extends ServiceState[number]>(stateItem: T) {
 const initialState: [InitialState] = [getInitialValue()]
 
 export function NewAppointmentPage() {
-  const { isAdmin } = useAuth()
-  
-  if (!isAdmin) {
-    return (
-      <p>Página ainda em construção...</p>
-    )
-  }
-  
   const { handleError } = useHandleErrors()
   const { servicesByName, createAppointment, getAbailableSlots, getAllServices } = useBarberScheduleLayout()
   const [state, dispatch] = useReducer(serviceReducer, initialState)
