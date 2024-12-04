@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { dataIsEqualOrGreaterThenToday, getStringAsDateOnly } from './sharedValidators/dateOnly'
-import { serviceSchema } from './service'
 
 export enum PaymentTypeEnum {
   Cartão,

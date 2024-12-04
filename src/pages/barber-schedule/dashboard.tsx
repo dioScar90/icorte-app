@@ -48,17 +48,25 @@ export function MyAppointmentsPage() {
               </TableHeader>
               <TableBody>
                 {Array.isArray(appointments) && appointments.length > 0
-                  ? appointments.map(({ barberShopId, ...schedule }) => (
-                    <TableRow key={schedule.date} data-barber-shop-id={barberShopId}>
-                      <TableCell className="text-center">{getFormattedDate(schedule.date)}</TableCell>
-                      <TableCell className="text-center">{schedule.notes ?? '---'}</TableCell>
+                  ? appointments.map(({ barberShopId, ...appointment }) => (
+                    <TableRow key={appointment.date} data-barber-shop-id={barberShopId}>
+                      <TableCell className="text-center">{getFormattedDate(appointment.date)}</TableCell>
+                      <TableCell className="text-center">{appointment.notes ?? '---'}</TableCell>
                       <TableCell className="text-center">
-                        {getEnumAsString(PaymentTypeEnum, schedule.paymentType)}
+                        {getEnumAsString(PaymentTypeEnum, appointment.paymentType)}
                       </TableCell>
-                      <TableCell className="text-center">{formatTimeOnly(schedule.startTime as TimeOnly)}</TableCell>
+                      <TableCell className="text-center">
+                        <Link
+                          className={cn(buttonVariants({ size: 'sm' }))}
+                          title="Ver detalhes"
+                          to={`${ROUTE_ENUM.BARBER_SCHEDULE}/dashboard/${appointment.id}`}
+                        >
+                          {formatTimeOnly(appointment.startTime as TimeOnly)}
+                        </Link>
+                      </TableCell>
                       <TableCell className="text-center">
                         <div className="flex justify-center">
-                          {schedule?.status
+                          {appointment?.status
                             ? <DoorClosed className="text-red-600" />
                             : <DoorOpen className="text-green-600" />
                           }
