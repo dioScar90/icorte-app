@@ -15,6 +15,5 @@ export function isBrMoneyGreaterThenZero(value: string) {
 }
 
 export function getBrlMoneyIntoFloat(value: string) {
-  console.log('price-antes-final', value)
   return +(value.replace(/[^0-9,]/g, '').replace(',', '.')) || 0.00
 }

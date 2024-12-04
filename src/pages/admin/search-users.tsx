@@ -143,7 +143,6 @@ export function SearchUsersByNamePage() {
       searchByName(q)
         .then(resp => resp)
         .then(resp => {
-          console.log('items', resp.value)
           if (!resp.isSuccess) {
             throw resp.error
           }

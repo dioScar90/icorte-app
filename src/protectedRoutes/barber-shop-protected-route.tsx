@@ -7,8 +7,6 @@ export function ProtectedBarberShopRoute() {
   const { pathname } = useLocation()
   const { barberShopId } = useLoaderData() as { barberShopId?: string }
   const { user, isAuthenticated, isBarberShop } = useAuth()
-
-  console.log('vai', { user, isAuthenticated, isBarberShop, pathname, compare: `${ROUTE_ENUM.BARBER_SHOP}/register` })
   
   if (!isAuthenticated) {
     return <Navigate to={ROUTE_ENUM.LOGIN} replace />

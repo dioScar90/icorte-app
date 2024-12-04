@@ -45,7 +45,6 @@ export function LastUsersPage() {
     getLastUsers(takeAux)
       .then(resp => resp)
       .then(resp => {
-        console.log('items', resp.value)
         if (!resp.isSuccess) {
           throw resp.error
         }

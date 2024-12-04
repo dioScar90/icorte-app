@@ -66,16 +66,12 @@ export function FormNewAppointment({
   }
   
   useEffect(() => {
-    if (form.formState.errors) {
-      console.log('errors', form.formState.errors)
-    }
     setLoadingState(form.formState.isSubmitting)
   }, [form.formState])
   
   useEffect(() => {
     const { unsubscribe } = form.watch(({ serviceIds }, { name }) => {
       if (name === 'serviceIds') {
-        console.log(name, serviceIds)
         const values = serviceIds ? [...(serviceIds as number[])] : []
         setServiceIds(values)
       }

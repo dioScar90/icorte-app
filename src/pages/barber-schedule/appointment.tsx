@@ -4,7 +4,6 @@ import { useLoaderData } from "react-router-dom"
 
 export function AppointmentPage() {
   const appointment = useLoaderData() as Awaited<ReturnType<typeof myAppointmentLoader>>
-  console.log('appointment', appointment)
   
   return (
     <>

@@ -37,7 +37,6 @@ export function ProfileEdit() {
 
   async function onSubmit(values: UserUpdateZod) {
     try {
-      console.log('submetasse', values)
       const result = await updateProfile(profile.id, values.profile)
 
       if (!result.isSuccess) {

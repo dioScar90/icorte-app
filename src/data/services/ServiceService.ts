@@ -25,7 +25,7 @@ export class ServiceService implements IServiceService {
   
   async createService(barberShopId: number, data: ServiceZod) {
     const url = getUrl(barberShopId)
-    return await this.httpClient.post(url, getDataWithPriceIntoFloat(data))
+    return await this.httpClient.post(url, { ...getDataWithPriceIntoFloat(data) })
   }
 
   async getService(barberShopId: number, serviceId: number) {
@@ -40,9 +40,7 @@ export class ServiceService implements IServiceService {
 
   async updateService(barberShopId: number, serviceId: number, data: ServiceZod) {
     const url = getUrl(barberShopId, serviceId)
-    const datanessapoarr = getDataWithPriceIntoFloat(data)
-    console.log('service-final', datanessapoarr)
-    return await this.httpClient.put(url, datanessapoarr)
+    return await this.httpClient.put(url, { ...getDataWithPriceIntoFloat(data) })
   }
 
   async deleteService(barberShopId: number, serviceId: number) {

@@ -39,7 +39,6 @@ type Props = {
 } & (RegisterProps | UpdateProps | RemoveProps)
 
 export function FormService({ formId, action, closeModal, setLoadingState, barberShopId, serviceId, service }: Props) {
-  console.log('tentei abrir FormRegisterService')
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { handleError } = useHandleErrors()

@@ -20,7 +20,6 @@ export function BarberShopEdit() {
   const { update, barberShop } = useBarberShopLayout()
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
-  console.log('barberShop', { barberShop })
   const form = useForm<BarberShopZod>({
     resolver: zodResolver(barberShopSchema),
     defaultValues: {
