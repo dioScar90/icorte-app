@@ -41,8 +41,6 @@ import { LastUsersPage } from './pages/admin/last-users'
 import { LastUsersLayout } from './components/layouts/last-users-layout'
 import { lastUsersLoader } from './data/loaders/lastUsersLoader'
 import { myAppointmentLoader } from './data/loaders/myAppointmentLoader'
-import { barberShopDashboardLoader } from './data/loaders/barberShopDashboardLoader'
-import { BarberShopDashboardLayout } from './components/layouts/barber-shop-dashboard-layout copy'
 
 export function App() {
   const browerRouter = createBrowserRouter(
