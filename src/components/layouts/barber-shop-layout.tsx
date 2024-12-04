@@ -9,6 +9,7 @@ import { httpClient } from "@/providers/proxyProvider";
 type BarberShopLayoutContextType = {
   register: BarberShopRepository['createBarberShop']
   update: BarberShopRepository['updateBarberShop']
+  getAppointments: BarberShopRepository['getAppointmentsByBarberShop']
   barberShop: NonNullable<Awaited<ReturnType<typeof barberShopLoader>>>
 }
 
@@ -28,10 +29,15 @@ export function BarberShopLayout() {
   const update = useCallback(async function(...args: Parameters<typeof repository.updateBarberShop>) {
     return await repository.updateBarberShop(...args)
   }, [])
+  
+  const getAppointments = useCallback(async function(...args: Parameters<typeof repository.getAppointmentsByBarberShop>) {
+    return await repository.getAppointmentsByBarberShop(...args)
+  }, [])
 
   const props: BarberShopLayoutContextType = {
     register,
     update,
+    getAppointments,
     barberShop,
   }
   

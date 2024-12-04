@@ -23,6 +23,15 @@ export class BarberShopRepository implements IBarberShopRepository {
       return Result.Failure(err as Error)
     }
   }
+  
+  async getAppointmentsByBarberShop(barberShopId: number) {
+    try {
+      const res = await this.service.getAppointmentsByBarberShop(barberShopId);
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
+  }
 
   async updateBarberShop(id: number, data: BarberShopZod) {
     try {

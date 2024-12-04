@@ -189,10 +189,10 @@ export function BarberShopSchedules() {
   const setLoadingState = useCallback((arg: boolean) => setIsLoading(arg), [])
   const closeModal = useCallback(() => dispatch({ type: 'CLEAR' }), [])
 
-  const formatTimeOnly = useCallback((time: TimeOnly) => {
+  function formatTimeOnly(time: TimeOnly) {
     const [hh, mm] = time.split(':')
     return hh + 'h' + mm
-  }, [])
+  }
   
   useEffect(() => {
     if (!state.open) {

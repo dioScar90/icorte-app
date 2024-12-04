@@ -2,14 +2,14 @@ import { BarberShopZod } from "@/schemas/barberShop";
 import { IBarberShopService } from "./interfaces/IBarberShopService";
 import { AxiosInstance } from "axios";
 
-function getUrl(id?: number) {
+function getUrl(id?: number, appointments?: boolean) {
   const baseEndpoint = `/barber-shop`
 
   if (!id) {
     return baseEndpoint
   }
   
-  return `${baseEndpoint}/${id}`
+  return `${baseEndpoint}/${id}` + (appointments ? '/appointments' : '')
 }
 
 export class BarberShopService implements IBarberShopService {
@@ -22,6 +22,11 @@ export class BarberShopService implements IBarberShopService {
 
   async getBarberShop(id: number) {
     const url = getUrl(id)
+    return await this.httpClient.get(url)
+  }
+
+  async getAppointmentsByBarberShop(barberShopId: number) {
+    const url = getUrl(barberShopId, true)
     return await this.httpClient.get(url)
   }
 

@@ -23,7 +23,7 @@ import { MyProfile } from './pages/profile/my-profile'
 import { barberShopLoader } from './data/loaders/barberShopLoader'
 import { MyBarberShop } from './pages/barber-shop/my-barber-shop'
 import { BarberShopEdit } from './pages/barber-shop/barber-shop-edit'
-import { MyAppointmentsPage } from './pages/barber-schedule/dashboard'
+import { MyAppointmentsPage } from './pages/barber-schedule/my-appointments'
 import { AppointmentPage } from './pages/barber-schedule/appointment'
 import { NewAppointmentPage } from './pages/barber-schedule/new-appointment'
 import { PopulateAll } from './pages/admin/populate-all'
@@ -41,6 +41,8 @@ import { LastUsersPage } from './pages/admin/last-users'
 import { LastUsersLayout } from './components/layouts/last-users-layout'
 import { lastUsersLoader } from './data/loaders/lastUsersLoader'
 import { myAppointmentLoader } from './data/loaders/myAppointmentLoader'
+import { barberShopDashboardLoader } from './data/loaders/barberShopDashboardLoader'
+import { BarberShopDashboardLayout } from './components/layouts/barber-shop-dashboard-layout copy'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -84,6 +86,10 @@ export function App() {
 
               <Route path=":barberShopId/schedules" loader={schedulesLoader} element={<BarberShopSchedulesLayout />}>
                 <Route index element={<BarberShopSchedules />} />
+              </Route>
+
+              <Route path=":barberShopId/dashboard" loader={barberShopDashboardLoader} element={<BarberShopDashboardLayout />}>
+                <Route index element={<BarberShopDashboard />} />
               </Route>
               
               <Route path=":barberShopId/dashboard" element={<BarberShopDashboard />} />

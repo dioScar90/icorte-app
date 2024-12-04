@@ -97,7 +97,7 @@ export function MyAppointmentsPage() {
                       <TableCell colSpan={100}>
                         <Alert variant="warning">
                           <AlertDescription className="text-center my-1">
-                            Nenhum horário especial cadastrado
+                            Nenhum agendamento para exibir
                           </AlertDescription>
                         </Alert>
                       </TableCell>
