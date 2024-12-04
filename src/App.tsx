@@ -88,9 +88,9 @@ export function App() {
                 <Route index element={<BarberShopSchedules />} />
               </Route>
 
-              <Route path=":barberShopId/dashboard" loader={barberShopDashboardLoader} element={<BarberShopDashboardLayout />}>
+              {/* <Route path=":barberShopId/dashboard" loader={barberShopDashboardLoader} element={<BarberShopDashboardLayout />}>
                 <Route index element={<BarberShopDashboard />} />
-              </Route>
+              </Route> */}
               
               <Route path=":barberShopId/dashboard" element={<BarberShopDashboard />} />
             </Route>

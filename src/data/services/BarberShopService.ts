@@ -1,6 +1,7 @@
 import { BarberShopZod } from "@/schemas/barberShop";
 import { IBarberShopService } from "./interfaces/IBarberShopService";
 import { AxiosInstance } from "axios";
+import { Pagination } from "../result";
 
 function getUrl(id?: number, appointments?: boolean) {
   const baseEndpoint = `/barber-shop`
@@ -10,6 +11,30 @@ function getUrl(id?: number, appointments?: boolean) {
   }
   
   return `${baseEndpoint}/${id}` + (appointments ? '/appointments' : '')
+}
+
+function getQueryParams(pag?: Pagination) {
+  if (!pag) {
+    return ''
+  }
+  
+  const searchParams = new URLSearchParams()
+  
+  for (const key in pag) {
+    const value = pag[key as keyof typeof pag]
+    
+    if (value === undefined) {
+      continue
+    }
+    
+    searchParams.append(key, String(value))
+  }
+  
+  if (searchParams.size === 0) {
+    return ''
+  }
+  
+  return '?' + searchParams.toString()
 }
 
 export class BarberShopService implements IBarberShopService {
@@ -25,8 +50,8 @@ export class BarberShopService implements IBarberShopService {
     return await this.httpClient.get(url)
   }
 
-  async getAppointmentsByBarberShop(barberShopId: number) {
-    const url = getUrl(barberShopId, true)
+  async getAppointmentsByBarberShop(barberShopId: number, pag?: Pagination) {
+    const url = getUrl(barberShopId, true) + getQueryParams(pag)
     return await this.httpClient.get(url)
   }
 

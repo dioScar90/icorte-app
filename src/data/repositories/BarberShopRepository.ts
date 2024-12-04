@@ -1,4 +1,4 @@
-import { Result } from "@/data/result";
+import { Pagination, Result } from "@/data/result";
 import { IBarberShopRepository } from "./interfaces/IBarberShopRepository";
 import { BarberShopZod } from "@/schemas/barberShop";
 import { IBarberShopService } from "../services/interfaces/IBarberShopService";
@@ -24,9 +24,9 @@ export class BarberShopRepository implements IBarberShopRepository {
     }
   }
   
-  async getAppointmentsByBarberShop(barberShopId: number) {
+  async getAppointmentsByBarberShop(barberShopId: number, pag?: Pagination) {
     try {
-      const res = await this.service.getAppointmentsByBarberShop(barberShopId);
+      const res = await this.service.getAppointmentsByBarberShop(barberShopId, pag);
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err as Error)

@@ -1,5 +1,8 @@
 import { AxiosResponse } from "axios"
 
+export const getPaginationObj = (page: number, pageSize?: number) => ({ page: Math.max(1, page), pageSize })
+export type Pagination = ReturnType<typeof getPaginationObj>
+
 export class Result<T = null> {
   #isSuccess: boolean
   #value?: T
@@ -42,7 +45,7 @@ type CreatedResponse<T> = {
   message?: string
 }
 
-type PaginationResponse<T> = {
+export type PaginationResponse<T> = {
   items: T[]
   totalItems: number
   totalPages: number

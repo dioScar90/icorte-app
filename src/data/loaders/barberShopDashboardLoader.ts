@@ -3,22 +3,18 @@ import { LoaderFunctionArgs } from "react-router-dom";
 import { BarberShopRepository } from "../repositories/BarberShopRepository";
 import { BarberShopService } from "../services/BarberShopService";
 
-export async function barberShopDashboardLoader({ params }: LoaderFunctionArgs) {
+export async function barberShopDashboardLoader({ params, request }: LoaderFunctionArgs) {
   if (!params.barberShopId) {
     return null
   }
   
   const barberShopId = +params.barberShopId
+  const page = new URL(request.url).searchParams.get('page')
   
   try {
     const repository = new BarberShopRepository(new BarberShopService(httpClient))
-    const res = await repository.getAppointmentsByBarberShop(barberShopId)
-
-    if (!res.isSuccess) {
-      return null
-    }
+    return await repository.getAppointmentsByBarberShop(barberShopId, { page: page ? +page : 1, pageSize: 5 })
     
-    return res.value
   } catch (err) {
     return null
   }
