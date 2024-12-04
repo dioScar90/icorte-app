@@ -38,14 +38,9 @@ export const appointmentSchema = z.object({
     .transform(value => value || undefined),
 
   serviceIds: z.array(
-    z.object({
-      id: z.number()
-    })
-    .merge(
-      serviceSchema
-    )
+    z.number()
   )
-    .transform(values => values.map(({ id }) => id))
+    .min(1, 'É necessário marcar pelo menos um serviço')
 })
 
 export type AppointmentZod = z.infer<typeof appointmentSchema>

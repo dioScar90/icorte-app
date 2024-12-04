@@ -67,10 +67,6 @@ export function App() {
               <Route path="dashboard" element={<MyAppointmentsPage />} />
               <Route path="dashboard/:appointmentId" element={<AppointmentPage />} />
               <Route path="new-appointment" element={<NewAppointmentPage />} />
-              
-              {/* <Route path="new-appointment" loader={newAppointmentLoader} element={<NewAppointmentLayout />}>
-                <Route index element={<NewAppointmentPage />} />
-              </Route> */}
             </Route>
           </Route>
           

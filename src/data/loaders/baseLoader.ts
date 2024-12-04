@@ -2,15 +2,7 @@ import { httpClient } from "@/providers/proxyProvider";
 import { UserRepository } from "../repositories/UserRepository";
 import { UserService } from "../services/UserService";
 import { LoaderFunctionArgs, redirect } from "react-router-dom";
-import { ROUTE_ENUM } from "@/types/route";
-
-type RouteString = typeof ROUTE_ENUM[keyof typeof ROUTE_ENUM]
-
-class RedirectorError extends Error {
-  constructor(readonly url: RouteString) {
-    super()
-  }
-}
+import { RedirectorError, ROUTE_ENUM, RouteString } from "@/types/route";
 
 function currentUrlStartsWithGivenRoute(currentUrl: string, needleRoute: RouteString) {
   const { pathname } = new URL(currentUrl)

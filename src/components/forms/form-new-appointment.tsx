@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "../ui/form"
 import { useNavigate } from "react-router-dom"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
@@ -32,6 +32,7 @@ export function FormNewAppointment({
 ) {
   const navigate = useNavigate()
   const { handleError } = useHandleErrors()
+  const [serviceIds, setServiceIds] = useState<number[]>([])
   
   const form = useForm<AppointmentZod>({
     resolver: zodResolver(appointmentSchema),
@@ -64,11 +65,26 @@ export function FormNewAppointment({
     }
   }
 
-  const serviceIds = form.watch('serviceIds')
+  // const serviceIds = form.watch('serviceIds')
   
   useEffect(() => {
+    if (form.formState.errors) {
+      console.log('errors', form.formState.errors)
+    }
     setLoadingState(form.formState.isSubmitting)
   }, [form.formState])
+  
+  useEffect(() => {
+    const { unsubscribe } = form.watch(({ serviceIds }, { name }) => {
+      if (name === 'serviceIds') {
+        console.log(name, serviceIds)
+        const values = serviceIds ? [...(serviceIds as number[])] : []
+        setServiceIds(values)
+      }
+    })
+
+    return () => unsubscribe()
+  }, [form.watch])
   
   return (
     <Form {...form}>
@@ -131,13 +147,13 @@ export function FormNewAppointment({
                   <FormDescription>
                     Selecione os serviços desejados.
                   </FormDescription>
-                  </div>
+                </div>
                   
-                  <CheckboxFieldsServices
-                    barberShopId={barberShopId}
-                    control={form.control}
-                    getAllServices={getAllServices}
-                  />
+                <CheckboxFieldsServices
+                  barberShopId={barberShopId}
+                  control={form.control}
+                  getAllServices={getAllServices}
+                />
                   
                 <FormMessage />
               </FormItem>

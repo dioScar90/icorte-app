@@ -78,10 +78,7 @@ export function AdminLayout() {
   }
   
   return (
-    <>
-      {/* <h3>Admin's space</h3> */}
-      <Outlet context={props} />
-    </>
+    <Outlet context={props} />
   )
 }
 
