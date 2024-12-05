@@ -7,10 +7,12 @@ import { getEnumAsString } from "@/utils/enum-as-array";
 import { applyMask } from "@/utils/mask";
 import { Link } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/providers/authProvider";
 
 export function MyBarberShop() {
+  const { user } = useAuth()
   const { barberShop } = useBarberShopLayout()
-
+  
   return (
     <>
       <div className="max-w-3xl mx-auto p-6 rounded-lg shadow-lg">
@@ -84,12 +86,14 @@ export function MyBarberShop() {
           </div>
         </div>
       </div>
-
-      <div className="flex justify-center align-center gap-x-3">
-        <Link to={`${ROUTE_ENUM.BARBER_SHOP}/${barberShop.id}/edit`} className={buttonVariants({ variant: "link" })}>
-          Editar minha barbearia
-        </Link>
-      </div>
+      
+      {user?.barberShop?.id === barberShop.id && (
+        <div className="flex justify-center align-center gap-x-3">
+          <Link to={`${ROUTE_ENUM.BARBER_SHOP}/${barberShop.id}/edit`} className={buttonVariants({ variant: "link" })}>
+            Editar minha barbearia
+          </Link>
+        </div>
+      )}
     </>
   )
 }

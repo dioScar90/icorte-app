@@ -40,7 +40,6 @@ import { SearchUsersByNamePage } from './pages/admin/search-users'
 import { LastUsersPage } from './pages/admin/last-users'
 import { LastUsersLayout } from './components/layouts/last-users-layout'
 import { lastUsersLoader } from './data/loaders/lastUsersLoader'
-import { myAppointmentLoader } from './data/loaders/myAppointmentLoader'
 
 export function App() {
   const browerRouter = createBrowserRouter(
@@ -66,7 +65,13 @@ export function App() {
             <Route path={ROUTE_ENUM.BARBER_SCHEDULE} loader={barberScheduleLoader} element={<BarberScheduleLayout />}>
               <Route index action={async () => redirect(`${ROUTE_ENUM.BARBER_SCHEDULE}/dashboard`)} />
               <Route path="dashboard" element={<MyAppointmentsPage />} />
-              <Route path="dashboard/:appointmentId" loader={myAppointmentLoader} element={<AppointmentPage />} />
+              
+              <Route
+                path="dashboard/:appointmentId"
+                loader={async ({ params: { appointmentId } }) => +appointmentId! || undefined}
+                element={<AppointmentPage />}
+              />
+
               <Route path="new-appointment" element={<NewAppointmentPage />} />
             </Route>
           </Route>

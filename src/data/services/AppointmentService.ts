@@ -19,9 +19,9 @@ export class AppointmentService implements IAppointmentService {
     const url = getUrl()
     return await this.httpClient.post(url, { ...data })
   }
-
-  async getAppointment(id: number) {
-    const url = getUrl(id)
+  
+  async getAppointment(id: number, services?: boolean) {
+    const url = getUrl(id) + (services ? '?services=true' : '')
     return await this.httpClient.get(url)
   }
 

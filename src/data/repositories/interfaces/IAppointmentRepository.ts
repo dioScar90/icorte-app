@@ -4,7 +4,7 @@ import { Appointment } from "@/types/models/appointment";
 
 export interface IAppointmentRepository {
   createAppointment(data: AppointmentZod): CreatedResult<Appointment>;
-  getAppointment(id: number): BaseResult<Appointment>;
+  getAppointment(id: number, services?: boolean): BaseResult<Appointment>;
   getAllAppointments(pag?: Pagination): PaginationResult<Appointment>;
   updateAppointment(id: number, data: AppointmentZod): BaseResult<void>;
   deleteAppointment(id: number): BaseResult<void>;

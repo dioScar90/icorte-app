@@ -17,7 +17,7 @@ export const appointmentSchema = z.object({
   date: z.string({ required_error: 'Data do agendamento obrigatória' })
     .trim()
     .date('Data do agendamento inválida')
-    // .refine(isValidDate, { message: 'Data do agendamento inválida' })
+    // .refine(isValidDateOnly, { message: 'Data do agendamento inválida' })
     .refine(dataIsEqualOrGreaterThenToday, { message: 'Data do agendamento precisa ser maior ou igual à data de hoje' })
     .transform(getStringAsDateOnly),
 

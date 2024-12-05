@@ -3,9 +3,9 @@ import { DateOnly, TimeOnly } from "../../utils/types/date"
 import { Service } from "./service"
 import { AppointmentZod } from "@/schemas/appointment"
 
-enum AppointmentStatusEnum {
-  Pending,
-  Completed,
+export enum AppointmentStatusEnum {
+  Pendente,
+  Finalizado,
 }
 
 export type Appointment = Prettify<

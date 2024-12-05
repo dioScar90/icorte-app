@@ -16,6 +16,7 @@ import { PopoverClose } from "@radix-ui/react-popover"
 import { ScrollArea, ScrollBar } from "../ui/scroll-area"
 import { Badge } from "../ui/badge"
 import { Alert, AlertDescription } from "../ui/alert"
+import { getFormattedHour } from "@/schemas/sharedValidators/timeOnly"
 
 type ActionType<KItem extends keyof ReturnType<typeof useBarberScheduleLayout>> =
   ReturnType<typeof useBarberScheduleLayout>[KItem]
@@ -70,7 +71,7 @@ function LoadedFieldsDatesAndTimeSpans({ control, getAbailableSlots, barberShopI
                       )}
                       onClick={() => field.onChange(timeOnly)}
                     >
-                      {timeOnly.split(':').splice(0, 2).join(':')}
+                      {getFormattedHour(timeOnly)}
                     </Badge>
                   ))
                 ) : (

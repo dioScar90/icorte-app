@@ -4,7 +4,7 @@ import { Appointment } from "@/types/models/appointment";
 
 export interface IAppointmentService {
   createAppointment(data: AppointmentZod): CreatedAxiosResult<Appointment>;
-  getAppointment(id: number): BaseAxiosResult<Appointment>;
+  getAppointment(id: number, services?: boolean): BaseAxiosResult<Appointment>;
   getAllAppointments(pag?: Pagination): PaginationAxiosResult<Appointment>;
   updateAppointment(id: number, data: AppointmentZod): BaseAxiosResult<void>;
   deleteAppointment(id: number): BaseAxiosResult<void>;

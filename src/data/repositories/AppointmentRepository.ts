@@ -15,9 +15,9 @@ export class AppointmentRepository implements IAppointmentRepository {
     }
   }
 
-  async getAppointment(id: number) {
+  async getAppointment(id: number, services?: boolean) {
     try {
-      const res = await this.service.getAppointment(id);
+      const res = await this.service.getAppointment(id, services);
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err as Error)
