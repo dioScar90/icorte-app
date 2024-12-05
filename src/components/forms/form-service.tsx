@@ -129,7 +129,7 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Sobrenome</FormLabel>
+                <FormLabel>Descrição</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="Descrição (opcional)" {...field} disabled={formId === 'remove-form'} />
                 </FormControl>

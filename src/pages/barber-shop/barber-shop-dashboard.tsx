@@ -1,6 +1,6 @@
 import { useBarberShopLayout } from "@/components/layouts/barber-shop-layout";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -13,7 +13,7 @@ import { ROUTE_ENUM } from "@/types/route";
 import { getEnumAsString } from "@/utils/enum-as-array";
 import { TimeOnly } from "@/utils/types/date";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { DoorClosed, DoorOpen, Edit, Trash2 } from "lucide-react";
+import { DoorClosed, DoorOpen } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
@@ -68,24 +68,6 @@ function BarberShopDashboardTbodyItems({
                 ? <DoorClosed className="text-red-600" />
                 : <DoorOpen className="text-green-600" />
               }
-            </div>
-          </TableCell>
-          <TableCell className="text-center w-[100px]">
-            <div className="flex justify-between gap-x-2">
-              <Button
-                size="icon"
-                variant="outline"
-                title="Editar"
-              >
-                <Edit />
-              </Button>
-              <Button
-                size="icon"
-                variant="destructive"
-                title="Remover"
-              >
-                <Trash2 />
-              </Button>
             </div>
           </TableCell>
         </TableRow>
@@ -205,7 +187,6 @@ export function BarberShopDashboard() {
                   <TableHead className="text-center">Forma de pagamento</TableHead>
                   <TableHead className="text-center">Início</TableHead>
                   <TableHead className="text-center">Status</TableHead>
-                  <TableHead className="text-center w-[100px]">Ação</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

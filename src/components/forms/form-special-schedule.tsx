@@ -63,10 +63,6 @@ export function FormSpecialSchedule({ formId, action, closeModal, setLoadingStat
   
   async function onSubmit(data: SpecialScheduleZod) {
     try {
-      if (typeof isClosed === 'boolean') {
-        throw new Error('Cala bocaaaaaa')
-      }
-
       let result: Awaited<ReturnType<typeof action>>
       let message: string
       

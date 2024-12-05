@@ -61,7 +61,7 @@ function getDateOnly(value: string) {
     value = value.slice(0, 2) + '/' + value.slice(2)
   }
   
-  return hasOnlyZerosAfterExcludeNonNumerics(value) ? '' : value
+  return value
 }
 
 function getMoney(value: number | string) {
