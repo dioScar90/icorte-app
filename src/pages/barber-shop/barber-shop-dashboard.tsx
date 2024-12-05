@@ -6,7 +6,6 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PaginationResponse } from "@/data/result";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/providers/authProvider";
 import { PaymentTypeEnum } from "@/schemas/appointment";
 import { getFormattedDate } from "@/schemas/sharedValidators/dateOnly";
 import { ROUTE_ENUM } from "@/types/route";
@@ -32,18 +31,9 @@ function BarberShopDashboardTbodyItems({
   getAppointments,
   setPagination,
 }: TableProps) {
-  function getArgs(pageFromUrl: string | null) {
-    if (!pageFromUrl) {
-      return undefined
-    }
-    
-    const page = Number.isNaN(pageFromUrl) ? Math.max(1, +pageFromUrl) : 1
-    return { page, pageSize: 2 }
-  }
-  
   const { data: appointments } = useSuspenseQuery({
     queryKey: ['appointmentsByBarbershop', barberShopId, page],
-    queryFn: () => getAppointments(barberShopId, getArgs(page)),
+    queryFn: () => getAppointments(barberShopId, { page: +page! || 1, pageSize: 5 }),
   })
   
   function formatTimeOnly(time: TimeOnly) {
@@ -55,7 +45,7 @@ function BarberShopDashboardTbodyItems({
 
   useEffect(() => {
     setPagination(pagination)
-  }, [pagination])
+  }, [barberShopId, page])
   
   return (
     items && items.length > 0
@@ -117,23 +107,82 @@ function BarberShopDashboardTbodyItems({
   )
 }
 
+function BarberShopDashboardTbodyFallback() {
+  return (
+    <div>
+      Carregando...
+    </div>
+  )
+}
+
 function BarberShopDashboardTbody(props: TableProps) {
   return (
-    <Suspense fallback={<p>Peraí...</p>}>
+    <Suspense fallback={<BarberShopDashboardTbodyFallback />}>
       <BarberShopDashboardTbodyItems { ...props } />
     </Suspense>
   )
 }
 
-export function BarberShopDashboard() {
-  const { isAdmin } = useAuth()
-  
-  if (!isAdmin) {
-    return (
-      <p>Ainda não, aguarde mais um pouco...</p>
-    )
+function PaginationBarberShopAppointments({ page, totalPages }: PaginationWithoutItems) {
+  function getClampPage(to: number) {
+    return Math.min(Math.max(to, 1), totalPages)
   }
 
+  function getPageParam(to: number) {
+    to = getClampPage(to)
+    return `?page=${to}`
+  }
+  
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            to={getPageParam(page - 1)}
+          />
+        </PaginationItem>
+        
+        <PaginationItem>
+          <PaginationEllipsis />
+        </PaginationItem>
+        
+        {page > 1 && (
+          <PaginationItem>
+            <PaginationLink to={getPageParam(page - 1)}>
+              {getClampPage(page - 1)}
+            </PaginationLink>
+          </PaginationItem>
+        )}
+        
+        <PaginationItem>
+          <PaginationLink to={getPageParam(page)} isActive>
+            {page}
+          </PaginationLink>
+        </PaginationItem>
+        
+        {page < totalPages && (
+          <PaginationItem>
+            <PaginationLink to={getPageParam(page + 1)}>
+              {getClampPage(page + 1)}
+            </PaginationLink>
+          </PaginationItem>
+        )}
+        
+        <PaginationItem>
+          <PaginationEllipsis />
+        </PaginationItem>
+
+        <PaginationItem>
+          <PaginationNext
+            to={getPageParam(page + 1)}
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  )
+}
+
+export function BarberShopDashboard() {
   const { barberShop, getAppointments } = useBarberShopLayout()
   const [pagination, setPagination] = useState<PaginationWithoutItems | null>(null)
   const [searchParams] = useSearchParams()
@@ -150,7 +199,6 @@ export function BarberShopDashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent className="py-4 px-2 md:px-3 lg:px-4">
-            {/* <Table className={isLoading ? 'animate-pulse' : ''}> */}
             <Table>
               <TableCaption>Sua lista de agendamentos.</TableCaption>
               <TableHeader>
@@ -175,51 +223,7 @@ export function BarberShopDashboard() {
             </Table>
             
             {pagination && (
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious to={`?page=${1}`}>
-                      Anterior
-                    </PaginationPrevious>
-                  </PaginationItem>
-
-                  {pagination.page + 1 < pagination.totalPages && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-                  
-                  <PaginationItem>
-                    <PaginationLink to={`?page=${pagination.page - 1}`}>
-                      {pagination.page - 1}
-                    </PaginationLink>
-                  </PaginationItem>
-                  
-                  <PaginationItem>
-                    <PaginationLink to={`?page=${pagination.page}`}>
-                      {pagination.page}
-                    </PaginationLink>
-                  </PaginationItem>
-                  
-                  <PaginationItem>
-                    <PaginationLink to={`?page=${pagination.page + 1}`}>
-                      {pagination.page + 1}
-                    </PaginationLink>
-                  </PaginationItem>
-                  
-                  {pagination.page - 1 <= 1 && (
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  )}
-
-                  <PaginationItem>
-                    <PaginationNext to={`?page=${pagination.totalPages}`}>
-                      Próximo
-                    </PaginationNext>
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+              <PaginationBarberShopAppointments { ...pagination } />
             )}
           </CardContent>
         </Card>
