@@ -17,10 +17,12 @@ export function getStringAsTimeOnly(time: string) {
   return time as TimeOnly
 }
 
-export function getFormattedHour(time: TimeOnly) {
+export function getFormattedHour(time: TimeOnly, hourSeparator?: boolean) {
+  const h = hourSeparator ? 'h' : ':'
+
   if (!isValidTimeOnly(time)) {
-    return '00:00'
+    return `00${h}00`
   }
   
-  return time.split(':').splice(0, 2).join(':')
+  return time.split(':').splice(0, 2).join(h)
 }

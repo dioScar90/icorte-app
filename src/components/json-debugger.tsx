@@ -17,6 +17,9 @@ export function JsonDebugger({ obj, className }: Props) {
       ref={ref}
       className={className}
     >
+      {Object.entries(obj).map(([key, value]) => (
+        <p><span>{key}</span> {'=>'} {typeof value}</p>
+      ))}
       {JSON.stringify(obj, undefined, 2)}
     </pre>
   )

@@ -11,8 +11,8 @@ import { useSchedulesLayout } from "@/components/layouts/barber-shop-schedules-l
 import { getEnumAsString } from "@/utils/enum-as-array";
 import { DayOfWeekEnum } from "@/schemas/recurringSchedule";
 import { Separator } from "@/components/ui/separator";
-import { TimeOnly } from "@/utils/types/date";
 import { getFormattedDate } from "@/schemas/sharedValidators/dateOnly";
+import { getFormattedHour } from "@/schemas/sharedValidators/timeOnly";
 
 type AllClosedState = {
   open: false
@@ -188,11 +188,6 @@ export function BarberShopSchedules() {
 
   const setLoadingState = useCallback((arg: boolean) => setIsLoading(arg), [])
   const closeModal = useCallback(() => dispatch({ type: 'CLEAR' }), [])
-
-  function formatTimeOnly(time: TimeOnly) {
-    const [hh, mm] = time.split(':')
-    return hh + 'h' + mm
-  }
   
   useEffect(() => {
     if (!state.open) {
@@ -232,8 +227,8 @@ export function BarberShopSchedules() {
                   ? recurring.schedules.items.map(({ barberShopId, ...schedule }) => (
                     <TableRow key={schedule.dayOfWeek} data-barber-shop-id={barberShopId}>
                       <TableCell className="text-center">{getEnumAsString(DayOfWeekEnum, schedule.dayOfWeek)}</TableCell>
-                      <TableCell className="text-center">{formatTimeOnly(schedule.openTime)}</TableCell>
-                      <TableCell className="text-center">{formatTimeOnly(schedule.closeTime)}</TableCell>
+                      <TableCell className="text-center">{getFormattedHour(schedule.openTime, true)}</TableCell>
+                      <TableCell className="text-center">{getFormattedHour(schedule.closeTime, true)}</TableCell>
                       <TableCell className="text-center w-[100px]">
                         <div className="flex justify-between gap-x-2">
                           <Button
@@ -308,8 +303,8 @@ export function BarberShopSchedules() {
                     <TableRow key={schedule.date} data-barber-shop-id={barberShopId}>
                       <TableCell className="text-center">{getFormattedDate(schedule.date)}</TableCell>
                       <TableCell className="text-center">{schedule.notes ?? '---'}</TableCell>
-                      <TableCell className="text-center">{schedule.isClosed || !schedule.openTime ? '---' : formatTimeOnly(schedule.openTime)}</TableCell>
-                      <TableCell className="text-center">{schedule.isClosed || !schedule.closeTime ? '---' : formatTimeOnly(schedule.closeTime)}</TableCell>
+                      <TableCell className="text-center">{schedule.isClosed || !schedule.openTime ? '---' : getFormattedHour(schedule.openTime, true)}</TableCell>
+                      <TableCell className="text-center">{schedule.isClosed || !schedule.closeTime ? '---' : getFormattedHour(schedule.closeTime, true)}</TableCell>
                       <TableCell className="text-center">
                         <div className="flex justify-center">
                           {schedule.isClosed

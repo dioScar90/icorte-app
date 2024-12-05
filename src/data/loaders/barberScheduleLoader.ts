@@ -6,7 +6,12 @@ import { LoaderFunctionArgs, redirect } from "react-router-dom";
 
 export async function barberScheduleLoader({ request }: LoaderFunctionArgs) {
   try {
+    console.log({
+      url: request.url,
+      origin: location.origin + ROUTE_ENUM.BARBER_SCHEDULE
+    })
     if (request.url === location.origin + ROUTE_ENUM.BARBER_SCHEDULE) {
+      console.log('redireciona esa porra')
       throw new RedirectorError(`${ROUTE_ENUM.BARBER_SCHEDULE}/dashboard`)
     }
     

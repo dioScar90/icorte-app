@@ -5,14 +5,14 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { appointmentSchema, AppointmentZod, PaymentTypeEnum } from '@/schemas/appointment';
 import { AppointmentStatusEnum } from '@/types/models/appointment';
-import { useLoaderData, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
 import { useBarberScheduleLayout } from '@/components/layouts/barber-schedule-layout';
 import { getNumberAsCurrency } from '@/utils/currency';
 import { getEnumAsArray, getEnumAsString } from '@/utils/enum-as-array';
 import { getFormattedDate } from '@/schemas/sharedValidators/dateOnly';
 import { getFormattedHour } from '@/schemas/sharedValidators/timeOnly';
 import { TimeOnly } from '@/utils/types/date';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { useAuth } from '@/providers/authProvider';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -21,7 +21,8 @@ import { useHandleErrors } from '@/providers/handleErrorProvider';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ShoppingBag } from 'lucide-react';
+import { ChevronLeft, ShoppingBag } from 'lucide-react';
+import { ROUTE_ENUM } from '@/types/route';
 
 type DetailsProps = {
   appointmentId: number | undefined
@@ -225,6 +226,14 @@ export function AppointmentDetails({ appointmentId, getAppointment, updatePaymen
                 {getEnumAsString(AppointmentStatusEnum, appointment.status)}
               </Badge>
             </div>
+            
+            <Link
+              className={buttonVariants({ variant: "secondary" })}
+              to={`${ROUTE_ENUM.BARBER_SCHEDULE}/dashboard`}
+            >
+              <ChevronLeft />
+              Voltar
+            </Link>
           </div>
         </CardContent>
       </Card>

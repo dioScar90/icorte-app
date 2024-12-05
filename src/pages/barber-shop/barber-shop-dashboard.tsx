@@ -8,6 +8,7 @@ import { PaginationResponse } from "@/data/result";
 import { cn } from "@/lib/utils";
 import { PaymentTypeEnum } from "@/schemas/appointment";
 import { getFormattedDate } from "@/schemas/sharedValidators/dateOnly";
+import { getFormattedHour } from "@/schemas/sharedValidators/timeOnly";
 import { ROUTE_ENUM } from "@/types/route";
 import { getEnumAsString } from "@/utils/enum-as-array";
 import { TimeOnly } from "@/utils/types/date";
@@ -36,11 +37,6 @@ function BarberShopDashboardTbodyItems({
     queryFn: () => getAppointments(barberShopId, { page: +page! || 1, pageSize: 5 }),
   })
   
-  function formatTimeOnly(time: TimeOnly) {
-    const [hh, mm] = time.split(':')
-    return hh + 'h' + mm
-  }
-  
   const { value: { items, ...pagination } } = appointments
 
   useEffect(() => {
@@ -63,7 +59,7 @@ function BarberShopDashboardTbodyItems({
               title="Ver detalhes"
               to={`${ROUTE_ENUM.BARBER_SCHEDULE}/dashboard/${appointment.id}`}
             >
-              {formatTimeOnly(appointment.startTime as TimeOnly)}
+              {getFormattedHour(appointment.startTime as TimeOnly, true)}
             </Link>
           </TableCell>
           <TableCell className="text-center">
