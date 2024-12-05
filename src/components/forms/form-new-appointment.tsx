@@ -122,9 +122,9 @@ export function FormNewAppointment({
             name="notes"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Hora de abertura</FormLabel>
+                <FormLabel>Mensagem</FormLabel>
                 <FormControl>
-                  <Input placeholder="Comentário (opcional)" {...field} />
+                  <Input placeholder="Mensagem (opcional)" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
