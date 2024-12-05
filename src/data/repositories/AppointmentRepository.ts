@@ -42,6 +42,15 @@ export class AppointmentRepository implements IAppointmentRepository {
     }
   }
 
+  async updatePaymentType(id: number, paymentType: AppointmentZod['paymentType']) {
+    try {
+      await this.service.updatePaymentType(id, paymentType);
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
+  }
+
   async deleteAppointment(id: number) {
     try {
       await this.service.deleteAppointment(id);

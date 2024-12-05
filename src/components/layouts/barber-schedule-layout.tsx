@@ -24,6 +24,7 @@ type BarberScheduleLayoutContextType = {
   getAppointment: AppointmentRepository['getAppointment']
   getAllAppointments: AppointmentRepository['getAllAppointments']
   updateAppointment: AppointmentRepository['updateAppointment']
+  updatePaymentType: AppointmentRepository['updatePaymentType']
   deleteAppointment: AppointmentRepository['deleteAppointment']
 }
 
@@ -73,6 +74,10 @@ export function BarberScheduleLayout() {
     return await appointmentRep.updateAppointment(...args)
   }, [])
 
+  const updatePaymentType = useCallback(async function(...args: Parameters<typeof appointmentRep.updatePaymentType>) {
+    return await appointmentRep.updatePaymentType(...args)
+  }, [])
+
   const deleteAppointment = useCallback(async function(...args: Parameters<typeof appointmentRep.deleteAppointment>) {
     return await appointmentRep.deleteAppointment(...args)
   }, [])
@@ -89,6 +94,7 @@ export function BarberScheduleLayout() {
     getAppointment,
     getAllAppointments,
     updateAppointment,
+    updatePaymentType,
     deleteAppointment,
   }
   

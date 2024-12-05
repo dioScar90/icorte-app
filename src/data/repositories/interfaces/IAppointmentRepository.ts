@@ -7,5 +7,6 @@ export interface IAppointmentRepository {
   getAppointment(id: number, services?: boolean): BaseResult<Appointment>;
   getAllAppointments(pag?: Pagination): PaginationResult<Appointment>;
   updateAppointment(id: number, data: AppointmentZod): BaseResult<void>;
+  updatePaymentType(id: number, paymentType: AppointmentZod['paymentType']): BaseResult<void>;
   deleteAppointment(id: number): BaseResult<void>;
 }

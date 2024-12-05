@@ -35,6 +35,11 @@ export class AppointmentService implements IAppointmentService {
     return await this.httpClient.put(url, { ...data })
   }
 
+  async updatePaymentType(id: number, paymentType: AppointmentZod['paymentType']) {
+    const url = getUrl(id)
+    return await this.httpClient.patch(url, { paymentType })
+  }
+
   async deleteAppointment(id: number) {
     const url = getUrl(id)
     return await this.httpClient.delete(url)

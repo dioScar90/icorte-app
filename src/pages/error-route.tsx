@@ -11,7 +11,7 @@ export function ErrorRoutePage() {
       <h1 className="text-4xl font-bold">Erroooou...</h1>
 
       <p className="text-lg">
-        Essa página não existe, assim como as chances de acertar essa rota! 😅
+        Essa página ainda não existe, assim como as chances de acertar essa rota! 😅
       </p>
 
       <img
