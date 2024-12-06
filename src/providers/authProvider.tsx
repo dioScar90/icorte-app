@@ -50,7 +50,7 @@ function getRandomInt(seed?: number, isBarberShop?: boolean) {
 }
 
 export function getBarberShopImageUrl(barberShop: AuthUser['barberShop']) {
-  const PLACEHOLDER_BRABERSHOP_IMAGE_URL = 'https://thebarbersonline.com/wp-content/uploads/2019/03/IMG_0216-1.jpg'
+  const PLACEHOLDER_BRABERSHOP_IMAGE_URL = '/placeholder-barbershop.jpg'
 
   if (barberShop?.imageUrl) {
     // return barberShop.imageUrl
