@@ -158,6 +158,65 @@ export class NetworkConnectionError extends Error {
   }
 }
 
+export function handleError
+  <
+    TForm extends FieldValues,
+    KField extends "root" | `root.${string}` | Path<TForm>,
+  >
+  (error: Error | string | unknown, reactHookForm?: UseFormReturn<TForm>) {
+  if (!error) {
+    return
+  }
+  
+  const isReactHookForm = (form: any): form is UseFormReturn<TForm> => !!form
+  const isFieldError = (err: any): err is FieldError<KField> => err instanceof FieldError
+  const isKeyFromPath = (key: string): key is Path<TForm> => !key.startsWith('root')
+
+  console.log('error', error)
+  console.log('reactHookForm', reactHookForm)
+
+  if (isReactHookForm(reactHookForm) && isFieldError(error)) {
+    const toForm = error.getFormErrorOptions()
+    console.log('toForm', toForm)
+    toForm.forEach(item => reactHookForm.setError(...item))
+
+    let lastValidKey: Path<TForm> | undefined
+
+    for (const [key, value] of error.getToastOptions()) {
+      console.log('keys', [key, value])
+      toast(value)
+      lastValidKey = isKeyFromPath(key) ? key : lastValidKey
+    }
+
+    if (lastValidKey) {
+      reactHookForm.setFocus(lastValidKey)
+    }
+
+    return
+  }
+
+  if (error instanceof BaseDataError) {
+    Swal.fire(error.getSwalOptions())
+    return
+  }
+
+  if (error instanceof Error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'title' in error ? (error.title ?? undefined) : undefined,
+      text: error.message,
+    })
+    return
+  }
+
+  Swal.fire({
+    icon: 'error',
+    text: error === 'string' ? error : 'Erro desconhecido, tente novamente',
+  })
+}
+
+export type HandleError = typeof handleError
+
 export function HandleErrorProvider({ children }: PropsWithChildren) {
   const handleError = useCallback(function
     <
@@ -168,7 +227,7 @@ export function HandleErrorProvider({ children }: PropsWithChildren) {
     if (!error) {
       return
     }
-
+    
     const isReactHookForm = (form: any): form is UseFormReturn<TForm> => !!form
     const isFieldError = (err: any): err is FieldError<KField> => err instanceof FieldError
     const isKeyFromPath = (key: string): key is Path<TForm> => !key.startsWith('root')

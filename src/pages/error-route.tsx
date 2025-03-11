@@ -1,9 +1,8 @@
 import { buttonVariants } from "@/components/ui/button"; // Shadcn Button
-import { Link } from "react-router-dom";
 import errouImgUrl from "/errou.webp";
-import { ROUTE_ENUM } from "@/types/route";
-import { Home } from "lucide-react";
+import { Home as HomeIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Link } from "@tanstack/react-router";
 
 export function ErrorRoutePage() {
   return (
@@ -20,8 +19,8 @@ export function ErrorRoutePage() {
         className="shadow-lg mb-6"
       />
       
-      <Link to={ROUTE_ENUM.HOME} className={cn(buttonVariants({ variant: 'default' }))}>
-        <Home />
+      <Link to="/" className={cn(buttonVariants({ variant: 'default' }))}>
+        <HomeIcon />
         Voltar para home
       </Link>
     </div>
