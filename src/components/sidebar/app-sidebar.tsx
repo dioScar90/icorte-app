@@ -29,8 +29,9 @@ import {
 import { ROUTE_ENUM } from "@/types/route"
 import { AuthContextType, useAuth } from "@/providers/authProvider"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+// import { Link, useLocation, useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
+import { Link, useLocation, useNavigate } from "@tanstack/react-router"
 
 function getUserInfosToSidebar({ user }: AuthContextType) {
   return {
@@ -181,7 +182,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
       .then(async ({ isConfirmed }) => {
         if (isConfirmed) {
           userInfos.logout()
-            .then(({ isSuccess }) => isSuccess ? navigate(`${ROUTE_ENUM.LOGIN}`) : null)
+            .then(({ isSuccess }) => isSuccess ? navigate({ to: '/login' }) : null)
         }
       })
   }, [])
@@ -200,7 +201,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link to={ROUTE_ENUM.ROOT} state={{ test: 'to root' }}>
+              <Link to="/">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-full bg-sidebar-primary text-sidebar-primary-foreground">
                   <Avatar>
                     <AvatarImage src={logoImgUrl} />
@@ -225,7 +226,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Login">
-                  <Link to={ROUTE_ENUM.LOGIN} state={{ test: 'to login' }}>
+                  <Link to="/login">
                     <LogInIcon />
                     <span>Login</span>
                   </Link>
@@ -233,7 +234,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Criar conta">
-                  <Link to={ROUTE_ENUM.REGISTER} state={{ test: 'to register' }}>
+                  <Link to="/register">
                     <UserRoundPlusIcon />
                     <span>Criar conta</span>
                   </Link>

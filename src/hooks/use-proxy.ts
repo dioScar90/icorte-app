@@ -1,8 +1,8 @@
-import { createContext, PropsWithChildren, useContext } from "react"
-import axios, { AxiosError, AxiosInstance } from 'axios'
+// import { createContext, PropsWithChildren, useContext } from "react"
+import axios, { AxiosError } from 'axios'
 import { BaseDataError, InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from "@/providers/handleErrorProvider"
 
-export const httpClient = axios.create({
+const httpClient = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -27,6 +27,7 @@ httpClient.interceptors.response.use(
   },
   (error) => {
     const suamae = error as AxiosError
+    
     suamae.response?.data
     if (error.code === 'ERR_NETWORK') {
       return Promise.reject(new NetworkConnectionError())
@@ -50,26 +51,6 @@ httpClient.interceptors.response.use(
   }
 )
 
-export type ProxyContextType = {
-  httpClient: AxiosInstance
-}
+export const useProxy = () => httpClient
 
-const ProxyContext = createContext<ProxyContextType | undefined>(undefined)
-
-export function useProxy() {
-  const proxyContext = useContext(ProxyContext)
-
-  if (!proxyContext) {
-    throw new Error('useProxy must be used within an ProxyProvider')
-  }
-
-  return proxyContext
-}
-
-export function ProxyProvider({ children }: PropsWithChildren) {
-  return (
-    <ProxyContext.Provider value={{ httpClient }}>
-      {children}
-    </ProxyContext.Provider>
-  )
-}
+export type ProxyContext = ReturnType<typeof useProxy>

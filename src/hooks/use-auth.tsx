@@ -2,12 +2,14 @@ import { AuthRepository } from "@/data/repositories/AuthRepository"
 import { AuthService } from "@/data/services/AuthService"
 import { UserLoginZod, UserRegisterZod } from "@/schemas/user"
 import { UserMe } from "@/types/models/user"
-import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useReducer } from "react"
-import { useProxy } from "./proxyProvider"
+import { useEffect, useMemo, useReducer, use } from "react"
 import { IAuthRepository } from "@/data/repositories/interfaces/IAuthRepository"
 import { useLoaderData } from "react-router-dom"
 import { baseLoader } from "@/data/loaders/baseLoader"
 import { GenderEnum } from "@/schemas/profile"
+import { ProxyContext, useProxy } from "./use-proxy"
+import { UserRepository } from "@/data/repositories/UserRepository"
+import { UserService } from "@/data/services/UserService"
 
 export type AuthUser = {
   id: UserMe['id']
@@ -18,7 +20,7 @@ export type AuthUser = {
   barberShop?: UserMe['barberShop']
 }
 
-export type AuthContextType<TUser extends AuthUser | null = AuthUser | null> = {
+export type AuthContext<TUser extends AuthUser | null = AuthUser | null> = {
   user: TUser
   isLoading: boolean
   isAuthenticated: TUser extends AuthUser ? true : false
@@ -28,18 +30,6 @@ export type AuthContextType<TUser extends AuthUser | null = AuthUser | null> = {
   register: (data: UserRegisterZod) => ReturnType<IAuthRepository['register']>
   login: (data: UserLoginZod) => ReturnType<IAuthRepository['login']>
   logout: () => ReturnType<IAuthRepository['logout']>
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
-
-export function useAuth() {
-  const authContext = useContext(AuthContext)
-
-  if (!authContext) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-
-  return authContext
 }
 
 function getRandomInt(seed?: number, isBarberShop?: boolean) {
@@ -76,7 +66,7 @@ export function getProfileImageUrl(profile: AuthUser['profile']) {
   return `https://randomuser.me/api/portraits/${gender}/${imageId}.jpg`
 }
 
-function getUserWithCorrectImageUrl(payloadUser: AuthContextType["user"]) {
+function getUserWithCorrectImageUrl(payloadUser: NonNullable<AuthContext["user"]>) {
   const user = structuredClone(payloadUser)
   
   if (user?.profile) {
@@ -90,7 +80,7 @@ function getUserWithCorrectImageUrl(payloadUser: AuthContextType["user"]) {
   return user
 }
 
-export type AuthState<TUser = AuthUser | null> = {
+export type AuthState<TUser extends AuthUser | null = AuthUser | null> = {
   isLoading: boolean
   user: TUser extends AuthUser ? TUser : null
   isAuthenticated: TUser extends AuthUser ? true : false
@@ -117,23 +107,23 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case 'SET_USER':
       return {
-        ...state,
+        // ...state,
+        isLoading: false,
         user: getUserWithCorrectImageUrl(action.payload),
         isAuthenticated: true,
-        isLoading: false,
       }
     case 'LOGIN_SUCCESS':
       return {
         ...state,
-        isAuthenticated: true,
         isLoading: false,
+        isAuthenticated: true,
       }
     case 'LOGIN_FAILURE':
       return {
         ...state,
+        isLoading: false,
         user: null,
         isAuthenticated: false,
-        isLoading: false,
       }
     case 'LOGOUT':
       return {
@@ -151,12 +141,22 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
   }
 }
 
-type AuthProviderProps = PropsWithChildren<{
-  httpClient: ReturnType<typeof useProxy>['httpClient'],
-  user: AuthContextType['user']
-}>
+async function getMe(httpClient: ProxyContext) {
+  const userRepository = new UserRepository(new UserService(httpClient))
+  const resp = await userRepository.getMe()
 
-export function AuthProvider({ children, httpClient, user: userFromLoader }: AuthProviderProps) {
+  if (!resp.isSuccess) {
+    return null
+  }
+
+  return resp.value
+}
+
+export function useAuth(httpClient: ProxyContext): AuthContext {
+    const userRepository = new UserRepository(new UserService(httpClient))
+    const resp = await userRepository.getMe()
+  // const repository = new UserRepository(new UserService(httpClient))
+  // const userFromLoader = useLoaderData() as Exclude<Awaited<ReturnType<typeof baseLoader>>, Response>
   const authRepository = useMemo(() => new AuthRepository(new AuthService(httpClient)), [])
 
   const [{ user, isLoading, isAuthenticated }, dispatch] = useReducer(authReducer, {
@@ -206,21 +206,15 @@ export function AuthProvider({ children, httpClient, user: userFromLoader }: Aut
     }
   }, [userFromLoader])
   
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        isAuthenticated,
-        isClient: !!user?.roles?.includes('Client'),
-        isBarberShop: !!user?.roles?.includes('BarberShop'),
-        isAdmin: !!user?.roles?.includes('Admin'),
-        register,
-        login,
-        logout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  )
+  return {
+    user,
+    isLoading,
+    isAuthenticated,
+    isClient: !!user?.roles?.includes('Client'),
+    isBarberShop: !!user?.roles?.includes('BarberShop'),
+    isAdmin: !!user?.roles?.includes('Admin'),
+    register,
+    login,
+    logout,
+  }
 }
