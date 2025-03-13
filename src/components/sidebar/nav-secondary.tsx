@@ -1,6 +1,3 @@
-import * as React from "react"
-import { type LucideIcon } from "lucide-react"
-
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -8,26 +5,40 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Link } from "react-router-dom"
+import { Link } from "@tanstack/react-router"
+import { SidebarNavProps } from "./app-sidebar"
+import { BriefcaseBusinessIcon, ContactRoundIcon } from "lucide-react"
 
-export function NavSecondary({
-  items,
-  ...props
-}: {
-  items: {
-    title: string
-    url: string
-    icon: LucideIcon
-  }[]
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+function getItems(): SidebarNavProps[] {
+  return [
+    {
+      title: "Fale com a gente",
+      linkProps: {
+        to: '/contact',
+      },
+      icon: ContactRoundIcon,
+    },
+    {
+      title: "Trabalhe conosco",
+      linkProps: {
+        to: '/work-with-us',
+      },
+      icon: BriefcaseBusinessIcon,
+    },
+  ]
+}
+
+export function NavSecondary() {
+  const items = getItems()
+
   return (
-    <SidebarGroup {...props}>
+    <SidebarGroup className="mt-auto">
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild size="sm" tooltip={item.title}>
-                <Link to={item.url}>
+                <Link { ...item.linkProps }>
                   <item.icon />
                   <span>{item.title}</span>
                 </Link>

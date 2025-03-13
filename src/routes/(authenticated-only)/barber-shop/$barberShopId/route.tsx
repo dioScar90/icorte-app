@@ -11,7 +11,6 @@ export const Route = createFileRoute(
 )({
   component: RouteComponent,
   params: {
-    // parse: ({ barberShopId }) => ({ barberShopId: +barberShopId }),
     parse: (params) => schema.parse(params),
   }
 })

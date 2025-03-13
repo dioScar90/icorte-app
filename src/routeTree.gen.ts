@@ -11,8 +11,12 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as WorkWithUsImport } from './routes/work-with-us'
 import { Route as RegisterImport } from './routes/register'
 import { Route as LoginImport } from './routes/login'
+import { Route as ContactImport } from './routes/contact'
+import { Route as ChatImport } from './routes/chat'
+import { Route as BeProImport } from './routes/be-pro'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as authenticatedOnlyProfileRouteImport } from './routes/(authenticated-only)/profile/route'
@@ -28,6 +32,7 @@ import { Route as authenticatedOnlyAdminPopulateAppointmentsImport } from './rou
 import { Route as authenticatedOnlyAdminPopulateAllImport } from './routes/(authenticated-only)/admin/populate-all'
 import { Route as authenticatedOnlyAdminLastUsersImport } from './routes/(authenticated-only)/admin/last-users'
 import { Route as authenticatedOnlyAdminDashboardImport } from './routes/(authenticated-only)/admin/dashboard'
+import { Route as authenticatedOnlyProfileUserIdRouteImport } from './routes/(authenticated-only)/profile/$userId/route'
 import { Route as authenticatedOnlyBarberShopBarberShopIdRouteImport } from './routes/(authenticated-only)/barber-shop/$barberShopId/route'
 import { Route as authenticatedOnlyProfileUserIdIndexImport } from './routes/(authenticated-only)/profile/$userId/index'
 import { Route as authenticatedOnlyBarberShopBarberShopIdIndexImport } from './routes/(authenticated-only)/barber-shop/$barberShopId/index'
@@ -41,6 +46,12 @@ import { Route as authenticatedOnlyBarberScheduleDashboardAppointmentIdImport } 
 
 // Create/Update Routes
 
+const WorkWithUsRoute = WorkWithUsImport.update({
+  id: '/work-with-us',
+  path: '/work-with-us',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const RegisterRoute = RegisterImport.update({
   id: '/register',
   path: '/register',
@@ -50,6 +61,24 @@ const RegisterRoute = RegisterImport.update({
 const LoginRoute = LoginImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ContactRoute = ContactImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ChatRoute = ChatImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const BeProRoute = BeProImport.update({
+  id: '/be-pro',
+  path: '/be-pro',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -156,6 +185,13 @@ const authenticatedOnlyAdminDashboardRoute =
     getParentRoute: () => authenticatedOnlyAdminRouteRoute,
   } as any)
 
+const authenticatedOnlyProfileUserIdRouteRoute =
+  authenticatedOnlyProfileUserIdRouteImport.update({
+    id: '/$userId',
+    path: '/$userId',
+    getParentRoute: () => authenticatedOnlyProfileRouteRoute,
+  } as any)
+
 const authenticatedOnlyBarberShopBarberShopIdRouteRoute =
   authenticatedOnlyBarberShopBarberShopIdRouteImport.update({
     id: '/$barberShopId',
@@ -165,9 +201,9 @@ const authenticatedOnlyBarberShopBarberShopIdRouteRoute =
 
 const authenticatedOnlyProfileUserIdIndexRoute =
   authenticatedOnlyProfileUserIdIndexImport.update({
-    id: '/$userId/',
-    path: '/$userId/',
-    getParentRoute: () => authenticatedOnlyProfileRouteRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => authenticatedOnlyProfileUserIdRouteRoute,
   } as any)
 
 const authenticatedOnlyBarberShopBarberShopIdIndexRoute =
@@ -186,9 +222,9 @@ const authenticatedOnlyBarberScheduleDashboardIndexRoute =
 
 const authenticatedOnlyProfileUserIdEditRoute =
   authenticatedOnlyProfileUserIdEditImport.update({
-    id: '/$userId/edit',
-    path: '/$userId/edit',
-    getParentRoute: () => authenticatedOnlyProfileRouteRoute,
+    id: '/edit',
+    path: '/edit',
+    getParentRoute: () => authenticatedOnlyProfileUserIdRouteRoute,
   } as any)
 
 const authenticatedOnlyBarberShopBarberShopIdServicesRoute =
@@ -244,6 +280,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
+    '/be-pro': {
+      id: '/be-pro'
+      path: '/be-pro'
+      fullPath: '/be-pro'
+      preLoaderRoute: typeof BeProImport
+      parentRoute: typeof rootRoute
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatImport
+      parentRoute: typeof rootRoute
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -256,6 +313,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterImport
+      parentRoute: typeof rootRoute
+    }
+    '/work-with-us': {
+      id: '/work-with-us'
+      path: '/work-with-us'
+      fullPath: '/work-with-us'
+      preLoaderRoute: typeof WorkWithUsImport
       parentRoute: typeof rootRoute
     }
     '/(authenticated-only)/admin': {
@@ -292,6 +356,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/barber-shop/$barberShopId'
       preLoaderRoute: typeof authenticatedOnlyBarberShopBarberShopIdRouteImport
       parentRoute: typeof authenticatedOnlyBarberShopRouteImport
+    }
+    '/(authenticated-only)/profile/$userId': {
+      id: '/(authenticated-only)/profile/$userId'
+      path: '/$userId'
+      fullPath: '/profile/$userId'
+      preLoaderRoute: typeof authenticatedOnlyProfileUserIdRouteImport
+      parentRoute: typeof authenticatedOnlyProfileRouteImport
     }
     '/(authenticated-only)/admin/dashboard': {
       id: '/(authenticated-only)/admin/dashboard'
@@ -393,10 +464,10 @@ declare module '@tanstack/react-router' {
     }
     '/(authenticated-only)/profile/$userId/edit': {
       id: '/(authenticated-only)/profile/$userId/edit'
-      path: '/$userId/edit'
+      path: '/edit'
       fullPath: '/profile/$userId/edit'
       preLoaderRoute: typeof authenticatedOnlyProfileUserIdEditImport
-      parentRoute: typeof authenticatedOnlyProfileRouteImport
+      parentRoute: typeof authenticatedOnlyProfileUserIdRouteImport
     }
     '/(authenticated-only)/barber-schedule/dashboard/': {
       id: '/(authenticated-only)/barber-schedule/dashboard/'
@@ -414,10 +485,10 @@ declare module '@tanstack/react-router' {
     }
     '/(authenticated-only)/profile/$userId/': {
       id: '/(authenticated-only)/profile/$userId/'
-      path: '/$userId'
-      fullPath: '/profile/$userId'
+      path: '/'
+      fullPath: '/profile/$userId/'
       preLoaderRoute: typeof authenticatedOnlyProfileUserIdIndexImport
-      parentRoute: typeof authenticatedOnlyProfileRouteImport
+      parentRoute: typeof authenticatedOnlyProfileUserIdRouteImport
     }
   }
 }
@@ -520,17 +591,32 @@ const authenticatedOnlyBarberShopRouteRouteWithChildren =
     authenticatedOnlyBarberShopRouteRouteChildren,
   )
 
-interface authenticatedOnlyProfileRouteRouteChildren {
+interface authenticatedOnlyProfileUserIdRouteRouteChildren {
   authenticatedOnlyProfileUserIdEditRoute: typeof authenticatedOnlyProfileUserIdEditRoute
   authenticatedOnlyProfileUserIdIndexRoute: typeof authenticatedOnlyProfileUserIdIndexRoute
 }
 
-const authenticatedOnlyProfileRouteRouteChildren: authenticatedOnlyProfileRouteRouteChildren =
+const authenticatedOnlyProfileUserIdRouteRouteChildren: authenticatedOnlyProfileUserIdRouteRouteChildren =
   {
     authenticatedOnlyProfileUserIdEditRoute:
       authenticatedOnlyProfileUserIdEditRoute,
     authenticatedOnlyProfileUserIdIndexRoute:
       authenticatedOnlyProfileUserIdIndexRoute,
+  }
+
+const authenticatedOnlyProfileUserIdRouteRouteWithChildren =
+  authenticatedOnlyProfileUserIdRouteRoute._addFileChildren(
+    authenticatedOnlyProfileUserIdRouteRouteChildren,
+  )
+
+interface authenticatedOnlyProfileRouteRouteChildren {
+  authenticatedOnlyProfileUserIdRouteRoute: typeof authenticatedOnlyProfileUserIdRouteRouteWithChildren
+}
+
+const authenticatedOnlyProfileRouteRouteChildren: authenticatedOnlyProfileRouteRouteChildren =
+  {
+    authenticatedOnlyProfileUserIdRouteRoute:
+      authenticatedOnlyProfileUserIdRouteRouteWithChildren,
   }
 
 const authenticatedOnlyProfileRouteRouteWithChildren =
@@ -541,13 +627,18 @@ const authenticatedOnlyProfileRouteRouteWithChildren =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/be-pro': typeof BeProRoute
+  '/chat': typeof ChatRoute
+  '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/work-with-us': typeof WorkWithUsRoute
   '/admin': typeof authenticatedOnlyAdminRouteRouteWithChildren
   '/barber-schedule': typeof authenticatedOnlyBarberScheduleRouteRouteWithChildren
   '/barber-shop': typeof authenticatedOnlyBarberShopRouteRouteWithChildren
   '/profile': typeof authenticatedOnlyProfileRouteRouteWithChildren
   '/barber-shop/$barberShopId': typeof authenticatedOnlyBarberShopBarberShopIdRouteRouteWithChildren
+  '/profile/$userId': typeof authenticatedOnlyProfileUserIdRouteRouteWithChildren
   '/admin/dashboard': typeof authenticatedOnlyAdminDashboardRoute
   '/admin/last-users': typeof authenticatedOnlyAdminLastUsersRoute
   '/admin/populate-all': typeof authenticatedOnlyAdminPopulateAllRoute
@@ -565,14 +656,18 @@ export interface FileRoutesByFullPath {
   '/profile/$userId/edit': typeof authenticatedOnlyProfileUserIdEditRoute
   '/barber-schedule/dashboard': typeof authenticatedOnlyBarberScheduleDashboardIndexRoute
   '/barber-shop/$barberShopId/': typeof authenticatedOnlyBarberShopBarberShopIdIndexRoute
-  '/profile/$userId': typeof authenticatedOnlyProfileUserIdIndexRoute
+  '/profile/$userId/': typeof authenticatedOnlyProfileUserIdIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/be-pro': typeof BeProRoute
+  '/chat': typeof ChatRoute
+  '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/work-with-us': typeof WorkWithUsRoute
   '/admin': typeof authenticatedOnlyAdminRouteRouteWithChildren
   '/barber-schedule': typeof authenticatedOnlyBarberScheduleRouteRouteWithChildren
   '/barber-shop': typeof authenticatedOnlyBarberShopRouteRouteWithChildren
@@ -601,13 +696,18 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/be-pro': typeof BeProRoute
+  '/chat': typeof ChatRoute
+  '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/work-with-us': typeof WorkWithUsRoute
   '/(authenticated-only)/admin': typeof authenticatedOnlyAdminRouteRouteWithChildren
   '/(authenticated-only)/barber-schedule': typeof authenticatedOnlyBarberScheduleRouteRouteWithChildren
   '/(authenticated-only)/barber-shop': typeof authenticatedOnlyBarberShopRouteRouteWithChildren
   '/(authenticated-only)/profile': typeof authenticatedOnlyProfileRouteRouteWithChildren
   '/(authenticated-only)/barber-shop/$barberShopId': typeof authenticatedOnlyBarberShopBarberShopIdRouteRouteWithChildren
+  '/(authenticated-only)/profile/$userId': typeof authenticatedOnlyProfileUserIdRouteRouteWithChildren
   '/(authenticated-only)/admin/dashboard': typeof authenticatedOnlyAdminDashboardRoute
   '/(authenticated-only)/admin/last-users': typeof authenticatedOnlyAdminLastUsersRoute
   '/(authenticated-only)/admin/populate-all': typeof authenticatedOnlyAdminPopulateAllRoute
@@ -633,13 +733,18 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/be-pro'
+    | '/chat'
+    | '/contact'
     | '/login'
     | '/register'
+    | '/work-with-us'
     | '/admin'
     | '/barber-schedule'
     | '/barber-shop'
     | '/profile'
     | '/barber-shop/$barberShopId'
+    | '/profile/$userId'
     | '/admin/dashboard'
     | '/admin/last-users'
     | '/admin/populate-all'
@@ -657,13 +762,17 @@ export interface FileRouteTypes {
     | '/profile/$userId/edit'
     | '/barber-schedule/dashboard'
     | '/barber-shop/$barberShopId/'
-    | '/profile/$userId'
+    | '/profile/$userId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/be-pro'
+    | '/chat'
+    | '/contact'
     | '/login'
     | '/register'
+    | '/work-with-us'
     | '/admin'
     | '/barber-schedule'
     | '/barber-shop'
@@ -690,13 +799,18 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/be-pro'
+    | '/chat'
+    | '/contact'
     | '/login'
     | '/register'
+    | '/work-with-us'
     | '/(authenticated-only)/admin'
     | '/(authenticated-only)/barber-schedule'
     | '/(authenticated-only)/barber-shop'
     | '/(authenticated-only)/profile'
     | '/(authenticated-only)/barber-shop/$barberShopId'
+    | '/(authenticated-only)/profile/$userId'
     | '/(authenticated-only)/admin/dashboard'
     | '/(authenticated-only)/admin/last-users'
     | '/(authenticated-only)/admin/populate-all'
@@ -721,8 +835,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  BeProRoute: typeof BeProRoute
+  ChatRoute: typeof ChatRoute
+  ContactRoute: typeof ContactRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  WorkWithUsRoute: typeof WorkWithUsRoute
   authenticatedOnlyAdminRouteRoute: typeof authenticatedOnlyAdminRouteRouteWithChildren
   authenticatedOnlyBarberScheduleRouteRoute: typeof authenticatedOnlyBarberScheduleRouteRouteWithChildren
   authenticatedOnlyBarberShopRouteRoute: typeof authenticatedOnlyBarberShopRouteRouteWithChildren
@@ -732,8 +850,12 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  BeProRoute: BeProRoute,
+  ChatRoute: ChatRoute,
+  ContactRoute: ContactRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  WorkWithUsRoute: WorkWithUsRoute,
   authenticatedOnlyAdminRouteRoute:
     authenticatedOnlyAdminRouteRouteWithChildren,
   authenticatedOnlyBarberScheduleRouteRoute:
@@ -756,8 +878,12 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/be-pro",
+        "/chat",
+        "/contact",
         "/login",
         "/register",
+        "/work-with-us",
         "/(authenticated-only)/admin",
         "/(authenticated-only)/barber-schedule",
         "/(authenticated-only)/barber-shop",
@@ -770,11 +896,23 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.tsx"
     },
+    "/be-pro": {
+      "filePath": "be-pro.tsx"
+    },
+    "/chat": {
+      "filePath": "chat.tsx"
+    },
+    "/contact": {
+      "filePath": "contact.tsx"
+    },
     "/login": {
       "filePath": "login.tsx"
     },
     "/register": {
       "filePath": "register.tsx"
+    },
+    "/work-with-us": {
+      "filePath": "work-with-us.tsx"
     },
     "/(authenticated-only)/admin": {
       "filePath": "(authenticated-only)/admin/route.tsx",
@@ -806,8 +944,7 @@ export const routeTree = rootRoute
     "/(authenticated-only)/profile": {
       "filePath": "(authenticated-only)/profile/route.tsx",
       "children": [
-        "/(authenticated-only)/profile/$userId/edit",
-        "/(authenticated-only)/profile/$userId/"
+        "/(authenticated-only)/profile/$userId"
       ]
     },
     "/(authenticated-only)/barber-shop/$barberShopId": {
@@ -819,6 +956,14 @@ export const routeTree = rootRoute
         "/(authenticated-only)/barber-shop/$barberShopId/schedules",
         "/(authenticated-only)/barber-shop/$barberShopId/services",
         "/(authenticated-only)/barber-shop/$barberShopId/"
+      ]
+    },
+    "/(authenticated-only)/profile/$userId": {
+      "filePath": "(authenticated-only)/profile/$userId/route.tsx",
+      "parent": "/(authenticated-only)/profile",
+      "children": [
+        "/(authenticated-only)/profile/$userId/edit",
+        "/(authenticated-only)/profile/$userId/"
       ]
     },
     "/(authenticated-only)/admin/dashboard": {
@@ -879,7 +1024,7 @@ export const routeTree = rootRoute
     },
     "/(authenticated-only)/profile/$userId/edit": {
       "filePath": "(authenticated-only)/profile/$userId/edit.tsx",
-      "parent": "/(authenticated-only)/profile"
+      "parent": "/(authenticated-only)/profile/$userId"
     },
     "/(authenticated-only)/barber-schedule/dashboard/": {
       "filePath": "(authenticated-only)/barber-schedule/dashboard/index.tsx",
@@ -891,7 +1036,7 @@ export const routeTree = rootRoute
     },
     "/(authenticated-only)/profile/$userId/": {
       "filePath": "(authenticated-only)/profile/$userId/index.tsx",
-      "parent": "/(authenticated-only)/profile"
+      "parent": "/(authenticated-only)/profile/$userId"
     }
   }
 }
