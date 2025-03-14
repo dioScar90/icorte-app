@@ -42,24 +42,30 @@ declare module '@tanstack/history' {
   }
 }
 
+function App() {
+  const httpClient = useProxy()
+  const auth = useAuth(httpClient)
+
+  return (
+    <RouterProvider
+      router={router}
+      context={{
+        httpClient,
+        auth,
+      }}
+    />
+  )
+}
+
 const rootElement = document.getElementById('root')!
 
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
-
-  const httpClient = useProxy()
-  const auth = useAuth(httpClient)
   
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider
-          router={router}
-          context={{
-            httpClient,
-            auth,
-          }}
-        />
+        <App />
       </QueryClientProvider>
     </StrictMode>,
   )

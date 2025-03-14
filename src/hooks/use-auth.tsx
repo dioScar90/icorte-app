@@ -145,13 +145,13 @@ async function getMe(httpClient: ProxyContext) {
 }
 
 export function useAuth(httpClient: ProxyContext): AuthContext {
-  const service = new AuthService(httpClient)
-
   const [{ user, isLoading, isAuthenticated }, dispatch] = useReducer(authReducer, {
     user: null,
     isLoading: false,
     isAuthenticated: false,
   })
+  
+  const service = new AuthService(httpClient)
   
   async function register(...args: Parameters<typeof service.register>) {
     dispatch({ type: 'SET_LOADING' })

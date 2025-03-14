@@ -28,10 +28,10 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { Button } from "../ui/button"
-import { useAuth } from "@/providers/authProvider"
 import { useEffect, useState } from "react"
 import Swal from "sweetalert2"
-import { Link, useNavigate } from "@tanstack/react-router"
+import { Link, useNavigate, useRouteContext } from "@tanstack/react-router"
+import { AuthContext } from "@/hooks/use-auth"
 
 function getInfos(user: NonNullable<SidebarFooterItselfProps['user']>) {
   return {
@@ -44,7 +44,7 @@ function getInfos(user: NonNullable<SidebarFooterItselfProps['user']>) {
 }
 
 type SidebarFooterItselfProps =
-  & Pick<ReturnType<typeof useAuth>, 'user' | 'logout'>
+  & Pick<AuthContext, 'user' | 'logout'>
   & NavUserProps
 
 function SidebarFooterItself({ user: userFromUseAuth, logout, closeSidebar }: SidebarFooterItselfProps) {
@@ -183,7 +183,7 @@ type NavUserProps = {
 }
 
 export function NavUserFooter({ closeSidebar }: NavUserProps) {
-  const { isAuthenticated, ...rest } = useAuth()
+  const { isAuthenticated, ...rest } = useRouteContext({ from: '/', select: (s) => s.auth })
 
   if (!isAuthenticated) {
     return null

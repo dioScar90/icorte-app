@@ -16,12 +16,12 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import { Link } from "@tanstack/react-router"
+import { Link, useRouteContext } from "@tanstack/react-router"
 import { SidebarNavProps } from "./app-sidebar"
-import { AuthContextType, useAuth } from "@/providers/authProvider"
 import { useEffect, useState } from "react"
+import { AuthContext } from "@/hooks/use-auth"
 
-function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: AuthContextType) {
+function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: AuthContext) {
   const items: SidebarNavProps[] = []
 
   items.push({
@@ -155,7 +155,7 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: Aut
 }
 
 export function NavMain() {
-  const authInfos = useAuth()
+  const authInfos = useRouteContext({ from: '/', select: (s) => s.auth })
 
   const [items, setItems] = useState(getNavMainItemsToSidebar(authInfos))
 

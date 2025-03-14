@@ -1,10 +1,9 @@
-import { AuthRepository } from "@/data/repositories/AuthRepository"
 import { AuthService } from "@/data/services/AuthService"
 import { UserLoginZod, UserRegisterZod } from "@/schemas/user"
 import { UserMe } from "@/types/models/user"
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo, useReducer } from "react"
 import { useProxy } from "./proxyProvider"
-import { IAuthRepository } from "@/data/repositories/interfaces/IAuthRepository"
+import { IAuthService } from "@/data/services/interfaces/IAuthService"
 import { useLoaderData } from "react-router-dom"
 import { baseLoader } from "@/data/loaders/baseLoader"
 import { GenderEnum } from "@/schemas/profile"
@@ -25,9 +24,9 @@ export type AuthContextType<TUser extends AuthUser | null = AuthUser | null> = {
   isClient: TUser extends AuthUser ? boolean : false
   isBarberShop: TUser extends AuthUser ? boolean : false
   isAdmin: TUser extends AuthUser ? boolean : false
-  register: (data: UserRegisterZod) => ReturnType<IAuthRepository['register']>
-  login: (data: UserLoginZod) => ReturnType<IAuthRepository['login']>
-  logout: () => ReturnType<IAuthRepository['logout']>
+  register: (data: UserRegisterZod) => ReturnType<IAuthService['register']>
+  login: (data: UserLoginZod) => ReturnType<IAuthService['login']>
+  logout: () => ReturnType<IAuthService['logout']>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -157,7 +156,7 @@ type AuthProviderProps = PropsWithChildren<{
 }>
 
 export function AuthProvider({ children, httpClient, user: userFromLoader }: AuthProviderProps) {
-  const authRepository = useMemo(() => new AuthRepository(new AuthService(httpClient)), [])
+  const authService = useMemo(() => new AuthService(httpClient), [])
 
   const [{ user, isLoading, isAuthenticated }, dispatch] = useReducer(authReducer, {
     user: userFromLoader,
@@ -168,7 +167,7 @@ export function AuthProvider({ children, httpClient, user: userFromLoader }: Aut
   const register = async (data: UserRegisterZod) => {
     dispatch({ type: 'SET_LOADING' })
 
-    const result = await authRepository.register(data)
+    const result = await authService.register(data)
 
     if (result.isSuccess) {
       dispatch({ type: 'SET_USER', payload: result.value.item })
@@ -182,7 +181,7 @@ export function AuthProvider({ children, httpClient, user: userFromLoader }: Aut
   const login = async (data: UserLoginZod) => {
     dispatch({ type: 'SET_LOADING' })
 
-    const result = await authRepository.login(data)
+    const result = await authService.login(data)
 
     if (result.isSuccess) {
       dispatch({ type: 'LOGIN_SUCCESS' })
@@ -195,7 +194,7 @@ export function AuthProvider({ children, httpClient, user: userFromLoader }: Aut
 
   const logout = async () => {
     dispatch({ type: 'LOGOUT' })
-    return await authRepository.logout()
+    return await authService.logout()
   }
 
   useEffect(() => {
