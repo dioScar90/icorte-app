@@ -73,7 +73,7 @@ export class AdminService implements Interface {
       await this.httpClient.delete(url, getPassphraseAsCustomizedHeader(passphrase))
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
   
@@ -84,7 +84,7 @@ export class AdminService implements Interface {
       await this.httpClient.post(url, null, getPassphraseAsCustomizedHeader(passphrase))
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
   
@@ -95,7 +95,7 @@ export class AdminService implements Interface {
       await this.httpClient.post(url, null, getPassphraseAsCustomizedHeader(passphrase))
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
   
@@ -106,7 +106,7 @@ export class AdminService implements Interface {
       await this.httpClient.post(url, { email }, getPassphraseAsCustomizedHeader(passphrase))
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -117,7 +117,7 @@ export class AdminService implements Interface {
       const res = await this.httpClient.get(url)
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -128,7 +128,7 @@ export class AdminService implements Interface {
       const res = await this.httpClient.get(url)
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 }

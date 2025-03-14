@@ -11,7 +11,7 @@ export class AddressRepository implements IAddressRepository {
       const res = await this.service.createAddress(barberShopId, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -20,7 +20,7 @@ export class AddressRepository implements IAddressRepository {
       const res = await this.service.getAddress(barberShopId, id);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -29,7 +29,7 @@ export class AddressRepository implements IAddressRepository {
       await this.service.updateAddress(barberShopId, id, data);
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -38,7 +38,7 @@ export class AddressRepository implements IAddressRepository {
       await this.service.deleteAddress(barberShopId, id);
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 }

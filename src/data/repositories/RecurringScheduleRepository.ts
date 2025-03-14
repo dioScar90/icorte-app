@@ -12,7 +12,7 @@ export class RecurringScheduleRepository implements IRecurringScheduleRepository
       const res = await this.service.createRecurringSchedule(barberShopId, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -21,7 +21,7 @@ export class RecurringScheduleRepository implements IRecurringScheduleRepository
       const res = await this.service.getRecurringSchedule(barberShopId, dayOfWeek);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -30,7 +30,7 @@ export class RecurringScheduleRepository implements IRecurringScheduleRepository
       const res = await this.service.getAllRecurringSchedules(barberShopId);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -39,7 +39,7 @@ export class RecurringScheduleRepository implements IRecurringScheduleRepository
       await this.service.updateRecurringSchedule(barberShopId, dayOfWeek, data);
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -48,7 +48,7 @@ export class RecurringScheduleRepository implements IRecurringScheduleRepository
       await this.service.deleteRecurringSchedule(barberShopId, dayOfWeek);
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 }

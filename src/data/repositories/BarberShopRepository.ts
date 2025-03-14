@@ -11,7 +11,7 @@ export class BarberShopRepository implements IBarberShopRepository {
       const res = await this.service.createBarberShop(data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -20,7 +20,7 @@ export class BarberShopRepository implements IBarberShopRepository {
       const res = await this.service.getBarberShop(id);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
   
@@ -29,7 +29,7 @@ export class BarberShopRepository implements IBarberShopRepository {
       const res = await this.service.getAppointmentsByBarberShop(barberShopId, pag);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -38,7 +38,7 @@ export class BarberShopRepository implements IBarberShopRepository {
       await this.service.updateBarberShop(id, data);
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -47,7 +47,7 @@ export class BarberShopRepository implements IBarberShopRepository {
       await this.service.deleteBarberShop(id);
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 }

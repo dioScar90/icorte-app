@@ -1,12 +1,10 @@
-import { AuthRepository } from "@/data/repositories/AuthRepository"
 import { AuthService } from "@/data/services/AuthService"
 import { UserLoginZod, UserRegisterZod } from "@/schemas/user"
 import { UserMe } from "@/types/models/user"
 import { useEffect, useReducer, useLayoutEffect } from "react"
-import { IAuthRepository } from "@/data/repositories/interfaces/IAuthRepository"
+import { IAuthService } from "@/data/services/interfaces/IAuthService"
 import { GenderEnum } from "@/schemas/profile"
 import { ProxyContext } from "./use-proxy"
-import { UserRepository } from "@/data/repositories/UserRepository"
 import { UserService } from "@/data/services/UserService"
 
 export type AuthUser = {
@@ -25,9 +23,9 @@ export type AuthContext<TUser extends AuthUser | null = AuthUser | null> = {
   isClient: TUser extends AuthUser ? boolean : false
   isBarberShop: TUser extends AuthUser ? boolean : false
   isAdmin: TUser extends AuthUser ? boolean : false
-  register: (data: UserRegisterZod) => ReturnType<IAuthRepository['register']>
-  login: (data: UserLoginZod) => ReturnType<IAuthRepository['login']>
-  logout: () => ReturnType<IAuthRepository['logout']>
+  register: (data: UserRegisterZod) => ReturnType<IAuthService['register']>
+  login: (data: UserLoginZod) => ReturnType<IAuthService['login']>
+  logout: () => ReturnType<IAuthService['logout']>
 }
 
 function getRandomInt(seed?: number, isBarberShop?: boolean) {
@@ -140,14 +138,14 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 }
 
 async function getMe(httpClient: ProxyContext) {
-  const repository = new UserRepository(new UserService(httpClient))
-  const resp = await repository.getMe()
+  const service = new UserService(httpClient)
+  const resp = await service.getMe()
 
   return resp.isSuccess ? resp?.value : null
 }
 
 export function useAuth(httpClient: ProxyContext): AuthContext {
-  const repository = new AuthRepository(new AuthService(httpClient))
+  const service = new AuthService(httpClient)
 
   const [{ user, isLoading, isAuthenticated }, dispatch] = useReducer(authReducer, {
     user: null,
@@ -155,10 +153,10 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
     isAuthenticated: false,
   })
   
-  async function register(...args: Parameters<typeof repository.register>) {
+  async function register(...args: Parameters<typeof service.register>) {
     dispatch({ type: 'SET_LOADING' })
 
-    const result = await repository.register(...args)
+    const result = await service.register(...args)
 
     if (result.isSuccess) {
       dispatch({ type: 'SET_USER', payload: result.value.item })
@@ -169,10 +167,10 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
     return result
   }
 
-  async function login(...args: Parameters<typeof repository.login>) {
+  async function login(...args: Parameters<typeof service.login>) {
     dispatch({ type: 'SET_LOADING' })
 
-    const result = await repository.login(...args)
+    const result = await service.login(...args)
 
     if (result.isSuccess) {
       dispatch({ type: 'LOGIN_SUCCESS' })
@@ -185,7 +183,7 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
 
   async function logout() {
     dispatch({ type: 'LOGOUT' })
-    return await repository.logout()
+    return await service.logout()
   }
 
   useLayoutEffect(() => {

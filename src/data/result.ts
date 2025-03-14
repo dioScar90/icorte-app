@@ -35,8 +35,8 @@ export class Result<T = null> {
     return new Result(value)
   }
 
-  static Failure(error: Error) {
-    return new Result(null, error)
+  static Failure(error: unknown) {
+    return new Result(null, error instanceof Error ? error : new Error(String(error)))
   }
 }
 

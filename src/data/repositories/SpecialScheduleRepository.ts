@@ -12,7 +12,7 @@ export class SpecialScheduleRepository implements ISpecialScheduleRepository {
       const res = await this.service.createSpecialSchedule(barberShopId, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -21,7 +21,7 @@ export class SpecialScheduleRepository implements ISpecialScheduleRepository {
       const res = await this.service.getSpecialSchedule(barberShopId, date);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -30,7 +30,7 @@ export class SpecialScheduleRepository implements ISpecialScheduleRepository {
       const res = await this.service.getAllSpecialSchedules(barberShopId);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -39,7 +39,7 @@ export class SpecialScheduleRepository implements ISpecialScheduleRepository {
       await this.service.updateSpecialSchedule(barberShopId, date, data);
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -48,7 +48,7 @@ export class SpecialScheduleRepository implements ISpecialScheduleRepository {
       await this.service.deleteSpecialSchedule(barberShopId, date);
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 }

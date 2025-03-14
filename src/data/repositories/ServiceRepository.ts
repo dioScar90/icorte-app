@@ -11,7 +11,7 @@ export class ServiceRepository implements IServiceRepository {
       const res = await this.service.createService(barberShopId, data);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
   
@@ -20,7 +20,7 @@ export class ServiceRepository implements IServiceRepository {
       const res = await this.service.getService(barberShopId, serviceId);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -29,7 +29,7 @@ export class ServiceRepository implements IServiceRepository {
       const res = await this.service.getAllServices(barberShopId);
       return Result.Success(res.data)
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -38,7 +38,7 @@ export class ServiceRepository implements IServiceRepository {
       await this.service.updateService(barberShopId, serviceId, data);
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 
@@ -47,7 +47,7 @@ export class ServiceRepository implements IServiceRepository {
       await this.service.deleteService(barberShopId, serviceId);
       return Result.Success()
     } catch (err) {
-      return Result.Failure(err as Error)
+      return Result.Failure(err)
     }
   }
 }

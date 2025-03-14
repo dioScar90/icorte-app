@@ -1,50 +1,74 @@
-import { UserEmailUpdateZod, UserPasswordUpdateZod, UserPhoneNumberUpdateZod } from "@/schemas/user"
-import { UserMe } from "@/types/models/user"
-import { IUserService } from "./interfaces/IUserService"
-import { AxiosInstance } from "axios"
+import type { IUserService as Interface } from "./interfaces/IUserService"
+import { ProxyContext } from "@/hooks/use-proxy"
+import { Result } from "../result"
 
-enum UrlType {
-  GET_ME = 'me',
-  CHANGE_EMAIL = 'changeEmail',
-  CHANGE_PASSWORD = 'changePassword',
-  CHANGE_PHONE_NUMBER = 'changePhoneNumber',
-}
+type UrlType = [
+  'me',
+  'changeEmail',
+  'changePassword',
+  'changePhoneNumber',
+][number]
 
 function getUrl(final?: UrlType) {
   const baseEndpoint = `/user`
-
-  if (!final) {
-    return `${baseEndpoint}`
-  }
-
-  return `${baseEndpoint}/${final}`
+  return !final ? baseEndpoint : `${baseEndpoint}/${final}`
 }
 
-export class UserService implements IUserService {
-  constructor(private readonly httpClient: AxiosInstance) { }
+export class UserService implements Interface {
+  constructor(private readonly httpClient: ProxyContext) { }
 
-  async getMe() {
-    const url = getUrl(UrlType.GET_ME)
-    return await this.httpClient.get<UserMe>(url)
+  getMe: Interface['getMe'] = async () => {
+    const url = getUrl('me')
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
+  }
+  
+  changeEmail: Interface['changeEmail'] = async (data) => {
+    const url = getUrl('changeEmail')
+    
+    try {
+      await this.httpClient.patch(url, { ...data })
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
+  }
+  
+  changePassword: Interface['changePassword'] = async (data) => {
+    const url = getUrl('changePassword')
+    
+    try {
+      await this.httpClient.patch(url, { ...data })
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
+  }
+  
+  changePhoneNumber: Interface['changePhoneNumber'] = async (data) => {
+    const url = getUrl('changePhoneNumber')
+    
+    try {
+      await this.httpClient.patch(url, { ...data })
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async changeEmail(data: UserEmailUpdateZod) {
-    const url = getUrl(UrlType.CHANGE_EMAIL)
-    return await this.httpClient.patch(url, { ...data })
-  }
-
-  async changePassword(data: UserPasswordUpdateZod) {
-    const url = getUrl(UrlType.CHANGE_PASSWORD)
-    return await this.httpClient.patch(url, { ...data })
-  }
-
-  async changePhoneNumber(data: UserPhoneNumberUpdateZod) {
-    const url = getUrl(UrlType.CHANGE_PHONE_NUMBER)
-    return await this.httpClient.patch(url, { ...data })
-  }
-
-  async delete() {
+  delete: Interface['delete'] = async () => {
     const url = getUrl()
-    return await this.httpClient.delete(url)
+    
+    try {
+      await this.httpClient.delete(url)
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 }

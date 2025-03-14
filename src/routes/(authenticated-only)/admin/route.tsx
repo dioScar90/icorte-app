@@ -48,16 +48,16 @@ export const Route = createFileRoute(
       })
     }
     
-    const repository = new AdminService(context.httpClient)
+    const service = new AdminService(context.httpClient)
     
     return {
       admin: {
-        removeAll: repository.removeAll,
-        populateAll: repository.populateAll,
-        popAppointments: repository.populateWithAppointments,
-        resetPassword: repository.resetPasswordForSomeUser,
-        searchByName: repository.searchUserByName,
-        getLastUsers: repository.getLastUsers,
+        removeAll: service.removeAll,
+        populateAll: service.populateAll,
+        popAppointments: service.populateWithAppointments,
+        resetPassword: service.resetPasswordForSomeUser,
+        searchByName: service.searchUserByName,
+        getLastUsers: service.getLastUsers,
         baseAdminSchema,
         appointmentsAdminSchema,
         resetPasswordSchema,
