@@ -1,7 +1,7 @@
 import { SpecialScheduleZod } from "@/schemas/specialSchedule";
-import { ISpecialScheduleService } from "./interfaces/ISpecialScheduleService";
+import { ISpecialScheduleService as Interface } from "./interfaces/ISpecialScheduleService";
 import { DateOnly } from "@/utils/types/date";
-import { AxiosInstance } from "axios";
+import { ProxyContext } from "@/hooks/use-proxy";
 
 function getUrl(barberShopId: number, date?: DateOnly) {
   const baseEndpoint = `/barber-shop/${barberShopId}/special-schedule`
@@ -13,8 +13,8 @@ function getUrl(barberShopId: number, date?: DateOnly) {
   return `${baseEndpoint}/${date}`
 }
 
-export class SpecialScheduleService implements ISpecialScheduleService {
-  constructor(private readonly httpClient: AxiosInstance) { }
+export class SpecialScheduleService implements Interface {
+  constructor(private readonly httpClient: ProxyContext) { }
 
   async createSpecialSchedule(barberShopId: number, data: SpecialScheduleZod) {
     const url = getUrl(barberShopId)

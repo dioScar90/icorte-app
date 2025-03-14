@@ -1,16 +1,10 @@
-import { BarberShopZod } from "@/schemas/barberShop";
-import { IBarberShopService } from "./interfaces/IBarberShopService";
-import { AxiosInstance } from "axios";
-import { Pagination } from "../result";
+import { IBarberShopService as Interface } from "./interfaces/IBarberShopService";
+import { Pagination, Result } from "../result";
+import { ProxyContext } from "@/hooks/use-proxy";
 
 function getUrl(id?: number, appointments?: boolean) {
   const baseEndpoint = `/barber-shop`
-
-  if (!id) {
-    return baseEndpoint
-  }
-  
-  return `${baseEndpoint}/${id}` + (appointments ? '/appointments' : '')
+  return !id ? baseEndpoint : `${baseEndpoint}/${id}${appointments ? '/appointments' : ''}`
 }
 
 function getQueryParams(pag?: Pagination) {
@@ -37,31 +31,61 @@ function getQueryParams(pag?: Pagination) {
   return '?' + searchParams.toString()
 }
 
-export class BarberShopService implements IBarberShopService {
-  constructor(private readonly httpClient: AxiosInstance) {}
+export class BarberShopService implements Interface {
+  constructor(private readonly httpClient: ProxyContext) {}
 
-  async createBarberShop(data: BarberShopZod) {
+  createBarberShop: Interface['createBarberShop'] = async (data) => {
     const url = getUrl()
-    return await this.httpClient.post(url, { ...data })
+    
+    try {
+      const res = await this.httpClient.post(url, { ...data })
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async getBarberShop(id: number) {
+  getBarberShop: Interface['getBarberShop'] = async (id) => {
     const url = getUrl(id)
-    return await this.httpClient.get(url)
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async getAppointmentsByBarberShop(barberShopId: number, pag?: Pagination) {
+  getAppointmentsByBarberShop: Interface['getAppointmentsByBarberShop'] = async (barberShopId, pag) => {
     const url = getUrl(barberShopId, true) + getQueryParams(pag)
-    return await this.httpClient.get(url)
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async updateBarberShop(id: number, data: BarberShopZod) {
+  updateBarberShop: Interface['updateBarberShop'] = async (id, data) => {
     const url = getUrl(id)
-    return await this.httpClient.put(url, { ...data })
+    
+    try {
+      await this.httpClient.put(url, { ...data })
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async deleteBarberShop(id: number) {
+  deleteBarberShop: Interface['deleteBarberShop'] = async (id) => {
     const url = getUrl(id)
-    return await this.httpClient.delete(url)
+    
+    try {
+      await this.httpClient.delete(url)
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 }

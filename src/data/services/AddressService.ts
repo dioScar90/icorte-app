@@ -1,37 +1,56 @@
-import { AddressZod } from "@/schemas/address";
-import { IAddressService } from "./interfaces/IAddressService";
-import { AxiosInstance } from "axios";
+import { Result } from "../result";
+import { IAddressService as Interface } from "./interfaces/IAddressService";
+import { ProxyContext } from "@/hooks/use-proxy";
 
 function getUrl(barberShopId: number, id?: number) {
   const baseEndpoint = `/barber-shop/${barberShopId}/address`
-
-  if (!id) {
-    return baseEndpoint
-  }
-  
-  return `${baseEndpoint}/${id}`
+  return !id ? baseEndpoint : `${baseEndpoint}/${id}`
 }
 
-export class AddressService implements IAddressService {
-  constructor(private readonly httpClient: AxiosInstance) {}
+export class AddressService implements Interface {
+  constructor(private readonly httpClient: ProxyContext) {}
   
-  async createAddress(barberShopId: number, data: AddressZod) {
+  createAddress: Interface['createAddress'] = async (barberShopId, data) => {
     const url = getUrl(barberShopId)
-    return await this.httpClient.post(url, { ...data })
+    
+    try {
+      const res = await this.httpClient.post(url, { ...data })
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async getAddress(barberShopId: number, id: number) {
+  getAddress: Interface['getAddress'] = async (barberShopId, id) => {
     const url = getUrl(barberShopId, id)
-    return await this.httpClient.get(url)
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async updateAddress(barberShopId: number, id: number, data: AddressZod) {
+  updateAddress: Interface['updateAddress'] = async (barberShopId, id, data) => {
     const url = getUrl(barberShopId, id)
-    return await this.httpClient.put(url, { ...data })
+    
+    try {
+      await this.httpClient.put(url, { ...data })
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async deleteAddress(barberShopId: number, id: number) {
+  deleteAddress: Interface['deleteAddress'] = async (barberShopId, id) => {
     const url = getUrl(barberShopId, id)
-    return await this.httpClient.delete(url)
+    
+    try {
+      await this.httpClient.delete(url)
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 }

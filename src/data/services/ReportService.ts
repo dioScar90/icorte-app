@@ -1,42 +1,67 @@
-import { ReportZod } from "@/schemas/report";
-import { IReportService } from "./interfaces/IReportService";
-import { AxiosInstance } from "axios";
+import { Result } from "../result";
+import { IReportService as Interface } from "./interfaces/IReportService";
+import { ProxyContext } from "@/hooks/use-proxy";
 
 function getUrl(barberShopId: number, id?: number) {
   const baseEndpoint = `/barber-shop/${barberShopId}/report`
-
-  if (!id) {
-    return baseEndpoint
-  }
-  
-  return `${baseEndpoint}/${id}`
+  return !id ? baseEndpoint : `${baseEndpoint}/${id}`
 }
 
-export class ReportService implements IReportService {
-  constructor(private readonly httpClient: AxiosInstance) {}
+export class ReportService implements Interface {
+  constructor(private readonly httpClient: ProxyContext) {}
   
-  async createReport(barberShopId: number, data: ReportZod) {
+  createReport: Interface['createReport'] = async (barberShopId, data) => {
     const url = getUrl(barberShopId)
-    return await this.httpClient.post(url, { ...data })
+
+    try {
+      const res = await this.httpClient.post(url, { ...data })
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async getReport(barberShopId: number, id: number) {
+  getReport: Interface['getReport'] = async (barberShopId, id) => {
     const url = getUrl(barberShopId, id)
-    return await this.httpClient.get(url)
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async getAllReports(barberShopId: number) {
+  getAllReports: Interface['getAllReports'] = async (barberShopId) => {
     const url = getUrl(barberShopId)
-    return await this.httpClient.get(url)
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async updateReport(barberShopId: number, id: number, data: ReportZod) {
+  updateReport: Interface['updateReport'] = async (barberShopId, id, data) => {
     const url = getUrl(barberShopId, id)
-    return await this.httpClient.put(url, { ...data })
+    
+    try {
+      await this.httpClient.put(url, { ...data })
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async deleteReport(barberShopId: number, id: number) {
+  deleteReport: Interface['deleteReport'] = async (barberShopId, id) => {
     const url = getUrl(barberShopId, id)
-    return await this.httpClient.delete(url)
+    
+    try {
+      await this.httpClient.delete(url)
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 }

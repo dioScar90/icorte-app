@@ -1,23 +1,24 @@
 import { DateOnly } from "@/utils/types/date";
-import { IBarberScheduleService } from "./interfaces/IBarberScheduleService";
-import { AxiosInstance } from "axios";
+import { IBarberScheduleService as Interface } from "./interfaces/IBarberScheduleService";
+import { ProxyContext } from "@/hooks/use-proxy";
+import { Result } from "../result";
 
-enum strBeforeDateEnum {
-  DATES = 'dates',
-  SLOTS = 'slots',
-  SERVICES = 'services',
-}
+type StrBeforeDateEnum = [
+  'dates',
+  'slots',
+  'services',
+][number]
 
 type GetUrlProps = {
   date?: DateOnly
-  beforeDate?: strBeforeDateEnum
+  beforeDate?: StrBeforeDateEnum
   barberShopId?: number
 }
 
 function getUrl({ date, beforeDate, barberShopId }: GetUrlProps) {
   const baseEndpoint = `/barber-schedule`
 
-  if (beforeDate === strBeforeDateEnum.SERVICES) {
+  if (beforeDate === 'services') {
     return `${baseEndpoint}/${beforeDate}`
   }
   
@@ -62,26 +63,50 @@ function getQueryParams(params?: QueryParamsType) {
   return '?' + searchParams.toString()
 }
 
-export class BarberScheduleService implements IBarberScheduleService {
-  constructor(private readonly httpClient: AxiosInstance) { }
+export class BarberScheduleService implements Interface {
+  constructor(private readonly httpClient: ProxyContext) { }
   
-  async getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateOnly) {
-    const url = getUrl({ date: dateOfWeek, beforeDate: strBeforeDateEnum.DATES, barberShopId })
-    return await this.httpClient.get(url)
+  getAvailableDatesForBarber: Interface['getAvailableDatesForBarber'] = async (barberShopId, dateOfWeek) => {
+    const url = getUrl({ date: dateOfWeek, beforeDate: 'dates', barberShopId })
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
   
-  async getAvailableSlots(barberShopId: number, date: DateOnly, serviceIds: number[]) {
-    const url = getUrl({ date, beforeDate: strBeforeDateEnum.SLOTS, barberShopId }) + getQueryParams({ serviceIds })
-    return await this.httpClient.get(url)
+  getAvailableSlots: Interface['getAvailableSlots'] = async (barberShopId, date, serviceIds) => {
+    const url = getUrl({ date, beforeDate: 'slots', barberShopId }) + getQueryParams({ serviceIds })
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
   
-  async getTopBarbersWithAvailability(dateOfWeek: DateOnly) {
+  getTopBarbersWithAvailability: Interface['getTopBarbersWithAvailability'] = async (dateOfWeek) => {
     const url = getUrl({ date: dateOfWeek })
-    return await this.httpClient.get(url)
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async searchServicesByNameAsync(q: string) {
-    const url = getUrl({ beforeDate: strBeforeDateEnum.SERVICES }) + getQueryParams({ q })
-    return await this.httpClient.get(url)
+  searchServicesByNameAsync: Interface['searchServicesByNameAsync'] = async (q) => {
+    const url = getUrl({ beforeDate: 'services' }) + getQueryParams({ q })
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 }

@@ -1,50 +1,75 @@
-import { ServiceZod } from "@/schemas/service";
-import { IServiceService } from "./interfaces/IServiceService";
-import { AxiosInstance } from "axios";
+import { IServiceService as Interface } from "./interfaces/IServiceService";
 import { getBrlMoneyIntoFloat } from "@/schemas/sharedValidators/brlMoney";
+import { ProxyContext } from "@/hooks/use-proxy";
+import { Result } from "../result";
 
 function getUrl(barberShopId: number, id?: number) {
   const baseEndpoint = `/barber-shop/${barberShopId}/service`
-
-  if (!id) {
-    return baseEndpoint
-  }
-  
-  return `${baseEndpoint}/${id}`
+  return !id ? baseEndpoint : `${baseEndpoint}/${id}`
 }
 
-function getDataWithPriceIntoFloat(data: ServiceZod) {
+function getDataWithPriceIntoFloat(data: Parameters<Interface['createService']>[1]) {
   return {
     ...data,
     price: getBrlMoneyIntoFloat(data.price),
   }
 }
 
-export class ServiceService implements IServiceService {
-  constructor(private readonly httpClient: AxiosInstance) {}
+export class ServiceService implements Interface {
+  constructor(private readonly httpClient: ProxyContext) {}
   
-  async createService(barberShopId: number, data: ServiceZod) {
+  createService: Interface['createService'] = async (barberShopId, data) => {
     const url = getUrl(barberShopId)
-    return await this.httpClient.post(url, { ...getDataWithPriceIntoFloat(data) })
+    
+    try {
+      const res = await this.httpClient.post(url, { ...getDataWithPriceIntoFloat(data) })
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async getService(barberShopId: number, serviceId: number) {
+  getService: Interface['getService'] = async (barberShopId, serviceId) => {
     const url = getUrl(barberShopId, serviceId)
-    return await this.httpClient.get(url)
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async getAllServices(barberShopId: number) {
+  getAllServices: Interface['getAllServices'] = async (barberShopId) => {
     const url = getUrl(barberShopId)
-    return await this.httpClient.get(url)
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async updateService(barberShopId: number, serviceId: number, data: ServiceZod) {
+  updateService: Interface['updateService'] = async (barberShopId, serviceId, data) => {
     const url = getUrl(barberShopId, serviceId)
-    return await this.httpClient.put(url, { ...getDataWithPriceIntoFloat(data) })
+    
+    try {
+      await this.httpClient.put(url, { ...getDataWithPriceIntoFloat(data) })
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async deleteService(barberShopId: number, serviceId: number) {
+  deleteService: Interface['deleteService'] = async (barberShopId, serviceId) => {
     const url = getUrl(barberShopId, serviceId)
-    return await this.httpClient.delete(url)
+    
+    try {
+      await this.httpClient.delete(url)
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 }
