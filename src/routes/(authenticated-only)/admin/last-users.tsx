@@ -19,7 +19,7 @@ export const Route = createFileRoute(
     lastUsersQueryOptions: (init?: number) =>
       queryOptions({
         queryKey: [location.pathname, { take: init ?? search?.take }],
-        queryFn: () => context.getLastUsers(init ?? search?.take)
+        queryFn: () => context.admin.getLastUsers(init ?? search?.take)
           .then(resp => resp)
           .then(resp => {
             if (!resp.isSuccess) {
@@ -46,7 +46,7 @@ export const Route = createFileRoute(
 })
 
 function RouteComponent() {
-  const { lastUsersQueryOptions } = Route.useRouteContext()
+  const lastUsersQueryOptions = Route.useRouteContext(({ select: (s) => s.lastUsersQueryOptions }))
 
   const navigate = useNavigate({ from: Route.fullPath })
   const search = Route.useSearch()

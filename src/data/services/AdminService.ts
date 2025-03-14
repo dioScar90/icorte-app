@@ -1,15 +1,16 @@
-import { AppointmentsAdminZod, BaseAdminZod, ResetPasswordZod } from "@/components/layouts/admin-layout";
-import { IAdminService } from "./interfaces/IAdminService";
-import { AxiosInstance } from "axios";
+// import { AppointmentsAdminZod, BaseAdminZod, ResetPasswordZod } from "@/components/layouts/admin-layout";
+import type { IAdminService as Interface } from "./interfaces/IAdminService";
+import { Result } from "../result";
+import { ProxyContext } from "@/hooks/use-proxy";
 
-enum UrlType {
-  RemoveAll = 'remove-all',
-  PopulateAll = 'populate-all',
-  Appointments = 'populate-appointments',
-  ResetPassword = 'reset-password',
-  SearchByName = 'search-users',
-  GetLastUsers = 'last-users',
-}
+type UrlType = [
+  'remove-all',
+  'populate-all',
+  'populate-appointments',
+  'reset-password',
+  'search-users',
+  'last-users',
+][number]
 
 function getUrl(type: UrlType) {
   const baseEndpoint = `/admin`
@@ -62,36 +63,72 @@ function getPassphraseAsCustomizedHeader(passphrase: string) {
   }
 }
 
-export class AdminService implements IAdminService {
-  constructor(private readonly httpClient: AxiosInstance) { }
+export class AdminService implements Interface {
+  constructor(private readonly httpClient: ProxyContext) { }
   
-  async removeAll({ passphrase, evenMasterAdmin }: BaseAdminZod) {
-    const url = getUrl(UrlType.RemoveAll) + getQueryParams({ evenMasterAdmin })
-    return await this.httpClient.delete(url, getPassphraseAsCustomizedHeader(passphrase))
+  removeAll: Interface['removeAll'] = async ({ passphrase, evenMasterAdmin }) => {
+    const url = getUrl('remove-all') + getQueryParams({ evenMasterAdmin })
+
+    try {
+      await this.httpClient.delete(url, getPassphraseAsCustomizedHeader(passphrase))
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
   }
   
-  async populateAll({ passphrase }: BaseAdminZod) {
-    const url = getUrl(UrlType.PopulateAll)
-    return await this.httpClient.post(url, null, getPassphraseAsCustomizedHeader(passphrase))
+  populateAll: Interface['populateAll'] = async ({ passphrase }) => {
+    const url = getUrl('populate-all')
+    
+    try {
+      await this.httpClient.post(url, null, getPassphraseAsCustomizedHeader(passphrase))
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
   }
   
-  async populateWithAppointments({ passphrase, firstDate, limitDate }: AppointmentsAdminZod) {
-    const url = getUrl(UrlType.Appointments) + getQueryParams({ firstDate, limitDate })
-    return await this.httpClient.post(url, null, getPassphraseAsCustomizedHeader(passphrase))
+  populateWithAppointments: Interface['populateWithAppointments'] = async ({ passphrase, ...rest }) => {
+    const url = getUrl('populate-appointments') + getQueryParams(rest)
+    
+    try {
+      await this.httpClient.post(url, null, getPassphraseAsCustomizedHeader(passphrase))
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
   }
   
-  async resetPasswordForSomeUser({ passphrase, email }: ResetPasswordZod) {
-    const url = getUrl(UrlType.ResetPassword)
-    return await this.httpClient.post(url, { email }, getPassphraseAsCustomizedHeader(passphrase))
+  resetPasswordForSomeUser: Interface['resetPasswordForSomeUser'] = async ({ passphrase, email }) => {
+    const url = getUrl('reset-password')
+    
+    try {
+      await this.httpClient.post(url, { email }, getPassphraseAsCustomizedHeader(passphrase))
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
   }
 
-  async searchUserByName(q: string) {
-    const url = getUrl(UrlType.SearchByName) + getQueryParams({ q })
-    return await this.httpClient.get(url)
+  searchUserByName: Interface['searchUserByName'] = async (q) => {
+    const url = getUrl('search-users') + getQueryParams({ q })
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
   }
 
-  async getLastUsers(take?: number) {
-    const url = getUrl(UrlType.GetLastUsers) + getQueryParams({ take })
-    return await this.httpClient.get(url)
+  getLastUsers: Interface['getLastUsers'] = async (take) => {
+    const url = getUrl('last-users') + getQueryParams({ take })
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err as Error)
+    }
   }
 }

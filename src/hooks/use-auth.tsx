@@ -2,12 +2,10 @@ import { AuthRepository } from "@/data/repositories/AuthRepository"
 import { AuthService } from "@/data/services/AuthService"
 import { UserLoginZod, UserRegisterZod } from "@/schemas/user"
 import { UserMe } from "@/types/models/user"
-import { useEffect, useMemo, useReducer, use } from "react"
+import { useEffect, useReducer, useLayoutEffect } from "react"
 import { IAuthRepository } from "@/data/repositories/interfaces/IAuthRepository"
-import { useLoaderData } from "react-router-dom"
-import { baseLoader } from "@/data/loaders/baseLoader"
 import { GenderEnum } from "@/schemas/profile"
-import { ProxyContext, useProxy } from "./use-proxy"
+import { ProxyContext } from "./use-proxy"
 import { UserRepository } from "@/data/repositories/UserRepository"
 import { UserService } from "@/data/services/UserService"
 
@@ -142,33 +140,25 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 }
 
 async function getMe(httpClient: ProxyContext) {
-  const userRepository = new UserRepository(new UserService(httpClient))
-  const resp = await userRepository.getMe()
+  const repository = new UserRepository(new UserService(httpClient))
+  const resp = await repository.getMe()
 
-  if (!resp.isSuccess) {
-    return null
-  }
-
-  return resp.value
+  return resp.isSuccess ? resp?.value : null
 }
 
 export function useAuth(httpClient: ProxyContext): AuthContext {
-    const userRepository = new UserRepository(new UserService(httpClient))
-    const resp = await userRepository.getMe()
-  // const repository = new UserRepository(new UserService(httpClient))
-  // const userFromLoader = useLoaderData() as Exclude<Awaited<ReturnType<typeof baseLoader>>, Response>
-  const authRepository = useMemo(() => new AuthRepository(new AuthService(httpClient)), [])
+  const repository = new AuthRepository(new AuthService(httpClient))
 
   const [{ user, isLoading, isAuthenticated }, dispatch] = useReducer(authReducer, {
-    user: userFromLoader,
+    user: null,
     isLoading: false,
-    isAuthenticated: !!userFromLoader,
+    isAuthenticated: false,
   })
   
-  const register = async (data: UserRegisterZod) => {
+  async function register(...args: Parameters<typeof repository.register>) {
     dispatch({ type: 'SET_LOADING' })
 
-    const result = await authRepository.register(data)
+    const result = await repository.register(...args)
 
     if (result.isSuccess) {
       dispatch({ type: 'SET_USER', payload: result.value.item })
@@ -179,10 +169,10 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
     return result
   }
 
-  const login = async (data: UserLoginZod) => {
+  async function login(...args: Parameters<typeof repository.login>) {
     dispatch({ type: 'SET_LOADING' })
 
-    const result = await authRepository.login(data)
+    const result = await repository.login(...args)
 
     if (result.isSuccess) {
       dispatch({ type: 'LOGIN_SUCCESS' })
@@ -193,18 +183,30 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
     return result
   }
 
-  const logout = async () => {
+  async function logout() {
     dispatch({ type: 'LOGOUT' })
-    return await authRepository.logout()
+    return await repository.logout()
   }
 
+  useLayoutEffect(() => {
+    getMe(httpClient)
+      .then(user => {
+        if (user) {
+          dispatch({ type: 'SET_USER', payload: user })
+        } else {
+          dispatch({ type: 'LOGOUT' })
+        }
+      })
+      .catch(() => dispatch({ type: 'LOGIN_FAILURE' }))
+  }, [httpClient])
+
   useEffect(() => {
-    if (userFromLoader) {
-      dispatch({ type: 'SET_USER', payload: userFromLoader })
+    if (user) {
+      dispatch({ type: 'SET_USER', payload: user })
     } else {
       dispatch({ type: 'LOGOUT' })
     }
-  }, [userFromLoader])
+  }, [user])
   
   return {
     user,

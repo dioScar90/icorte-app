@@ -1,8 +1,7 @@
-import { createRootRouteWithContext, Outlet, useLocation, useNavigate, useRouterState } from '@tanstack/react-router'
+import { createRootRouteWithContext, Outlet, redirect, useLocation, useNavigate, useRouterState } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import indexCss from '@/index.css?url'
 import { seo } from '@/utils/seo'
-// import { AuthProvider } from '@/providers/authProvider'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/sidebar/app-sidebar'
 import { NavbarHeader } from '@/components/sidebar/navbar-header'
@@ -13,15 +12,16 @@ import Swal from 'sweetalert2'
 import type { HandleError } from '@/providers/handleErrorProvider'
 import type { QueryClient } from '@tanstack/react-query'
 import { ProxyContext } from '@/hooks/use-proxy'
-import { UserRepository } from '@/data/repositories/UserRepository'
-import { UserService } from '@/data/services/UserService'
-import { AuthProvider } from '@/providers/authProvider'
+// import { AuthProvider } from '@/providers/authProvider'
 import { ThemeProvider } from '@/components/theme-provider'
+import { cn } from '@/lib/utils'
+import { AuthContext } from '@/hooks/use-auth'
 
 export type RouterAppContext = {
   httpClient: ProxyContext,
   handleError: HandleError,
   queryClient: QueryClient,
+  auth: AuthContext,
 }
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
@@ -53,19 +53,25 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       },
     ],
   }),
-  beforeLoad: async ({ context }) => {
-    const userRepository = new UserRepository(new UserService(context.httpClient))
-    const resp = await userRepository.getMe()
+  beforeLoad: async ({ context, location }) => {
+    function goHome() {
+      throw redirect({
+        to: '/',
+        replace: true,
+      })
+    }
+
+    const unauthenticatedOnly = location.pathname === '/login' || location.pathname === '/register'
     
-    return {
-      user: resp.isSuccess ? resp.value : null,
+    if (context.auth.isAuthenticated && unauthenticatedOnly) {
+      goHome()
     }
   },
   component: RootComponent,
 })
 
 function MainProviders({ children }: PropsWithChildren) {
-  const auth = Route.useRouteContext({ select: ({ httpClient, user }) => ({ httpClient, user }) })
+  // const auth = Route.useRouteContext({ select: ({ httpClient, user }) => ({ httpClient, user }) })
 
   const theme = {
     defaultTheme: 'dark',
@@ -74,9 +80,9 @@ function MainProviders({ children }: PropsWithChildren) {
 
   return (
     <ThemeProvider { ...theme }>
-      <AuthProvider { ...auth }>
+      {/* <AuthProvider { ...auth }> */}
         {children}
-      </AuthProvider>
+      {/* </AuthProvider> */}
     </ThemeProvider>
   )
 }
@@ -91,7 +97,13 @@ function MainBody() {
       <SidebarInset> {/* Here is the <main> tag */}
         <NavbarHeader />
 
-        <section role="main" className={`main-container ${isLoading && 'loading-new-page'}`}>
+        <section
+          role="main"
+          className={cn(
+            'main-container',
+            isLoading && 'loading-new-page'
+          )}
+        >
           <div className="before-outlet">
             <Outlet />
           </div>

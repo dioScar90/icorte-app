@@ -1,6 +1,6 @@
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/providers/authProvider";
+// import { useAuth } from "@/providers/authProvider";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarIcon, LogInIcon, ScissorsIcon, StoreIcon, UserIcon, UserRoundPlusIcon } from "lucide-react";
 
@@ -9,7 +9,7 @@ export const Route = createFileRoute('/')({
 })
 
 function Index() {
-  const { isAuthenticated, isBarberShop, user } = useAuth()
+  const { auth: { isAuthenticated, isBarberShop, user } } = Route.useRouteContext()
 
   return (
     <>

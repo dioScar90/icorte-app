@@ -11,7 +11,7 @@ export type ClientContextType = {
   repository: IProfileRepository
 }
 
-const ClientContext = createContext<ClientContextType | undefined>(undefined)
+const ClientContext = createContext<ClientContextType | null>(null)
 
 export function useClient() {
   const clientContext = useContext(ClientContext)

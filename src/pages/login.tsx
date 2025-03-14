@@ -6,14 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { userLoginSchema } from "@/schemas/user";
 import { useAuth } from "@/providers/authProvider";
-import { Link, useNavigate } from "react-router-dom";
-import { ROUTE_ENUM } from "@/types/route";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff, LogInIcon } from "lucide-react";
 import { GoogleSvg } from "@/components/ui/google-svg";
 import { toast } from "@/hooks/use-toast";
 import { MouseEvent, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 
 type SchemaType = z.infer<typeof userLoginSchema>
 
@@ -44,8 +44,12 @@ export function Login() {
       if (!result.isSuccess) {
         throw result.error
       }
-
-      navigate(ROUTE_ENUM.HOME, { replace: true, state: { message: 'Login realizado com sucesso' } })
+      
+      navigate({
+        to: '/',
+        replace: true,
+        state: { message: 'Login realizado com sucesso' },
+      })
     } catch (err) {
       handleError(err, form)
     }
@@ -89,7 +93,8 @@ export function Login() {
                               <FormLabel>Senha</FormLabel>
                               <Button variant="link" asChild>
                                 <Link
-                                  to="#" tabIndex={-1}
+                                  to="/login"
+                                  tabIndex={-1}
                                   onClick={unavailableForNow}
                                   className="ml-auto inline-block text-sm underline"
                                   title="Indisponível no momento"
@@ -135,7 +140,7 @@ export function Login() {
                 </div>
                 <div className="mt-4 text-center text-sm">
                   <span>Não tem conta?</span>{' '}
-                  <Link to={ROUTE_ENUM.REGISTER} className="underline">
+                  <Link to="/register" className="underline">
                     Cadastre-se
                   </Link>
                 </div>

@@ -8,6 +8,7 @@ import { useProxy } from './hooks/use-proxy'
 import { handleError } from './providers/handleErrorProvider'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ErrorRoutePage } from './pages/error-route'
+import { useAuth } from './hooks/use-auth'
 
 const queryClient = new QueryClient()
 
@@ -19,6 +20,7 @@ const router = createRouter({
     handleError,
     queryClient,
     httpClient: undefined!,
+    auth: undefined!,
   },
   scrollRestoration: true,
   defaultPreload: 'intent',
@@ -44,6 +46,9 @@ const rootElement = document.getElementById('root')!
 
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
+
+  const httpClient = useProxy()
+  const auth = useAuth(httpClient)
   
   root.render(
     <StrictMode>
@@ -51,7 +56,8 @@ if (!rootElement.innerHTML) {
         <RouterProvider
           router={router}
           context={{
-            httpClient: useProxy(),
+            httpClient,
+            auth,
           }}
         />
       </QueryClientProvider>

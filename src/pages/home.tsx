@@ -1,9 +1,8 @@
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/providers/authProvider";
-import { ROUTE_ENUM } from "@/types/route";
 import { CalendarIcon, LogInIcon, ScissorsIcon, StoreIcon, UserIcon, UserRoundPlusIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 
 export function Home() {
   const { isAuthenticated, isBarberShop, user } = useAuth()
@@ -27,7 +26,10 @@ export function Home() {
               <>
                 <Link
                   className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'w-full md:w-auto')}
-                  to={`${ROUTE_ENUM.BARBER_SHOP}/${user?.barberShop?.id}/dashboard`}
+                  to="/barber-shop/$barberShopId/dashboard"
+                  params={{
+                    barberShopId: user?.barberShop?.id!,
+                  }}
                 >
                   <StoreIcon className="mr-2 h-5 w-5" />
                   Minha barbearia
@@ -37,14 +39,14 @@ export function Home() {
               <>
                 <Link
                   className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'w-full md:w-auto')}
-                  to={`${ROUTE_ENUM.BARBER_SHOP}/register`}
+                  to="/barber-shop/register"
                 >
                   <StoreIcon className="mr-2 h-5 w-5" />
                   Cadastrar Barbearia
                 </Link>
                 <Link
                   className={cn(buttonVariants({ size: 'lg' }), 'w-full md:w-auto')}
-                  to={`${ROUTE_ENUM.BARBER_SCHEDULE}/new-appointment`}
+                  to="/barber-schedule/new-appointment"
                 >
                   <ScissorsIcon className="mr-2 h-5 w-5" />
                   Marcar um corte
@@ -54,15 +56,15 @@ export function Home() {
           ) : (
             <>
               <Link
-                to={ROUTE_ENUM.LOGIN}
                 className={cn(buttonVariants({ variant: 'secondary', size: 'lg' }), 'w-full md:w-auto')}
+                to="/login"
               >
                 <LogInIcon className="mr-2 h-5 w-5" />
                 Login
               </Link>
               <Link
-                to={ROUTE_ENUM.REGISTER}
                 className={cn(buttonVariants({ size: 'lg' }), 'w-full md:w-auto')}
+                to="/register"
               >
                 <UserRoundPlusIcon className="mr-2 h-5 w-5" />
                 Cadastre-se

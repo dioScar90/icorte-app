@@ -11,14 +11,14 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as WorkWithUsImport } from './routes/work-with-us'
 import { Route as RegisterImport } from './routes/register'
 import { Route as LoginImport } from './routes/login'
-import { Route as ContactImport } from './routes/contact'
-import { Route as ChatImport } from './routes/chat'
-import { Route as BeProImport } from './routes/be-pro'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
+import { Route as laterWorkWithUsImport } from './routes/(later)/work-with-us'
+import { Route as laterContactImport } from './routes/(later)/contact'
+import { Route as laterChatImport } from './routes/(later)/chat'
+import { Route as laterBeProImport } from './routes/(later)/be-pro'
 import { Route as authenticatedOnlyProfileRouteImport } from './routes/(authenticated-only)/profile/route'
 import { Route as authenticatedOnlyBarberShopRouteImport } from './routes/(authenticated-only)/barber-shop/route'
 import { Route as authenticatedOnlyBarberScheduleRouteImport } from './routes/(authenticated-only)/barber-schedule/route'
@@ -46,12 +46,6 @@ import { Route as authenticatedOnlyBarberScheduleDashboardAppointmentIdImport } 
 
 // Create/Update Routes
 
-const WorkWithUsRoute = WorkWithUsImport.update({
-  id: '/work-with-us',
-  path: '/work-with-us',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const RegisterRoute = RegisterImport.update({
   id: '/register',
   path: '/register',
@@ -64,24 +58,6 @@ const LoginRoute = LoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ContactRoute = ContactImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ChatRoute = ChatImport.update({
-  id: '/chat',
-  path: '/chat',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const BeProRoute = BeProImport.update({
-  id: '/be-pro',
-  path: '/be-pro',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const AboutRoute = AboutImport.update({
   id: '/about',
   path: '/about',
@@ -91,6 +67,30 @@ const AboutRoute = AboutImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const laterWorkWithUsRoute = laterWorkWithUsImport.update({
+  id: '/(later)/work-with-us',
+  path: '/work-with-us',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const laterContactRoute = laterContactImport.update({
+  id: '/(later)/contact',
+  path: '/contact',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const laterChatRoute = laterChatImport.update({
+  id: '/(later)/chat',
+  path: '/chat',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const laterBeProRoute = laterBeProImport.update({
+  id: '/(later)/be-pro',
+  path: '/be-pro',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -280,27 +280,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/be-pro': {
-      id: '/be-pro'
-      path: '/be-pro'
-      fullPath: '/be-pro'
-      preLoaderRoute: typeof BeProImport
-      parentRoute: typeof rootRoute
-    }
-    '/chat': {
-      id: '/chat'
-      path: '/chat'
-      fullPath: '/chat'
-      preLoaderRoute: typeof ChatImport
-      parentRoute: typeof rootRoute
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactImport
-      parentRoute: typeof rootRoute
-    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -313,13 +292,6 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterImport
-      parentRoute: typeof rootRoute
-    }
-    '/work-with-us': {
-      id: '/work-with-us'
-      path: '/work-with-us'
-      fullPath: '/work-with-us'
-      preLoaderRoute: typeof WorkWithUsImport
       parentRoute: typeof rootRoute
     }
     '/(authenticated-only)/admin': {
@@ -348,6 +320,34 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof authenticatedOnlyProfileRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/(later)/be-pro': {
+      id: '/(later)/be-pro'
+      path: '/be-pro'
+      fullPath: '/be-pro'
+      preLoaderRoute: typeof laterBeProImport
+      parentRoute: typeof rootRoute
+    }
+    '/(later)/chat': {
+      id: '/(later)/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof laterChatImport
+      parentRoute: typeof rootRoute
+    }
+    '/(later)/contact': {
+      id: '/(later)/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof laterContactImport
+      parentRoute: typeof rootRoute
+    }
+    '/(later)/work-with-us': {
+      id: '/(later)/work-with-us'
+      path: '/work-with-us'
+      fullPath: '/work-with-us'
+      preLoaderRoute: typeof laterWorkWithUsImport
       parentRoute: typeof rootRoute
     }
     '/(authenticated-only)/barber-shop/$barberShopId': {
@@ -627,16 +627,16 @@ const authenticatedOnlyProfileRouteRouteWithChildren =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/be-pro': typeof BeProRoute
-  '/chat': typeof ChatRoute
-  '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/work-with-us': typeof WorkWithUsRoute
   '/admin': typeof authenticatedOnlyAdminRouteRouteWithChildren
   '/barber-schedule': typeof authenticatedOnlyBarberScheduleRouteRouteWithChildren
   '/barber-shop': typeof authenticatedOnlyBarberShopRouteRouteWithChildren
   '/profile': typeof authenticatedOnlyProfileRouteRouteWithChildren
+  '/be-pro': typeof laterBeProRoute
+  '/chat': typeof laterChatRoute
+  '/contact': typeof laterContactRoute
+  '/work-with-us': typeof laterWorkWithUsRoute
   '/barber-shop/$barberShopId': typeof authenticatedOnlyBarberShopBarberShopIdRouteRouteWithChildren
   '/profile/$userId': typeof authenticatedOnlyProfileUserIdRouteRouteWithChildren
   '/admin/dashboard': typeof authenticatedOnlyAdminDashboardRoute
@@ -662,16 +662,16 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/be-pro': typeof BeProRoute
-  '/chat': typeof ChatRoute
-  '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/work-with-us': typeof WorkWithUsRoute
   '/admin': typeof authenticatedOnlyAdminRouteRouteWithChildren
   '/barber-schedule': typeof authenticatedOnlyBarberScheduleRouteRouteWithChildren
   '/barber-shop': typeof authenticatedOnlyBarberShopRouteRouteWithChildren
   '/profile': typeof authenticatedOnlyProfileRouteRouteWithChildren
+  '/be-pro': typeof laterBeProRoute
+  '/chat': typeof laterChatRoute
+  '/contact': typeof laterContactRoute
+  '/work-with-us': typeof laterWorkWithUsRoute
   '/admin/dashboard': typeof authenticatedOnlyAdminDashboardRoute
   '/admin/last-users': typeof authenticatedOnlyAdminLastUsersRoute
   '/admin/populate-all': typeof authenticatedOnlyAdminPopulateAllRoute
@@ -696,16 +696,16 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/be-pro': typeof BeProRoute
-  '/chat': typeof ChatRoute
-  '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/work-with-us': typeof WorkWithUsRoute
   '/(authenticated-only)/admin': typeof authenticatedOnlyAdminRouteRouteWithChildren
   '/(authenticated-only)/barber-schedule': typeof authenticatedOnlyBarberScheduleRouteRouteWithChildren
   '/(authenticated-only)/barber-shop': typeof authenticatedOnlyBarberShopRouteRouteWithChildren
   '/(authenticated-only)/profile': typeof authenticatedOnlyProfileRouteRouteWithChildren
+  '/(later)/be-pro': typeof laterBeProRoute
+  '/(later)/chat': typeof laterChatRoute
+  '/(later)/contact': typeof laterContactRoute
+  '/(later)/work-with-us': typeof laterWorkWithUsRoute
   '/(authenticated-only)/barber-shop/$barberShopId': typeof authenticatedOnlyBarberShopBarberShopIdRouteRouteWithChildren
   '/(authenticated-only)/profile/$userId': typeof authenticatedOnlyProfileUserIdRouteRouteWithChildren
   '/(authenticated-only)/admin/dashboard': typeof authenticatedOnlyAdminDashboardRoute
@@ -733,16 +733,16 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/be-pro'
-    | '/chat'
-    | '/contact'
     | '/login'
     | '/register'
-    | '/work-with-us'
     | '/admin'
     | '/barber-schedule'
     | '/barber-shop'
     | '/profile'
+    | '/be-pro'
+    | '/chat'
+    | '/contact'
+    | '/work-with-us'
     | '/barber-shop/$barberShopId'
     | '/profile/$userId'
     | '/admin/dashboard'
@@ -767,16 +767,16 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/be-pro'
-    | '/chat'
-    | '/contact'
     | '/login'
     | '/register'
-    | '/work-with-us'
     | '/admin'
     | '/barber-schedule'
     | '/barber-shop'
     | '/profile'
+    | '/be-pro'
+    | '/chat'
+    | '/contact'
+    | '/work-with-us'
     | '/admin/dashboard'
     | '/admin/last-users'
     | '/admin/populate-all'
@@ -799,16 +799,16 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
-    | '/be-pro'
-    | '/chat'
-    | '/contact'
     | '/login'
     | '/register'
-    | '/work-with-us'
     | '/(authenticated-only)/admin'
     | '/(authenticated-only)/barber-schedule'
     | '/(authenticated-only)/barber-shop'
     | '/(authenticated-only)/profile'
+    | '/(later)/be-pro'
+    | '/(later)/chat'
+    | '/(later)/contact'
+    | '/(later)/work-with-us'
     | '/(authenticated-only)/barber-shop/$barberShopId'
     | '/(authenticated-only)/profile/$userId'
     | '/(authenticated-only)/admin/dashboard'
@@ -835,27 +835,23 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  BeProRoute: typeof BeProRoute
-  ChatRoute: typeof ChatRoute
-  ContactRoute: typeof ContactRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
-  WorkWithUsRoute: typeof WorkWithUsRoute
   authenticatedOnlyAdminRouteRoute: typeof authenticatedOnlyAdminRouteRouteWithChildren
   authenticatedOnlyBarberScheduleRouteRoute: typeof authenticatedOnlyBarberScheduleRouteRouteWithChildren
   authenticatedOnlyBarberShopRouteRoute: typeof authenticatedOnlyBarberShopRouteRouteWithChildren
   authenticatedOnlyProfileRouteRoute: typeof authenticatedOnlyProfileRouteRouteWithChildren
+  laterBeProRoute: typeof laterBeProRoute
+  laterChatRoute: typeof laterChatRoute
+  laterContactRoute: typeof laterContactRoute
+  laterWorkWithUsRoute: typeof laterWorkWithUsRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  BeProRoute: BeProRoute,
-  ChatRoute: ChatRoute,
-  ContactRoute: ContactRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
-  WorkWithUsRoute: WorkWithUsRoute,
   authenticatedOnlyAdminRouteRoute:
     authenticatedOnlyAdminRouteRouteWithChildren,
   authenticatedOnlyBarberScheduleRouteRoute:
@@ -864,6 +860,10 @@ const rootRouteChildren: RootRouteChildren = {
     authenticatedOnlyBarberShopRouteRouteWithChildren,
   authenticatedOnlyProfileRouteRoute:
     authenticatedOnlyProfileRouteRouteWithChildren,
+  laterBeProRoute: laterBeProRoute,
+  laterChatRoute: laterChatRoute,
+  laterContactRoute: laterContactRoute,
+  laterWorkWithUsRoute: laterWorkWithUsRoute,
 }
 
 export const routeTree = rootRoute
@@ -878,16 +878,16 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/be-pro",
-        "/chat",
-        "/contact",
         "/login",
         "/register",
-        "/work-with-us",
         "/(authenticated-only)/admin",
         "/(authenticated-only)/barber-schedule",
         "/(authenticated-only)/barber-shop",
-        "/(authenticated-only)/profile"
+        "/(authenticated-only)/profile",
+        "/(later)/be-pro",
+        "/(later)/chat",
+        "/(later)/contact",
+        "/(later)/work-with-us"
       ]
     },
     "/": {
@@ -896,23 +896,11 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.tsx"
     },
-    "/be-pro": {
-      "filePath": "be-pro.tsx"
-    },
-    "/chat": {
-      "filePath": "chat.tsx"
-    },
-    "/contact": {
-      "filePath": "contact.tsx"
-    },
     "/login": {
       "filePath": "login.tsx"
     },
     "/register": {
       "filePath": "register.tsx"
-    },
-    "/work-with-us": {
-      "filePath": "work-with-us.tsx"
     },
     "/(authenticated-only)/admin": {
       "filePath": "(authenticated-only)/admin/route.tsx",
@@ -946,6 +934,18 @@ export const routeTree = rootRoute
       "children": [
         "/(authenticated-only)/profile/$userId"
       ]
+    },
+    "/(later)/be-pro": {
+      "filePath": "(later)/be-pro.tsx"
+    },
+    "/(later)/chat": {
+      "filePath": "(later)/chat.tsx"
+    },
+    "/(later)/contact": {
+      "filePath": "(later)/contact.tsx"
+    },
+    "/(later)/work-with-us": {
+      "filePath": "(later)/work-with-us.tsx"
     },
     "/(authenticated-only)/barber-shop/$barberShopId": {
       "filePath": "(authenticated-only)/barber-shop/$barberShopId/route.tsx",

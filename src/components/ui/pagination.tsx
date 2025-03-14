@@ -2,7 +2,7 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { ButtonProps, buttonVariants } from "@/components/ui/button"
 import { ChevronLeftIcon, ChevronRightIcon, DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { Link } from "react-router-dom"
+import { Link } from "@tanstack/react-router"
 
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
@@ -47,10 +47,10 @@ const PaginationLink = ({
   ...props
 }: PaginationLinkProps) => (
   <Link
-    aria-current={isActive ? "page" : undefined}
+    aria-current={isActive ? 'page' : undefined}
     className={cn(
       buttonVariants({
-        variant: isActive ? "outline" : "ghost",
+        variant: isActive ? 'outline' : 'ghost',
         size,
       }),
       className

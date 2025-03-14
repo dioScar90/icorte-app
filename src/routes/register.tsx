@@ -1,9 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
 import { userRegisterSchema, UserRegisterZod } from "@/schemas/user";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/providers/authProvider";
-import { ROUTE_ENUM } from "@/types/route";
+// import { useAuth } from "@/providers/authProvider";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { MouseEvent, useEffect, useState } from "react";
 import { applyMask } from "@/utils/mask";
@@ -18,7 +16,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toast } from "@/hooks/use-toast";
 import { GoogleSvg } from "@/components/ui/google-svg";
 import { Separator } from "@/components/ui/separator";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute('/register')({
   component: Register,
@@ -28,7 +27,8 @@ export function Register() {
   const [isViewPassword, setIsViewPassword] = useState(false)
   const EyeViewPasswordIcon = isViewPassword ? Eye : EyeOff
   const navigate = useNavigate()
-  const { register } = useAuth()
+  // const { register } = useAuth()
+  const register = Route.useRouteContext({ select: (s) => s.auth.register })
   const { handleError } = useHandleErrors()
 
   const form = useForm<UserRegisterZod>({
@@ -59,7 +59,10 @@ export function Register() {
         throw result.error
       }
 
-      navigate(ROUTE_ENUM.HOME, { state: { message: result.value?.message } })
+      navigate({
+        to: '/',
+        state: { message: result.value?.message }
+      })
     } catch (err) {
       handleError(err, form)
     }
@@ -234,7 +237,7 @@ export function Register() {
 
                     <div className="text-center text-sm">
                       <span>Já possui uma conta?</span>{' '}
-                      <Link to={ROUTE_ENUM.LOGIN} className="underline">
+                      <Link to="/login" className="underline">
                         Login
                       </Link>
                     </div>
