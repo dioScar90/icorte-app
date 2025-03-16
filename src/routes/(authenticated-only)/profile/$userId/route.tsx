@@ -22,7 +22,7 @@ export const Route = createFileRoute('/(authenticated-only)/profile/$userId')({
     }
     
     return {
-      profile: res.value,
+      profile: res.value!,
     }
   },
 })

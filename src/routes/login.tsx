@@ -4,7 +4,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRoo
 import { GoogleSvg } from "@/components/ui/google-svg"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/hooks/use-toast"
-// import { useAuth } from "@/providers/authProvider"
 import { useHandleErrors } from "@/providers/handleErrorProvider"
 import { userLoginSchema } from "@/schemas/user"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -40,7 +39,6 @@ function PasswordControl({ field }: { field: ControllerRenderProps<SchemaType, '
 
 export function Login() {
   const navigate = useNavigate()
-  // const { login } = useAuth()
   const login = Route.useRouteContext({ select: (s) => s.auth.login })
   const { handleError } = useHandleErrors()
 

@@ -14,13 +14,13 @@ export const Route = createFileRoute(
 })
 
 function RouteComponent() {
-  const { populateAll, handleError, schema } = Route.useRouteContext(({
-    select: (s) => ({
-      populateAll: s.admin.populateAll,
-      schema: s.admin.baseAdminSchema,
-      handleError: s.handleError,
-    })
-  }))
+  const [handleError, populateAll, schema] = Route.useRouteContext({
+    select: (s) => [
+      s.handleError,
+      s.admin.populateAll,
+      s.admin.baseAdminSchema,
+    ] as const
+  })
   
   const navigate = useNavigate()
   

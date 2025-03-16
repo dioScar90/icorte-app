@@ -12,7 +12,6 @@ import Swal from 'sweetalert2'
 import type { HandleError } from '@/providers/handleErrorProvider'
 import type { QueryClient } from '@tanstack/react-query'
 import { ProxyContext } from '@/hooks/use-proxy'
-// import { AuthProvider } from '@/providers/authProvider'
 import { ThemeProvider } from '@/components/theme-provider'
 import { cn } from '@/lib/utils'
 import { AuthContext } from '@/hooks/use-auth'
@@ -71,8 +70,6 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 })
 
 function MainProviders({ children }: PropsWithChildren) {
-  // const auth = Route.useRouteContext({ select: ({ httpClient, user }) => ({ httpClient, user }) })
-
   const theme = {
     defaultTheme: 'dark',
     storageKey: 'vite-ui-theme',
@@ -80,9 +77,7 @@ function MainProviders({ children }: PropsWithChildren) {
 
   return (
     <ThemeProvider { ...theme }>
-      {/* <AuthProvider { ...auth }> */}
-        {children}
-      {/* </AuthProvider> */}
+      {children}
     </ThemeProvider>
   )
 }

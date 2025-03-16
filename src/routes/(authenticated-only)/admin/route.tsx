@@ -63,7 +63,7 @@ export const Route = createFileRoute(
         resetPasswordSchema,
       }
     }
-  }
+  },
 })
 
 function RouteComponent() {

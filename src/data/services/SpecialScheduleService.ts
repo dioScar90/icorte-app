@@ -1,43 +1,68 @@
-import { SpecialScheduleZod } from "@/schemas/specialSchedule";
 import { ISpecialScheduleService as Interface } from "./interfaces/ISpecialScheduleService";
 import { DateOnly } from "@/utils/types/date";
 import { ProxyContext } from "@/hooks/use-proxy";
+import { Result } from "../result";
 
 function getUrl(barberShopId: number, date?: DateOnly) {
   const baseEndpoint = `/barber-shop/${barberShopId}/special-schedule`
-
-  if (date === undefined) {
-    return baseEndpoint
-  }
-
-  return `${baseEndpoint}/${date}`
+  return date === undefined ? baseEndpoint : `${baseEndpoint}/${date}`
 }
 
 export class SpecialScheduleService implements Interface {
   constructor(private readonly httpClient: ProxyContext) { }
 
-  async createSpecialSchedule(barberShopId: number, data: SpecialScheduleZod) {
+  createSpecialSchedule: Interface['createSpecialSchedule'] = async (barberShopId, data) => {
     const url = getUrl(barberShopId)
-    return await this.httpClient.post(url, { ...data })
+    
+    try {
+      const res = await this.httpClient.post(url, { ...data })
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async getSpecialSchedule(barberShopId: number, date: DateOnly) {
+  getSpecialSchedule: Interface['getSpecialSchedule'] = async (barberShopId, date) => {
     const url = getUrl(barberShopId, date)
-    return await this.httpClient.get(url)
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async getAllSpecialSchedules(barberShopId: number) {
+  getAllSpecialSchedules: Interface['getAllSpecialSchedules'] = async (barberShopId) => {
     const url = getUrl(barberShopId)
-    return await this.httpClient.get(url)
+    
+    try {
+      const res = await this.httpClient.get(url)
+      return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async updateSpecialSchedule(barberShopId: number, date: DateOnly, data: SpecialScheduleZod) {
+  updateSpecialSchedule: Interface['updateSpecialSchedule'] = async (barberShopId, date, data) => {
     const url = getUrl(barberShopId, date)
-    return await this.httpClient.put(url, { ...data })
+    
+    try {
+      await this.httpClient.put(url, { ...data })
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 
-  async deleteSpecialSchedule(barberShopId: number, date: DateOnly) {
+  deleteSpecialSchedule: Interface['deleteSpecialSchedule'] = async (barberShopId, date) => {
     const url = getUrl(barberShopId, date)
-    return await this.httpClient.delete(url)
+    
+    try {
+      await this.httpClient.delete(url)
+      return Result.Success()
+    } catch (err) {
+      return Result.Failure(err)
+    }
   }
 }

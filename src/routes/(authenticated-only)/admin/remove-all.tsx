@@ -15,13 +15,13 @@ export const Route = createFileRoute(
 })
 
 function RouteComponent() {
-  const { removeAll, handleError, schema } = Route.useRouteContext(({
-    select: (s) => ({
-      removeAll: s.admin.removeAll,
-      schema: s.admin.baseAdminSchema,
-      handleError: s.handleError,
-    })
-  }))
+  const [handleError, removeAll, schema] = Route.useRouteContext({
+    select: (s) => [
+      s.handleError,
+      s.admin.removeAll,
+      s.admin.baseAdminSchema,
+    ] as const
+  })
   
   const navigate = useNavigate()
   

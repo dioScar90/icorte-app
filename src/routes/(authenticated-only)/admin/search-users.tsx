@@ -120,12 +120,12 @@ function TableBodyWithRows({ state }: { state: UserState }) {
 }
 
 function RouteComponent() {
-  const { searchByName, handleError } = Route.useRouteContext(({
-    select: (s) => ({
-      searchByName: s.admin.searchByName,
-      handleError: s.handleError,
-    })
-  }))
+  const [handleError, searchByName] = Route.useRouteContext({
+    select: (s) => [
+      s.handleError,
+      s.admin.searchByName,
+    ] as const
+  })
   
   const navigate = useNavigate({ from: Route.fullPath })
   const search = Route.useSearch()

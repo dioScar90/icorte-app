@@ -16,7 +16,7 @@ export const Route = createFileRoute(
 )({
   component: RouteComponent,
   beforeLoad: ({ context, search, location }) => ({
-    lastUsersQueryOptions: (init?: number) =>
+    queryOptions: (init?: number) =>
       queryOptions({
         queryKey: [location.pathname, { take: init ?? search?.take }],
         queryFn: () => context.admin.getLastUsers(init ?? search?.take)
@@ -38,20 +38,20 @@ export const Route = createFileRoute(
           }),
       })
   }),
-  loader: async ({ context: { queryClient, lastUsersQueryOptions } }) =>
-    queryClient.ensureQueryData(lastUsersQueryOptions(5)),
+  loader: async ({ context: { queryClient, queryOptions } }) =>
+    queryClient.ensureQueryData(queryOptions(5)),
   validateSearch: z.object({
     take: z.number().int().optional(),
   }),
 })
 
 function RouteComponent() {
-  const lastUsersQueryOptions = Route.useRouteContext(({ select: (s) => s.lastUsersQueryOptions }))
+  const queryOptions = Route.useRouteContext({ select: (s) => s.queryOptions })
 
   const navigate = useNavigate({ from: Route.fullPath })
   const search = Route.useSearch()
 
-  const { data: users } = useSuspenseQuery(lastUsersQueryOptions())
+  const { data: users } = useSuspenseQuery(queryOptions())
   
   const [take, setTake] = useState(search?.take)
   const [takeParam, _setTakeParam] = useState(search?.take)

@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
 import { userRegisterSchema, UserRegisterZod } from "@/schemas/user";
-// import { useAuth } from "@/providers/authProvider";
 import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { MouseEvent, useEffect, useState } from "react";
 import { applyMask } from "@/utils/mask";
@@ -27,7 +26,6 @@ export function Register() {
   const [isViewPassword, setIsViewPassword] = useState(false)
   const EyeViewPasswordIcon = isViewPassword ? Eye : EyeOff
   const navigate = useNavigate()
-  // const { register } = useAuth()
   const register = Route.useRouteContext({ select: (s) => s.auth.register })
   const { handleError } = useHandleErrors()
 

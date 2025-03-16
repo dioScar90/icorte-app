@@ -1,4 +1,3 @@
-import { ProfileRepository } from '@/data/repositories/ProfileRepository'
 import { ProfileService } from '@/data/services/ProfileService'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
@@ -6,7 +5,7 @@ export const Route = createFileRoute(
   '/(authenticated-only)/profile',
 )({
   beforeLoad: async ({ context }) => {
-    const repository = new ProfileRepository(new ProfileService(context.httpClient))
+    const repository = new ProfileService(context.httpClient)
 
     return {
       getProfileById: repository.getProfileById,
@@ -17,6 +16,5 @@ export const Route = createFileRoute(
 })
 
 function RouteComponent() {
-  
   return <Outlet />
 }

@@ -1,6 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { buttonVariants } from '@/components/ui/button'
-import { useAuth } from '@/providers/authProvider'
 import { createFileRoute, Link } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
@@ -10,15 +9,14 @@ export const Route = createFileRoute(
 })
 
 function RouteComponent() {
-  const { user } = useAuth()
-  const { profile } = Route.useRouteContext()
+  const profile = Route.useRouteContext({ select: (s) => s.profile })
   
   return (
     <>
       <div className="max-w-3xl mx-auto p-6 rounded-lg shadow-lg">
         <div className="flex items-center space-x-4">
           <Avatar className="w-24 h-24 rounded-full">
-            <AvatarImage src={user?.profile?.imageUrl} alt={profile.fullName} />
+            <AvatarImage src={profile?.imageUrl} alt={profile.fullName} />
             <AvatarFallback>iCorte</AvatarFallback>
           </Avatar>
           <div>

@@ -1,5 +1,18 @@
+import { Button, buttonVariants } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAuth } from '@/providers/authProvider'
+import { GenderEnum } from '@/schemas/profile'
+import { userUpdateSchema, UserUpdateZod } from '@/schemas/user'
+import { getEnumAsArray, getEnumAsString } from '@/utils/enum-as-array'
+import { applyMask } from '@/utils/mask'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Link } from '@tanstack/react-router'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { ChevronLeft, UserRoundPlusIcon } from 'lucide-react'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 
 export const Route = createFileRoute(
   '/(authenticated-only)/profile/$userId/edit',
@@ -8,7 +21,13 @@ export const Route = createFileRoute(
 })
 
 function RouteComponent() {
-  const { updateProfile, profile, handleError } = Route.useRouteContext()
+  const [handleError, updateProfile, profile] = Route.useRouteContext({
+    select: (s) => [
+      s.handleError,
+      s.updateProfile,
+      s.profile,
+    ] as const
+  })
 
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -32,10 +51,16 @@ function RouteComponent() {
       if (!result.isSuccess) {
         throw result.error
       }
-
-      const url = `${ROUTE_ENUM.PROFILE}/${profile.id}`
-      const message = 'Perfil alterado com sucesso'
-      navigate(url, { state: { message } })
+      
+      navigate({
+        to: '/profile/$userId',
+        params: {
+          userId: profile.id,
+        },
+        state: {
+          message: 'Perfil alterado com sucesso',
+        },
+      })
     } catch (err) {
       handleError(err, form)
     }
@@ -129,7 +154,10 @@ function RouteComponent() {
           <div className="flex justify-center align-center gap-x-3">
             <Link
               className={buttonVariants({ variant: "secondary" })}
-              to={`${ROUTE_ENUM.PROFILE}/${profile.id}`}
+              to="/profile/$userId"
+              params={{
+                userId: profile.id,
+              }}
             >
               <ChevronLeft />
               Voltar

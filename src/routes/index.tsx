@@ -9,7 +9,13 @@ export const Route = createFileRoute('/')({
 })
 
 function Index() {
-  const { auth: { isAuthenticated, isBarberShop, user } } = Route.useRouteContext()
+  const [isAuthenticated, isBarberShop, user] = Route.useRouteContext({
+    select: (s) => [
+      s.auth.isAuthenticated,
+      s.auth.isBarberShop,
+      s.auth.user,
+    ] as const
+  })
 
   return (
     <>
