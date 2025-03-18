@@ -24,7 +24,6 @@ import { Route as authenticatedOnlyBarberShopRouteImport } from './routes/(authe
 import { Route as authenticatedOnlyBarberScheduleRouteImport } from './routes/(authenticated-only)/barber-schedule/route'
 import { Route as authenticatedOnlyAdminRouteImport } from './routes/(authenticated-only)/admin/route'
 import { Route as authenticatedOnlyBarberShopRegisterImport } from './routes/(authenticated-only)/barber-shop/register'
-import { Route as authenticatedOnlyBarberScheduleNewAppointmentImport } from './routes/(authenticated-only)/barber-schedule/new-appointment'
 import { Route as authenticatedOnlyAdminSearchUsersImport } from './routes/(authenticated-only)/admin/search-users'
 import { Route as authenticatedOnlyAdminResetPasswordImport } from './routes/(authenticated-only)/admin/reset-password'
 import { Route as authenticatedOnlyAdminRemoveAllImport } from './routes/(authenticated-only)/admin/remove-all'
@@ -34,8 +33,10 @@ import { Route as authenticatedOnlyAdminLastUsersImport } from './routes/(authen
 import { Route as authenticatedOnlyAdminDashboardImport } from './routes/(authenticated-only)/admin/dashboard'
 import { Route as authenticatedOnlyProfileUserIdRouteImport } from './routes/(authenticated-only)/profile/$userId/route'
 import { Route as authenticatedOnlyBarberShopBarberShopIdRouteImport } from './routes/(authenticated-only)/barber-shop/$barberShopId/route'
+import { Route as authenticatedOnlyBarberScheduleNewAppointmentRouteImport } from './routes/(authenticated-only)/barber-schedule/new-appointment/route'
 import { Route as authenticatedOnlyProfileUserIdIndexImport } from './routes/(authenticated-only)/profile/$userId/index'
 import { Route as authenticatedOnlyBarberShopBarberShopIdIndexImport } from './routes/(authenticated-only)/barber-shop/$barberShopId/index'
+import { Route as authenticatedOnlyBarberScheduleNewAppointmentIndexImport } from './routes/(authenticated-only)/barber-schedule/new-appointment/index'
 import { Route as authenticatedOnlyBarberScheduleDashboardIndexImport } from './routes/(authenticated-only)/barber-schedule/dashboard/index'
 import { Route as authenticatedOnlyProfileUserIdEditImport } from './routes/(authenticated-only)/profile/$userId/edit'
 import { Route as authenticatedOnlyBarberShopBarberShopIdServicesImport } from './routes/(authenticated-only)/barber-shop/$barberShopId/services'
@@ -129,13 +130,6 @@ const authenticatedOnlyBarberShopRegisterRoute =
     getParentRoute: () => authenticatedOnlyBarberShopRouteRoute,
   } as any)
 
-const authenticatedOnlyBarberScheduleNewAppointmentRoute =
-  authenticatedOnlyBarberScheduleNewAppointmentImport.update({
-    id: '/new-appointment',
-    path: '/new-appointment',
-    getParentRoute: () => authenticatedOnlyBarberScheduleRouteRoute,
-  } as any)
-
 const authenticatedOnlyAdminSearchUsersRoute =
   authenticatedOnlyAdminSearchUsersImport.update({
     id: '/search-users',
@@ -199,6 +193,13 @@ const authenticatedOnlyBarberShopBarberShopIdRouteRoute =
     getParentRoute: () => authenticatedOnlyBarberShopRouteRoute,
   } as any)
 
+const authenticatedOnlyBarberScheduleNewAppointmentRouteRoute =
+  authenticatedOnlyBarberScheduleNewAppointmentRouteImport.update({
+    id: '/new-appointment',
+    path: '/new-appointment',
+    getParentRoute: () => authenticatedOnlyBarberScheduleRouteRoute,
+  } as any)
+
 const authenticatedOnlyProfileUserIdIndexRoute =
   authenticatedOnlyProfileUserIdIndexImport.update({
     id: '/',
@@ -211,6 +212,14 @@ const authenticatedOnlyBarberShopBarberShopIdIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => authenticatedOnlyBarberShopBarberShopIdRouteRoute,
+  } as any)
+
+const authenticatedOnlyBarberScheduleNewAppointmentIndexRoute =
+  authenticatedOnlyBarberScheduleNewAppointmentIndexImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () =>
+      authenticatedOnlyBarberScheduleNewAppointmentRouteRoute,
   } as any)
 
 const authenticatedOnlyBarberScheduleDashboardIndexRoute =
@@ -350,6 +359,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof laterWorkWithUsImport
       parentRoute: typeof rootRoute
     }
+    '/(authenticated-only)/barber-schedule/new-appointment': {
+      id: '/(authenticated-only)/barber-schedule/new-appointment'
+      path: '/new-appointment'
+      fullPath: '/barber-schedule/new-appointment'
+      preLoaderRoute: typeof authenticatedOnlyBarberScheduleNewAppointmentRouteImport
+      parentRoute: typeof authenticatedOnlyBarberScheduleRouteImport
+    }
     '/(authenticated-only)/barber-shop/$barberShopId': {
       id: '/(authenticated-only)/barber-shop/$barberShopId'
       path: '/$barberShopId'
@@ -413,13 +429,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedOnlyAdminSearchUsersImport
       parentRoute: typeof authenticatedOnlyAdminRouteImport
     }
-    '/(authenticated-only)/barber-schedule/new-appointment': {
-      id: '/(authenticated-only)/barber-schedule/new-appointment'
-      path: '/new-appointment'
-      fullPath: '/barber-schedule/new-appointment'
-      preLoaderRoute: typeof authenticatedOnlyBarberScheduleNewAppointmentImport
-      parentRoute: typeof authenticatedOnlyBarberScheduleRouteImport
-    }
     '/(authenticated-only)/barber-shop/register': {
       id: '/(authenticated-only)/barber-shop/register'
       path: '/register'
@@ -476,6 +485,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedOnlyBarberScheduleDashboardIndexImport
       parentRoute: typeof authenticatedOnlyBarberScheduleRouteImport
     }
+    '/(authenticated-only)/barber-schedule/new-appointment/': {
+      id: '/(authenticated-only)/barber-schedule/new-appointment/'
+      path: '/'
+      fullPath: '/barber-schedule/new-appointment/'
+      preLoaderRoute: typeof authenticatedOnlyBarberScheduleNewAppointmentIndexImport
+      parentRoute: typeof authenticatedOnlyBarberScheduleNewAppointmentRouteImport
+    }
     '/(authenticated-only)/barber-shop/$barberShopId/': {
       id: '/(authenticated-only)/barber-shop/$barberShopId/'
       path: '/'
@@ -525,16 +541,31 @@ const authenticatedOnlyAdminRouteRouteWithChildren =
     authenticatedOnlyAdminRouteRouteChildren,
   )
 
+interface authenticatedOnlyBarberScheduleNewAppointmentRouteRouteChildren {
+  authenticatedOnlyBarberScheduleNewAppointmentIndexRoute: typeof authenticatedOnlyBarberScheduleNewAppointmentIndexRoute
+}
+
+const authenticatedOnlyBarberScheduleNewAppointmentRouteRouteChildren: authenticatedOnlyBarberScheduleNewAppointmentRouteRouteChildren =
+  {
+    authenticatedOnlyBarberScheduleNewAppointmentIndexRoute:
+      authenticatedOnlyBarberScheduleNewAppointmentIndexRoute,
+  }
+
+const authenticatedOnlyBarberScheduleNewAppointmentRouteRouteWithChildren =
+  authenticatedOnlyBarberScheduleNewAppointmentRouteRoute._addFileChildren(
+    authenticatedOnlyBarberScheduleNewAppointmentRouteRouteChildren,
+  )
+
 interface authenticatedOnlyBarberScheduleRouteRouteChildren {
-  authenticatedOnlyBarberScheduleNewAppointmentRoute: typeof authenticatedOnlyBarberScheduleNewAppointmentRoute
+  authenticatedOnlyBarberScheduleNewAppointmentRouteRoute: typeof authenticatedOnlyBarberScheduleNewAppointmentRouteRouteWithChildren
   authenticatedOnlyBarberScheduleDashboardAppointmentIdRoute: typeof authenticatedOnlyBarberScheduleDashboardAppointmentIdRoute
   authenticatedOnlyBarberScheduleDashboardIndexRoute: typeof authenticatedOnlyBarberScheduleDashboardIndexRoute
 }
 
 const authenticatedOnlyBarberScheduleRouteRouteChildren: authenticatedOnlyBarberScheduleRouteRouteChildren =
   {
-    authenticatedOnlyBarberScheduleNewAppointmentRoute:
-      authenticatedOnlyBarberScheduleNewAppointmentRoute,
+    authenticatedOnlyBarberScheduleNewAppointmentRouteRoute:
+      authenticatedOnlyBarberScheduleNewAppointmentRouteRouteWithChildren,
     authenticatedOnlyBarberScheduleDashboardAppointmentIdRoute:
       authenticatedOnlyBarberScheduleDashboardAppointmentIdRoute,
     authenticatedOnlyBarberScheduleDashboardIndexRoute:
@@ -637,6 +668,7 @@ export interface FileRoutesByFullPath {
   '/chat': typeof laterChatRoute
   '/contact': typeof laterContactRoute
   '/work-with-us': typeof laterWorkWithUsRoute
+  '/barber-schedule/new-appointment': typeof authenticatedOnlyBarberScheduleNewAppointmentRouteRouteWithChildren
   '/barber-shop/$barberShopId': typeof authenticatedOnlyBarberShopBarberShopIdRouteRouteWithChildren
   '/profile/$userId': typeof authenticatedOnlyProfileUserIdRouteRouteWithChildren
   '/admin/dashboard': typeof authenticatedOnlyAdminDashboardRoute
@@ -646,7 +678,6 @@ export interface FileRoutesByFullPath {
   '/admin/remove-all': typeof authenticatedOnlyAdminRemoveAllRoute
   '/admin/reset-password': typeof authenticatedOnlyAdminResetPasswordRoute
   '/admin/search-users': typeof authenticatedOnlyAdminSearchUsersRoute
-  '/barber-schedule/new-appointment': typeof authenticatedOnlyBarberScheduleNewAppointmentRoute
   '/barber-shop/register': typeof authenticatedOnlyBarberShopRegisterRoute
   '/barber-schedule/dashboard/$appointmentId': typeof authenticatedOnlyBarberScheduleDashboardAppointmentIdRoute
   '/barber-shop/$barberShopId/dashboard': typeof authenticatedOnlyBarberShopBarberShopIdDashboardRoute
@@ -655,6 +686,7 @@ export interface FileRoutesByFullPath {
   '/barber-shop/$barberShopId/services': typeof authenticatedOnlyBarberShopBarberShopIdServicesRoute
   '/profile/$userId/edit': typeof authenticatedOnlyProfileUserIdEditRoute
   '/barber-schedule/dashboard': typeof authenticatedOnlyBarberScheduleDashboardIndexRoute
+  '/barber-schedule/new-appointment/': typeof authenticatedOnlyBarberScheduleNewAppointmentIndexRoute
   '/barber-shop/$barberShopId/': typeof authenticatedOnlyBarberShopBarberShopIdIndexRoute
   '/profile/$userId/': typeof authenticatedOnlyProfileUserIdIndexRoute
 }
@@ -679,7 +711,6 @@ export interface FileRoutesByTo {
   '/admin/remove-all': typeof authenticatedOnlyAdminRemoveAllRoute
   '/admin/reset-password': typeof authenticatedOnlyAdminResetPasswordRoute
   '/admin/search-users': typeof authenticatedOnlyAdminSearchUsersRoute
-  '/barber-schedule/new-appointment': typeof authenticatedOnlyBarberScheduleNewAppointmentRoute
   '/barber-shop/register': typeof authenticatedOnlyBarberShopRegisterRoute
   '/barber-schedule/dashboard/$appointmentId': typeof authenticatedOnlyBarberScheduleDashboardAppointmentIdRoute
   '/barber-shop/$barberShopId/dashboard': typeof authenticatedOnlyBarberShopBarberShopIdDashboardRoute
@@ -688,6 +719,7 @@ export interface FileRoutesByTo {
   '/barber-shop/$barberShopId/services': typeof authenticatedOnlyBarberShopBarberShopIdServicesRoute
   '/profile/$userId/edit': typeof authenticatedOnlyProfileUserIdEditRoute
   '/barber-schedule/dashboard': typeof authenticatedOnlyBarberScheduleDashboardIndexRoute
+  '/barber-schedule/new-appointment': typeof authenticatedOnlyBarberScheduleNewAppointmentIndexRoute
   '/barber-shop/$barberShopId': typeof authenticatedOnlyBarberShopBarberShopIdIndexRoute
   '/profile/$userId': typeof authenticatedOnlyProfileUserIdIndexRoute
 }
@@ -706,6 +738,7 @@ export interface FileRoutesById {
   '/(later)/chat': typeof laterChatRoute
   '/(later)/contact': typeof laterContactRoute
   '/(later)/work-with-us': typeof laterWorkWithUsRoute
+  '/(authenticated-only)/barber-schedule/new-appointment': typeof authenticatedOnlyBarberScheduleNewAppointmentRouteRouteWithChildren
   '/(authenticated-only)/barber-shop/$barberShopId': typeof authenticatedOnlyBarberShopBarberShopIdRouteRouteWithChildren
   '/(authenticated-only)/profile/$userId': typeof authenticatedOnlyProfileUserIdRouteRouteWithChildren
   '/(authenticated-only)/admin/dashboard': typeof authenticatedOnlyAdminDashboardRoute
@@ -715,7 +748,6 @@ export interface FileRoutesById {
   '/(authenticated-only)/admin/remove-all': typeof authenticatedOnlyAdminRemoveAllRoute
   '/(authenticated-only)/admin/reset-password': typeof authenticatedOnlyAdminResetPasswordRoute
   '/(authenticated-only)/admin/search-users': typeof authenticatedOnlyAdminSearchUsersRoute
-  '/(authenticated-only)/barber-schedule/new-appointment': typeof authenticatedOnlyBarberScheduleNewAppointmentRoute
   '/(authenticated-only)/barber-shop/register': typeof authenticatedOnlyBarberShopRegisterRoute
   '/(authenticated-only)/barber-schedule/dashboard/$appointmentId': typeof authenticatedOnlyBarberScheduleDashboardAppointmentIdRoute
   '/(authenticated-only)/barber-shop/$barberShopId/dashboard': typeof authenticatedOnlyBarberShopBarberShopIdDashboardRoute
@@ -724,6 +756,7 @@ export interface FileRoutesById {
   '/(authenticated-only)/barber-shop/$barberShopId/services': typeof authenticatedOnlyBarberShopBarberShopIdServicesRoute
   '/(authenticated-only)/profile/$userId/edit': typeof authenticatedOnlyProfileUserIdEditRoute
   '/(authenticated-only)/barber-schedule/dashboard/': typeof authenticatedOnlyBarberScheduleDashboardIndexRoute
+  '/(authenticated-only)/barber-schedule/new-appointment/': typeof authenticatedOnlyBarberScheduleNewAppointmentIndexRoute
   '/(authenticated-only)/barber-shop/$barberShopId/': typeof authenticatedOnlyBarberShopBarberShopIdIndexRoute
   '/(authenticated-only)/profile/$userId/': typeof authenticatedOnlyProfileUserIdIndexRoute
 }
@@ -743,6 +776,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/contact'
     | '/work-with-us'
+    | '/barber-schedule/new-appointment'
     | '/barber-shop/$barberShopId'
     | '/profile/$userId'
     | '/admin/dashboard'
@@ -752,7 +786,6 @@ export interface FileRouteTypes {
     | '/admin/remove-all'
     | '/admin/reset-password'
     | '/admin/search-users'
-    | '/barber-schedule/new-appointment'
     | '/barber-shop/register'
     | '/barber-schedule/dashboard/$appointmentId'
     | '/barber-shop/$barberShopId/dashboard'
@@ -761,6 +794,7 @@ export interface FileRouteTypes {
     | '/barber-shop/$barberShopId/services'
     | '/profile/$userId/edit'
     | '/barber-schedule/dashboard'
+    | '/barber-schedule/new-appointment/'
     | '/barber-shop/$barberShopId/'
     | '/profile/$userId/'
   fileRoutesByTo: FileRoutesByTo
@@ -784,7 +818,6 @@ export interface FileRouteTypes {
     | '/admin/remove-all'
     | '/admin/reset-password'
     | '/admin/search-users'
-    | '/barber-schedule/new-appointment'
     | '/barber-shop/register'
     | '/barber-schedule/dashboard/$appointmentId'
     | '/barber-shop/$barberShopId/dashboard'
@@ -793,6 +826,7 @@ export interface FileRouteTypes {
     | '/barber-shop/$barberShopId/services'
     | '/profile/$userId/edit'
     | '/barber-schedule/dashboard'
+    | '/barber-schedule/new-appointment'
     | '/barber-shop/$barberShopId'
     | '/profile/$userId'
   id:
@@ -809,6 +843,7 @@ export interface FileRouteTypes {
     | '/(later)/chat'
     | '/(later)/contact'
     | '/(later)/work-with-us'
+    | '/(authenticated-only)/barber-schedule/new-appointment'
     | '/(authenticated-only)/barber-shop/$barberShopId'
     | '/(authenticated-only)/profile/$userId'
     | '/(authenticated-only)/admin/dashboard'
@@ -818,7 +853,6 @@ export interface FileRouteTypes {
     | '/(authenticated-only)/admin/remove-all'
     | '/(authenticated-only)/admin/reset-password'
     | '/(authenticated-only)/admin/search-users'
-    | '/(authenticated-only)/barber-schedule/new-appointment'
     | '/(authenticated-only)/barber-shop/register'
     | '/(authenticated-only)/barber-schedule/dashboard/$appointmentId'
     | '/(authenticated-only)/barber-shop/$barberShopId/dashboard'
@@ -827,6 +861,7 @@ export interface FileRouteTypes {
     | '/(authenticated-only)/barber-shop/$barberShopId/services'
     | '/(authenticated-only)/profile/$userId/edit'
     | '/(authenticated-only)/barber-schedule/dashboard/'
+    | '/(authenticated-only)/barber-schedule/new-appointment/'
     | '/(authenticated-only)/barber-shop/$barberShopId/'
     | '/(authenticated-only)/profile/$userId/'
   fileRoutesById: FileRoutesById
@@ -947,6 +982,13 @@ export const routeTree = rootRoute
     "/(later)/work-with-us": {
       "filePath": "(later)/work-with-us.tsx"
     },
+    "/(authenticated-only)/barber-schedule/new-appointment": {
+      "filePath": "(authenticated-only)/barber-schedule/new-appointment/route.tsx",
+      "parent": "/(authenticated-only)/barber-schedule",
+      "children": [
+        "/(authenticated-only)/barber-schedule/new-appointment/"
+      ]
+    },
     "/(authenticated-only)/barber-shop/$barberShopId": {
       "filePath": "(authenticated-only)/barber-shop/$barberShopId/route.tsx",
       "parent": "/(authenticated-only)/barber-shop",
@@ -994,10 +1036,6 @@ export const routeTree = rootRoute
       "filePath": "(authenticated-only)/admin/search-users.tsx",
       "parent": "/(authenticated-only)/admin"
     },
-    "/(authenticated-only)/barber-schedule/new-appointment": {
-      "filePath": "(authenticated-only)/barber-schedule/new-appointment.tsx",
-      "parent": "/(authenticated-only)/barber-schedule"
-    },
     "/(authenticated-only)/barber-shop/register": {
       "filePath": "(authenticated-only)/barber-shop/register.tsx",
       "parent": "/(authenticated-only)/barber-shop"
@@ -1029,6 +1067,10 @@ export const routeTree = rootRoute
     "/(authenticated-only)/barber-schedule/dashboard/": {
       "filePath": "(authenticated-only)/barber-schedule/dashboard/index.tsx",
       "parent": "/(authenticated-only)/barber-schedule"
+    },
+    "/(authenticated-only)/barber-schedule/new-appointment/": {
+      "filePath": "(authenticated-only)/barber-schedule/new-appointment/index.tsx",
+      "parent": "/(authenticated-only)/barber-schedule/new-appointment"
     },
     "/(authenticated-only)/barber-shop/$barberShopId/": {
       "filePath": "(authenticated-only)/barber-shop/$barberShopId/index.tsx",

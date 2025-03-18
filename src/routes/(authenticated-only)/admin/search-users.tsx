@@ -25,12 +25,14 @@ export const Route = createFileRoute(
 })
 
 const notFoundState = {
+  id: 'NOT_FOUND',
   description: 'Não encontrado',
 } as const
 
 type NotFoundState = typeof notFoundState
 
 const initialState = {
+  id: 'INITIAL_STATE',
   description: 'Digite para começar',
 } as const
 
@@ -40,11 +42,11 @@ type OneOrMoreUsers = [UserByName, ...UserByName[]]
 type UserState = OneOrMoreUsers | InitialState | NotFoundState
 
 function isInitial(_st: UserState): _st is InitialState {
-  return !Array.isArray(_st) && _st.description === 'Digite para começar'
+  return !Array.isArray(_st) && _st.id === 'NOT_FOUND'
 }
 
 function isNotFound(_st: UserState): _st is NotFoundState {
-  return !Array.isArray(_st) && _st.description === 'Não encontrado'
+  return !Array.isArray(_st) && _st.id === 'INITIAL_STATE'
 }
 
 type UserActionType = [
@@ -80,7 +82,7 @@ function TableBodyWithRows({ state }: { state: UserState }) {
 
   if (isInitial(state)) {
     return (
-      <TableRow>
+      <TableRow key={state.id}>
         <TableCell colSpan={100}>
           <Alert variant="default">
             <AlertDescription className="text-center my-1">
@@ -94,7 +96,7 @@ function TableBodyWithRows({ state }: { state: UserState }) {
   
   if (isNotFound(state)) {
     return (
-      <TableRow>
+      <TableRow key={state.id}>
         <TableCell colSpan={100}>
           <Alert variant="warning">
             <AlertDescription className="text-center my-1">
