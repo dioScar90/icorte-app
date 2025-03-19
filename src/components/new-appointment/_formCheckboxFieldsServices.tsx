@@ -1,4 +1,3 @@
-import { Control } from "react-hook-form"
 import { FormControl, FormField, FormItem, FormLabel } from "../ui/form"
 import { Checkbox } from "../ui/checkbox"
 import { useSuspenseQuery } from "@tanstack/react-query"
@@ -16,11 +15,11 @@ function LoadingServices() {
   )
 }
 
-function LoadedFieldsServices({ control }: { control: Control }) {
-  const { barberShopId } = useDialogContext()
+function LoadedFieldsServices() {
+  const { form, barberShopId } = useDialogContext()
 
   const queryOptions = useRouteContext({
-    from: '/(authenticated-only)/barber-schedule/new-appointment/',
+    from: '/(authenticated-only)/barber-schedule/new-appointment',
     select: (s) => s.allServicesQueryOptions,
   })
 
@@ -35,7 +34,7 @@ function LoadedFieldsServices({ control }: { control: Control }) {
   return services.map((item) => (
     <FormField
       key={item.id}
-      control={control}
+      control={form.control}
       name="serviceIds"
       render={({ field }: { field: any }) => (
         <FormItem
@@ -59,10 +58,10 @@ function LoadedFieldsServices({ control }: { control: Control }) {
   ))
 }
 
-export function CheckboxFieldsServices(props: { control: Control }) {
+export function CheckboxFieldsServices() {
   return (
     <Suspense fallback={<LoadingServices />}>
-      <LoadedFieldsServices { ...props } />
+      <LoadedFieldsServices />
     </Suspense>
   )
 }

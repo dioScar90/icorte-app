@@ -3,23 +3,38 @@ import { FormNewAppointment } from './_form'
 import { Button } from '../ui/button'
 import { Scissors } from 'lucide-react'
 import { useSearch } from '@tanstack/react-router'
-import { createContext, PropsWithChildren, useContext, useState } from 'react'
+import { createContext, PropsWithChildren, useContext } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { appointmentSchema, AppointmentZod } from '@/schemas/appointment'
 
 type ContextType = {
   formId: string
   barberShopId: number
   defaultServiceId: number
-  isLoading: boolean
-  setIsLoading: (arg: boolean) => void
+  form: ReturnType<typeof useForm<AppointmentZod>>
 }
 
 const DialogContext = createContext<ContextType | null>(null)
 
-function DialogProvider({ children, ...rest }: PropsWithChildren<Omit<ContextType, 'isLoading' | 'setIsLoading'>>) {
-  const [isLoading, setIsLoading] = useState(false)
+function DialogProvider({ children, barberShopId, defaultServiceId }: PropsWithChildren<Pick<ContextType, 'barberShopId' | 'defaultServiceId'>>) {
+  const form = useForm<AppointmentZod>({
+    resolver: zodResolver(appointmentSchema),
+    defaultValues: {
+      date: undefined,
+      startTime: undefined,
+      paymentType: undefined,
+      notes: undefined,
+      serviceIds: [defaultServiceId],
+    }
+  })
 
+  const formId = `form_${barberShopId}_${defaultServiceId}`
+  
   return (
-    <DialogContext.Provider value={{ isLoading, setIsLoading, ...rest }}>
+    <DialogContext.Provider
+      value={{ barberShopId, defaultServiceId, formId, form }}
+    >
       {children}
     </DialogContext.Provider>
   )
@@ -28,13 +43,13 @@ function DialogProvider({ children, ...rest }: PropsWithChildren<Omit<ContextTyp
 export const useDialogContext = () => useContext(DialogContext)!
 
 function DialogSubmitButton() {
-  const { formId, isLoading } = useDialogContext()
-
+  const { form, formId } = useDialogContext()
+  
   return (
     <Button
       type="submit"
       form={formId}
-      isLoading={isLoading}
+      isLoading={form.formState.isSubmitting}
       IconLeft={<Scissors />}
     >
       Agendar
@@ -67,23 +82,17 @@ function DialogItself() {
 }
 
 export function DialogNewAppointment() {
-  const { barberShopId, defaultServiceId } = useSearch({
+  const newAppointment = useSearch({
     from: '/(authenticated-only)/barber-schedule/new-appointment',
-    select: (s) => s.newAppointment!,
+    select: (s) => s.newAppointment,
   })
 
-  if (!barberShopId || !defaultServiceId) {
+  if (!newAppointment?.barberShopId || !newAppointment?.defaultServiceId) {
     return null
   }
-
-  const formId = `form_${barberShopId}`
   
   return (
-    <DialogProvider
-      formId={formId}
-      barberShopId={barberShopId}
-      defaultServiceId={defaultServiceId}
-    >
+    <DialogProvider { ...newAppointment }>
       <DialogItself />
     </DialogProvider>
   )

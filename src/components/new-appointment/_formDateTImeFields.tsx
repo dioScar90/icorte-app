@@ -1,7 +1,4 @@
-import { Control } from "react-hook-form"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
-import { useBarberScheduleLayout } from "../layouts/barber-schedule-layout"
-import { AppointmentZod } from "@/schemas/appointment"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Suspense, useRef, useState } from "react"
 import { CalendarIcon, ChevronDown, Loader2 } from "lucide-react"
@@ -20,16 +17,6 @@ import { getFormattedHour } from "@/schemas/sharedValidators/timeOnly"
 import { useRouteContext } from "@tanstack/react-router"
 import { useDialogContext } from "./_dialog"
 
-type ActionType<KItem extends keyof ReturnType<typeof useBarberScheduleLayout>> =
-  ReturnType<typeof useBarberScheduleLayout>[KItem]
-  
-export type NewAppointmentProps = {
-  barberShopId: number
-  serviceIds: number[]
-  control: Control<AppointmentZod>
-  getAbailableSlots: ActionType<'getAbailableSlots'>
-}
-
 function LoadingDatesAndTimeSpans() {
   return (
     <div className="flex gap-x-2">
@@ -39,18 +26,20 @@ function LoadingDatesAndTimeSpans() {
   )
 }
 
-type TimeSpansType = {
-  currentDate: DateOnly
-} & Pick<NewAppointmentProps, 'control' | 'getAbailableSlots' | 'barberShopId' | 'serviceIds'>
+type CurrentDate = Parameters<Parameters<ReturnType<typeof useDialogContext>['form']['handleSubmit']>[0]>[0]['date']
 
-function LoadedFieldsDatesAndTimeSpans({ control, currentDate, serviceIds }: TimeSpansType) {
-  const { barberShopId } = useDialogContext()
+function LoadedFieldsDatesAndTimeSpans({ currentDate }: { currentDate: CurrentDate }) {
+  const { form, barberShopId } = useDialogContext()
 
-  const queryOptions = useRouteContext({
-    from: '/(authenticated-only)/barber-schedule/new-appointment/',
-    select: (s) => s.appointmentsQueryOptions,
+  const [queryOptions] = useRouteContext({
+    from: '/(authenticated-only)/barber-schedule/new-appointment',
+    select: (s) => [
+      s.appointmentsQueryOptions,
+    ] as const
   })
 
+  const serviceIds = form.watch('serviceIds')
+  
   const { data: startTimes } = useSuspenseQuery(queryOptions(barberShopId, currentDate, serviceIds))
   
   function getDataAsDayMonth(date: DateOnly) {
@@ -60,7 +49,7 @@ function LoadedFieldsDatesAndTimeSpans({ control, currentDate, serviceIds }: Tim
   return (
     <>
       <FormField
-        control={control}
+        control={form.control}
         name="startTime"
         render={({ field }) => (
           <FormItem>
@@ -98,14 +87,30 @@ function LoadedFieldsDatesAndTimeSpans({ control, currentDate, serviceIds }: Tim
   )
 }
 
-export function InputFieldsDatesAndTimeSpans({ control, getAbailableSlots, barberShopId, serviceIds }: NewAppointmentProps) {
-  const [currentDate, setCurrentDate] = useState<DateOnly | undefined>(undefined)
+function FieldsDatesAndTimeSpans({ currentDate }: { currentDate?: CurrentDate }) {
+  if (!currentDate) {
+    return null
+  }
+  
+  return (
+    <Suspense fallback={<LoadingDatesAndTimeSpans />}>
+      <LoadedFieldsDatesAndTimeSpans
+        currentDate={currentDate}
+      />
+    </Suspense>
+  )
+}
+
+export function InputFieldsDatesAndTimeSpans() {
+  const { form } = useDialogContext()
+  
+  const [currentDate, setCurrentDate] = useState<CurrentDate>()
   const closeBtnRef = useRef<HTMLButtonElement>(null)
   
   return (
     <>
       <FormField
-        control={control}
+        control={form.control}
         name="date"
         render={({ field }) => {
           return (
@@ -154,18 +159,8 @@ export function InputFieldsDatesAndTimeSpans({ control, getAbailableSlots, barbe
           </FormItem>
         )}}
       />
-      
-      {!!currentDate && serviceIds.length > 0 && (
-        <Suspense fallback={<LoadingDatesAndTimeSpans />}>
-          <LoadedFieldsDatesAndTimeSpans
-            currentDate={currentDate}
-            control={control}
-            getAbailableSlots={getAbailableSlots}
-            barberShopId={barberShopId}
-            serviceIds={serviceIds}
-          />
-        </Suspense>
-      )}
+
+      <FieldsDatesAndTimeSpans currentDate={currentDate} />
     </>
   )
 }
