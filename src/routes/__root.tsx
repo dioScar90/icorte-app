@@ -65,6 +65,10 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
     if (context.auth.isAuthenticated && unauthenticatedOnly) {
       goHome()
     }
+
+    return {
+      goHome,
+    }
   },
   component: RootComponent,
 })

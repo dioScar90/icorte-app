@@ -15,10 +15,7 @@ export const Route = createFileRoute('/(authenticated-only)/profile/$userId')({
     const res = await context.getProfileById(params.userId)
     
     if (!res.isSuccess) {
-      throw redirect({
-        to: '/',
-        replace: true,
-      })
+      context.goHome()
     }
     
     return {

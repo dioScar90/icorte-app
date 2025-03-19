@@ -1,6 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { BarberShop } from "@/types/models/barberShop";
 import { z } from 'zod';
+import { getBarberShopImageUrl } from '@/hooks/use-auth';
 
 const schema = z.object({
   barberShopId: z.number()
@@ -10,16 +11,41 @@ export const Route = createFileRoute(
   '/(authenticated-only)/barber-shop/$barberShopId',
 )({
   component: RouteComponent,
-  params: {
-    parse: (params) => schema.parse(params),
-  }
+  params: schema,
+  beforeLoad: ({ context, params }) => {
+    if (!context.auth.isBarberShop) {
+      context.goHome()
+    }
+
+    if (params.barberShopId !== context.auth.user?.barberShop?.id) {
+      context.goHome()
+    }
+    
+    return {
+      barberShop: {
+        getBarberShop: context.barberShop.service.getBarberShop,
+        update: context.barberShop.service.updateBarberShop,
+        getAppointments: context.barberShop.service.getAppointmentsByBarberShop,
+
+        loadBarber: () => context.barberShop.service.getBarberShop(params.barberShopId)
+          .then(res => res)
+          .then(res => {
+            if (!res.isSuccess) {
+              return null
+            }
+
+            return {
+              ...res.value,
+              imageUrl: getBarberShopImageUrl(res.value),
+            }
+          })
+      }
+    }
+  },
 })
 
 function RouteComponent() {
   return (
-    <div>
-      Hello
-      "/(authenticated-only)/(barber-shop-only)/barber-shop/$barberShopId"!
-    </div>
+    <Outlet />
   )
 }
