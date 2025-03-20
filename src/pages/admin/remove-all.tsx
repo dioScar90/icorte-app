@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
-import { useHandleErrors } from "@/providers/handleErrorProvider";
+import { useHandleErrors } from "@/hooks/use-error";
 import { Switch } from "@/components/ui/switch";
 import { baseAdminSchema, BaseAdminZod, useAdminLayout } from "@/components/layouts/admin-layout";
 import { Bomb } from "lucide-react";

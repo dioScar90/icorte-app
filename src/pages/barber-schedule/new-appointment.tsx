@@ -11,7 +11,7 @@ import {
 import { useSearchParams } from "react-router-dom"
 import { useBarberScheduleLayout } from "@/components/layouts/barber-schedule-layout"
 import { ServiceByName } from "@/types/custom-models/service-by-name"
-import { useHandleErrors } from "@/providers/handleErrorProvider"
+import { useHandleErrors } from "@/hooks/use-error"
 import { debounce } from "@/utils/debounce"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Prettify } from "@/utils/types/prettify"

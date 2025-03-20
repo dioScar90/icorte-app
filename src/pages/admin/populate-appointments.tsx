@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
-import { useHandleErrors } from "@/providers/handleErrorProvider";
+import { useHandleErrors } from "@/hooks/use-error";
 import { appointmentsAdminSchema, AppointmentsAdminZod, useAdminLayout } from "@/components/layouts/admin-layout";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarArrowUp, CalendarIcon } from "lucide-react";

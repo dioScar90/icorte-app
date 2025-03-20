@@ -2,7 +2,7 @@ import { ProxyProvider } from '@/providers/proxyProvider'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import { PropsWithChildren } from 'react'
 import { ThemeProvider } from './theme-provider'
-import { HandleErrorProvider } from '@/providers/handleErrorProvider'
+import { HandleErrorProvider } from '@/hooks/use-error'
 
 const client = new QueryClient()
 

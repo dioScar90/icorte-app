@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/providers/authProvider"
-import { useHandleErrors } from "@/providers/handleErrorProvider"
+import { useHandleErrors } from "@/hooks/use-error"
 import { AppointmentZod, PaymentTypeEnum } from "@/schemas/appointment"
 import { getFormattedDate } from "@/schemas/sharedValidators/dateOnly"
 import { getFormattedHour } from "@/schemas/sharedValidators/timeOnly"

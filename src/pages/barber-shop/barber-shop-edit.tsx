@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
-import { useHandleErrors } from "@/providers/handleErrorProvider";
+import { useHandleErrors } from "@/hooks/use-error";
 import { useEffect } from "react";
 import { useBarberShopLayout } from "@/components/layouts/barber-shop-layout";
 import { barberShopSchema, BarberShopZod } from "@/schemas/barberShop";

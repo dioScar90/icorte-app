@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
 import { barberShopSchema, BarberShopZod } from "@/schemas/barberShop";
-import { useHandleErrors } from "@/providers/handleErrorProvider";
+import { useHandleErrors } from "@/hooks/use-error";
 import { useBarberShopLayout } from "@/components/layouts/barber-shop-layout";
 import { useEffect } from "react";
 import { applyMask } from "@/utils/mask";

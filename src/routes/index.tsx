@@ -1,6 +1,5 @@
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-// import { useAuth } from "@/providers/authProvider";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarIcon, LogInIcon, ScissorsIcon, StoreIcon, UserIcon, UserRoundPlusIcon } from "lucide-react";
 

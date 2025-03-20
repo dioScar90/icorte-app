@@ -1,5 +1,5 @@
 import { Profile } from '@/types/models/profile'
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -8,9 +8,7 @@ const schema = z.object({
 
 export const Route = createFileRoute('/(authenticated-only)/profile/$userId')({
   component: RouteComponent,
-  params: {
-    parse: (params) => schema.parse(params),
-  },
+  params: schema,
   beforeLoad: async ({ context, params }) => {
     const res = await context.getProfileById(params.userId)
     
@@ -26,10 +24,8 @@ export const Route = createFileRoute('/(authenticated-only)/profile/$userId')({
 
 function RouteComponent() {
   return (
-    <>
-      <div className="flex-1 flex flex-col h-full">
-        <Outlet />
-      </div>
-    </>
+    <div className="flex-1 flex flex-col h-full">
+      <Outlet />
+    </div>
   )
 }

@@ -1,6 +1,6 @@
 // import { createContext, PropsWithChildren, useContext } from "react"
 import axios, { AxiosError } from 'axios'
-import { BaseDataError, InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from "@/providers/handleErrorProvider"
+import { BaseDataError, InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from "@/hooks/use-error"
 
 const httpClient = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,

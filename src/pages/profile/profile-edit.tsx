@@ -4,7 +4,7 @@ import { userUpdateSchema, UserUpdateZod } from "@/schemas/user";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
-import { useHandleErrors } from "@/providers/handleErrorProvider";
+import { useHandleErrors } from "@/hooks/use-error";
 import { useProfileLayout } from "@/components/layouts/profile-layout";
 import { useEffect } from "react";
 import { applyMask } from "@/utils/mask";

@@ -31,9 +31,7 @@ export const Route = createFileRoute(
   '/(authenticated-only)/barber-schedule/dashboard/$appointmentId',
 )({
   component: RouteComponent,
-  params: {
-    parse: (params) => schema.parse(params),
-  },
+  params: schema,
 })
 
 type FormProps = {

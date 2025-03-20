@@ -1,6 +1,5 @@
 // ErrorContext.tsx
 import { toast } from '@/hooks/use-toast';
-import { createContext, PropsWithChildren, useCallback, useContext } from 'react';
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 
@@ -11,25 +10,6 @@ type PropsToastMustHave<K> = [K, {
 }]
 
 type PropsErrorsToDispach<K> = [K, { message: string }]
-
-type ErrorHandlerContextType = {
-  handleError:
-  <TForm extends FieldValues, KField extends "root" | `root.${string}` | Path<TForm>>
-    (error: FieldError<KField> | Error | string | unknown, reactHookForm?: UseFormReturn<TForm>)
-    => void
-}
-
-const ErrorHandlerContext = createContext<ErrorHandlerContextType | undefined>(undefined);
-
-export function useHandleErrors() {
-  const context = useContext(ErrorHandlerContext);
-
-  if (!context) {
-    throw new Error('useError must be used within an ErrorHandlerProvider');
-  }
-
-  return context;
-};
 
 class FieldError<K extends string = string> extends Error {
   private readonly title: string
@@ -51,7 +31,6 @@ class FieldError<K extends string = string> extends Error {
           variant: 'destructive',
           title: this.title,
           description: this.errors[key][0],
-          // types: values.length === 1 ? undefined : Object.fromEntries(values.map((value, i) => [`item_${i}`, value])),
         }
       ])
     }
@@ -114,17 +93,6 @@ export class BaseDataError extends Error {
   }
 
   private getHtmlForSwalBody() {
-    // return (
-    //   <>
-    //     <p>{this.detail}</p>
-    //     <ul>
-    //       {Object.entries(this.errors).map(([key, values]) => (
-    //         <li key={key}>{'=>'} {values[0]}</li>
-    //       ))}
-    //     </ul>
-    //   </>
-    // )
-
     const div = document.createElement('div')
 
     div.innerHTML = `
@@ -215,72 +183,6 @@ export function handleError
   })
 }
 
-export type HandleError = typeof handleError
+export const useError = () => handleError
 
-export function HandleErrorProvider({ children }: PropsWithChildren) {
-  const handleError = useCallback(function
-    <
-      TForm extends FieldValues,
-      KField extends "root" | `root.${string}` | Path<TForm>,
-    >
-    (error: Error | string | unknown, reactHookForm?: UseFormReturn<TForm>) {
-    if (!error) {
-      return
-    }
-    
-    const isReactHookForm = (form: any): form is UseFormReturn<TForm> => !!form
-    const isFieldError = (err: any): err is FieldError<KField> => err instanceof FieldError
-    const isKeyFromPath = (key: string): key is Path<TForm> => !key.startsWith('root')
-
-    console.log('error', error)
-    console.log('reactHookForm', reactHookForm)
-
-    if (isReactHookForm(reactHookForm) && isFieldError(error)) {
-      const toForm = error.getFormErrorOptions()
-      console.log('toForm', toForm)
-      toForm.forEach(item => reactHookForm.setError(...item))
-
-      let lastValidKey: Path<TForm> | undefined
-
-      for (const [key, value] of error.getToastOptions()) {
-        console.log('keys', [key, value])
-        toast(value)
-        lastValidKey = isKeyFromPath(key) ? key : lastValidKey
-      }
-
-      if (lastValidKey) {
-        reactHookForm.setFocus(lastValidKey)
-      }
-
-      return
-    }
-
-    if (error instanceof BaseDataError) {
-      Swal.fire(error.getSwalOptions())
-      return
-    }
-
-    if (error instanceof Error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'title' in error ? (error.title ?? undefined) : undefined,
-        text: error.message,
-      })
-      return
-    }
-
-    Swal.fire({
-      icon: 'error',
-      text: error === 'string' ? error : 'Erro desconhecido, tente novamente',
-    })
-  }, [])
-
-  return (
-    <ErrorHandlerContext.Provider value={{ handleError }}>
-      {children}
-    </ErrorHandlerContext.Provider>
-  )
-}
-
-
-
+export type HandleError = ReturnType<typeof useError>

@@ -4,7 +4,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRoo
 import { GoogleSvg } from "@/components/ui/google-svg"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/hooks/use-toast"
-import { useHandleErrors } from "@/providers/handleErrorProvider"
 import { userLoginSchema } from "@/schemas/user"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link } from "@tanstack/react-router"
@@ -38,10 +37,15 @@ function PasswordControl({ field }: { field: ControllerRenderProps<SchemaType, '
 }
 
 export function Login() {
+  const [handleError, login] = Route.useRouteContext({
+    select: (s) => [
+      s.handleError,
+      s.auth.login,
+    ] as const
+  })
+  
   const navigate = useNavigate()
-  const login = Route.useRouteContext({ select: (s) => s.auth.login })
-  const { handleError } = useHandleErrors()
-
+  
   const form = useForm<SchemaType>({
     resolver: zodResolver(userLoginSchema),
     defaultValues: {
@@ -68,7 +72,9 @@ export function Login() {
       navigate({
         to: '/',
         replace: true,
-        state: { message: 'Login realizado com sucesso' },
+        state: {
+          message: 'Login realizado com sucesso',
+        },
       })
     } catch (err) {
       handleError(err, form)

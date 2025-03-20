@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ROUTE_ENUM } from "@/types/route";
-import { useHandleErrors } from "@/providers/handleErrorProvider";
+import { useHandleErrors } from "@/hooks/use-error";
 import { resetPasswordSchema, ResetPasswordZod, useAdminLayout } from "@/components/layouts/admin-layout";
 import { ListRestart } from "lucide-react";
 

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { userLoginSchema } from "@/schemas/user";
 import { useAuth } from "@/providers/authProvider";
-import { useHandleErrors } from "@/providers/handleErrorProvider";
+import { useHandleErrors } from "@/hooks/use-error";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff, LogInIcon } from "lucide-react";
 import { GoogleSvg } from "@/components/ui/google-svg";

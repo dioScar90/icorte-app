@@ -4,7 +4,7 @@ import { userRegisterSchema, UserRegisterZod } from "@/schemas/user";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/providers/authProvider";
 import { ROUTE_ENUM } from "@/types/route";
-import { useHandleErrors } from "@/providers/handleErrorProvider";
+import { useHandleErrors } from "@/hooks/use-error";
 import { MouseEvent, useEffect, useState } from "react";
 import { applyMask } from "@/utils/mask";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";

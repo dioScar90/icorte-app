@@ -2,7 +2,6 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useAuth } from '@/providers/authProvider'
 import { GenderEnum } from '@/schemas/profile'
 import { userUpdateSchema, UserUpdateZod } from '@/schemas/user'
 import { getEnumAsArray, getEnumAsString } from '@/utils/enum-as-array'
@@ -21,16 +20,16 @@ export const Route = createFileRoute(
 })
 
 function RouteComponent() {
-  const [handleError, updateProfile, profile] = Route.useRouteContext({
+  const [handleError, updateProfile, profile, userPhoneNumber] = Route.useRouteContext({
     select: (s) => [
       s.handleError,
       s.updateProfile,
       s.profile,
+      s.auth.user?.phoneNumber!,
     ] as const
   })
 
   const navigate = useNavigate()
-  const { user } = useAuth()
   
   const form = useForm<UserUpdateZod>({
     resolver: zodResolver(userUpdateSchema),
@@ -39,7 +38,7 @@ function RouteComponent() {
         firstName: profile.firstName,
         lastName: profile.lastName,
         gender: profile.gender,
-        phoneNumber: applyMask('PHONE_NUMBER', user!.phoneNumber),
+        phoneNumber: applyMask('PHONE_NUMBER', userPhoneNumber),
       }
     }
   })

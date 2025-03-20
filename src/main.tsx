@@ -5,7 +5,7 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 // Import the generated route tree
 import { FileRouteTypes, routeTree } from './routeTree.gen'
 import { useProxy } from './hooks/use-proxy'
-import { handleError } from './providers/handleErrorProvider'
+import { useError } from './hooks/use-error'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ErrorRoutePage } from './pages/error-route'
 import { useAuth } from './hooks/use-auth'
@@ -17,8 +17,8 @@ const queryClient = new QueryClient()
 const router = createRouter({
   routeTree,
   context: {
-    handleError,
     queryClient,
+    handleError: undefined!,
     httpClient: undefined!,
     auth: undefined!,
   },
@@ -43,6 +43,7 @@ declare module '@tanstack/history' {
 }
 
 function App() {
+  const handleError = useError()
   const httpClient = useProxy()
   const auth = useAuth(httpClient)
 
@@ -50,6 +51,7 @@ function App() {
     <RouterProvider
       router={router}
       context={{
+        handleError,
         httpClient,
         auth,
       }}

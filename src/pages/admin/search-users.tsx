@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Link, useSearchParams } from "react-router-dom"
-import { useHandleErrors } from "@/providers/handleErrorProvider"
+import { useHandleErrors } from "@/hooks/use-error"
 import { debounce } from "@/utils/debounce"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Prettify } from "@/utils/types/prettify"

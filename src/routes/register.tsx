@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
 import { userRegisterSchema, UserRegisterZod } from "@/schemas/user";
-import { useHandleErrors } from "@/providers/handleErrorProvider";
 import { MouseEvent, useEffect, useState } from "react";
 import { applyMask } from "@/utils/mask";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
@@ -23,11 +22,17 @@ export const Route = createFileRoute('/register')({
 })
 
 export function Register() {
+  const [handleError, register] = Route.useRouteContext({
+    select: (s) => [
+      s.handleError,
+      s.auth.register,
+    ] as const
+  })
+  
+  const navigate = useNavigate()
+
   const [isViewPassword, setIsViewPassword] = useState(false)
   const EyeViewPasswordIcon = isViewPassword ? Eye : EyeOff
-  const navigate = useNavigate()
-  const register = Route.useRouteContext({ select: (s) => s.auth.register })
-  const { handleError } = useHandleErrors()
 
   const form = useForm<UserRegisterZod>({
     resolver: zodResolver(userRegisterSchema),
