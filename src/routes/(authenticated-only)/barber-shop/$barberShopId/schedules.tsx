@@ -1,6 +1,20 @@
+import { FormRecurringSchedule, RecurringScheduleRegisterProps, RecurringScheduleRemoveProps, RecurringScheduleUpdateProps } from '@/components/forms/form-recurring-schedule'
+import { FormSpecialSchedule, SpecialScheduleRegisterProps, SpecialScheduleRemoveProps, SpecialScheduleUpdateProps } from '@/components/forms/form-special-schedule'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Separator } from '@/components/ui/separator'
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { RecurringScheduleService } from '@/data/services/RecurringScheduleService'
 import { SpecialScheduleService } from '@/data/services/SpecialScheduleService'
+import { DayOfWeekEnum } from '@/schemas/recurringSchedule'
+import { getFormattedDate } from '@/schemas/sharedValidators/dateOnly'
+import { getFormattedHour } from '@/schemas/sharedValidators/timeOnly'
+import { getEnumAsString } from '@/utils/enum-as-array'
 import { createFileRoute } from '@tanstack/react-router'
+import { DoorClosed, DoorOpen, Edit, ShoppingBag, Trash2 } from 'lucide-react'
+import { useCallback, useEffect, useReducer, useState } from 'react'
 
 export const Route = createFileRoute(
   '/(authenticated-only)/barber-shop/$barberShopId/schedules',
@@ -18,7 +32,8 @@ export const Route = createFileRoute(
         
         getAll: () => recurringRep.getAllRecurringSchedules(params.barberShopId)
           .then(res => res)
-          .then(res => res.isSuccess && res.value.items?.length > 0 ? res.value.items : []),
+          .then(res => res.isSuccess && res.value.items?.length > 0 ? res.value.items : [])
+          .catch(() => []),
       },
 
       special: {
@@ -28,7 +43,8 @@ export const Route = createFileRoute(
         
         getAll: () => specialRep.getAllSpecialSchedules(params.barberShopId)
           .then(res => res)
-          .then(res => res.isSuccess && res.value.items?.length > 0 ? res.value.items : []),
+          .then(res => res.isSuccess && res.value.items?.length > 0 ? res.value.items : [])
+          .catch(() => []),
       },
     }
   },
@@ -208,7 +224,20 @@ function dialogReducer(state: DialogState, action: DialogAction): DialogState {
 // #endregion
 
 function RouteComponent() {
-  const { barberShop, recurring, special } = useSchedulesLayout()
+  const [barberShop, recurringSchedules, specialSchedules] = Route.useLoaderData({
+    select: (s) => [
+      s.barberShop!,
+      s.recurringSchedules,
+      s.specialSchedules,
+    ] as const
+  })
+
+  const [recurring, special] = Route.useRouteContext({
+    select: (s) => [
+      s.recurring,
+      s.special,
+    ] as const
+  })
   
   const [isLoading, setIsLoading] = useState(false)
   const [state, dispatch] = useReducer(dialogReducer, { open: false })
@@ -250,8 +279,8 @@ function RouteComponent() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {Array.isArray(recurring.schedules?.items) && recurring.schedules.items.length > 0
-                  ? recurring.schedules.items.map(({ barberShopId, ...schedule }) => (
+                {recurringSchedules.length > 0
+                  ? recurringSchedules.map(({ barberShopId, ...schedule }) => (
                     <TableRow key={schedule.dayOfWeek} data-barber-shop-id={barberShopId}>
                       <TableCell className="text-center">{getEnumAsString(DayOfWeekEnum, schedule.dayOfWeek)}</TableCell>
                       <TableCell className="text-center">{getFormattedHour(schedule.openTime, true)}</TableCell>
@@ -262,7 +291,15 @@ function RouteComponent() {
                             size="icon"
                             variant="outline"
                             title="Editar"
-                            onClick={() => dispatch({ type: 'RECURRING_UPDATE_FORM', payload: { action: recurring.update, barberShopId, dayOfWeek: schedule.dayOfWeek, schedule } })}
+                            onClick={() => dispatch({
+                              type: 'RECURRING_UPDATE_FORM',
+                              payload: {
+                                action: recurring.update,
+                                barberShopId,
+                                dayOfWeek: schedule.dayOfWeek,
+                                schedule,
+                              },
+                            })}
                           >
                             <Edit />
                           </Button>
@@ -270,7 +307,15 @@ function RouteComponent() {
                             size="icon"
                             variant="destructive"
                             title="Remover"
-                            onClick={() => dispatch({ type: 'RECURRING_REMOVE_FORM', payload: { action: recurring.remove, barberShopId, dayOfWeek: schedule.dayOfWeek, schedule } })}
+                            onClick={() => dispatch({
+                              type: 'RECURRING_REMOVE_FORM',
+                              payload: {
+                                action: recurring.remove,
+                                barberShopId,
+                                dayOfWeek: schedule.dayOfWeek,
+                                schedule,
+                              },
+                            })}
                           >
                             <Trash2 />
                           </Button>
@@ -295,7 +340,13 @@ function RouteComponent() {
             <div className="w-full h-14 relative">
               <Button
                 type="button" className="absolute-middle-y right-0"
-                onClick={() => dispatch({ type: 'RECURRING_REGISTER_FORM', payload: { action: recurring.register, barberShopId: barberShop.id } })}
+                onClick={() => dispatch({
+                  type: 'RECURRING_REGISTER_FORM',
+                  payload: {
+                    action: recurring.register,
+                    barberShopId: barberShop.id,
+                  },
+                })}
               >
                 <ShoppingBag />
                 Novo
@@ -325,8 +376,8 @@ function RouteComponent() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {Array.isArray(special.schedules?.items) && special.schedules.items.length > 0
-                  ? special.schedules.items.map(({ barberShopId, ...schedule }) => (
+                {specialSchedules.length > 0
+                  ? specialSchedules.map(({ barberShopId, ...schedule }) => (
                     <TableRow key={schedule.date} data-barber-shop-id={barberShopId}>
                       <TableCell className="text-center">{getFormattedDate(schedule.date)}</TableCell>
                       <TableCell className="text-center">{schedule.notes ?? '---'}</TableCell>

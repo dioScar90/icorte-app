@@ -16,27 +16,26 @@ export const Route = createFileRoute(
 )({
   component: RouteComponent,
   beforeLoad: ({ context, search, location }) => ({
-    queryOptions: (init?: number) =>
-      queryOptions({
-        queryKey: [location.pathname, { take: init ?? search?.take }],
-        queryFn: () => context.admin.getLastUsers(init ?? search?.take)
-          .then(resp => resp)
-          .then(resp => {
-            if (!resp.isSuccess) {
-              throw resp.error
-            }
+    queryOptions: (init?: number) => queryOptions({
+      queryKey: [location.pathname, { take: init ?? search?.take }],
+      queryFn: () => context.admin.getLastUsers(init ?? search?.take)
+        .then(resp => resp)
+        .then(resp => {
+          if (!resp.isSuccess) {
+            throw resp.error
+          }
 
-            if (!resp.value?.length) {
-              return []
-            }
-
-            return resp.value
-          })
-          .catch(err => {
-            context.handleError(err)
+          if (!resp.value?.length) {
             return []
-          }),
-      })
+          }
+
+          return resp.value
+        })
+        .catch(err => {
+          context.handleError(err)
+          return []
+        }),
+    }),
   }),
   loader: async ({ context: { queryClient, queryOptions } }) =>
     queryClient.ensureQueryData(queryOptions(5)),
