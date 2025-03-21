@@ -2,32 +2,20 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { BarberShopServiceForm } from './_form'
 import { Button } from '../ui/button'
 import { ShoppingBag } from 'lucide-react'
-import { useLoaderData, useParams, useRouteContext, useSearch } from '@tanstack/react-router'
 import { createContext, PropsWithChildren, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { serviceSchema, ServiceZod } from '@/schemas/service'
 import { applyMask } from '@/utils/mask'
-import { BARBER_SHOP_SERVICES_ACTION_TYPES } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/services'
+import { Route as BarberShopServicesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/services'
 
-type BarberShopServiceFormType = {
-  action: BARBER_SHOP_SERVICES_ACTION_TYPES
-  
-  formId: string
-  barberShopId: number
-  serviceId?: number
-  
-  form: ReturnType<typeof useForm<ServiceZod>>
-  doStuff: (...args: Parameters<Parameters<ReturnType<typeof useForm<ServiceZod>>['handleSubmit']>[0]>) => Promise<{ message: string }>
-} & ReturnType<typeof getDialogInfos>
+type BarberShopServicesSearchParams = NonNullable<typeof BarberShopServicesRoute.types.searchSchema['open']>
 
-const BarberShopServiceFormContext = createContext<BarberShopServiceFormType | null>(null)
-
-function getDialogInfos(action: BARBER_SHOP_SERVICES_ACTION_TYPES) {
+function getDialogInfos(action: BarberShopServicesSearchParams['action']) {
   const infos = {
     'REGISTER': {
       dialogInfos: {
-        title: 'alfkd',
+        title: 'Cadastrar',
         description: 'Preencha os campos abaixo para criar um novo serviço.',
       },
       submitBtnInfos: {
@@ -37,7 +25,7 @@ function getDialogInfos(action: BARBER_SHOP_SERVICES_ACTION_TYPES) {
     },
     'UPDATE': {
       dialogInfos: {
-        title: 'alfkd',
+        title: 'Cadastrar',
         description: 'Confira os campos abaixo para atualizar o serviço.',
       },
       submitBtnInfos: {
@@ -47,7 +35,7 @@ function getDialogInfos(action: BARBER_SHOP_SERVICES_ACTION_TYPES) {
     },
     'REMOVE': {
       dialogInfos: {
-        title: 'alfkd',
+        title: 'Cadastrar',
         description: 'ATENÇÃO - Serviço será removido.',
       },
       submitBtnInfos: {
@@ -60,23 +48,31 @@ function getDialogInfos(action: BARBER_SHOP_SERVICES_ACTION_TYPES) {
   return infos[action]
 }
 
-function BarberShopServiceFormProvider({ children }: PropsWithChildren) {
-  const { barberShopId } = useParams({
-    from: '/(authenticated-only)/barber-shop/$barberShopId/services',
-  })
+type BarberShopServiceFormType = {
+  action: BarberShopServicesSearchParams['action']
+  
+  formId: string
+  barberShopId: number
+  serviceId?: BarberShopServicesSearchParams['serviceId']
+  
+  form: ReturnType<typeof useForm<ServiceZod>>
+  doStuff: (...args: Parameters<Parameters<ReturnType<typeof useForm<ServiceZod>>['handleSubmit']>[0]>) => Promise<{ message: string }>
+} & ReturnType<typeof getDialogInfos>
 
-  const { action, serviceId } = useSearch({
-    from: '/(authenticated-only)/barber-shop/$barberShopId/services',
+const BarberShopServiceFormContext = createContext<BarberShopServiceFormType | null>(null)
+
+function BarberShopServiceFormProvider({ children }: PropsWithChildren) {
+  const { barberShopId } = BarberShopServicesRoute.useParams()
+
+  const { action, serviceId } = BarberShopServicesRoute.useSearch({
     select: (s) => s.open!,
   })
 
-  const service = useLoaderData({
-    from: '/(authenticated-only)/barber-shop/$barberShopId/services',
+  const service = BarberShopServicesRoute.useLoaderData({
     select: (s) => !!serviceId ? s.services.find(({ id }) => id === serviceId) : undefined,
   })
   
-  const [register, update, remove] = useRouteContext({
-    from: '/(authenticated-only)/barber-shop/$barberShopId/services',
+  const [register, update, remove] = BarberShopServicesRoute.useRouteContext({
     select: (s) => [
       s.services.register,
       s.services.update,
@@ -187,9 +183,7 @@ function DialogItself() {
 }
 
 export function BarberShopServiceDialog() {
-  const { open } = useSearch({
-    from: '/(authenticated-only)/barber-shop/$barberShopId/services',
-  })
+  const { open } = BarberShopServicesRoute.useSearch()
 
   if (!open) {
     return null

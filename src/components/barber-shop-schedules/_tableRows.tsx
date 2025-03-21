@@ -3,19 +3,20 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { getNumberAsCurrency } from '@/utils/currency'
+import { useLoaderData } from '@tanstack/react-router'
 import { useNavigate } from '@tanstack/react-router'
 import { Edit, Trash2 } from 'lucide-react'
-import { Route as BarberShopServicesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/services'
 
 export function TableBodyWithRows() {
-  const [services] = BarberShopServicesRoute.useLoaderData({
+  const [services] = useLoaderData({
+    from: '/(authenticated-only)/barber-shop/$barberShopId/services',
     select: (s) => [
       s.services,
     ] as const
   })
   
   const navigate = useNavigate({
-    from: BarberShopServicesRoute.fullPath,
+    from: '/barber-shop/$barberShopId/services',
   })
   
   if (!services.length) {

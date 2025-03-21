@@ -1,9 +1,9 @@
+import { BarberShopScheduleDialog } from '@/components/barber-shop-schedules/_dialog'
 import { FormRecurringSchedule, RecurringScheduleRegisterProps, RecurringScheduleRemoveProps, RecurringScheduleUpdateProps } from '@/components/barber-shop/form-recurring-schedule'
 import { FormSpecialSchedule, SpecialScheduleRegisterProps, SpecialScheduleRemoveProps, SpecialScheduleUpdateProps } from '@/components/barber-shop/form-special-schedule'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { RecurringScheduleService } from '@/data/services/RecurringScheduleService'
@@ -15,6 +15,48 @@ import { getEnumAsString } from '@/utils/enum-as-array'
 import { createFileRoute } from '@tanstack/react-router'
 import { DoorClosed, DoorOpen, Edit, ShoppingBag, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useReducer, useState } from 'react'
+import { z } from 'zod'
+
+type ACTION_TYPES = [
+  'REGISTER',
+  'UPDATE',
+  'REMOVE',
+][number]
+
+type SCHEDULES_TYPES = [
+  'special',
+  'recurring',
+][number]
+
+const scheduleValidateSchema = z.object({
+  open: z.discriminatedUnion('action', [
+    z.object({
+      action: z.enum(['REGISTER']),
+      scheduleType: z.enum(['special', 'recurring']),
+      date: z.undefined().optional(),
+      dayOfWeek: z.undefined().optional(),
+    }),
+    z.object({
+      action: z.enum(['UPDATE', 'REMOVE']),
+      scheduleType: z.enum(['recurring']),
+      date: z.undefined().optional(),
+      dayOfWeek: z.number().int().min(0).max(6),
+    }),
+    z.object({
+      action: z.enum(['UPDATE', 'REMOVE']),
+      scheduleType: z.enum(['special']),
+      date: z.date(),
+      dayOfWeek: z.undefined().optional(),
+    }),
+  ]).optional()
+}) satisfies z.ZodType<{
+  open?: {
+    action: ACTION_TYPES
+    scheduleType: SCHEDULES_TYPES
+    date?: Date,
+    dayOfWeek?: number,
+  }
+}>
 
 export const Route = createFileRoute(
   '/(authenticated-only)/barber-shop/$barberShopId/schedules',
@@ -53,6 +95,7 @@ export const Route = createFileRoute(
     recurringSchedules: await context.recurring.getAll(),
     specialSchedules: await context.special.getAll(),
   }),
+  validateSearch: scheduleValidateSchema,
 })
 
 // #region types
@@ -439,53 +482,8 @@ function RouteComponent() {
           </CardContent>
         </Card>
       </div>
-      
-      <Dialog open={state.open} onOpenChange={handleDialogOpenChange}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{state.open && state.dialogTitle}</DialogTitle>
-            <DialogDescription>
-              {state.open && state.dialogDescription}
-            </DialogDescription>
-          </DialogHeader>
-          
-          {state.open && state.scheduleType === 'recurring' && (
-            <FormRecurringSchedule
-              {...state}
-              closeModal={closeModal}
-              setLoadingState={setLoadingState}
-            />
-          )}
-          
-          {state.open && state.scheduleType === 'special' && (
-            <FormSpecialSchedule
-              {...state}
-              closeModal={closeModal}
-              setLoadingState={setLoadingState}
-            />
-          )}
 
-          <DialogFooter className="grid grid-cols-2 md:flex md:justify-end gap-2">
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Cancelar
-              </Button>
-            </DialogClose>
-
-            {state.open && (
-              <Button
-                type="submit"
-                variant={state.submitBtnVariant}
-                form={state.formId}
-                isLoading={isLoading}
-                IconLeft={<ShoppingBag />}
-              >
-                {state.submitBtnInnerText}
-              </Button>
-            )}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <BarberShopScheduleDialog />
     </>
   )
 }

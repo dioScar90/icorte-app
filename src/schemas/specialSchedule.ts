@@ -56,5 +56,5 @@ export const specialScheduleSchema = z.object({
       return
     }
   })
-
+  
 export type SpecialScheduleZod = z.infer<typeof specialScheduleSchema>

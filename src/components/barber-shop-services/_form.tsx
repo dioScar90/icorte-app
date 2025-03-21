@@ -4,23 +4,20 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRoo
 import { applyMask } from "@/utils/mask"
 import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
 import { TimeOnly } from "@/utils/types/date"
-import { useRouteContext } from "@tanstack/react-router"
 import { useNavigate } from "@tanstack/react-router"
 import { useBarberShopServiceFormContext } from "./_dialog"
+import { Route as BarberShopServicesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/services'
 
 export function BarberShopServiceForm() {
   const { form, doStuff, formId, action } = useBarberShopServiceFormContext()
 
-  const [handleError] = useRouteContext({
-    from: '/(authenticated-only)/barber-shop/$barberShopId/services',
+  const [handleError] = BarberShopServicesRoute.useRouteContext({
     select: (s) => [
       s.handleError,
     ] as const
   })
   
-  const navigate = useNavigate({
-    from: '/barber-shop/$barberShopId/services',
-  })
+  const navigate = useNavigate({ from: BarberShopServicesRoute.fullPath })
   
   function handlePriceChange(e: ChangeEvent<HTMLInputElement>) {
     const maskedValue = applyMask('MONEY', e.currentTarget.value)
