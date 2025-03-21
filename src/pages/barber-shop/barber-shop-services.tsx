@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useServicesLayout } from "@/components/layouts/barber-shop-services-layout";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { FormService, RegisterProps, RemoveProps, UpdateProps } from "@/components/forms/form-service";
+import { FormService, RegisterProps, RemoveProps, UpdateProps } from "@/components/barber-shop/form-service";
 import { LineClamp } from "@/components/line-clamp";
 
 type AllClosedState = {

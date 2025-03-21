@@ -1,88 +1,26 @@
 import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { serviceSchema, ServiceZod } from "@/schemas/service"
-import { ChangeEvent, useEffect } from "react"
+import { ChangeEvent } from "react"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "../ui/form"
-import { useServicesLayout } from "../layouts/barber-shop-services-layout"
-import { useLocation, useNavigate } from "react-router-dom"
-import { useHandleErrors } from "@/hooks/use-error"
 import { applyMask } from "@/utils/mask"
 import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
 import { TimeOnly } from "@/utils/types/date"
+import { useRouteContext } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
+import { useBarberShopServiceFormContext } from "./_dialog"
 
-export type RegisterProps = {
-  formId: 'register-form'
-  action: ReturnType<typeof useServicesLayout>['register']
-  serviceId?: undefined
-  service?: undefined
-}
+export function BarberShopServiceForm() {
+  const { form, doStuff, formId, action } = useBarberShopServiceFormContext()
 
-export type UpdateProps = {
-  formId: 'update-form'
-  action: ReturnType<typeof useServicesLayout>['update']
-  serviceId: number
-  service: ServiceZod
-}
-
-export type RemoveProps = {
-  formId: 'remove-form'
-  action: ReturnType<typeof useServicesLayout>['remove']
-  serviceId: number
-  service: ServiceZod
-}
-
-type Props = {
-  closeModal: () => void
-  setLoadingState: (arg: boolean) => void
-  barberShopId: number
-} & (RegisterProps | UpdateProps | RemoveProps)
-
-export function FormService({ formId, action, closeModal, setLoadingState, barberShopId, serviceId, service }: Props) {
-  const navigate = useNavigate()
-  const { pathname } = useLocation()
-  const { handleError } = useHandleErrors()
-  
-  const form = useForm<ServiceZod>({
-    resolver: formId !== 'remove-form' ? zodResolver(serviceSchema) : undefined,
-    defaultValues: {
-      name: service?.name || '',
-      description: service?.description || '',
-      price: service?.price ? applyMask('MONEY', service?.price) : undefined,
-      duration: service?.duration || undefined,
-    }
+  const [handleError] = useRouteContext({
+    from: '/(authenticated-only)/barber-shop/$barberShopId/services',
+    select: (s) => [
+      s.handleError,
+    ] as const
   })
   
-  async function onSubmit(data: ServiceZod) {
-    try {
-      let result: Awaited<ReturnType<typeof action>>
-      let message: string
-      
-      switch (formId) {
-        case 'register-form':
-          result = await action(barberShopId, data)
-          message = result.value?.message ?? 'Serviço criado com sucesso'
-          break
-        case 'update-form':
-          result = await action(barberShopId, serviceId, data)
-          message = result.value?.message ?? 'Serviço atualizado com sucesso'
-          break
-        default:
-          result = await action(barberShopId, serviceId)
-          message = result.value?.message ?? 'Serviço removido com sucesso'
-      }
-      
-      if (!result.isSuccess) {
-        throw result.error
-      }
-      
-      navigate(pathname, { replace: true, state: { message }})
-    } catch (err) {
-      handleError(err, form)
-    } finally {
-      closeModal()
-    }
-  }
+  const navigate = useNavigate({
+    from: '/barber-shop/$barberShopId/services',
+  })
   
   function handlePriceChange(e: ChangeEvent<HTMLInputElement>) {
     const maskedValue = applyMask('MONEY', e.currentTarget.value)
@@ -102,13 +40,26 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
     e.currentTarget.focus()
   }
   
-  useEffect(() => {
-    setLoadingState(form.formState.isSubmitting)
-  }, [form.formState])
-  
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} id={formId} className="space-y-6">
+      <form
+        id={formId} className="space-y-6"
+        onSubmit={form.handleSubmit(async (data) => {
+          try {
+            const { message } = await doStuff(data)
+            
+            navigate({
+              search: ({ open, ...rest}) => ({ ...rest }),
+              replace: true,
+              state: { message },
+            })
+          } catch (err) {
+            handleError(err, form)
+          } finally {
+            // TODO: closeModal()
+          }
+        })}
+      >
         <div className="grid gap-3">
           <FormField
             control={form.control}
@@ -117,7 +68,7 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
               <FormItem>
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="Nome" {...field} disabled={formId === 'remove-form'} />
+                  <Input type="text" placeholder="Nome" {...field} disabled={action === 'REGISTER'} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -131,7 +82,7 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
               <FormItem>
                 <FormLabel>Descrição</FormLabel>
                 <FormControl>
-                  <Input type="text" placeholder="Descrição (opcional)" {...field} disabled={formId === 'remove-form'} />
+                  <Input type="text" placeholder="Descrição (opcional)" {...field} disabled={action === 'REGISTER'} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -149,7 +100,7 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
                     {...field}
                     type="text" inputMode="decimal" placeholder="R$ 45,00"
                     onChange={handlePriceChange} onFocus={navigateToEndAfterFocus}
-                    disabled={formId === 'remove-form'}
+                    disabled={action === 'REGISTER'}
                   />
                 </FormControl>
                 <FormMessage />
@@ -168,7 +119,7 @@ export function FormService({ formId, action, closeModal, setLoadingState, barbe
                     {...field}
                     type="text" inputMode="numeric" placeholder="00:30:00"
                     onChange={handleDurationChange} onFocus={navigateToEndAfterFocus}
-                    disabled={formId === 'remove-form'}
+                    disabled={action === 'REGISTER'}
                   />
                 </FormControl>
                 <FormMessage />

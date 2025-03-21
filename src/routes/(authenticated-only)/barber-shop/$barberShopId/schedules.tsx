@@ -1,5 +1,5 @@
-import { FormRecurringSchedule, RecurringScheduleRegisterProps, RecurringScheduleRemoveProps, RecurringScheduleUpdateProps } from '@/components/forms/form-recurring-schedule'
-import { FormSpecialSchedule, SpecialScheduleRegisterProps, SpecialScheduleRemoveProps, SpecialScheduleUpdateProps } from '@/components/forms/form-special-schedule'
+import { FormRecurringSchedule, RecurringScheduleRegisterProps, RecurringScheduleRemoveProps, RecurringScheduleUpdateProps } from '@/components/barber-shop/form-recurring-schedule'
+import { FormSpecialSchedule, SpecialScheduleRegisterProps, SpecialScheduleRemoveProps, SpecialScheduleUpdateProps } from '@/components/barber-shop/form-special-schedule'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'

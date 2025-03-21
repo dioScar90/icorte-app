@@ -17,8 +17,8 @@ type Year = ExcludeZeroOr<`20${ZeroToNine}${ZeroToNine}`, NothingBefore2024>
 type Month = ExcludeZeroOr<`0${ZeroToNine}` | `1${'0' | '1' | '2'}`>
 type Day = ExcludeZeroOr<`${'0' | '1' |'2'}${ZeroToNine}` | '30' | '31'>
 
-export type TimeOnly = `${Hour}:${MinuteOrSecond}:${MinuteOrSecond}`
-export type DateOnly = `${Year}-${Month}-${Day}`
+export type TimeOnly<TTime extends string = string & `${Hour}:${MinuteOrSecond}:${MinuteOrSecond}`> = TTime
+export type DateOnly<TDate extends string = string & `${Year}-${Month}-${Day}`> = TDate
 
 const dayOfWeekEnum = [
   'Sunday',
