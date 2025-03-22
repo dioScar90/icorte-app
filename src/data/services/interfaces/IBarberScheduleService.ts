@@ -1,11 +1,12 @@
 import { BaseResult, Pagination, PaginationResult } from "@/data/result";
 import { ServiceByName } from "@/types/custom-models/service-by-name";
 import { TopBarberShop } from "@/types/models/barberShop";
-import { DateOnly, TimeOnly } from "@/utils/types/date";
+import { DateString } from "@/utils/types/date-string";
+import { TimeString } from "@/utils/types/time-string";
 
 export interface IBarberScheduleService {
-  getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateOnly): BaseResult<DateOnly[]>;
-  getAvailableSlots(barberShopId: number, date: DateOnly, serviceIds: number[]): BaseResult<TimeOnly[]>;
-  getTopBarbersWithAvailability(dateOfWeek: DateOnly, pag?: Pagination): PaginationResult<TopBarberShop>;
+  getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateString): BaseResult<DateString[]>;
+  getAvailableSlots(barberShopId: number, date: DateString, serviceIds: number[]): BaseResult<TimeString[]>;
+  getTopBarbersWithAvailability(dateOfWeek: DateString, pag?: Pagination): PaginationResult<TopBarberShop>;
   searchServicesByNameAsync(q: string, pag?: Pagination): PaginationResult<ServiceByName>;
 }

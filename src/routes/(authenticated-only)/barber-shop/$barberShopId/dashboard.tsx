@@ -6,8 +6,8 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { paginationSchemaValidation } from '@/data/result'
 import { cn } from '@/lib/utils'
 import { PaymentTypeEnum } from '@/schemas/appointment'
-import { getFormattedDate } from '@/schemas/sharedValidators/dateOnly'
-import { getFormattedHour } from '@/schemas/sharedValidators/timeOnly'
+import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
+import { getFormattedHour } from '@/schemas/sharedValidators/timeString'
 import { getEnumAsString } from '@/utils/enum-as-array'
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
@@ -26,15 +26,15 @@ export const Route = createFileRoute(
           pagination: undefined,
         }
       }
-      
+
       const { items: appointments, ...pagination } = resp.value
-      
+
       return {
         appointments,
         pagination,
       }
     }
-    
+
     return {
       queryOptions: () => queryOptions({
         queryKey: ['appointmentsByBarbershop', { ...params, ...search.pagination }],
@@ -43,7 +43,7 @@ export const Route = createFileRoute(
             if (!resp.isSuccess) {
               throw resp.error
             }
-  
+
             return getPaginationObj(resp)
           })
           .catch(err => {
@@ -68,9 +68,9 @@ function BarberShopDashboardTbodyItems() {
   })
 
   const navigate = useNavigate({ from: Route.fullPath })
-  
+
   const { data: { appointments, pagination } } = useSuspenseQuery(queryOptions())
-  
+
   useEffect(() => {
     navigate({
       search: (prev) => ({ ...prev, pagination }),
@@ -90,7 +90,7 @@ function BarberShopDashboardTbodyItems() {
       </TableRow>
     )
   }
-  
+
   return appointments.map(({ barberShopId, client, services, ...appointment }) => (
     <TableRow key={appointment.id} data-barber-shop-id={barberShopId}>
       <TableCell className="text-center">{getFormattedDate(appointment.date)}</TableCell>
@@ -139,7 +139,7 @@ function PaginationBarberShopAppointments() {
   }
 
   // TODO: Create Custom Link for Pagination Components
-  
+
   return (
     <Pagination>
       <PaginationContent>
@@ -149,11 +149,11 @@ function PaginationBarberShopAppointments() {
             search={(prev) => ({ ...prev, page: 'prev' in pagination ? pagination.prev : pagination.page })}
           />
         </PaginationItem>
-        
+
         <PaginationItem>
           <PaginationEllipsis />
         </PaginationItem>
-        
+
         {'prev' in pagination && (
           <PaginationItem>
             <PaginationLink
@@ -164,17 +164,17 @@ function PaginationBarberShopAppointments() {
             </PaginationLink>
           </PaginationItem>
         )}
-        
+
         <PaginationItem>
-            <PaginationLink
-              from={Route.fullPath}
-              search={(prev) => ({ ...prev, page: pagination.page })}
-              isActive
-            >
-              {pagination.page}
-            </PaginationLink>
+          <PaginationLink
+            from={Route.fullPath}
+            search={(prev) => ({ ...prev, page: pagination.page })}
+            isActive
+          >
+            {pagination.page}
+          </PaginationLink>
         </PaginationItem>
-        
+
         {'next' in pagination && (
           <PaginationItem>
             <PaginationLink
@@ -185,7 +185,7 @@ function PaginationBarberShopAppointments() {
             </PaginationLink>
           </PaginationItem>
         )}
-        
+
         <PaginationItem>
           <PaginationEllipsis />
         </PaginationItem>
@@ -207,7 +207,7 @@ function RouteComponent() {
       s.barberShop!,
     ] as const
   })
-  
+
   return (
     <>
       <div className="before-card">
@@ -235,7 +235,7 @@ function RouteComponent() {
                 <BarberShopDashboardTbody />
               </TableBody>
             </Table>
-            
+
             <PaginationBarberShopAppointments />
           </CardContent>
         </Card>

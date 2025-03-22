@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { getStringAsTimeOnly } from './sharedValidators/timeOnly'
+import { getStringAsTimeString } from './sharedValidators/timeString'
 import { isBrMoneyGreaterThenZero, isValidBrlMoney } from './sharedValidators/brlMoney'
 
 export const serviceSchema = z.object({
@@ -17,7 +17,7 @@ export const serviceSchema = z.object({
 
   duration: z.string({ required_error: 'Duração obrigatória' })
     .time('Duração inválida')
-    .transform(getStringAsTimeOnly),
+    .transform(getStringAsTimeString),
 })
 
 export type ServiceZod = z.infer<typeof serviceSchema>

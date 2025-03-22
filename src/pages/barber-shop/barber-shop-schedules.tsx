@@ -11,8 +11,8 @@ import { useSchedulesLayout } from "@/components/layouts/barber-shop-schedules-l
 import { getEnumAsString } from "@/utils/enum-as-array";
 import { DayOfWeekEnum } from "@/schemas/recurringSchedule";
 import { Separator } from "@/components/ui/separator";
-import { getFormattedDate } from "@/schemas/sharedValidators/dateOnly";
-import { getFormattedHour } from "@/schemas/sharedValidators/timeOnly";
+import { getFormattedDate } from "@/schemas/sharedValidators/dateString";
+import { getFormattedHour } from "@/schemas/sharedValidators/timeString";
 
 type AllClosedState = {
   open: false
@@ -182,13 +182,13 @@ function dialogReducer(state: DialogState, action: DialogAction): DialogState {
 
 export function BarberShopSchedules() {
   const { barberShop, recurring, special } = useSchedulesLayout()
-  
+
   const [isLoading, setIsLoading] = useState(false)
   const [state, dispatch] = useReducer(dialogReducer, { open: false })
 
   const setLoadingState = useCallback((arg: boolean) => setIsLoading(arg), [])
   const closeModal = useCallback(() => dispatch({ type: 'CLEAR' }), [])
-  
+
   useEffect(() => {
     if (!state.open) {
       setIsLoading(false)
@@ -275,9 +275,9 @@ export function BarberShopSchedules() {
               </Button>
             </div>
           </CardContent>
-          
+
           <Separator />
-          
+
           <CardHeader className="py-4 px-2 md:px-3 lg:px-4">
             <CardTitle className="text-2xl">Horários especiais - {barberShop.name}</CardTitle>
             <CardDescription>
@@ -348,7 +348,7 @@ export function BarberShopSchedules() {
                   )}
               </TableBody>
             </Table>
-            
+
             <div className="w-full h-14 relative">
               <Button
                 type="button" className="absolute-middle-y right-0"
@@ -361,7 +361,7 @@ export function BarberShopSchedules() {
           </CardContent>
         </Card>
       </div>
-      
+
       <Dialog open={state.open} onOpenChange={handleDialogOpenChange}>
         <DialogContent>
           <DialogHeader>
@@ -370,7 +370,7 @@ export function BarberShopSchedules() {
               {state.open && state.dialogDescription}
             </DialogDescription>
           </DialogHeader>
-          
+
           {state.open && state.scheduleType === 'recurring' && (
             <FormRecurringSchedule
               {...state}
@@ -378,7 +378,7 @@ export function BarberShopSchedules() {
               setLoadingState={setLoadingState}
             />
           )}
-          
+
           {state.open && state.scheduleType === 'special' && (
             <FormSpecialSchedule
               {...state}

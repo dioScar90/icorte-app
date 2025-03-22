@@ -36,7 +36,7 @@ function getCep(value: string) {
 
 const hasOnlyZerosAfterExcludeNonNumerics = (value: string) => !(+(value.replace(/\D/g, '')))
 
-function getTimeOnly(value: string) {
+function getTimeString(value: string) {
   value = value
     .replace(/\D/g, '')
     .padStart(6, '0')
@@ -47,7 +47,7 @@ function getTimeOnly(value: string) {
   return hasOnlyZerosAfterExcludeNonNumerics(value) ? '' : value
 }
 
-function getDateOnly(value: string) {
+function getDateString(value: string) {
   value = value.replace(/\D/g, '').slice(0, 8)
 
   const putFirstBar = value.length > 2
@@ -60,7 +60,7 @@ function getDateOnly(value: string) {
   if (putFirstBar) {
     value = value.slice(0, 2) + '/' + value.slice(2)
   }
-  
+
   return value
 }
 
@@ -69,13 +69,13 @@ function getMoney(value: number | string) {
     .replace(/\D/g, '')
     .padStart(3, '0')
     .replace(/(\d)(?=\d{2}$)/, '$1.')
-  
+
   const money = +value
-  
+
   if (!money) {
     return getNumberAsCurrency(0)
   }
-  
+
   return getNumberAsCurrency(money)
 }
 
@@ -96,19 +96,19 @@ type MaskFunc =
     TType extends MaskType,
     TValue extends TType extends 'MONEY' ? number | string : string,
   >
-  (type: TType, value?: TValue) => string
+    (type: TType, value?: TValue) => string
 
 export const applyMask: MaskFunc = (type, value) => {
   if (value === undefined) {
     return ''
   }
-  
+
   const isMoneyType = (t: typeof type, v: unknown): v is number | string => t === 'MONEY' && (typeof v === 'number' || typeof v === 'string')
-  
+
   if (isMoneyType(type, value)) {
     return getMoney(value)
   }
-  
+
   if (type === 'CPF') {
     return getCpf(value)
   }
@@ -126,12 +126,12 @@ export const applyMask: MaskFunc = (type, value) => {
   }
 
   if (type === 'TIME_ONLY') {
-    return getTimeOnly(value)
+    return getTimeString(value)
   }
 
   if (type === 'DATE_ISO') {
-    return getDateOnly(value)
+    return getDateString(value)
   }
-  
+
   return ''
 }

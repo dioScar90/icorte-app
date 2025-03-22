@@ -7,11 +7,11 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { PaginationResponse } from "@/data/result";
 import { cn } from "@/lib/utils";
 import { PaymentTypeEnum } from "@/schemas/appointment";
-import { getFormattedDate } from "@/schemas/sharedValidators/dateOnly";
-import { getFormattedHour } from "@/schemas/sharedValidators/timeOnly";
+import { getFormattedDate } from "@/schemas/sharedValidators/dateString";
+import { getFormattedHour } from "@/schemas/sharedValidators/timeString";
 import { ROUTE_ENUM } from "@/types/route";
 import { getEnumAsString } from "@/utils/enum-as-array";
-import { TimeOnly } from "@/utils/types/date";
+import { TimeString } from "@/utils/types/date-string";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { DoorClosed, DoorOpen } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
@@ -36,13 +36,13 @@ function BarberShopDashboardTbodyItems({
     queryKey: ['appointmentsByBarbershop', barberShopId, page],
     queryFn: () => getAppointments(barberShopId, { page: +page! || 1, pageSize: 5 }),
   })
-  
+
   const { value: { items, ...pagination } } = appointments
 
   useEffect(() => {
     setPagination(pagination)
   }, [barberShopId, page])
-  
+
   return (
     items && items.length > 0
       ? items.map(({ barberShopId, client, services, ...appointment }) => (
@@ -59,7 +59,7 @@ function BarberShopDashboardTbodyItems({
               title="Ver detalhes"
               to={`${ROUTE_ENUM.BARBER_SCHEDULE}/dashboard/${appointment.id}`}
             >
-              {getFormattedHour(appointment.startTime as TimeOnly, true)}
+              {getFormattedHour(appointment.startTime as TimeString, true)}
             </Link>
           </TableCell>
           <TableCell className="text-center">
@@ -96,7 +96,7 @@ function BarberShopDashboardTbodyFallback() {
 function BarberShopDashboardTbody(props: TableProps) {
   return (
     <Suspense fallback={<BarberShopDashboardTbodyFallback />}>
-      <BarberShopDashboardTbodyItems { ...props } />
+      <BarberShopDashboardTbodyItems {...props} />
     </Suspense>
   )
 }
@@ -110,7 +110,7 @@ function PaginationBarberShopAppointments({ page, totalPages }: PaginationWithou
     to = getClampPage(to)
     return `?page=${to}`
   }
-  
+
   return (
     <Pagination>
       <PaginationContent>
@@ -119,11 +119,11 @@ function PaginationBarberShopAppointments({ page, totalPages }: PaginationWithou
             to={getPageParam(page - 1)}
           />
         </PaginationItem>
-        
+
         <PaginationItem>
           <PaginationEllipsis />
         </PaginationItem>
-        
+
         {page > 1 && (
           <PaginationItem>
             <PaginationLink to={getPageParam(page - 1)}>
@@ -131,13 +131,13 @@ function PaginationBarberShopAppointments({ page, totalPages }: PaginationWithou
             </PaginationLink>
           </PaginationItem>
         )}
-        
+
         <PaginationItem>
           <PaginationLink to={getPageParam(page)} isActive>
             {page}
           </PaginationLink>
         </PaginationItem>
-        
+
         {page < totalPages && (
           <PaginationItem>
             <PaginationLink to={getPageParam(page + 1)}>
@@ -145,7 +145,7 @@ function PaginationBarberShopAppointments({ page, totalPages }: PaginationWithou
             </PaginationLink>
           </PaginationItem>
         )}
-        
+
         <PaginationItem>
           <PaginationEllipsis />
         </PaginationItem>
@@ -165,7 +165,7 @@ export function BarberShopDashboard() {
   const [pagination, setPagination] = useState<PaginationWithoutItems | null>(null)
   const [searchParams] = useSearchParams()
   const page = searchParams.get('page')
-  
+
   return (
     <>
       <div className="before-card">
@@ -198,9 +198,9 @@ export function BarberShopDashboard() {
                 />
               </TableBody>
             </Table>
-            
+
             {pagination && (
-              <PaginationBarberShopAppointments { ...pagination } />
+              <PaginationBarberShopAppointments {...pagination} />
             )}
           </CardContent>
         </Card>

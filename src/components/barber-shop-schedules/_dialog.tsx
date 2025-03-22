@@ -8,13 +8,16 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { DayOfWeekEnum, recurringScheduleSchema } from '@/schemas/recurringSchedule'
 import { RecurringSchedule } from '@/types/models/recurringSchedule'
 import { SpecialSchedule } from '@/types/models/specialSchedule'
-import { getFormattedDate } from '@/schemas/sharedValidators/dateOnly'
+import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
 import { specialScheduleSchema } from '@/schemas/specialSchedule'
 import { Route as BarberShopSchedulesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
 
-type BarberShopSchedulesSearchParams = NonNullable<typeof BarberShopSchedulesRoute.types.searchSchema['open']>
+type RouteSearchParams = NonNullable<typeof BarberShopSchedulesRoute.types.searchSchema['open']>
 
-function getDialogInfos(action: BarberShopSchedulesSearchParams['action']) {
+type Action = RouteSearchParams['action']
+type ScheduleType = RouteSearchParams['scheduleType']
+
+function getDialogInfos(action: Action) {
   const infos = {
     'REGISTER': {
       dialogInfos: {
@@ -51,22 +54,33 @@ function getDialogInfos(action: BarberShopSchedulesSearchParams['action']) {
   return infos[action]
 }
 
-type BarberShopScheduleFormType<
-  TSchedule extends BarberShopSchedulesSearchParams['scheduleType'] = BarberShopSchedulesSearchParams['scheduleType'],
-  TSchema extends RecurringSchedule | SpecialSchedule = TSchedule extends 'recurring' ? RecurringSchedule : SpecialSchedule,
-  TForm extends ReturnType<typeof useForm<TSchema>> = ReturnType<typeof useForm<TSchema>>,
-  TDoStuff = <TArgs extends Parameters<Parameters<TForm['handleSubmit']>[0]>,>(...args: TArgs) => Promise<{ message: string }>,
-> = {
-  action: BarberShopSchedulesSearchParams['action']
-  
+type BarberShopRecurringScheduleFormType = {
+  scheduleType: ScheduleType & 'recurring'
+  action: Action
+
   formId: string
   barberShopId: number
-  scheduleType: TSchedule
-  
-  form: TForm
 
-  doStuff: TDoStuff
-} & ReturnType<typeof getDialogInfos>
+  form: ReturnType<typeof useForm<RecurringSchedule>>
+
+  doStuff: <TArgs extends Parameters<Parameters<ReturnType<typeof useForm<RecurringSchedule>>['handleSubmit']>[0]>, >(...args: TArgs) => Promise<{ message: string }>
+}
+
+type BarberShopSpecialScheduleFormType = {
+  scheduleType: ScheduleType & 'special'
+  action: Action
+
+  formId: string
+  barberShopId: number
+
+  form: ReturnType<typeof useForm<SpecialSchedule>>
+
+  doStuff: <TArgs extends Parameters<Parameters<ReturnType<typeof useForm<SpecialSchedule>>['handleSubmit']>[0]>, >(...args: TArgs) => Promise<{ message: string }>
+}
+
+type PartialBarberShopScheduleFormType = BarberShopRecurringScheduleFormType | BarberShopSpecialScheduleFormType
+
+type BarberShopScheduleFormType = PartialBarberShopScheduleFormType & ReturnType<typeof getDialogInfos>
 
 const BarberShopScheduleFormContext = createContext<BarberShopScheduleFormType | null>(null)
 
@@ -77,19 +91,26 @@ function BarberShopScheduleFormProvider({ children }: PropsWithChildren) {
     select: (s) => s.open!,
   })
 
-  const schedule = BarberShopSchedulesRoute.useLoaderData({
-    select: (s) => {
-      switch (scheduleType) {
-        case 'recurring':
-          return s.recurringSchedules.find(schedule => schedule.dayOfWeek === dayOfWeek)
-        case 'special':
-          return s.specialSchedules.find(schedule => schedule.date === date)
-        default:
-          return undefined
-      }
-    }
+  const [recurringSchedule, specialSchedule] = BarberShopSchedulesRoute.useLoaderData({
+    select: (s) => [
+      s.recurringSchedules.find(schedule => dayOfWeek !== undefined && schedule.dayOfWeek === dayOfWeek),
+      s.specialSchedules.find(schedule => date !== undefined && schedule.date === date),
+    ] as const
   })
-  
+
+  // const schedule = BarberShopSchedulesRoute.useLoaderData({
+  //   select: (s) => {
+  //     switch (scheduleType) {
+  //       case 'recurring':
+  //         return s.recurringSchedules.find(schedule => schedule.dayOfWeek === dayOfWeek)
+  //       case 'special':
+  //         return s.specialSchedules.find(schedule => schedule.date === date)
+  //       default:
+  //         return undefined
+  //     }
+  //   }
+  // })
+
   const methods = BarberShopSchedulesRoute.useRouteContext({
     select: ({ recurring, special }) => ({ recurring, special } as const)
   })
@@ -101,38 +122,38 @@ function BarberShopScheduleFormProvider({ children }: PropsWithChildren) {
   function isSpecialSchedule(scheduleee: typeof schedule): scheduleee is SpecialSchedule {
     return scheduleType === 'special' && (scheduleee === undefined || 'date' in scheduleee)
   }
-  
+
   const formId = `form_${action}_${barberShopId}_${scheduleType}`
 
   const schema = scheduleType === 'recurring' ? recurringScheduleSchema : specialScheduleSchema
   const resolver = action === 'REMOVE' ? undefined : zodResolver(schema)
 
-  const defaultValues = isRecurringSchedule(schedule)
+  const defaultValues = scheduleType === 'recurring'
     ? {
-      dayOfWeek: schedule?.dayOfWeek ?? DayOfWeekEnum.SEGUNDA,
-      openTime: schedule?.openTime ?? undefined,
-      closeTime: schedule?.closeTime ?? undefined,
+      dayOfWeek: recurringSchedule?.dayOfWeek ?? DayOfWeekEnum.SEGUNDA,
+      openTime: recurringSchedule?.openTime ?? undefined,
+      closeTime: recurringSchedule?.closeTime ?? undefined,
     } : {
-      date: schedule?.date ? getFormattedDate(schedule.date) as SpecialSchedule['date'] : undefined,
-      notes: schedule?.notes ?? undefined,
-      openTime: schedule?.openTime ?? undefined,
-      closeTime: schedule?.closeTime ?? undefined,
-      isClosed: schedule?.isClosed ?? false,
+      date: specialSchedule?.date ? getFormattedDate(specialSchedule.date) as SpecialSchedule['date'] : undefined,
+      notes: specialSchedule?.notes ?? undefined,
+      openTime: specialSchedule?.openTime ?? undefined,
+      closeTime: specialSchedule?.closeTime ?? undefined,
+      isClosed: specialSchedule?.isClosed ?? false,
     }
 
   if (scheduleType === 'recurring') {
     return (
       <BarberShopScheduleFormContext.Provider
         value={{
-          scheduleType: 'recurring',
+          scheduleType,
           action, barberShopId, formId,
           ...getDialogInfos(action),
           form: useForm<RecurringSchedule>({
             resolver: action === 'REMOVE' ? undefined : zodResolver(recurringScheduleSchema),
             defaultValues: {
-              dayOfWeek: isRecurringSchedule(schedule) ? schedule.dayOfWeek : DayOfWeekEnum.SEGUNDA,
-              openTime: isRecurringSchedule(schedule) ? schedule.openTime : undefined,
-              closeTime: isRecurringSchedule(schedule) ? schedule.closeTime : undefined,
+              dayOfWeek: specialSchedule?.dayOfWeek ?? DayOfWeekEnum.SEGUNDA,
+              openTime: specialSchedule?.openTime ?? undefined,
+              closeTime: specialSchedule?.closeTime ?? undefined,
             },
           }),
           doStuff: async (values) => {
@@ -150,15 +171,15 @@ function BarberShopScheduleFormProvider({ children }: PropsWithChildren) {
                 defaultMessage: 'Serviço removido com sucesso',
               },
             } as const
-            
+
             const { method, defaultMessage } = infos[action]
-        
+
             const result = await method()
-            
+
             if (!result.isSuccess) {
               throw result.error
             }
-        
+
             return {
               message: result.value?.message ?? defaultMessage
             }
@@ -172,17 +193,17 @@ function BarberShopScheduleFormProvider({ children }: PropsWithChildren) {
     return (
       <BarberShopScheduleFormContext.Provider
         value={{
-          scheduleType: 'special',
+          scheduleType,
           action, barberShopId, formId,
           ...getDialogInfos(action),
           form: useForm<SpecialSchedule>({
             resolver: action === 'REMOVE' ? undefined : zodResolver(specialScheduleSchema),
             defaultValues: {
-              date: isSpecialSchedule(schedule) ? getFormattedDate(schedule.date) as SpecialSchedule['date'] : undefined,
-              notes: isSpecialSchedule(schedule) ? schedule.notes : undefined,
-              openTime: isSpecialSchedule(schedule) ? schedule.openTime : undefined,
-              closeTime: isSpecialSchedule(schedule) ? schedule.closeTime : undefined,
-              isClosed: isSpecialSchedule(schedule) ? schedule.isClosed : false,
+              date: specialSchedule?.date ? getFormattedDate(specialSchedule.date) as SpecialSchedule['date'] : undefined,
+              notes: specialSchedule?.notes ?? undefined,
+              openTime: specialSchedule?.openTime ?? undefined,
+              closeTime: specialSchedule?.closeTime ?? undefined,
+              isClosed: specialSchedule?.isClosed ?? false,
             },
           }),
           doStuff: async (values) => {
@@ -200,15 +221,15 @@ function BarberShopScheduleFormProvider({ children }: PropsWithChildren) {
                 defaultMessage: 'Serviço removido com sucesso',
               },
             } as const
-            
+
             const { method, defaultMessage } = infos[action]
-        
+
             const result = await method()
-            
+
             if (!result.isSuccess) {
               throw result.error
             }
-        
+
             return {
               message: result.value?.message ?? defaultMessage
             }
@@ -225,7 +246,7 @@ export const useBarberShopScheduleFormContext = () => useContext(BarberShopSched
 
 function FormSubmitButton() {
   const { formId, form, submitBtnInfos } = useBarberShopScheduleFormContext()
-  
+
   return (
     <Button
       type="submit"
@@ -251,7 +272,7 @@ function DialogItself() {
             {dialogInfos.description}
           </DialogDescription>
         </DialogHeader>
-        
+
         {state.open && state.scheduleType === 'recurring' && (
           <FormRecurringSchedule
             {...state}
@@ -259,7 +280,7 @@ function DialogItself() {
             setLoadingState={setLoadingState}
           />
         )}
-        
+
         {state.open && state.scheduleType === 'special' && (
           <FormSpecialSchedule
             {...state}
@@ -276,7 +297,7 @@ function DialogItself() {
               Cancelar
             </Button>
           </DialogClose>
-          
+
           <FormSubmitButton />
         </DialogFooter>
       </DialogContent>
@@ -290,7 +311,7 @@ export function BarberShopScheduleDialog() {
   if (!open) {
     return null
   }
-  
+
   return (
     <BarberShopScheduleFormProvider>
       <DialogItself />

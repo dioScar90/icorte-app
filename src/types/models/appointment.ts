@@ -1,5 +1,6 @@
 import { Prettify } from "@/utils/types/prettify"
-import { DateOnly, TimeOnly } from "../../utils/types/date"
+import { DateString } from "../../utils/types/date-string"
+import { TimeString } from "../../utils/types/time-string"
 import { Service } from "./service"
 import { AppointmentZod } from "@/schemas/appointment"
 
@@ -16,8 +17,8 @@ export type Appointment = Prettify<
   }
   & Omit<AppointmentZod, 'date'>
   & {
-    date: DateOnly
-    totalDuration: TimeOnly
+    date: DateString
+    totalDuration: TimeString
     totalPrice: number
     status: AppointmentStatusEnum
     services: Service[]

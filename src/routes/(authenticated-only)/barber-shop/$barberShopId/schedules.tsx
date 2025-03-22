@@ -9,7 +9,7 @@ import { RecurringScheduleService } from '@/data/services/RecurringScheduleServi
 import { SpecialScheduleService } from '@/data/services/SpecialScheduleService'
 import { cn } from '@/lib/utils'
 import { DayOfWeekEnum } from '@/schemas/recurringSchedule'
-import { getStringAsDateOnly, isValidDateOnly } from '@/schemas/sharedValidators/dateOnly'
+import { getStringAsDateString, isValidDateString } from '@/schemas/sharedValidators/dateString'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ShoppingBag } from 'lucide-react'
 import { z } from 'zod'
@@ -25,7 +25,7 @@ const scheduleValidateSchema = z.object({
     z.object({
       action: z.enum(['UPDATE', 'REMOVE']),
       scheduleType: z.enum(['special']),
-      date: z.string().refine(isValidDateOnly).transform(getStringAsDateOnly),
+      date: z.string().refine(isValidDateString).transform(getStringAsDateString),
       dayOfWeek: z.undefined().optional(),
     }),
     z.object({
@@ -44,13 +44,13 @@ export const Route = createFileRoute(
   beforeLoad: ({ context, params }) => {
     const recurringRep = new RecurringScheduleService(context.httpClient)
     const specialRep = new SpecialScheduleService(context.httpClient)
-    
+
     return {
       recurring: {
         register: recurringRep.createRecurringSchedule,
         update: recurringRep.updateRecurringSchedule,
         remove: recurringRep.deleteRecurringSchedule,
-        
+
         getAll: () => recurringRep.getAllRecurringSchedules(params.barberShopId)
           .then(res => res)
           .then(res => res.isSuccess && res.value.items?.length > 0 ? res.value.items : [])
@@ -61,7 +61,7 @@ export const Route = createFileRoute(
         register: specialRep.createSpecialSchedule,
         update: specialRep.updateSpecialSchedule,
         remove: specialRep.deleteSpecialSchedule,
-        
+
         getAll: () => specialRep.getAllSpecialSchedules(params.barberShopId)
           .then(res => res)
           .then(res => res.isSuccess && res.value.items?.length > 0 ? res.value.items : [])
@@ -138,7 +138,7 @@ function FullCardWithTableAndOtherStuffs({
 
 function CardSpecialSchedules({ barberShopName }: { barberShopName: string }) {
   const navigate = useNavigate({ from: Route.fullPath })
-  
+
   return (
     <FullCardWithTableAndOtherStuffs
       type="special"
@@ -204,15 +204,15 @@ function RouteComponent() {
   const barberShopName = Route.useLoaderData({
     select: (s) => s.barberShop?.name!,
   })
-  
+
   return (
     <>
       <div className="before-card">
         <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
           <CardRecurringSchedules barberShopName={barberShopName} />
-          
+
           <Separator />
-          
+
           <CardSpecialSchedules barberShopName={barberShopName} />
         </Card>
       </div>

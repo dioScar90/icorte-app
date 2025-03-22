@@ -1,8 +1,9 @@
-import { DateOnly, TimeOnly } from "@/utils/types/date"
+import { DateString } from "@/utils/types/date-string"
+import { TimeString } from "@/utils/types/time-string"
 
 type GetTodayProps = {
-  dateOnly?: DateOnly,
-  timeOnly?: TimeOnly,
+  dateString?: DateString,
+  timeString?: TimeString,
   isDateIso?: boolean,
   isTimeIso?: boolean,
   isFullIso?: boolean,
@@ -10,25 +11,25 @@ type GetTodayProps = {
   locale?: string,
 }
 
-function getNewDateObject(dateOnly?: DateOnly, timeOnly?: TimeOnly) {
-  if (!dateOnly) {
+function getNewDateObject(dateString?: DateString, timeString?: TimeString) {
+  if (!dateString) {
     return new Date(new Date().setHours(12))
   }
 
-  timeOnly ??= '12:00:00'
-  return new Date(dateOnly + 'T' + timeOnly)
+  timeString ??= '12:00:00'
+  return new Date(dateString + 'T' + timeString)
 }
 
 export function getToday({
-  dateOnly,
-  timeOnly,
+  dateString,
+  timeString,
   isDateIso,
   isTimeIso,
   isFullIso,
   isString,
   locale,
 }: Partial<GetTodayProps> = {}) {
-  const date = getNewDateObject(dateOnly, timeOnly)
+  const date = getNewDateObject(dateString, timeString)
 
   if (isString) {
     locale ??= 'pt-BR'

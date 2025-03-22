@@ -1,9 +1,9 @@
 import { ISpecialScheduleService as Interface } from "./interfaces/ISpecialScheduleService";
-import { DateOnly } from "@/utils/types/date";
+import { DateString } from "@/utils/types/date-string";
 import { ProxyContext } from "@/hooks/use-proxy";
 import { Result } from "../result";
 
-function getUrl(barberShopId: number, date?: DateOnly) {
+function getUrl(barberShopId: number, date?: DateString) {
   const baseEndpoint = `/barber-shop/${barberShopId}/special-schedule`
   return date === undefined ? baseEndpoint : `${baseEndpoint}/${date}`
 }
@@ -13,7 +13,7 @@ export class SpecialScheduleService implements Interface {
 
   createSpecialSchedule: Interface['createSpecialSchedule'] = async (barberShopId, data) => {
     const url = getUrl(barberShopId)
-    
+
     try {
       const res = await this.httpClient.post(url, { ...data })
       return Result.Success(res.data)
@@ -24,7 +24,7 @@ export class SpecialScheduleService implements Interface {
 
   getSpecialSchedule: Interface['getSpecialSchedule'] = async (barberShopId, date) => {
     const url = getUrl(barberShopId, date)
-    
+
     try {
       const res = await this.httpClient.get(url)
       return Result.Success(res.data)
@@ -35,7 +35,7 @@ export class SpecialScheduleService implements Interface {
 
   getAllSpecialSchedules: Interface['getAllSpecialSchedules'] = async (barberShopId) => {
     const url = getUrl(barberShopId)
-    
+
     try {
       const res = await this.httpClient.get(url)
       return Result.Success(res.data)
@@ -46,7 +46,7 @@ export class SpecialScheduleService implements Interface {
 
   updateSpecialSchedule: Interface['updateSpecialSchedule'] = async (barberShopId, date, data) => {
     const url = getUrl(barberShopId, date)
-    
+
     try {
       await this.httpClient.put(url, { ...data })
       return Result.Success()
@@ -57,7 +57,7 @@ export class SpecialScheduleService implements Interface {
 
   deleteSpecialSchedule: Interface['deleteSpecialSchedule'] = async (barberShopId, date) => {
     const url = getUrl(barberShopId, date)
-    
+
     try {
       await this.httpClient.delete(url)
       return Result.Success()

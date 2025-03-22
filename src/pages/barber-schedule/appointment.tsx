@@ -9,9 +9,9 @@ import { Link, useLoaderData, useLocation, useNavigate } from 'react-router-dom'
 import { useBarberScheduleLayout } from '@/components/layouts/barber-schedule-layout';
 import { getNumberAsCurrency } from '@/utils/currency';
 import { getEnumAsArray, getEnumAsString } from '@/utils/enum-as-array';
-import { getFormattedDate } from '@/schemas/sharedValidators/dateOnly';
-import { getFormattedHour } from '@/schemas/sharedValidators/timeOnly';
-import { TimeOnly } from '@/utils/types/date';
+import { getFormattedDate } from '@/schemas/sharedValidators/dateString';
+import { getFormattedHour } from '@/schemas/sharedValidators/timeString';
+import { TimeString } from '@/utils/types/time-string';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { useAuth } from '@/providers/authProvider';
 import { useForm } from 'react-hook-form';
@@ -44,7 +44,7 @@ function FormUpdatePaymentType({ appointmentId, currentPaymentType, formId, setL
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { handleError } = useHandleErrors()
-  
+
   const paymentTypeSchema = z.object({
     paymentType: appointmentSchema.shape.paymentType
       .refine(
@@ -52,16 +52,16 @@ function FormUpdatePaymentType({ appointmentId, currentPaymentType, formId, setL
         { message: `Escolha um tipo de pagamento diferente` }
       )
   })
-  
+
   type PaymentTypeZod = z.infer<typeof paymentTypeSchema>
-  
+
   const form = useForm<PaymentTypeZod>({
     resolver: zodResolver(paymentTypeSchema),
     defaultValues: {
       paymentType: currentPaymentType,
     }
   })
-  
+
   async function onSubmit({ paymentType }: PaymentTypeZod) {
     try {
       const result = await updatePaymentType(appointmentId, paymentType)
@@ -69,7 +69,7 @@ function FormUpdatePaymentType({ appointmentId, currentPaymentType, formId, setL
       if (!result.isSuccess) {
         throw result.error
       }
-      
+
       const message = 'Forma de pagamento atualizada com sucesso'
       navigate(pathname, { state: { message } })
       refetch()
@@ -83,7 +83,7 @@ function FormUpdatePaymentType({ appointmentId, currentPaymentType, formId, setL
   useEffect(() => {
     setLoadingState(form.formState.isSubmitting)
   }, [form.formState])
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} id={formId} className="space-y-6">
@@ -113,7 +113,7 @@ function FormUpdatePaymentType({ appointmentId, currentPaymentType, formId, setL
               </FormItem>
             )}
           />
-          
+
           <FormRootErrorMessage />
         </div>
       </form>
@@ -125,42 +125,42 @@ export function AppointmentDetails({ appointmentId, getAppointment, updatePaymen
   const { user } = useAuth()
   const [isLoadingPaymentForm, setIsLoadingPaymentForm] = useState(false)
   const [open, setOpen] = useState(false)
-  
+
   function handleDialogOpenChange(isOpen: boolean) {
     if (!isOpen) {
       setOpen(false)
     }
   }
-  
+
   const closeModal = useCallback(() => setOpen(false), [])
-  
+
   const { data: appointmentRes, isLoading, error, refetch } = useQuery({
     queryKey: ['appointmentDetails', appointmentId],
     queryFn: () => getAppointment(appointmentId!, true),
     enabled: !!appointmentId
   })
-  
+
   if (isLoading) {
     return <Skeleton className="h-40 w-full" />
   }
 
   if (error || !appointmentRes?.isSuccess) {
     const errorMessage = error?.message || appointmentRes?.error?.message || 'Erro ao carregar os detalhes do agendamento.'
-    
+
     return (
       <p className="text-red-500">
         {errorMessage}
       </p>
     )
   }
-  
+
   const appointment = appointmentRes.value
-  
+
   const isFinalized = appointment.status === AppointmentStatusEnum.Finalizado
   const canModifyPayment = !isFinalized && user?.id === appointment.clientId
-  
+
   const formId = 'modificar-pagamento-form'
-  
+
   return (
     <>
       <Card className="max-w-xl mx-auto">
@@ -175,7 +175,7 @@ export function AppointmentDetails({ appointmentId, getAppointment, updatePaymen
             </div>
             <div>
               <p className="text-sm text-gray-600">Hora de Início:</p>
-              <p className="font-medium">{getFormattedHour(appointment.startTime as TimeOnly)}</p>
+              <p className="font-medium">{getFormattedHour(appointment.startTime as TimeString)}</p>
             </div>
             <div>
               <p className="text-sm text-gray-600">Serviços:</p>
@@ -204,7 +204,7 @@ export function AppointmentDetails({ appointmentId, getAppointment, updatePaymen
                 <p className={`font-medium`}>
                   {getEnumAsString(PaymentTypeEnum, appointment.paymentType)}
                 </p>
-                
+
                 {canModifyPayment && (
                   <Button size="sm" onClick={() => setOpen(true)}>
                     Modificar
@@ -226,7 +226,7 @@ export function AppointmentDetails({ appointmentId, getAppointment, updatePaymen
                 {getEnumAsString(AppointmentStatusEnum, appointment.status)}
               </Badge>
             </div>
-            
+
             <Link
               className={buttonVariants({ variant: "secondary" })}
               to={`${ROUTE_ENUM.BARBER_SCHEDULE}/dashboard`}
@@ -247,7 +247,7 @@ export function AppointmentDetails({ appointmentId, getAppointment, updatePaymen
                 Escolha um pagamento diferente caso queira modificar
               </DialogDescription>
             </DialogHeader>
-            
+
             {open && (
               <FormUpdatePaymentType
                 appointmentId={appointmentId!}
@@ -259,7 +259,7 @@ export function AppointmentDetails({ appointmentId, getAppointment, updatePaymen
                 closeModal={closeModal}
               />
             )}
-            
+
             <DialogFooter className="grid grid-cols-2 md:flex md:justify-end gap-2">
               <DialogClose asChild>
                 <Button type="button" variant="secondary">
@@ -296,7 +296,7 @@ function Carregando() {
 export function AppointmentPage() {
   const appointmentId = useLoaderData() as number | undefined
   const { getAppointment, updatePaymentType } = useBarberScheduleLayout()
-  
+
   return (
     <Suspense fallback={<Carregando />}>
       <AppointmentDetails

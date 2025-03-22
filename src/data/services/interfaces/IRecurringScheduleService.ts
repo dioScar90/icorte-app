@@ -1,6 +1,6 @@
 import { BaseResult, CreatedResult, Pagination, PaginationResult } from "@/data/result";
+import { DayOfWeek } from "@/utils/types/day-of-week";
 import { RecurringScheduleZod } from "@/schemas/recurringSchedule";
-import { DayOfWeek } from "@/utils/types/date";
 import { RecurringSchedule } from "@/types/models/recurringSchedule";
 
 export interface IRecurringScheduleService {

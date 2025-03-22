@@ -8,12 +8,12 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 import { AppointmentZod, PaymentTypeEnum } from '@/schemas/appointment'
-import { getFormattedDate } from '@/schemas/sharedValidators/dateOnly'
-import { getFormattedHour } from '@/schemas/sharedValidators/timeOnly'
+import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
+import { getFormattedHour } from '@/schemas/sharedValidators/timeString'
 import { Appointment } from '@/types/models/appointment'
 import { getNumberAsCurrency } from '@/utils/currency'
 import { getEnumAsArray, getEnumAsString } from '@/utils/enum-as-array'
-import { TimeOnly } from '@/utils/types/date'
+import { TimeString } from '@/utils/types/time-string'
 import { Link } from '@tanstack/react-router'
 import { createFileRoute, useLocation, useNavigate } from '@tanstack/react-router'
 import { DoorClosed, DoorOpen, ShoppingBag, Trash2 } from 'lucide-react'
@@ -26,11 +26,11 @@ export const Route = createFileRoute(
   component: RouteComponent,
   loader: async ({ context }) => {
     const res = await context.barberSchedule.getAllAppointments()
-    
+
     if (!res.isSuccess) {
       return []
     }
-    
+
     return res.value.items ?? []
   },
 })
@@ -49,10 +49,10 @@ function FormRemoveAppointment({ appointment, closeModal, setLoadingState, formI
       s.barberSchedule.deleteAppointment,
     ] as const
   })
-  
+
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  
+
   const form = useForm<AppointmentZod>({
     resolver: undefined,
     defaultValues: {
@@ -63,15 +63,15 @@ function FormRemoveAppointment({ appointment, closeModal, setLoadingState, formI
       notes: appointment?.notes ?? undefined,
     }
   })
-  
+
   async function onSubmit() {
     try {
       const result = await deleteAppointment(appointment.id)
-      
+
       if (!result.isSuccess) {
         throw result.error
       }
-      
+
       navigate({
         to: pathname,
         replace: true,
@@ -85,11 +85,11 @@ function FormRemoveAppointment({ appointment, closeModal, setLoadingState, formI
       closeModal()
     }
   }
-  
+
   useEffect(() => {
     setLoadingState(form.formState.isSubmitting)
   }, [form.formState])
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} id={formId} className="space-y-6">
@@ -107,7 +107,7 @@ function FormRemoveAppointment({ appointment, closeModal, setLoadingState, formI
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="startTime"
@@ -115,13 +115,13 @@ function FormRemoveAppointment({ appointment, closeModal, setLoadingState, formI
               <FormItem>
                 <FormLabel>Hora</FormLabel>
                 <FormControl>
-                  <Input placeholder="Hora" {...field} value={getFormattedHour(field.value as TimeOnly)} disabled />
+                  <Input placeholder="Hora" {...field} value={getFormattedHour(field.value as TimeString)} disabled />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="paymentType"
@@ -147,7 +147,7 @@ function FormRemoveAppointment({ appointment, closeModal, setLoadingState, formI
               </FormItem>
             )}
           />
-          
+
           {appointment.notes && (
             <FormField
               control={form.control}
@@ -163,14 +163,14 @@ function FormRemoveAppointment({ appointment, closeModal, setLoadingState, formI
               )}
             />
           )}
-          
+
           <FormItem>
             <FormLabel>Total</FormLabel>
             <FormControl>
               <Input placeholder="total" value={getNumberAsCurrency(appointment.totalPrice)} disabled />
             </FormControl>
           </FormItem>
-          
+
           <FormRootErrorMessage />
         </div>
       </form>
@@ -187,7 +187,7 @@ type StateModalType = {
 
 function RouteComponent() {
   const appointments = Route.useLoaderData()
-  
+
   const [userFullName] = Route.useRouteContext({
     select: (s) => [
       s.auth.user?.profile?.fullName,
@@ -196,11 +196,11 @@ function RouteComponent() {
 
   const [isLoadingState, setLoadingState] = useState(false)
   const [state, setState] = useState<StateModalType>({ open: false })
-  
+
   const formId = 'remove-form'
-  
+
   const closeModal = useCallback(() => setState({ open: false }), [])
-  
+
   const openModal = useCallback((appointment: RemoveProps['appointment']) => {
     setState({
       open: true,
@@ -212,13 +212,13 @@ function RouteComponent() {
       }
     })
   }, [])
-  
+
   function handleDialogOpenChange(open: boolean) {
     if (!open) {
       closeModal()
     }
   }
-  
+
   return (
     <>
       <div className="before-card">
@@ -260,7 +260,7 @@ function RouteComponent() {
                             appointmentId: appointment.id,
                           }}
                         >
-                          {getFormattedHour(appointment.startTime as TimeOnly, true)}
+                          {getFormattedHour(appointment.startTime as TimeString, true)}
                         </Link>
                       </TableCell>
                       <TableCell className="text-center">
@@ -298,7 +298,7 @@ function RouteComponent() {
                   )}
               </TableBody>
             </Table>
-            
+
             <div className="w-full h-14 relative">
               <Link
                 className={cn(buttonVariants({ size: 'lg' }), 'w-full md:w-auto', 'absolute-middle-y right-0')}
@@ -311,7 +311,7 @@ function RouteComponent() {
           </CardContent>
         </Card>
       </div>
-      
+
       <Dialog open={state.open} onOpenChange={handleDialogOpenChange}>
         <DialogContent>
           <DialogHeader>
@@ -320,11 +320,11 @@ function RouteComponent() {
               Tem certeza que deseja excluir o agendamento abaixo?
             </DialogDescription>
           </DialogHeader>
-          
+
           {state.open && (
             <FormRemoveAppointment {...state.props} />
           )}
-          
+
           <DialogFooter className="grid grid-cols-2 md:flex md:justify-end gap-2">
             <DialogClose asChild>
               <Button type="button" variant="secondary">

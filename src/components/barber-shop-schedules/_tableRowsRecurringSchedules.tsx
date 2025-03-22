@@ -5,16 +5,16 @@ import { useNavigate } from '@tanstack/react-router'
 import { Edit, Trash2 } from 'lucide-react'
 import { getEnumAsString } from '@/utils/enum-as-array'
 import { DayOfWeekEnum } from '@/schemas/recurringSchedule'
-import { getFormattedHour } from '@/schemas/sharedValidators/timeOnly'
+import { getFormattedHour } from '@/schemas/sharedValidators/timeString'
 import { Route as BarberShopSchedulesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
 
 export function TableBodyWithRowsRecurringSchedules() {
   const schedules = BarberShopSchedulesRoute.useLoaderData({
     select: (s) => s.recurringSchedules,
   })
-  
+
   const navigate = useNavigate({ from: BarberShopSchedulesRoute.fullPath })
-  
+
   if (!schedules.length) {
     return (
       <TableRow>
@@ -28,7 +28,7 @@ export function TableBodyWithRowsRecurringSchedules() {
       </TableRow>
     )
   }
-  
+
   return schedules.map(({ barberShopId, ...schedule }) => (
     <TableRow key={schedule.dayOfWeek} data-barber-shop-id={barberShopId}>
       <TableCell className="text-center">{getEnumAsString(DayOfWeekEnum, schedule.dayOfWeek)}</TableCell>

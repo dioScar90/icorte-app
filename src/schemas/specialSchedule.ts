@@ -1,12 +1,12 @@
 import { z } from 'zod'
-import { getStringAsTimeOnly } from './sharedValidators/timeOnly'
-import { getStringAsDateOnly, isCorrectDateString, isDateGreaterThenToday } from './sharedValidators/dateOnly'
+import { getStringAsTimeString } from './sharedValidators/timeString'
+import { getStringAsDateString, isCorrectDateString, isDateGreaterThenToday } from './sharedValidators/dateString'
 
 export const specialScheduleSchema = z.object({
   date: z.string({ required_error: 'Dia obrigatório' })
     .refine(isCorrectDateString, 'Dia inválido')
     .refine(isDateGreaterThenToday, 'Dia não pode ser inferior ou igual a hoje')
-    .transform(getStringAsDateOnly),
+    .transform(getStringAsDateString),
 
   notes: z.string()
     .trim()
@@ -18,13 +18,13 @@ export const specialScheduleSchema = z.object({
     .time('Horário de abertura inválido')
     .optional()
     .or(z.literal(''))
-    .transform(value => value ? getStringAsTimeOnly(value) : undefined),
+    .transform(value => value ? getStringAsTimeString(value) : undefined),
 
   closeTime: z.string({ required_error: 'Horário de encerramento obrigatório' })
     .time('Horário de encerramento inválido')
     .optional()
     .or(z.literal(''))
-    .transform(value => value ? getStringAsTimeOnly(value) : undefined),
+    .transform(value => value ? getStringAsTimeString(value) : undefined),
 
   isClosed: z.coerce.boolean(),
 })
@@ -32,7 +32,7 @@ export const specialScheduleSchema = z.object({
     if (isClosed) {
       return
     }
-    
+
     if (openTime && closeTime && openTime >= closeTime) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -41,10 +41,10 @@ export const specialScheduleSchema = z.object({
       })
       return
     }
-    
+
     if (!openTime && !closeTime) {
       const pathes = ['openTime', 'closeTime']
-      
+
       pathes.forEach(path =>
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -52,9 +52,9 @@ export const specialScheduleSchema = z.object({
           path: [path],
         })
       )
-      
+
       return
     }
   })
-  
+
 export type SpecialScheduleZod = z.infer<typeof specialScheduleSchema>

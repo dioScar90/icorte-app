@@ -3,17 +3,17 @@ import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { useNavigate } from '@tanstack/react-router'
 import { DoorClosed, DoorOpen, Edit, Trash2 } from 'lucide-react'
-import { getFormattedHour } from '@/schemas/sharedValidators/timeOnly'
-import { getFormattedDate } from '@/schemas/sharedValidators/dateOnly'
+import { getFormattedHour } from '@/schemas/sharedValidators/timeString'
+import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
 import { Route as BarberShopSchedulesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
 
 export function TableBodyWithRowsSpecialSchedules() {
   const schedules = BarberShopSchedulesRoute.useLoaderData({
     select: (s) => s.specialSchedules,
   })
-  
+
   const navigate = useNavigate({ from: BarberShopSchedulesRoute.fullPath })
-  
+
   if (!schedules.length) {
     return (
       <TableRow>
@@ -27,7 +27,7 @@ export function TableBodyWithRowsSpecialSchedules() {
       </TableRow>
     )
   }
-  
+
   return schedules.map(({ barberShopId, ...schedule }) => (
     <TableRow key={schedule.date} data-barber-shop-id={barberShopId}>
       <TableCell className="text-center">{getFormattedDate(schedule.date)}</TableCell>

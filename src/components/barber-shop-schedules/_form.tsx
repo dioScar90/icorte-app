@@ -3,7 +3,7 @@ import { ChangeEvent } from "react"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "../ui/form"
 import { applyMask } from "@/utils/mask"
 import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
-import { TimeOnly } from "@/utils/types/date"
+import { TimeString } from "@/utils/types/time-string"
 import { useNavigate } from "@tanstack/react-router"
 import { useBarberShopScheduleFormContext } from "./_dialog"
 import { Route as BarberShopSchedulesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
@@ -14,7 +14,7 @@ function FormRecurringSchedule() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { handleError } = useHandleErrors()
-  
+
   const form = useForm<RecurringScheduleZod>({
     resolver: formId !== 'recurring-remove-form' ? zodResolver(recurringScheduleSchema) : undefined,
     defaultValues: {
@@ -28,7 +28,7 @@ function FormRecurringSchedule() {
     try {
       let result: Awaited<ReturnType<typeof action>>
       let message: string
-      
+
       switch (formId) {
         case 'recurring-register-form':
           result = await action(barberShopId, data)
@@ -42,11 +42,11 @@ function FormRecurringSchedule() {
           result = await action(barberShopId, dayOfWeek)
           message = result.value?.message ?? 'Serviço removido com sucesso'
       }
-      
+
       if (!result.isSuccess) {
         throw result.error
       }
-      
+
       navigate(pathname, { replace: true, state: { message } })
     } catch (err) {
       handleError(err, form)
@@ -54,14 +54,14 @@ function FormRecurringSchedule() {
       closeModal()
     }
   }
-  
+
   function handleTimeChange(e: ChangeEvent<HTMLInputElement>) {
-    const maskedValue = applyMask('TIME_ONLY', e.currentTarget.value) as TimeOnly
+    const maskedValue = applyMask('TIME_ONLY', e.currentTarget.value) as TimeString
     const name = e.currentTarget.name as 'openTime' | 'closeTime'
-    
+
     form.setValue(name, maskedValue) // Atualiza o valor do campo no React Hook Form
     e.currentTarget.value = maskedValue // Define o valor no input
-    
+
     e.currentTarget.focus()
   }
 
@@ -102,7 +102,7 @@ function FormRecurringSchedule() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="openTime"
@@ -121,7 +121,7 @@ function FormRecurringSchedule() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="closeTime"
@@ -156,29 +156,29 @@ export function BarberShopScheduleForm() {
       s.handleError,
     ] as const
   })
-  
+
   const navigate = useNavigate({
     from: BarberShopSchedulesRoute.fullPath,
   })
-  
+
   function handlePriceChange(e: ChangeEvent<HTMLInputElement>) {
     const maskedValue = applyMask('MONEY', e.currentTarget.value)
-    
+
     form.setValue('price', maskedValue) // Atualiza o valor do campo no React Hook Form
     e.currentTarget.value = maskedValue // Define o valor no input
-    
+
     e.currentTarget.focus()
   }
-  
+
   function handleDurationChange(e: ChangeEvent<HTMLInputElement>) {
-    const maskedValue = applyMask('TIME_ONLY', e.currentTarget.value) as TimeOnly
-    
+    const maskedValue = applyMask('TIME_ONLY', e.currentTarget.value) as TimeString
+
     form.setValue('duration', maskedValue) // Atualiza o valor do campo no React Hook Form
     e.currentTarget.value = maskedValue // Define o valor no input
-    
+
     e.currentTarget.focus()
   }
-  
+
   return (
     <Form {...form}>
       <form
@@ -186,9 +186,9 @@ export function BarberShopScheduleForm() {
         onSubmit={form.handleSubmit(async (data) => {
           try {
             const { message } = await doStuff(data)
-            
+
             navigate({
-              search: ({ open, ...rest}) => ({ ...rest }),
+              search: ({ open, ...rest }) => ({ ...rest }),
               replace: true,
               state: { message },
             })
@@ -213,7 +213,7 @@ export function BarberShopScheduleForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="description"
@@ -227,7 +227,7 @@ export function BarberShopScheduleForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="price"
@@ -246,7 +246,7 @@ export function BarberShopScheduleForm() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="duration"
@@ -265,7 +265,7 @@ export function BarberShopScheduleForm() {
               </FormItem>
             )}
           />
-          
+
           <FormRootErrorMessage />
         </div>
       </form>

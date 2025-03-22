@@ -1,5 +1,5 @@
 import { IRecurringScheduleService as Interface } from "./interfaces/IRecurringScheduleService";
-import { DayOfWeek } from "@/utils/types/date";
+import { DayOfWeek } from "@/utils/types/day-of-week";
 import { ProxyContext } from "@/hooks/use-proxy";
 import { Result } from "../result";
 
@@ -13,7 +13,7 @@ export class RecurringScheduleService implements Interface {
 
   createRecurringSchedule: Interface['createRecurringSchedule'] = async (barberShopId, data) => {
     const url = getUrl(barberShopId)
-    
+
     try {
       const res = await this.httpClient.post(url, { ...data })
       return Result.Success(res.data)
@@ -24,7 +24,7 @@ export class RecurringScheduleService implements Interface {
 
   getRecurringSchedule: Interface['getRecurringSchedule'] = async (barberShopId, dayOfWeek) => {
     const url = getUrl(barberShopId, dayOfWeek)
-    
+
     try {
       const res = await this.httpClient.get(url)
       return Result.Success(res.data)
@@ -35,7 +35,7 @@ export class RecurringScheduleService implements Interface {
 
   getAllRecurringSchedules: Interface['getAllRecurringSchedules'] = async (barberShopId) => {
     const url = getUrl(barberShopId)
-    
+
     try {
       const res = await this.httpClient.get(url)
       return Result.Success(res.data)
@@ -46,7 +46,7 @@ export class RecurringScheduleService implements Interface {
 
   updateRecurringSchedule: Interface['updateRecurringSchedule'] = async (barberShopId, dayOfWeek, data) => {
     const url = getUrl(barberShopId, dayOfWeek)
-    
+
     try {
       await this.httpClient.put(url, { ...data })
       return Result.Success()
@@ -57,7 +57,7 @@ export class RecurringScheduleService implements Interface {
 
   deleteRecurringSchedule: Interface['deleteRecurringSchedule'] = async (barberShopId, dayOfWeek) => {
     const url = getUrl(barberShopId, dayOfWeek)
-    
+
     try {
       await this.httpClient.delete(url)
       return Result.Success()

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { getStringAsTimeOnly } from './sharedValidators/timeOnly'
+import { getStringAsTimeString } from './sharedValidators/timeString'
 
 export enum DayOfWeekEnum {
   DOMINGO, SEGUNDA, TERCA, QUARTA, QUINTA, SEXTA, SÁBADO
@@ -15,14 +15,14 @@ export const recurringScheduleSchema = z.object({
     message: 'Dia da semana inválido',
   })
     .transform(day => DayOfWeekEnum[day]),
-  
+
   openTime: z.string({ required_error: 'Horário de abertura obrigatório' })
     .time('Horário de abertura inválido')
-    .transform(getStringAsTimeOnly),
+    .transform(getStringAsTimeString),
 
   closeTime: z.string({ required_error: 'Horário de encerramento obrigatório' })
     .time('Horário de encerramento inválido')
-    .transform(getStringAsTimeOnly),
+    .transform(getStringAsTimeString),
 })
   .refine(({ openTime, closeTime }) => closeTime > openTime, {
     message: 'Horário de encerramento precisa ser superior ao horário de abertura',

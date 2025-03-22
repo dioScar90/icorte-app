@@ -1,5 +1,5 @@
 import { getToday } from "@/utils/date";
-import { DateOnly } from "@/utils/types/date";
+import { DateString } from "@/utils/types/date-string";
 
 export function dataIsEqualOrGreaterThenToday(informedDate: string) {
   const todayDate = getToday({ isDateIso: true }) as string
@@ -10,7 +10,7 @@ const isValidYear = (year: string) => !isNaN(+year) && +year > 2000
 const isValidMonth = (month: string) => !isNaN(+month) && +month > 0 && +month <= 12
 const isValidDay = (day: string) => !isNaN(+day) && +day > 0 && +day <= 31
 
-export function isValidDateOnly(date: string): date is DateOnly {
+export function isValidDateString(date: string): date is DateString {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     return false
   }
@@ -38,17 +38,17 @@ export function isCorrectDateString(date: string) {
   if (!okDay || !okMonth || !okYear) {
     return false
   }
-  
+
   if (+mm === 2 && (+yyyy % 4 === 0 ? +dd > 29 : +dd > 28)) {
     return false
   }
-  
+
   const UNTIL_31 = [1, 3, 5, 7, 8, 10, 12]
 
   if (!UNTIL_31.includes(+mm) && +dd === 31) {
     return false
   }
-  
+
   return true
 }
 
@@ -59,9 +59,9 @@ export function isDateGreaterThenToday(date: string) {
 
 const SEI_LA_O_QUE_EH_ISSO = 60_000
 
-export function getStringAsDateOnly(date?: string | Date) {
+export function getStringAsDateString(date?: string | Date) {
   date ??= new Date(Date.now())
-  
+
   if (date instanceof Date) {
     date = new Date(date.valueOf() - date.getTimezoneOffset() * SEI_LA_O_QUE_EH_ISSO)
     date = date.toISOString().split('T')[0]
@@ -71,10 +71,10 @@ export function getStringAsDateOnly(date?: string | Date) {
     const [dd, mm, yyyy] = date.split('/')
     date = yyyy + '-' + mm + '-' + dd
   }
-  
-  return date as DateOnly
+
+  return date as DateString
 }
 
-export function getFormattedDate(date: DateOnly) {
+export function getFormattedDate(date: DateString) {
   return new Date(date + 'T12:00').toLocaleDateString('pt-BR')
 }

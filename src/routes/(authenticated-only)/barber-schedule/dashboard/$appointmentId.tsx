@@ -6,12 +6,12 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootError
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { appointmentSchema, AppointmentZod, PaymentTypeEnum } from '@/schemas/appointment'
-import { getFormattedDate } from '@/schemas/sharedValidators/dateOnly'
-import { getFormattedHour } from '@/schemas/sharedValidators/timeOnly'
+import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
+import { getFormattedHour } from '@/schemas/sharedValidators/timeString'
 import { Appointment, AppointmentStatusEnum } from '@/types/models/appointment'
 import { getNumberAsCurrency } from '@/utils/currency'
 import { getEnumAsArray, getEnumAsString } from '@/utils/enum-as-array'
-import { TimeOnly } from '@/utils/types/date'
+import { TimeString } from '@/utils/types/time-string'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
 import { useLocation } from '@tanstack/react-router'
@@ -49,12 +49,12 @@ function FormUpdatePaymentType({ currentPaymentType, formId, setLoadingState, re
       s.barberSchedule.updatePaymentType,
     ] as const
   })
-  
+
   const appointmentId = Route.useParams({ select: (s) => s.appointmentId })
 
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  
+
   const paymentTypeSchema = z.object({
     paymentType: appointmentSchema.shape.paymentType
       .refine(
@@ -62,16 +62,16 @@ function FormUpdatePaymentType({ currentPaymentType, formId, setLoadingState, re
         { message: `Escolha um tipo de pagamento diferente` }
       )
   })
-  
+
   type PaymentTypeZod = z.infer<typeof paymentTypeSchema>
-  
+
   const form = useForm<PaymentTypeZod>({
     resolver: zodResolver(paymentTypeSchema),
     defaultValues: {
       paymentType: currentPaymentType,
     }
   })
-  
+
   async function onSubmit({ paymentType }: PaymentTypeZod) {
     try {
       const result = await updatePaymentType(appointmentId, paymentType)
@@ -79,7 +79,7 @@ function FormUpdatePaymentType({ currentPaymentType, formId, setLoadingState, re
       if (!result.isSuccess) {
         throw result.error
       }
-      
+
       navigate({
         to: pathname,
         state: {
@@ -98,7 +98,7 @@ function FormUpdatePaymentType({ currentPaymentType, formId, setLoadingState, re
   useEffect(() => {
     setLoadingState(form.formState.isSubmitting)
   }, [form.formState])
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} id={formId} className="space-y-6">
@@ -128,7 +128,7 @@ function FormUpdatePaymentType({ currentPaymentType, formId, setLoadingState, re
               </FormItem>
             )}
           />
-          
+
           <FormRootErrorMessage />
         </div>
       </form>
@@ -143,47 +143,47 @@ function AppointmentDetails() {
       s.auth.user?.id,
     ] as const
   })
-  
+
   const appointmentId = Route.useParams({ select: (s) => s.appointmentId })
-  
+
   const [isLoadingPaymentForm, setIsLoadingPaymentForm] = useState(false)
   const [open, setOpen] = useState(false)
-  
+
   function handleDialogOpenChange(isOpen: boolean) {
     if (!isOpen) {
       setOpen(false)
     }
   }
-  
+
   const closeModal = useCallback(() => setOpen(false), [])
-  
+
   const { data: appointmentRes, isLoading, error, refetch } = useQuery({
     queryKey: ['appointmentDetails', appointmentId],
     queryFn: () => getAppointment(appointmentId!, true),
     enabled: !!appointmentId,
   })
-  
+
   if (isLoading) {
     return <Skeleton className="h-40 w-full" />
   }
 
   if (error || !appointmentRes?.isSuccess) {
     const errorMessage = error?.message || appointmentRes?.error?.message || 'Erro ao carregar os detalhes do agendamento.'
-    
+
     return (
       <p className="text-red-500">
         {errorMessage}
       </p>
     )
   }
-  
+
   const appointment = appointmentRes.value
-  
+
   const isFinalized = appointment.status === AppointmentStatusEnum.Finalizado
   const canModifyPayment = !isFinalized && userId === appointment.clientId
-  
+
   const formId = 'modificar-pagamento-form'
-  
+
   return (
     <>
       <Card className="max-w-xl mx-auto">
@@ -198,7 +198,7 @@ function AppointmentDetails() {
             </div>
             <div>
               <p className="text-sm text-gray-600">Hora de Início:</p>
-              <p className="font-medium">{getFormattedHour(appointment.startTime as TimeOnly)}</p>
+              <p className="font-medium">{getFormattedHour(appointment.startTime as TimeString)}</p>
             </div>
             <div>
               <p className="text-sm text-gray-600">Serviços:</p>
@@ -227,7 +227,7 @@ function AppointmentDetails() {
                 <p className={`font-medium`}>
                   {getEnumAsString(PaymentTypeEnum, appointment.paymentType)}
                 </p>
-                
+
                 {canModifyPayment && (
                   <Button size="sm" onClick={() => setOpen(true)}>
                     Modificar
@@ -249,7 +249,7 @@ function AppointmentDetails() {
                 {getEnumAsString(AppointmentStatusEnum, appointment.status)}
               </Badge>
             </div>
-            
+
             <Link
               className={buttonVariants({ variant: "secondary" })}
               to="/barber-schedule/dashboard"
@@ -270,7 +270,7 @@ function AppointmentDetails() {
                 Escolha um pagamento diferente caso queira modificar
               </DialogDescription>
             </DialogHeader>
-            
+
             {open && (
               <FormUpdatePaymentType
                 currentPaymentType={appointment.paymentType}
@@ -280,7 +280,7 @@ function AppointmentDetails() {
                 closeModal={closeModal}
               />
             )}
-            
+
             <DialogFooter className="grid grid-cols-2 md:flex md:justify-end gap-2">
               <DialogClose asChild>
                 <Button type="button" variant="secondary">

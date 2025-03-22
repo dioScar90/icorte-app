@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { dataIsEqualOrGreaterThenToday, getStringAsDateOnly } from './sharedValidators/dateOnly'
+import { dataIsEqualOrGreaterThenToday, getStringAsDateString } from './sharedValidators/dateString'
 
 export enum PaymentTypeEnum {
   Cartão,
@@ -17,9 +17,9 @@ export const appointmentSchema = z.object({
   date: z.string({ required_error: 'Data do agendamento obrigatória' })
     .trim()
     .date('Data do agendamento inválida')
-    // .refine(isValidDateOnly, { message: 'Data do agendamento inválida' })
+    // .refine(isValidDateString, { message: 'Data do agendamento inválida' })
     .refine(dataIsEqualOrGreaterThenToday, { message: 'Data do agendamento precisa ser maior ou igual à data de hoje' })
-    .transform(getStringAsDateOnly),
+    .transform(getStringAsDateString),
 
   startTime: z.string({ required_error: 'Horário de início obrigatório' })
     .time('Horário de início inválido'),
