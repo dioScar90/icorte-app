@@ -81,10 +81,9 @@ function BarberShopScheduleFormProvider({ children }: PropsWithChildren) {
     select: (s) => {
       switch (scheduleType) {
         case 'recurring':
-          return s.recurringSchedules.find(schedule => schedule.dayOfWeek === dayOfWeek!)
+          return s.recurringSchedules.find(schedule => schedule.dayOfWeek === dayOfWeek)
         case 'special':
-          const dateOnly = date?.toISOString().split('T')[0]
-          return s.specialSchedules.find(schedule => schedule.date === dateOnly)
+          return s.specialSchedules.find(schedule => schedule.date === date)
         default:
           return undefined
       }
@@ -98,8 +97,12 @@ function BarberShopScheduleFormProvider({ children }: PropsWithChildren) {
   function isRecurringSchedule(scheduleee: typeof schedule): scheduleee is RecurringSchedule {
     return scheduleType === 'recurring' && (scheduleee === undefined || 'dayOfWeek' in scheduleee)
   }
+
+  function isSpecialSchedule(scheduleee: typeof schedule): scheduleee is SpecialSchedule {
+    return scheduleType === 'special' && (scheduleee === undefined || 'date' in scheduleee)
+  }
   
-  const formId = `form_${action}_${barberShopId}_${scheduleType}_${serviceId ?? ''}`
+  const formId = `form_${action}_${barberShopId}_${scheduleType}`
 
   const schema = scheduleType === 'recurring' ? recurringScheduleSchema : specialScheduleSchema
   const resolver = action === 'REMOVE' ? undefined : zodResolver(schema)
@@ -116,67 +119,106 @@ function BarberShopScheduleFormProvider({ children }: PropsWithChildren) {
       closeTime: schedule?.closeTime ?? undefined,
       isClosed: schedule?.isClosed ?? false,
     }
-    
-  return (
-    <BarberShopScheduleFormContext.Provider
-      value={{
-        action, barberShopId, scheduleType, formId,
-        ...getDialogInfos(action),
-        form: useForm<typeof scheduleType extends 'recurring' ? RecurringSchedule : SpecialSchedule>({
-          resolver,
-          defaultValues,
-        }),
-        doStuff: async (values) => {
-          const infos = {
-            REGISTER: {
-              recurring: {
+
+  if (scheduleType === 'recurring') {
+    return (
+      <BarberShopScheduleFormContext.Provider
+        value={{
+          scheduleType: 'recurring',
+          action, barberShopId, formId,
+          ...getDialogInfos(action),
+          form: useForm<RecurringSchedule>({
+            resolver: action === 'REMOVE' ? undefined : zodResolver(recurringScheduleSchema),
+            defaultValues: {
+              dayOfWeek: isRecurringSchedule(schedule) ? schedule.dayOfWeek : DayOfWeekEnum.SEGUNDA,
+              openTime: isRecurringSchedule(schedule) ? schedule.openTime : undefined,
+              closeTime: isRecurringSchedule(schedule) ? schedule.closeTime : undefined,
+            },
+          }),
+          doStuff: async (values) => {
+            const infos = {
+              REGISTER: {
                 method: () => methods.recurring.register(barberShopId, values),
                 defaultMessage: 'Serviço criado com sucesso',
               },
-              special: {
-                method: () => methods.special.register(barberShopId, values),
-                defaultMessage: 'Serviço criado com sucesso',
-              },
-            },
-            UPDATE: {
-              recurring: {
+              UPDATE: {
                 method: () => methods.recurring.update(barberShopId, dayOfWeek!, values),
                 defaultMessage: 'Serviço atualizado com sucesso',
               },
-              special: {
-                method: () => methods.special.update(barberShopId, data!, values),
-                defaultMessage: 'Serviço atualizado com sucesso',
-              },
-            },
-            REMOVE: {
-              recurring: {
+              REMOVE: {
                 method: () => methods.recurring.remove(barberShopId, dayOfWeek!),
                 defaultMessage: 'Serviço removido com sucesso',
               },
-              special: {
-                method: () => methods.special.remove(barberShopId, data!),
+            } as const
+            
+            const { method, defaultMessage } = infos[action]
+        
+            const result = await method()
+            
+            if (!result.isSuccess) {
+              throw result.error
+            }
+        
+            return {
+              message: result.value?.message ?? defaultMessage
+            }
+          },
+        }}
+      >
+        {children}
+      </BarberShopScheduleFormContext.Provider>
+    )
+  } else {
+    return (
+      <BarberShopScheduleFormContext.Provider
+        value={{
+          scheduleType: 'special',
+          action, barberShopId, formId,
+          ...getDialogInfos(action),
+          form: useForm<SpecialSchedule>({
+            resolver: action === 'REMOVE' ? undefined : zodResolver(specialScheduleSchema),
+            defaultValues: {
+              date: isSpecialSchedule(schedule) ? getFormattedDate(schedule.date) as SpecialSchedule['date'] : undefined,
+              notes: isSpecialSchedule(schedule) ? schedule.notes : undefined,
+              openTime: isSpecialSchedule(schedule) ? schedule.openTime : undefined,
+              closeTime: isSpecialSchedule(schedule) ? schedule.closeTime : undefined,
+              isClosed: isSpecialSchedule(schedule) ? schedule.isClosed : false,
+            },
+          }),
+          doStuff: async (values) => {
+            const infos = {
+              REGISTER: {
+                method: () => methods.special.register(barberShopId, values),
+                defaultMessage: 'Serviço criado com sucesso',
+              },
+              UPDATE: {
+                method: () => methods.special.update(barberShopId, date!, values),
+                defaultMessage: 'Serviço atualizado com sucesso',
+              },
+              REMOVE: {
+                method: () => methods.special.remove(barberShopId, date!),
                 defaultMessage: 'Serviço removido com sucesso',
               },
-            },
-          } as const
-          
-          const { method, defaultMessage } = infos[action][scheduleType]
-      
-          const result = await method()
-          
-          if (!result.isSuccess) {
-            throw result.error
-          }
-      
-          return {
-            message: result.value?.message ?? defaultMessage
-          }
-        },
-      }}
-    >
-      {children}
-    </BarberShopScheduleFormContext.Provider>
-  )
+            } as const
+            
+            const { method, defaultMessage } = infos[action]
+        
+            const result = await method()
+            
+            if (!result.isSuccess) {
+              throw result.error
+            }
+        
+            return {
+              message: result.value?.message ?? defaultMessage
+            }
+          },
+        }}
+      >
+        {children}
+      </BarberShopScheduleFormContext.Provider>
+    )
+  }
 }
 
 export const useBarberShopScheduleFormContext = () => useContext(BarberShopScheduleFormContext)!
@@ -235,31 +277,6 @@ function DialogItself() {
             </Button>
           </DialogClose>
           
-          <FormSubmitButton />
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
-  
-  return (
-    <Dialog>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{dialogInfos.title}</DialogTitle>
-          <DialogDescription>
-            {dialogInfos.description}
-          </DialogDescription>
-        </DialogHeader>
-
-        <BarberShopScheduleForm />
-        
-        <DialogFooter className="grid grid-cols-2 md:flex md:justify-end gap-2">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Cancelar
-            </Button>
-          </DialogClose>
-
           <FormSubmitButton />
         </DialogFooter>
       </DialogContent>

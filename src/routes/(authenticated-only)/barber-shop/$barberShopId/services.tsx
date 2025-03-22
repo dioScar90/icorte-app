@@ -8,14 +8,6 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ShoppingBag } from 'lucide-react'
 import { z } from 'zod'
 
-const BARBER_SHOP_SERVICES_ACTION = [
-  'REGISTER',
-  'UPDATE',
-  'REMOVE',
-] as const
-
-export type BARBER_SHOP_SERVICES_ACTION_TYPES = typeof BARBER_SHOP_SERVICES_ACTION[number]
-
 const serviceValidateSchema = z.object({
   open: z.discriminatedUnion('action', [
     z.object({
@@ -27,12 +19,7 @@ const serviceValidateSchema = z.object({
       serviceId: z.number().int().min(1),
     }),
   ]).optional()
-}) satisfies z.ZodType<{
-  open?: {
-    action: BARBER_SHOP_SERVICES_ACTION_TYPES
-    serviceId?: number
-  }
-}>
+})
 
 export const Route = createFileRoute(
   '/(authenticated-only)/barber-shop/$barberShopId/services',

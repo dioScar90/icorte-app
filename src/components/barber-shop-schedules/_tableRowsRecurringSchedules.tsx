@@ -1,31 +1,27 @@
-import { LineClamp } from '@/components/line-clamp'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
-import { getNumberAsCurrency } from '@/utils/currency'
-import { useLoaderData } from '@tanstack/react-router'
 import { useNavigate } from '@tanstack/react-router'
 import { Edit, Trash2 } from 'lucide-react'
+import { getEnumAsString } from '@/utils/enum-as-array'
+import { DayOfWeekEnum } from '@/schemas/recurringSchedule'
+import { getFormattedHour } from '@/schemas/sharedValidators/timeOnly'
+import { Route as BarberShopSchedulesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
 
-export function TableBodyWithRows() {
-  const [services] = useLoaderData({
-    from: '/(authenticated-only)/barber-shop/$barberShopId/services',
-    select: (s) => [
-      s.services,
-    ] as const
+export function TableBodyWithRowsRecurringSchedules() {
+  const schedules = BarberShopSchedulesRoute.useLoaderData({
+    select: (s) => s.recurringSchedules,
   })
   
-  const navigate = useNavigate({
-    from: '/barber-shop/$barberShopId/services',
-  })
+  const navigate = useNavigate({ from: BarberShopSchedulesRoute.fullPath })
   
-  if (!services.length) {
+  if (!schedules.length) {
     return (
       <TableRow>
         <TableCell colSpan={100}>
           <Alert variant="warning">
             <AlertDescription className="text-center my-1">
-              Nenhum serviço cadastrado
+              Nenhum horário recorrente cadastrado
             </AlertDescription>
           </Alert>
         </TableCell>
@@ -33,17 +29,12 @@ export function TableBodyWithRows() {
     )
   }
   
-  return services.map(({ id: serviceId, barberShopId, ...service }) => (
-    <TableRow key={serviceId} data-barber-shop-id={barberShopId}>
-      <TableCell>{service.name}</TableCell>
-      <TableCell>
-        <LineClamp limit={2}>
-          {service.description}
-        </LineClamp>
-      </TableCell>
-      <TableCell>{getNumberAsCurrency(service.price)}</TableCell>
-      <TableCell>{service.duration}</TableCell>
-      <TableCell className="text-right">
+  return schedules.map(({ barberShopId, ...schedule }) => (
+    <TableRow key={schedule.dayOfWeek} data-barber-shop-id={barberShopId}>
+      <TableCell className="text-center">{getEnumAsString(DayOfWeekEnum, schedule.dayOfWeek)}</TableCell>
+      <TableCell className="text-center">{getFormattedHour(schedule.openTime, true)}</TableCell>
+      <TableCell className="text-center">{getFormattedHour(schedule.closeTime, true)}</TableCell>
+      <TableCell className="text-center w-[100px]">
         <div className="flex justify-between gap-x-2">
           <Button
             size="icon"
@@ -54,7 +45,8 @@ export function TableBodyWithRows() {
                 ...prev,
                 open: {
                   action: 'UPDATE',
-                  serviceId,
+                  scheduleType: 'recurring',
+                  dayOfWeek: schedule.dayOfWeek,
                 },
               })
             })}
@@ -70,7 +62,8 @@ export function TableBodyWithRows() {
                 ...prev,
                 open: {
                   action: 'REMOVE',
-                  serviceId,
+                  scheduleType: 'recurring',
+                  dayOfWeek: schedule.dayOfWeek,
                 },
               })
             })}
