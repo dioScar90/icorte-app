@@ -6,9 +6,9 @@ import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
 import { TimeString } from "@/utils/types/time-string"
 import { useNavigate } from "@tanstack/react-router"
 import { useBarberShopScheduleFormContext } from "./_dialog"
-import { Route as BarberShopSchedulesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
+import { Route } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
 
-function FormRecurringSchedule() {
+function Formmm() {
   const { form, doStuff, formId, action, schedule } = useBarberShopScheduleFormContext()
 
   const navigate = useNavigate()
@@ -148,17 +148,21 @@ function FormRecurringSchedule() {
   )
 }
 
-export function BarberShopScheduleForm() {
-  const { form, doStuff, formId, action, schedule } = useBarberShopScheduleFormContext()
+export function BarberShopRecurringScheduleForm() {
+  const { form, doStuff, formId, action, scheduleType } = useBarberShopScheduleFormContext()
 
-  const [handleError] = BarberShopSchedulesRoute.useRouteContext({
+  if (scheduleType !== 'special') {
+    return null
+  }
+
+  const [handleError] = Route.useRouteContext({
     select: (s) => [
       s.handleError,
     ] as const
   })
 
   const navigate = useNavigate({
-    from: BarberShopSchedulesRoute.fullPath,
+    from: Route.fullPath,
   })
 
   function handlePriceChange(e: ChangeEvent<HTMLInputElement>) {
@@ -183,9 +187,9 @@ export function BarberShopScheduleForm() {
     <Form {...form}>
       <form
         id={formId} className="space-y-6"
-        onSubmit={form.handleSubmit(async (data) => {
+        onSubmit={form.handleSubmit(async (values) => {
           try {
-            const { message } = await doStuff(data)
+            const { message } = await doStuff(values)
 
             navigate({
               search: ({ open, ...rest }) => ({ ...rest }),
