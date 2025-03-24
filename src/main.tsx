@@ -9,6 +9,9 @@ import { routeTree } from './routeTree.gen'
 
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
+import { useError } from './hooks/use-error.tsx'
+import { useProxy } from './hooks/use-proxy.ts'
+import { useAuth } from './hooks/use-auth.tsx'
 
 // Create a new router instance
 const router = createRouter({
