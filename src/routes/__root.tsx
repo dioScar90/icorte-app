@@ -1,26 +1,15 @@
-import { createRootRouteWithContext, Outlet, redirect, useLocation, useNavigate, useRouterState } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import indexCss from '@/index.css?url'
-import { seo } from '@/utils/seo'
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { AppSidebar } from '@/components/sidebar/app-sidebar'
-import { NavbarHeader } from '@/components/sidebar/navbar-header'
-import { Footer } from '@/components/footer'
-import { Toaster } from '@/components/ui/toaster'
-import { ComponentProps, PropsWithChildren, useLayoutEffect } from 'react'
-import Swal from 'sweetalert2'
-import type { HandleError } from '@/hooks/use-error'
-import type { QueryClient } from '@tanstack/react-query'
-import { ProxyContext } from '@/hooks/use-proxy'
-import { ThemeProvider } from '@/components/theme-provider'
-import { cn } from '@/lib/utils'
-import { AuthContext } from '@/hooks/use-auth'
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
-export type RouterAppContext = {
-  httpClient: ProxyContext,
-  handleError: HandleError,
-  queryClient: QueryClient,
-  auth: AuthContext,
+import TanstackQueryLayout from '../integrations/tanstack-query/layout'
+
+import type { QueryClient } from '@tanstack/react-query'
+
+interface RouterAppContext {
+  queryClient: QueryClient
+  httpClient: ProxyContext
+  handleError: HandleError
+  auth: AuthContext
 }
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
@@ -140,6 +129,8 @@ function RootComponent() {
       <MainBody />
 
       <TanStackRouterDevtools />
+
+      <TanstackQueryLayout />
 
     </MainProviders>
   )

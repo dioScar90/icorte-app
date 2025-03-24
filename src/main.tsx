@@ -2,32 +2,28 @@ import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 
-// Import the generated route tree
-import { FileRouteTypes, routeTree } from './routeTree.gen'
-import { useProxy } from './hooks/use-proxy'
-import { useError } from './hooks/use-error'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ErrorRoutePage } from './components/error-route'
-import { useAuth } from './hooks/use-auth'
+import * as TanstackQuery from './integrations/tanstack-query/root-provider.tsx'
 
-const queryClient = new QueryClient()
+// Import the generated route tree
+import { routeTree } from './routeTree.gen'
+
+import './styles.css'
+import reportWebVitals from './reportWebVitals.ts'
 
 // Create a new router instance
-// const router = createRouter()
 const router = createRouter({
   routeTree,
   context: {
-    queryClient,
+    ...TanstackQuery.getContext(),
     handleError: undefined!,
     httpClient: undefined!,
     auth: undefined!,
   },
-  scrollRestoration: true,
   defaultPreload: 'intent',
-  defaultNotFoundComponent: ErrorRoutePage,
+  scrollRestoration: true,
+  defaultStructuralSharing: true,
+  defaultPreloadStaleTime: 0,
 })
-
-export type AllFuckingRoutes = FileRouteTypes['to']
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {
@@ -59,16 +55,20 @@ function App() {
   )
 }
 
-const rootElement = document.getElementById('root')!
-
-if (!rootElement.innerHTML) {
+// Render the app
+const rootElement = document.getElementById('root')
+if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
-  
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
+      <TanstackQuery.Provider>
         <App />
-      </QueryClientProvider>
+      </TanstackQuery.Provider>
     </StrictMode>,
   )
 }
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals()
