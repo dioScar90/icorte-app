@@ -9,6 +9,7 @@ import * as ShadcnSelect from '@/components/ui/select'
 import { Slider as ShadcnSlider } from '@/components/ui/slider'
 import { Switch as ShadcnSwitch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
+import type { ComponentProps } from 'react'
 
 export function SubscribeButton({ label }: { label: string }) {
   const form = useFormContext()
@@ -43,9 +44,11 @@ function ErrorMessages({
 }
 
 export function TextField({
+  type,
   label,
   placeholder,
 }: {
+  type: ComponentProps<typeof Input>['type']
   label: string
   placeholder?: string
 }) {
@@ -58,6 +61,7 @@ export function TextField({
         {label}
       </Label>
       <Input
+        type={type}
         value={field.state.value}
         placeholder={placeholder}
         onBlur={field.handleBlur}

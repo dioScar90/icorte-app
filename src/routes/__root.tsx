@@ -3,9 +3,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 import TanstackQueryLayout from '../integrations/tanstack-query/layout'
 
-import type { QueryClient } from '@tanstack/react-query'
-
-import indexCss from '@/styles'
+import indexCss from '@/styles.css?url'
 import { seo } from '@/utils/seo'
 import { useLayoutEffect, type ComponentProps, type PropsWithChildren } from 'react'
 import { ThemeProvider } from 'next-themes'
@@ -16,6 +14,8 @@ import { NavbarHeader } from '@/components/sidebar/navbar-header'
 import { Footer } from '@/components/footer'
 import { Toaster } from 'sonner'
 import Swal from 'sweetalert2'
+
+import type { QueryClient } from '@tanstack/react-query'
 import type { ProxyContext } from '@/hooks/use-proxy'
 import type { HandleError } from '@/hooks/use-error'
 import type { AuthContext } from '@/hooks/use-auth'

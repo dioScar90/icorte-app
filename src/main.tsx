@@ -18,8 +18,8 @@ const router = createRouter({
   routeTree,
   context: {
     ...TanstackQuery.getContext(),
-    handleError: undefined!,
     httpClient: undefined!,
+    handleError: undefined!,
     auth: undefined!,
   },
   defaultPreload: 'intent',
@@ -42,8 +42,8 @@ declare module '@tanstack/history' {
 }
 
 function App() {
-  const handleError = useError()
   const httpClient = useProxy()
+  const handleError = useError()
   const auth = useAuth(httpClient)
 
   return (
