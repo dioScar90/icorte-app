@@ -1,0 +1,130 @@
+import { createContext, useContext, useMemo } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { SpecialSchedule } from '@/types/models/specialSchedule'
+import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
+import { specialScheduleSchema } from '@/schemas/specialSchedule'
+import { Route } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
+
+type Action = 'REGISTER' | 'UPDATE' | 'REMOVE'
+
+function getDialogInfos(action: Action) {
+  const infos = {
+    REGISTER: {
+      dialogInfos: {
+        title: 'Cadastrar',
+        description: 'Preencha os campos abaixo para criar um novo serviço.',
+      },
+      submitBtnInfos: {
+        innerText: 'Cadastrar',
+        variant: 'default',
+      }
+    },
+    UPDATE: {
+      dialogInfos: {
+        title: 'Cadastrar',
+        description: 'Confira os campos abaixo para atualizar o serviço.',
+      },
+      submitBtnInfos: {
+        innerText: 'Cadastrar',
+        variant: 'default',
+      }
+    },
+    REMOVE: {
+      dialogInfos: {
+        title: 'Cadastrar',
+        description: 'ATENÇÃO - Serviço será removido.',
+      },
+      submitBtnInfos: {
+        innerText: 'Cadastrar',
+        variant: 'destructive',
+      }
+    },
+  } as const satisfies Record<Action, any>
+  
+  return infos[action]
+}
+
+export function useInitValuesSpecialScheduleFormContext() {
+  const { barberShopId } = Route.useParams()
+
+  const { scheduleType, action, date } = Route.useSearch({
+    select: (s) => s.open!,
+  })
+
+  if (scheduleType !== 'special') {
+    throw new Error('Impossible error')
+  }
+  
+  const [schedule] = Route.useLoaderData({
+    select: (s) => [
+      s.specialSchedules.find(schedule => date !== undefined && schedule.date === date),
+    ] as const
+  })
+  
+  const [register, update, remove] = Route.useRouteContext({
+    select: (s) => [
+      s.special.register,
+      s.special.update,
+      s.special.remove,
+    ] as const
+  })
+  
+  const basicValues = useMemo(() => ({
+    scheduleType,
+    action,
+    barberShopId,
+    formId: `form_${action}_${barberShopId}_${scheduleType}`,
+    ...getDialogInfos(action),
+  } as const), [scheduleType, action, barberShopId])
+
+  const form = useForm<SpecialSchedule>({
+    resolver: action === 'REMOVE' ? undefined : zodResolver(specialScheduleSchema),
+    defaultValues: {
+      date: schedule?.date ? getFormattedDate(schedule.date) as SpecialSchedule['date'] : undefined,
+      notes: schedule?.notes ?? undefined,
+      openTime: schedule?.openTime ?? undefined,
+      closeTime: schedule?.closeTime ?? undefined,
+      isClosed: schedule?.isClosed ?? false,
+    },
+  })
+  
+  const doStuff = async (values: Parameters<Parameters<typeof form.handleSubmit>[0]>[0]) => {
+    const infos = {
+      REGISTER: {
+        method: () => register(barberShopId, values),
+        defaultMessage: 'Serviço criado com sucesso',
+      },
+      UPDATE: {
+        method: () => update(barberShopId, date!, values),
+        defaultMessage: 'Serviço atualizado com sucesso',
+      },
+      REMOVE: {
+        method: () => remove(barberShopId, date!),
+        defaultMessage: 'Serviço removido com sucesso',
+      },
+    } as const
+
+    const { method, defaultMessage } = infos[action]
+
+    const result = await method()
+
+    if (!result.isSuccess) {
+      throw result.error
+    }
+
+    return {
+      message: result.value?.message ?? defaultMessage
+    }
+  }
+  
+  return {
+    ...basicValues,
+    form,
+    doStuff,
+  }
+}
+
+export const SpecialScheduleFormContext = createContext<ReturnType<typeof useInitValuesSpecialScheduleFormContext> | null>(null)
+
+export const useSpecialScheduleFormContext = () => useContext(SpecialScheduleFormContext)!

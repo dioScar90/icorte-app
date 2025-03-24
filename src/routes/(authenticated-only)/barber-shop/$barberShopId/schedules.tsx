@@ -1,6 +1,7 @@
-import { BarberShopScheduleDialog } from '@/components/barber-shop-schedules/_dialog'
-import { TableBodyWithRowsRecurringSchedules } from '@/components/barber-shop-schedules/_tableRowsRecurringSchedules'
-import { TableBodyWithRowsSpecialSchedules } from '@/components/barber-shop-schedules/_tableRowsSpecialSchedules'
+import { BarberShopRecurringScheduleDialog } from '@/components/barber-shop-schedules/recurring/_dialog'
+import { BarberShopSpecialScheduleDialog } from '@/components/barber-shop-schedules/special/_dialog'
+import { TableBodyWithRowsRecurringSchedules } from '@/components/barber-shop-schedules/recurring/_tableRows'
+import { TableBodyWithRowsSpecialSchedules } from '@/components/barber-shop-schedules/special/_tableRows'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -216,8 +217,9 @@ function RouteComponent() {
           <CardSpecialSchedules barberShopName={barberShopName} />
         </Card>
       </div>
-
-      <BarberShopScheduleDialog />
+      
+      <BarberShopRecurringScheduleDialog />
+      <BarberShopSpecialScheduleDialog />
     </>
   )
 }
