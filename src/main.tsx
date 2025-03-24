@@ -7,7 +7,7 @@ import { FileRouteTypes, routeTree } from './routeTree.gen'
 import { useProxy } from './hooks/use-proxy'
 import { useError } from './hooks/use-error'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ErrorRoutePage } from './pages/error-route'
+import { ErrorRoutePage } from './components/error-route'
 import { useAuth } from './hooks/use-auth'
 
 const queryClient = new QueryClient()

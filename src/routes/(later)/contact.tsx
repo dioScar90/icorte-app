@@ -1,3 +1,4 @@
+import { ForTheFuture } from '@/components/for-the-future'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/(later)/contact')({
@@ -5,5 +6,5 @@ export const Route = createFileRoute('/(later)/contact')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/contact"!</div>
+  return <ForTheFuture>Contact!</ForTheFuture>
 }
