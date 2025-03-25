@@ -1,5 +1,5 @@
-import { FormControl, FormField, FormItem, FormLabel } from "../ui/form"
-import { Checkbox } from "../ui/checkbox"
+import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form"
+import { Checkbox } from "@/components/ui/checkbox"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Suspense } from "react"
 import { Loader2 } from "lucide-react"

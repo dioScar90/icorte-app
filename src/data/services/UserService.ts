@@ -1,6 +1,6 @@
 import type { IUserService as Interface } from "./interfaces/IUserService"
-import { ProxyContext } from "@/hooks/use-proxy"
-import { Result } from "../result"
+import type { ProxyContext } from "@/hooks/use-proxy"
+import { Result } from "@/data/result"
 
 type UrlType = [
   'me',

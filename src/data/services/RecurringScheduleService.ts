@@ -1,6 +1,6 @@
-import { IRecurringScheduleService as Interface } from "./interfaces/IRecurringScheduleService";
-import { DayOfWeek } from "@/utils/types/day-of-week";
-import { ProxyContext } from "@/hooks/use-proxy";
+import type { IRecurringScheduleService as Interface } from "./interfaces/IRecurringScheduleService";
+import type { DayOfWeek } from "@/utils/types/day-of-week";
+import type { ProxyContext } from "@/hooks/use-proxy";
 import { Result } from "../result";
 
 function getUrl(barberShopId: number, dayOfWeek?: DayOfWeek) {

@@ -1,40 +1,16 @@
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { GoogleSvg } from "@/components/ui/google-svg"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { SubmitButton } from "@/components/ui/submit-button"
-import { useAppForm } from "@/hooks/demo.form"
-import { toast } from "@/hooks/use-toast"
+import { useLoginForm } from "@/hooks/forms/use-login-form"
 import { userLoginSchema } from "@/schemas/user"
 import { Link } from "@tanstack/react-router"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { Eye, EyeOff, LogInIcon } from "lucide-react"
-import { useRef, useState, type RefObject } from "react"
+import { toast } from "sonner"
 
 export const Route = createFileRoute('/login')({
   component: Login,
+  beforeLoad: () => ({
+    unavailableForNow: () => toast.error('Indisponível no momento'),
+  }),
 })
-
-function EyeViewPasswordIcon({ ref }: { ref: RefObject<HTMLInputElement | null> }) {
-  const [isViewPassword, setIsViewPassword] = useState(false)
-  const Icon = isViewPassword ? Eye : EyeOff
-
-  function handleClick() {
-    setIsViewPassword(prev => !prev)
-
-    if (ref?.current) {
-      ref?.current.setAttribute('type', isViewPassword ? 'text' : 'password')
-    }
-  }
-
-  return (
-    <Icon
-      className="absolute-middle-y right-4 z-10 cursor-pointer text-gray-500"
-      onClick={handleClick}
-    />
-  )
-}
 
 export function Login() {
   const [handleError, login] = Route.useRouteContext({
@@ -45,10 +21,8 @@ export function Login() {
   })
   
   const navigate = useNavigate()
-
-  const passwordInputRef = useRef<HTMLInputElement>(null)
   
-  const form = useAppForm({
+  const form = useLoginForm({
     defaultValues: {
       email: '',
       password: '',
@@ -78,13 +52,6 @@ export function Login() {
     },
   })
   
-  function dispatchToastUnavailableForNow() {
-    toast({
-      variant: 'destructive',
-      description: 'Indisponível no momento',
-    })
-  }
-  
   return (
     <form
       className="space-y-6"
@@ -106,76 +73,19 @@ export function Login() {
             <div className="grid gap-4">
               <div className="grid gap-3">
                 <form.AppField name="email">
-                  {(field) => <field.TextField type="email" label="Email" placeholder="Digite seu email" />}
+                  {(field) => <field.LoginEmailField />}
                 </form.AppField>
-
-                <form.AppField
-                  name="password"
-                  children={(field) => (
-                    <div className="relative">
-                      <div>
-                        <Label className="mb-2 text-xl font-bold">
-                          Email
-                        </Label>
-                        
-                        <div className="relative">
-                          <Input
-                            ref={passwordInputRef}
-                            type="password"
-                            value={field.state.value}
-                            placeholder={'*'.repeat(8)}
-                            onBlur={field.handleBlur}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                          />
-
-                          <EyeViewPasswordIcon ref={passwordInputRef} />
-                        </div>
-                        
-                        {field.state.meta.isTouched && <em>{field.state.meta.errors.join(',')}</em>}
-                      </div>
-                      
-                      <Button variant="link" asChild className="absolute right-0">
-                        <Link
-                          to={Route.fullPath}
-                          tabIndex={-1}
-                          onClick={e => {
-                            e.preventDefault()
-                            e.currentTarget.toggleAttribute('data-disabled', true)
-                            dispatchToastUnavailableForNow()
-                            setTimeout(() => e.currentTarget.toggleAttribute('data-disabled', false), 500)
-                          }}
-                          className="ml-auto inline-block text-sm underline [&[data-disabled]]:opacity-50 [&[data-disabled]]:pointer-events-none"
-                          title="Indisponível no momento"
-                        >
-                          Esqueceu sua senha?
-                        </Link>
-                      </Button>
-                    </div>
-                  )}
-                />
+                
+                <form.AppField name="password">
+                  {(field) => <field.LoginPasswordField />}
+                </form.AppField>
               </div>
               
               {/* <FormRootErrorMessage /> */}
               
-              <div className="w-full">
-                <form.AppForm>
-                  <form.SubscribeButton label="Login" IconLeft={<LogInIcon />} />
-                </form.AppForm>
-              </div>
-
-              <SubmitButton
-                type="button"
-                variant="outline" className="w-full"
-                title="Indisponível no momento"
-                onClick={e => {
-                  e.preventDefault()
-                  dispatchToastUnavailableForNow()
-                }}
-                disabled={form.state.isSubmitting}
-                IconLeft={<GoogleSvg />}
-              >
-                Fazer login com Google
-              </SubmitButton>
+              <form.AppForm>
+                <form.LoginSubscribeButton />
+              </form.AppForm>
             </div>
             <div className="mt-4 text-center text-sm">
               <span>Não tem conta?</span>{' '}

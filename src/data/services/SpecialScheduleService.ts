@@ -1,7 +1,7 @@
-import { ISpecialScheduleService as Interface } from "./interfaces/ISpecialScheduleService";
-import { DateString } from "@/utils/types/date-string";
-import { ProxyContext } from "@/hooks/use-proxy";
-import { Result } from "../result";
+import type { ISpecialScheduleService as Interface } from "./interfaces/ISpecialScheduleService";
+import type { DateString } from "@/utils/types/date-string";
+import type { ProxyContext } from "@/hooks/use-proxy";
+import { Result } from "@/data/result";
 
 function getUrl(barberShopId: number, date?: DateString) {
   const baseEndpoint = `/barber-shop/${barberShopId}/special-schedule`

@@ -1,6 +1,6 @@
-import { BaseResult, CreatedResult, Pagination, PaginationResult } from "@/data/result";
-import { ServiceZod } from "@/schemas/service";
-import { Service } from "@/types/models/service";
+import type { BaseResult, CreatedResult, Pagination, PaginationResult } from "@/data/result";
+import type { ServiceZod } from "@/schemas/service";
+import type { Service } from "@/types/models/service";
 
 export interface IServiceService {
   createService(barberShopId: number, data: ServiceZod): CreatedResult<Service>;

@@ -1,7 +1,7 @@
-import { BaseResult, CreatedResult, Pagination, PaginationResult } from "@/data/result";
-import { SpecialScheduleZod } from "@/schemas/specialSchedule";
-import { DateString } from "@/utils/types/date-string";
-import { SpecialSchedule } from "@/types/models/specialSchedule";
+import type { BaseResult, CreatedResult, Pagination, PaginationResult } from "@/data/result";
+import type { SpecialScheduleZod } from "@/schemas/specialSchedule";
+import type { DateString } from "@/utils/types/date-string";
+import type { SpecialSchedule } from "@/types/models/specialSchedule";
 
 export interface ISpecialScheduleService {
   createSpecialSchedule(barberShopId: number, data: SpecialScheduleZod): CreatedResult<SpecialSchedule>;

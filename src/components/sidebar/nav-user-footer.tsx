@@ -27,11 +27,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { Button } from "../ui/button"
+import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import Swal from "sweetalert2"
 import { Link, useNavigate, useRouteContext } from "@tanstack/react-router"
-import { AuthContext } from "@/hooks/use-auth"
+import type { AuthContext } from "@/hooks/use-auth"
 
 function getInfos(user: NonNullable<SidebarFooterItselfProps['user']>) {
   return {

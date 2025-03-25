@@ -2,8 +2,9 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { SubmitButton } from '@/components/ui/submit-button'
 import { GenderEnum } from '@/schemas/profile'
-import { userUpdateSchema, UserUpdateZod } from '@/schemas/user'
+import { userUpdateSchema, type UserUpdateZod } from '@/schemas/user'
 import { getEnumAsArray, getEnumAsString } from '@/utils/enum-as-array'
 import { applyMask } from '@/utils/mask'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -161,13 +162,13 @@ function RouteComponent() {
               <ChevronLeft />
               Voltar
             </Link>
-            <Button
+            <SubmitButton
               type="submit" formNoValidate
-              isLoading={form.formState.isLoading || form.formState.isSubmitting}
+              disabled={form.formState.isLoading || form.formState.isSubmitting}
               IconLeft={<UserRoundPlusIcon />}
             >
               Salvar
-            </Button>
+            </SubmitButton>
           </div>
         </form>
       </Form>

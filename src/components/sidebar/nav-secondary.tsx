@@ -6,7 +6,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { Link } from "@tanstack/react-router"
-import { SidebarNavProps } from "./app-sidebar"
+import type { SidebarNavProps } from "./app-sidebar"
 import { BriefcaseBusinessIcon, ContactRoundIcon } from "lucide-react"
 
 function getItems(): SidebarNavProps[] {

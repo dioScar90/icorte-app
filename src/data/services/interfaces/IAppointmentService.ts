@@ -1,6 +1,6 @@
-import { BaseResult, CreatedResult, Pagination, PaginationResult } from "@/data/result";
-import { AppointmentZod } from "@/schemas/appointment";
-import { Appointment } from "@/types/models/appointment";
+import type { AppointmentZod } from "@/schemas/appointment";
+import type { Appointment } from "@/types/models/appointment";
+import type { BaseResult, CreatedResult, Pagination, PaginationResult } from "@/data/result";
 
 export interface IAppointmentService {
   createAppointment(data: AppointmentZod): CreatedResult<Appointment>;

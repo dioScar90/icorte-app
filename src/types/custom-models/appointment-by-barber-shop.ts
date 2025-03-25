@@ -1,6 +1,6 @@
-import { Prettify } from "@/utils/types/prettify";
-import { Appointment } from "../models/appointment";
-import { UserMe } from "../models/user";
+import { type Prettify } from "@/utils/types/prettify";
+import { type Appointment } from "@/types/models/appointment";
+import { type UserMe } from "@/types/models/user";
 
 export type AppointmentByBarberShop = Prettify<
   & Omit<Appointment, 'clientId' | 'serviceIds'>

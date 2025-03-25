@@ -1,6 +1,6 @@
-import { Result } from "../result";
-import { IAppointmentService as Interface } from "./interfaces/IAppointmentService";
-import { ProxyContext } from "@/hooks/use-proxy";
+import type { IAppointmentService as Interface } from "./interfaces/IAppointmentService";
+import type { ProxyContext } from "@/hooks/use-proxy";
+import { Result } from "@/data/result";
 
 function getUrl(id?: number) {
   const baseEndpoint = `/appointment`

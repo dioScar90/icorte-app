@@ -1,8 +1,8 @@
-import { BaseResult, Pagination, PaginationResult } from "@/data/result";
-import { ServiceByName } from "@/types/custom-models/service-by-name";
-import { TopBarberShop } from "@/types/models/barberShop";
-import { DateString } from "@/utils/types/date-string";
-import { TimeString } from "@/utils/types/time-string";
+import type { ServiceByName } from "@/types/custom-models/service-by-name";
+import type { TopBarberShop } from "@/types/models/barberShop";
+import type { DateString } from "@/utils/types/date-string";
+import type { TimeString } from "@/utils/types/time-string";
+import type { BaseResult, Pagination, PaginationResult } from "@/data/result";
 
 export interface IBarberScheduleService {
   getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateString): BaseResult<DateString[]>;

@@ -1,4 +1,4 @@
-import { AxiosResponse } from "axios"
+import { type AxiosResponse } from "axios"
 import { z } from "zod"
 
 export const getPaginationObj = (page: number, pageSize?: number) => ({ page: Math.max(1, page), pageSize })

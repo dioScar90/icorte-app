@@ -2,25 +2,25 @@ import { Badge } from '@/components/ui/badge'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
-import { appointmentSchema, AppointmentZod, PaymentTypeEnum } from '@/schemas/appointment'
+import { SubmitButton } from '@/components/ui/submit-button'
+import { appointmentSchema, type AppointmentZod, PaymentTypeEnum } from '@/schemas/appointment'
 import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
 import { getFormattedHour } from '@/schemas/sharedValidators/timeString'
-import { Appointment, AppointmentStatusEnum } from '@/types/models/appointment'
+import { type Appointment, AppointmentStatusEnum } from '@/types/models/appointment'
 import { getNumberAsCurrency } from '@/utils/currency'
 import { getEnumAsArray, getEnumAsString } from '@/utils/enum-as-array'
-import { TimeString } from '@/utils/types/time-string'
+import { type TimeString } from '@/utils/types/time-string'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useQuery, UseQueryResult } from '@tanstack/react-query'
+import { useQuery, type UseQueryResult } from '@tanstack/react-query'
 import { useLocation } from '@tanstack/react-router'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { createFileRoute } from '@tanstack/react-router'
 import { ChevronLeft, ShoppingBag } from 'lucide-react'
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Form } from 'react-router-dom'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -289,14 +289,14 @@ function AppointmentDetails() {
               </DialogClose>
 
               {open && (
-                <Button
+                <SubmitButton
                   type="submit"
                   form={formId}
-                  isLoading={isLoadingPaymentForm}
+                  disabled={isLoadingPaymentForm}
                   IconLeft={<ShoppingBag />}
                 >
                   Modificar
-                </Button>
+                </SubmitButton>
               )}
             </DialogFooter>
           </DialogContent>

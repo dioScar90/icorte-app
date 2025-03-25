@@ -1,7 +1,7 @@
-import { DateString } from "@/utils/types/date-string";
-import { IBarberScheduleService as Interface } from "./interfaces/IBarberScheduleService";
-import { ProxyContext } from "@/hooks/use-proxy";
-import { Result } from "../result";
+import type { DateString } from "@/utils/types/date-string";
+import type { IBarberScheduleService as Interface } from "./interfaces/IBarberScheduleService";
+import type { ProxyContext } from "@/hooks/use-proxy";
+import { Result } from "@/data/result";
 
 type StrBeforeDateEnum = [
   'dates',

@@ -1,4 +1,4 @@
-import { Profile } from '@/types/models/profile'
+import type { Profile } from '@/types/models/profile'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { z } from 'zod'
 

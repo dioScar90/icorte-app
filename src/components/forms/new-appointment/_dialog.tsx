@@ -1,6 +1,6 @@
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog'
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { FormNewAppointment } from './_form'
-import { Button } from '../ui/button'
+import { Button } from '@/components/ui/button'
 import { Scissors } from 'lucide-react'
 import { useSearch } from '@tanstack/react-router'
 import { createContext, PropsWithChildren, useContext } from 'react'

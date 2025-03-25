@@ -1,6 +1,6 @@
-import { Result } from "../result"
-import { IAuthService as Interface } from "./interfaces/IAuthService"
-import { ProxyContext } from "@/hooks/use-proxy"
+import type { IAuthService as Interface } from "./interfaces/IAuthService"
+import type { ProxyContext } from "@/hooks/use-proxy"
+import { Result } from "@/data/result"
 
 type UrlType = [
   'register',

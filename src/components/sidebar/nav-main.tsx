@@ -17,9 +17,9 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { Link, useRouteContext } from "@tanstack/react-router"
-import { SidebarNavProps } from "./app-sidebar"
 import { useEffect, useState } from "react"
-import { AuthContext } from "@/hooks/use-auth"
+import type { SidebarNavProps } from "./app-sidebar"
+import type { AuthContext } from "@/hooks/use-auth"
 
 function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: AuthContext) {
   const items: SidebarNavProps[] = []

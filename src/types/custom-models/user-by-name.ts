@@ -1,5 +1,5 @@
-import { Prettify } from "@/utils/types/prettify";
-import { UserMe } from "../models/user";
+import { type Prettify } from "@/utils/types/prettify";
+import { type UserMe } from "@/types/models/user";
 
 export type UserByName = Prettify<
   & Pick<UserMe, 'id' | 'email' | 'phoneNumber'>

@@ -1,6 +1,6 @@
-import { BaseResult } from "@/data/result";
-import { UserEmailUpdateZod, UserPasswordUpdateZod, UserPhoneNumberUpdateZod } from "@/schemas/user"
-import { UserMe } from "@/types/models/user";
+import type { UserEmailUpdateZod, UserPasswordUpdateZod, UserPhoneNumberUpdateZod } from "@/schemas/user"
+import type { UserMe } from "@/types/models/user";
+import type { BaseResult } from "@/data/result";
 
 export interface IUserService {
   getMe(): BaseResult<UserMe>;

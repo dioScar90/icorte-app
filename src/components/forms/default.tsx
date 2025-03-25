@@ -1,6 +1,6 @@
 import { useStore } from '@tanstack/react-form'
 
-import { useFieldContext, useFormContext } from '../hooks/demo.form-context'
+import { useFieldContext, useFormContext } from '@/hooks/forms/form-contexts'
 
 import { Input } from '@/components/ui/input'
 import { Textarea as ShadcnTextarea } from '@/components/ui/textarea'
@@ -9,7 +9,7 @@ import { Slider as ShadcnSlider } from '@/components/ui/slider'
 import { Switch as ShadcnSwitch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import type { ComponentProps } from 'react'
-import { SubmitButton } from './ui/submit-button'
+import { SubmitButton } from '@/components/ui/submit-button'
 
 export function SubscribeButton({ label }: { label: string } & Pick<ComponentProps<typeof SubmitButton>, 'IconLeft' | 'IconRight'>) {
   const form = useFormContext()
@@ -24,7 +24,7 @@ export function SubscribeButton({ label }: { label: string } & Pick<ComponentPro
   )
 }
 
-function ErrorMessages({
+export function ErrorMessages({
   errors,
 }: {
   errors: Array<string | { message: string }>

@@ -1,7 +1,7 @@
-import { IServiceService as Interface } from "./interfaces/IServiceService";
+import type { IServiceService as Interface } from "./interfaces/IServiceService";
 import { getBrlMoneyIntoFloat } from "@/schemas/sharedValidators/brlMoney";
-import { ProxyContext } from "@/hooks/use-proxy";
-import { Result } from "../result";
+import type { ProxyContext } from "@/hooks/use-proxy";
+import { Result } from "@/data/result";
 
 function getUrl(barberShopId: number, id?: number) {
   const baseEndpoint = `/barber-shop/${barberShopId}/service`

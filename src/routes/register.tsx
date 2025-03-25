@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form";
-import { userRegisterSchema, UserRegisterZod } from "@/schemas/user";
-import { MouseEvent, useEffect, useState } from "react";
+import { userRegisterSchema, type UserRegisterZod } from "@/schemas/user";
+import { type MouseEvent, useEffect, useState } from "react";
 import { applyMask } from "@/utils/mask";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -9,13 +9,13 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { getEnumAsArray, getEnumAsString } from "@/utils/enum-as-array";
 import { GenderEnum } from "@/schemas/profile";
 import { Eye, EyeOff, UserRoundPlusIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "@/hooks/use-toast";
 import { GoogleSvg } from "@/components/ui/google-svg";
 import { Separator } from "@/components/ui/separator";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
+import { toast } from "sonner";
+import { SubmitButton } from "@/components/ui/submit-button";
 
 export const Route = createFileRoute('/register')({
   component: Register,
@@ -51,7 +51,7 @@ export function Register() {
 
   function unavailableForNow(e: MouseEvent) {
     e.preventDefault()
-    toast({ variant: "destructive", description: "Indisponível no momento" })
+    toast.error('Indisponível no momento')
   }
 
   async function onSubmit(values: UserRegisterZod) {
@@ -92,15 +92,15 @@ export function Register() {
               <CardContent>
                 <div className="grid gap-4">
                   <div className="grid gap-2">
-                    <Button
+                    <SubmitButton
                       type="button"
                       variant="outline" className="w-full"
                       onClick={unavailableForNow}
-                      isLoading={form.formState.isLoading || form.formState.isSubmitting}
+                      disabled={form.formState.isLoading || form.formState.isSubmitting}
                       IconLeft={<GoogleSvg />}
                     >
                       Cadastre-se com o Google
-                    </Button>
+                    </SubmitButton>
                   </div>
 
                   <div className="flex items-center gap-4">
@@ -230,13 +230,13 @@ export function Register() {
                   </div>
 
                   <div className="mt-3 grid gap-3">
-                    <Button
+                    <SubmitButton
                       type="submit"
-                      isLoading={form.formState.isLoading || form.formState.isSubmitting}
+                      disabled={form.formState.isLoading || form.formState.isSubmitting}
                       IconLeft={<UserRoundPlusIcon />}
                     >
                       Cadastrar
-                    </Button>
+                    </SubmitButton>
 
                     <div className="text-center text-sm">
                       <span>Já possui uma conta?</span>{' '}

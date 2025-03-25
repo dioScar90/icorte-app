@@ -5,15 +5,16 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { SubmitButton } from '@/components/ui/submit-button'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
-import { AppointmentZod, PaymentTypeEnum } from '@/schemas/appointment'
+import { type AppointmentZod, PaymentTypeEnum } from '@/schemas/appointment'
 import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
 import { getFormattedHour } from '@/schemas/sharedValidators/timeString'
-import { Appointment } from '@/types/models/appointment'
+import { type Appointment } from '@/types/models/appointment'
 import { getNumberAsCurrency } from '@/utils/currency'
 import { getEnumAsArray, getEnumAsString } from '@/utils/enum-as-array'
-import { TimeString } from '@/utils/types/time-string'
+import { type TimeString } from '@/utils/types/time-string'
 import { Link } from '@tanstack/react-router'
 import { createFileRoute, useLocation, useNavigate } from '@tanstack/react-router'
 import { DoorClosed, DoorOpen, ShoppingBag, Trash2 } from 'lucide-react'
@@ -333,15 +334,15 @@ function RouteComponent() {
             </DialogClose>
 
             {state.open && (
-              <Button
+              <SubmitButton
                 type="submit"
                 variant="destructive"
                 form={formId}
-                isLoading={isLoadingState}
+                disabled={isLoadingState}
                 IconLeft={<Trash2 />}
               >
                 Excuir
-              </Button>
+              </SubmitButton>
             )}
           </DialogFooter>
         </DialogContent>

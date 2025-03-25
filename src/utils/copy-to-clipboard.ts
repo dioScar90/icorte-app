@@ -1,5 +1,5 @@
-import { toast } from "@/hooks/use-toast"
 import { useCallback } from "react"
+import { toast } from "sonner"
 
 export function useClipBoard() {
   const copyToClipboard = useCallback(async function(content: string): Promise<void> {
@@ -28,10 +28,12 @@ export function useClipBoard() {
     } catch (error) {
       errorText = error instanceof Error ? error.message : 'Erro ao copiar texto'
     } finally {
-      toast({
-        variant: errorText ? 'destructive' : 'default',
-        description: errorText ?? 'Texto copiado com sucesso'
-      })
+      if (errorText) {
+        toast.error(errorText)
+      } else {
+        toast('Texto copiado com sucesso')
+      }
+      
       textArea?.remove()
     }
   }, [])

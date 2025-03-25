@@ -1,9 +1,9 @@
 import { Input } from "@/components/ui/input"
 import { ChangeEvent } from "react"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "../ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form"
 import { applyMask } from "@/utils/mask"
 import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
-import { TimeString } from "@/utils/types/time-string"
+import { type TimeString } from "@/utils/types/time-string"
 import { useNavigate } from "@tanstack/react-router"
 import { useBarberShopServiceFormContext } from "./_dialog"
 import { Route as BarberShopServicesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/services'

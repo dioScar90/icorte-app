@@ -1,5 +1,5 @@
-import { BarberShopServiceDialog } from '@/components/barber-shop-services/_dialog'
-import { TableBodyWithRows } from '@/components/barber-shop-services/_tableRows'
+import { BarberShopServiceDialog } from '@/components/forms/barber-shop-services/_dialog'
+import { TableBodyWithRows } from '@/components/forms/barber-shop-services/_tableRows'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from '@/components/ui/table'

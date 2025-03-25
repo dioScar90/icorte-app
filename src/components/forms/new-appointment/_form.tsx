@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "../ui/form"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getEnumAsArray } from "@/utils/enum-as-array"
 import { PaymentTypeEnum } from "@/schemas/appointment"
 import { InputFieldsDatesAndTimeSpans } from "./_formDateTImeFields"

@@ -1,6 +1,6 @@
-import { BaseResult, CreatedResult, Pagination, PaginationResult } from "@/data/result";
-import { ReportZod } from "@/schemas/report";
-import { Report } from "@/types/models/report";
+import type { ReportZod } from "@/schemas/report";
+import type { Report } from "@/types/models/report";
+import type { BaseResult, CreatedResult, Pagination, PaginationResult } from "@/data/result";
 
 export interface IReportService {
   createReport(barberShopId: number, data: ReportZod): CreatedResult<Report>;

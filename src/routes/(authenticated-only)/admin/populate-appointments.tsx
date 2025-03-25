@@ -10,6 +10,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { CalendarArrowUp, CalendarIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { SubmitButton } from '@/components/ui/submit-button'
 
 export const Route = createFileRoute(
   '/(authenticated-only)/admin/populate-appointments',
@@ -153,13 +154,13 @@ function RouteComponent() {
           
           <FormRootErrorMessage />
 
-          <Button
+          <SubmitButton
             type="submit"
-            isLoading={form.formState.isLoading || form.formState.isSubmitting}
+            disabled={form.formState.isLoading || form.formState.isSubmitting}
             IconLeft={<CalendarArrowUp />}
           >
             Marcar horários
-          </Button>
+          </SubmitButton>
         </form>
       </Form>
     </>

@@ -1,6 +1,6 @@
-import { ProxyContext } from "@/hooks/use-proxy"
-import { IProfileService as Interface } from "./interfaces/IProfileService"
-import { Result } from "../result"
+import type { ProxyContext } from "@/hooks/use-proxy"
+import type { IProfileService as Interface } from "./interfaces/IProfileService"
+import { Result } from "@/data/result"
 
 type UrlType = [
   'image',

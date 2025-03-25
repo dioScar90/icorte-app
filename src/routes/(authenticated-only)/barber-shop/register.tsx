@@ -3,8 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { SubmitButton } from '@/components/ui/submit-button'
 import { StateEnum } from '@/schemas/address'
-import { barberShopSchema, BarberShopZod } from '@/schemas/barberShop'
+import { barberShopSchema, type BarberShopZod } from '@/schemas/barberShop'
 import { getEnumAsArray } from '@/utils/enum-as-array'
 import { applyMask } from '@/utils/mask'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -299,13 +300,13 @@ function RouteComponent() {
                   </div>
                   
                   <div className="mt-3">
-                    <Button
+                    <SubmitButton
                       type="submit" variant="default"
-                      isLoading={form.formState.isLoading || form.formState.isSubmitting}
+                      disabled={form.formState.isLoading || form.formState.isSubmitting}
                       IconLeft={<StoreIcon />}
                     >
                       Cadastrar
-                    </Button>
+                    </SubmitButton>
                   </div>
                 </div>
               </CardContent>

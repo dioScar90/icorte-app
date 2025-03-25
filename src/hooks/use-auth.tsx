@@ -1,10 +1,10 @@
 import { AuthService } from "@/data/services/AuthService"
-import { UserLoginZod, UserRegisterZod } from "@/schemas/user"
-import { UserMe } from "@/types/models/user"
+import type { UserLoginZod, UserRegisterZod } from "@/schemas/user"
+import type { UserMe } from "@/types/models/user"
 import { useEffect, useReducer, useLayoutEffect } from "react"
-import { IAuthService } from "@/data/services/interfaces/IAuthService"
+import type { IAuthService } from "@/data/services/interfaces/IAuthService"
 import { GenderEnum } from "@/schemas/profile"
-import { ProxyContext } from "./use-proxy"
+import type { ProxyContext } from "./use-proxy"
 import { UserService } from "@/data/services/UserService"
 
 export type AuthUser = {

@@ -1,5 +1,5 @@
-import { Prettify } from "@/utils/types/prettify"
-import { SpecialScheduleZod } from "@/schemas/specialSchedule"
+import { type Prettify } from "@/utils/types/prettify"
+import { type SpecialScheduleZod } from "@/schemas/specialSchedule"
 
 export type SpecialSchedule = Prettify<
   {

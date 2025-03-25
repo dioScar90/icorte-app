@@ -1,5 +1,5 @@
-import { AddressZod } from "@/schemas/address"
-import { Prettify } from "@/utils/types/prettify"
+import { type AddressZod } from "@/schemas/address"
+import { type Prettify } from "@/utils/types/prettify"
 
 export type Address = Prettify<
   {

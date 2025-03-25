@@ -1,6 +1,6 @@
-import { IBarberShopService as Interface } from "./interfaces/IBarberShopService";
-import { Pagination, Result } from "../result";
-import { ProxyContext } from "@/hooks/use-proxy";
+import type { IBarberShopService as Interface } from "./interfaces/IBarberShopService";
+import type { ProxyContext } from "@/hooks/use-proxy";
+import { type Pagination, Result } from "@/data/result";
 
 function getUrl(id?: number, appointments?: boolean) {
   const baseEndpoint = `/barber-shop`

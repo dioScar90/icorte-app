@@ -5,7 +5,7 @@
  */
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
-import { ButtonHTMLAttributes, SVGProps } from "react"
+import type { ButtonHTMLAttributes, SVGProps } from "react"
 
 type Props = SVGProps<SVGSVGElement>
 

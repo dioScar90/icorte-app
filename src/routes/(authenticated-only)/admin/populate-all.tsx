@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { SubmitButton } from '@/components/ui/submit-button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { BetweenHorizonalStart } from 'lucide-react'
@@ -71,13 +71,13 @@ function RouteComponent() {
           
           <FormRootErrorMessage />
 
-          <Button
+          <SubmitButton
             type="submit"
-            isLoading={form.formState.isLoading || form.formState.isSubmitting}
+            disabled={form.formState.isLoading || form.formState.isSubmitting}
             IconLeft={<BetweenHorizonalStart />}
           >
             Reinserir tudo
-          </Button>
+          </SubmitButton>
         </form>
       </Form>
     </>

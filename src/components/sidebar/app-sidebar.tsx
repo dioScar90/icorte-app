@@ -1,4 +1,4 @@
-import { ComponentProps, useLayoutEffect, useState } from "react"
+import { type ComponentProps, useLayoutEffect, useState } from "react"
 import logoImgUrl from '/barber.png'
 import { type LucideIcon } from "lucide-react"
 

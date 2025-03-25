@@ -1,6 +1,6 @@
-import { BaseResult, CreatedResult } from "@/data/result";
-import { AddressZod } from "@/schemas/address";
-import { Address } from "@/types/models/address";
+import type { AddressZod } from "@/schemas/address";
+import type { Address } from "@/types/models/address";
+import type { BaseResult, CreatedResult } from "@/data/result";
 
 export interface IAddressService {
   createAddress(barberShopId: number, data: AddressZod): CreatedResult<Address>;

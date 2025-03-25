@@ -1,4 +1,4 @@
-import { FocusEvent } from "react"
+import { type FocusEvent } from "react"
 
 export function navigateToEndAfterFocus(e: FocusEvent<HTMLInputElement>) {
   setTimeout(() =>

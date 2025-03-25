@@ -1,6 +1,6 @@
-import { Result } from "../result";
-import { IAddressService as Interface } from "./interfaces/IAddressService";
-import { ProxyContext } from "@/hooks/use-proxy";
+import type { IAddressService as Interface } from "./interfaces/IAddressService";
+import type { ProxyContext } from "@/hooks/use-proxy";
+import { Result } from "@/data/result";
 
 function getUrl(barberShopId: number, id?: number) {
   const baseEndpoint = `/barber-shop/${barberShopId}/address`

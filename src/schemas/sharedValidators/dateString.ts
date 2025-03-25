@@ -1,5 +1,5 @@
 import { getToday } from "@/utils/date";
-import { DateString } from "@/utils/types/date-string";
+import { type DateString } from "@/utils/types/date-string";
 
 export function dataIsEqualOrGreaterThenToday(informedDate: string) {
   const todayDate = getToday({ isDateIso: true }) as string

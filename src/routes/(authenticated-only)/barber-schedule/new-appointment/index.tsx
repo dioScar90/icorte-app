@@ -1,5 +1,5 @@
-import { DialogNewAppointment } from '@/components/new-appointment/_dialog'
-import { TableBodyWithRows } from '@/components/new-appointment/_tableRows'
+import { DialogNewAppointment } from '@/components/forms/new-appointment/_dialog'
+import { TableBodyWithRows } from '@/components/forms/new-appointment/_tableRows'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'

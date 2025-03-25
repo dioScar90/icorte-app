@@ -1,7 +1,7 @@
-import { BarberShopRecurringScheduleDialog } from '@/components/barber-shop-schedules/recurring/_dialog'
-import { BarberShopSpecialScheduleDialog } from '@/components/barber-shop-schedules/special/_dialog'
-import { TableBodyWithRowsRecurringSchedules } from '@/components/barber-shop-schedules/recurring/_tableRows'
-import { TableBodyWithRowsSpecialSchedules } from '@/components/barber-shop-schedules/special/_tableRows'
+import { BarberShopRecurringScheduleDialog } from '@/components/forms/barber-shop-schedules/recurring/_dialog'
+import { BarberShopSpecialScheduleDialog } from '@/components/forms/barber-shop-schedules/special/_dialog'
+import { TableBodyWithRowsRecurringSchedules } from '@/components/forms/barber-shop-schedules/recurring/_tableRows'
+import { TableBodyWithRowsSpecialSchedules } from '@/components/forms/barber-shop-schedules/special/_tableRows'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -16,26 +16,34 @@ import { ShoppingBag } from 'lucide-react'
 import { z } from 'zod'
 
 const scheduleValidateSchema = z.object({
-  open: z.discriminatedUnion('action', [
+  open: z.discriminatedUnion('scheduleType', [
     z.object({
-      action: z.enum(['REGISTER']),
-      scheduleType: z.enum(['special', 'recurring']),
-      date: z.undefined().optional(),
-      dayOfWeek: z.undefined().optional(),
+      scheduleType: z.literal('recurring'),
+      details: z.discriminatedUnion('action', [
+        z.object({
+          action: z.enum(['REGISTER']),
+          dayOfWeek: z.undefined().optional(),
+        }),
+        z.object({
+          action: z.enum(['UPDATE', 'REMOVE']),
+          dayOfWeek: z.nativeEnum(DayOfWeekEnum),
+        }),
+      ]),
     }),
     z.object({
-      action: z.enum(['UPDATE', 'REMOVE']),
-      scheduleType: z.enum(['special']),
-      date: z.string().refine(isValidDateString).transform(getStringAsDateString),
-      dayOfWeek: z.undefined().optional(),
+      scheduleType: z.literal('special'),
+      details: z.discriminatedUnion('action', [
+        z.object({
+          action: z.enum(['REGISTER']),
+          date: z.undefined().optional(),
+        }),
+        z.object({
+          action: z.enum(['UPDATE', 'REMOVE']),
+          date: z.string().refine(isValidDateString).transform(getStringAsDateString),
+        }),
+      ]),
     }),
-    z.object({
-      action: z.enum(['UPDATE', 'REMOVE']),
-      scheduleType: z.enum(['recurring']),
-      date: z.undefined().optional(),
-      dayOfWeek: z.nativeEnum(DayOfWeekEnum),
-    }),
-  ]).optional()
+  ]).optional(),
 })
 
 export const Route = createFileRoute(
@@ -161,8 +169,10 @@ function CardSpecialSchedules({ barberShopName }: { barberShopName: string }) {
         search: (prev) => ({
           ...prev,
           open: {
-            action: 'REGISTER',
             scheduleType: 'special',
+            details: {
+              action: 'REGISTER',
+            },
           },
         })
       })}
@@ -192,8 +202,10 @@ function CardRecurringSchedules({ barberShopName }: { barberShopName: string }) 
         search: (prev) => ({
           ...prev,
           open: {
-            action: 'REGISTER',
             scheduleType: 'recurring',
+            details: {
+              action: 'REGISTER',
+            },
           },
         })
       })}

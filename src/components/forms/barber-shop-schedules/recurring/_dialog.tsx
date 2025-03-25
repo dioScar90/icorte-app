@@ -1,27 +1,27 @@
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../../ui/dialog'
-import { BarberShopSpecialScheduleForm } from './_form'
-import { Button } from '../../ui/button'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import type { PropsWithChildren } from 'react'
+import { BarberShopRecurringScheduleForm } from './_form'
+import { Button } from '@/components/ui/button'
 import { ShoppingBag } from 'lucide-react'
-import { PropsWithChildren } from 'react'
-import { useInitValuesSpecialScheduleFormContext, SpecialScheduleFormContext, useSpecialScheduleFormContext } from './_useScheduleForm'
+import { useInitValuesRecurringScheduleFormContext, RecurringScheduleFormContext, useRecurringScheduleFormContext } from './_useScheduleForm'
 import { Route } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
 
-function SpecialScheduleFormProvider({ children }: PropsWithChildren) {
-  const values = useInitValuesSpecialScheduleFormContext()
+function RecurringScheduleFormProvider({ children }: PropsWithChildren) {
+  const values = useInitValuesRecurringScheduleFormContext()
   
   return (
-    <SpecialScheduleFormContext.Provider
+    <RecurringScheduleFormContext.Provider
       value={{
         ...values
       }}
     >
       {children}
-    </SpecialScheduleFormContext.Provider>
+    </RecurringScheduleFormContext.Provider>
   )
 }
 
 function FormSubmitButton() {
-  const { formId, submitBtnInfos, form } = useSpecialScheduleFormContext()
+  const { formId, submitBtnInfos, form } = useRecurringScheduleFormContext()
 
   return (
     <Button
@@ -37,7 +37,7 @@ function FormSubmitButton() {
 }
 
 function DialogItself() {
-  const { dialogInfos } = useSpecialScheduleFormContext()
+  const { dialogInfos } = useRecurringScheduleFormContext()
 
   return (
     <Dialog>
@@ -48,8 +48,8 @@ function DialogItself() {
             {dialogInfos.description}
           </DialogDescription>
         </DialogHeader>
-        
-        <BarberShopSpecialScheduleForm />
+
+        <BarberShopRecurringScheduleForm />
 
         <DialogFooter className="grid grid-cols-2 md:flex md:justify-end gap-2">
           <DialogClose asChild>
@@ -65,18 +65,18 @@ function DialogItself() {
   )
 }
 
-export function BarberShopSpecialScheduleDialog() {
+export function BarberShopRecurringScheduleDialog() {
   const scheduleType = Route.useSearch({
     select: (s) => s.open?.scheduleType,
   })
   
-  if (scheduleType !== 'special') {
+  if (scheduleType !== 'recurring') {
     return null
   }
   
   return (
-    <SpecialScheduleFormProvider>
+    <RecurringScheduleFormProvider>
       <DialogItself />
-    </SpecialScheduleFormProvider>
+    </RecurringScheduleFormProvider>
   )
 }

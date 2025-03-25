@@ -1,6 +1,6 @@
-import { AppointmentsAdminZod, BaseAdminZod, ResetPasswordZod } from "@/routes/(authenticated-only)/admin/route";
-import { BaseResult } from "@/data/result";
-import { UserByName } from "@/types/custom-models/user-by-name";
+import type { BaseResult } from "@/data/result";
+import type { UserByName } from "@/types/custom-models/user-by-name";
+import type { AppointmentsAdminZod, BaseAdminZod, ResetPasswordZod } from "@/routes/(authenticated-only)/admin/route";
 
 export interface IAdminService {
   removeAll(data: BaseAdminZod): BaseResult<void>;

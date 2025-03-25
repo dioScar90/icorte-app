@@ -1,8 +1,9 @@
 import { createContext, useContext, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { RecurringSchedule } from '@/types/models/recurringSchedule'
-import { DayOfWeekEnum, recurringScheduleSchema } from '@/schemas/recurringSchedule'
+import type { SpecialSchedule } from '@/types/models/specialSchedule'
+import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
+import { specialScheduleSchema } from '@/schemas/specialSchedule'
 import { Route } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
 
 type Action = 'REGISTER' | 'UPDATE' | 'REMOVE'
@@ -44,28 +45,32 @@ function getDialogInfos(action: Action) {
   return infos[action]
 }
 
-export function useInitValuesRecurringScheduleFormContext() {
+export function useInitValuesSpecialScheduleFormContext() {
   const { barberShopId } = Route.useParams()
 
-  const { scheduleType, action, dayOfWeek } = Route.useSearch({
+  const openProps = Route.useSearch({
     select: (s) => s.open!,
   })
 
-  if (scheduleType !== 'recurring') {
+  const { scheduleType } = openProps
+
+  if (scheduleType !== 'special') {
     throw new Error('Impossible error')
   }
   
+  const { action, date } = openProps.details
+  
   const [schedule] = Route.useLoaderData({
     select: (s) => [
-      s.recurringSchedules.find(schedule => dayOfWeek !== undefined && schedule.dayOfWeek === dayOfWeek),
+      s.specialSchedules.find(schedule => date !== undefined && schedule.date === date),
     ] as const
   })
   
   const [register, update, remove] = Route.useRouteContext({
     select: (s) => [
-      s.recurring.register,
-      s.recurring.update,
-      s.recurring.remove,
+      s.special.register,
+      s.special.update,
+      s.special.remove,
     ] as const
   })
   
@@ -77,12 +82,14 @@ export function useInitValuesRecurringScheduleFormContext() {
     ...getDialogInfos(action),
   } as const), [scheduleType, action, barberShopId])
 
-  const form = useForm<RecurringSchedule>({
-    resolver: action === 'REMOVE' ? undefined : zodResolver(recurringScheduleSchema),
+  const form = useForm<SpecialSchedule>({
+    resolver: action === 'REMOVE' ? undefined : zodResolver(specialScheduleSchema),
     defaultValues: {
-      dayOfWeek: schedule?.dayOfWeek ?? DayOfWeekEnum.SEGUNDA,
+      date: schedule?.date ? getFormattedDate(schedule.date) as SpecialSchedule['date'] : undefined,
+      notes: schedule?.notes ?? undefined,
       openTime: schedule?.openTime ?? undefined,
       closeTime: schedule?.closeTime ?? undefined,
+      isClosed: schedule?.isClosed ?? false,
     },
   })
   
@@ -93,11 +100,11 @@ export function useInitValuesRecurringScheduleFormContext() {
         defaultMessage: 'Serviço criado com sucesso',
       },
       UPDATE: {
-        method: () => update(barberShopId, dayOfWeek!, values),
+        method: () => update(barberShopId, date!, values),
         defaultMessage: 'Serviço atualizado com sucesso',
       },
       REMOVE: {
-        method: () => remove(barberShopId, dayOfWeek!),
+        method: () => remove(barberShopId, date!),
         defaultMessage: 'Serviço removido com sucesso',
       },
     } as const
@@ -122,6 +129,6 @@ export function useInitValuesRecurringScheduleFormContext() {
   }
 }
 
-export const RecurringScheduleFormContext = createContext<ReturnType<typeof useInitValuesRecurringScheduleFormContext> | null>(null)
+export const SpecialScheduleFormContext = createContext<ReturnType<typeof useInitValuesSpecialScheduleFormContext> | null>(null)
 
-export const useRecurringScheduleFormContext = () => useContext(RecurringScheduleFormContext)!
+export const useSpecialScheduleFormContext = () => useContext(SpecialScheduleFormContext)!

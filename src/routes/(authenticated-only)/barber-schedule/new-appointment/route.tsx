@@ -1,4 +1,4 @@
-import { BarberShop } from '@/types/models/barberShop'
+import type { BarberShop } from '@/types/models/barberShop'
 import { queryOptions } from '@tanstack/react-query'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { z } from 'zod'

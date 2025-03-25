@@ -1,7 +1,7 @@
 // import { AppointmentsAdminZod, BaseAdminZod, ResetPasswordZod } from "@/components/layouts/admin-layout";
 import type { IAdminService as Interface } from "./interfaces/IAdminService";
-import { Result } from "../result";
-import { ProxyContext } from "@/hooks/use-proxy";
+import type { ProxyContext } from "@/hooks/use-proxy";
+import { Result } from "@/data/result";
 
 type UrlType = [
   'remove-all',

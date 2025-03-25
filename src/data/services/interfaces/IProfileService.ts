@@ -1,6 +1,6 @@
-import { BaseResult, CreatedResult } from "@/data/result";
-import { ProfileZod } from "@/schemas/profile";
-import { Profile } from "@/types/models/profile";
+import type { ProfileZod } from "@/schemas/profile";
+import type { Profile } from "@/types/models/profile";
+import type { BaseResult, CreatedResult } from "@/data/result";
 
 export interface IProfileService {
   createProfile(data: ProfileZod): CreatedResult<Profile>;

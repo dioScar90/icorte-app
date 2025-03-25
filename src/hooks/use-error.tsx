@@ -1,12 +1,11 @@
 // ErrorContext.tsx
-import { toast } from '@/hooks/use-toast';
-import { FieldValues, Path, UseFormReturn } from 'react-hook-form';
-import Swal, { SweetAlertOptions } from 'sweetalert2';
+import type { FieldValues, Path, UseFormReturn } from 'react-hook-form';
+import { toast } from 'sonner';
+import Swal, { type SweetAlertOptions } from 'sweetalert2';
 
 type PropsToastMustHave<K> = [K, {
-  variant: 'destructive',
-  title?: string,
-  description: string,
+  message: string,
+  description?: string,
 }]
 
 type PropsErrorsToDispach<K> = [K, { message: string }]
@@ -28,9 +27,8 @@ class FieldError<K extends string = string> extends Error {
       propsArr.push([
         key,
         {
-          variant: 'destructive',
-          title: this.title,
-          description: this.errors[key][0],
+          message: this?.title ?? this.errors[key][0],
+          description: this?.title ? this.errors[key][0] : undefined,
         }
       ])
     }
@@ -150,9 +148,9 @@ export function handleError
 
     let lastValidKey: Path<TForm> | undefined
 
-    for (const [key, value] of error.getToastOptions()) {
-      console.log('keys', [key, value])
-      toast(value)
+    for (const [key, { message, description }] of error.getToastOptions()) {
+      toast.error(message, { description })
+      
       lastValidKey = isKeyFromPath(key) ? key : lastValidKey
     }
 

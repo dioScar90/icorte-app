@@ -1,6 +1,6 @@
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { BarberShopServiceForm } from './_form'
-import { Button } from '../ui/button'
+import { Button } from '@/components/ui/button'
 import { ShoppingBag } from 'lucide-react'
 import { createContext, PropsWithChildren, useContext } from 'react'
 import { useForm } from 'react-hook-form'

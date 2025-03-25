@@ -1,12 +1,12 @@
 import { Input } from "@/components/ui/input"
 import { ChangeEvent, useRef } from "react"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "../../ui/form"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form"
 import { applyMask } from "@/utils/mask"
 import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
-import { DateString } from "@/utils/types/date-string"
-import { TimeString } from "@/utils/types/time-string"
+import { type DateString } from "@/utils/types/date-string"
+import { type TimeString } from "@/utils/types/time-string"
 import { useNavigate } from "@tanstack/react-router"
-import { Switch } from "../../ui/switch"
+import { Switch } from "@/components/ui/switch"
 import { useSpecialScheduleFormContext } from "./_useScheduleForm"
 import { Route } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
 

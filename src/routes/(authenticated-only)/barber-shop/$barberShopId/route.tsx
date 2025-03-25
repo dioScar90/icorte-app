@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
-import { BarberShop } from "@/types/models/barberShop";
+import type { BarberShop } from "@/types/models/barberShop";
 import { z } from 'zod';
 import { getBarberShopImageUrl } from '@/hooks/use-auth';
 

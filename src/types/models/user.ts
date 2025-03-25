@@ -1,8 +1,8 @@
-import { Prettify } from "@/utils/types/prettify"
-import { BarberShop } from "./barberShop"
-import { Profile } from "./profile"
-import { UserRegisterZod } from "@/schemas/user"
-import { ProfileZod } from "@/schemas/profile"
+import { type Prettify } from "@/utils/types/prettify"
+import { type BarberShop } from "./barberShop"
+import { type Profile } from "./profile"
+import { type UserRegisterZod } from "@/schemas/user"
+import { type ProfileZod } from "@/schemas/profile"
 
 const roles = [
   'Guest',

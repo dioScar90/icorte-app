@@ -1,7 +1,7 @@
-import { BaseResult, CreatedResult, Pagination, PaginationResult } from "@/data/result";
-import { BarberShopZod } from "@/schemas/barberShop";
-import { AppointmentByBarberShop } from "@/types/custom-models/appointment-by-barber-shop";
-import { BarberShop } from "@/types/models/barberShop";
+import type { BarberShopZod } from "@/schemas/barberShop";
+import type { AppointmentByBarberShop } from "@/types/custom-models/appointment-by-barber-shop";
+import type { BarberShop } from "@/types/models/barberShop";
+import type { BaseResult, CreatedResult, Pagination, PaginationResult } from "@/data/result";
 
 export interface IBarberShopService {
   createBarberShop(data: BarberShopZod): CreatedResult<BarberShop>;

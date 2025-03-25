@@ -1,9 +1,9 @@
-import { Prettify } from "@/utils/types/prettify"
-import { RecurringSchedule } from "./recurringSchedule"
-import { Report } from "./report"
-import { Service } from "./service"
-import { SpecialSchedule } from "./specialSchedule"
-import { BarberShopZod } from "@/schemas/barberShop"
+import { type Prettify } from "@/utils/types/prettify"
+import { type RecurringSchedule } from "./recurringSchedule"
+import { type Report } from "./report"
+import { type Service } from "./service"
+import { type SpecialSchedule } from "./specialSchedule"
+import { type BarberShopZod } from "@/schemas/barberShop"
 
 export type BarberShop = Prettify<
   {
