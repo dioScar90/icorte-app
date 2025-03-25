@@ -1,39 +1,38 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-// import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form"
 import { GoogleSvg } from "@/components/ui/google-svg"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { SubmitButton } from "@/components/ui/submit-button"
 import { useAppForm } from "@/hooks/demo.form"
 import { toast } from "@/hooks/use-toast"
 import { userLoginSchema } from "@/schemas/user"
-// import { zodResolver } from "@hookform/resolvers/zod"
 import { Link } from "@tanstack/react-router"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { Eye, EyeOff, LogInIcon } from "lucide-react"
-import { useState } from "react"
-import { ControllerRenderProps, useForm } from "react-hook-form"
-import { z } from "zod"
+import { useRef, useState, type RefObject } from "react"
 
 export const Route = createFileRoute('/login')({
   component: Login,
 })
 
-type SchemaType = z.infer<typeof userLoginSchema>
-
-function PasswordControl({ field }: { field: ControllerRenderProps<SchemaType, 'password'> }) {
+function EyeViewPasswordIcon({ ref }: { ref: RefObject<HTMLInputElement | null> }) {
   const [isViewPassword, setIsViewPassword] = useState(false)
-  const EyeViewPasswordIcon = isViewPassword ? Eye : EyeOff
+  const Icon = isViewPassword ? Eye : EyeOff
+
+  function handleClick() {
+    setIsViewPassword(prev => !prev)
+
+    if (ref?.current) {
+      ref?.current.setAttribute('type', isViewPassword ? 'text' : 'password')
+    }
+  }
 
   return (
-    <FormControl>
-      <div className="relative">
-        <Input type={isViewPassword ? 'text' : 'password'} placeholder="Digite sua senha" {...field} />
-        <EyeViewPasswordIcon
-          className="absolute-middle-y right-4 z-10 cursor-pointer text-gray-500"
-          onClick={() => setIsViewPassword(!isViewPassword)}
-        />
-      </div>
-    </FormControl>
+    <Icon
+      className="absolute-middle-y right-4 z-10 cursor-pointer text-gray-500"
+      onClick={handleClick}
+    />
   )
 }
 
@@ -46,6 +45,8 @@ export function Login() {
   })
   
   const navigate = useNavigate()
+
+  const passwordInputRef = useRef<HTMLInputElement>(null)
   
   const form = useAppForm({
     defaultValues: {
@@ -53,23 +54,12 @@ export function Login() {
       password: '',
     },
     validators: {
-      // onBlur: ({ value }) => {
-      //   const errors = {
-      //     fields: {},
-      //   } as {
-      //     fields: Record<string, string>
-      //   }
-      //   if (value.fullName.trim().length === 0) {
-      //     errors.fields.fullName = 'Full name is required'
-      //   }
-      //   return errors
-      // },
       onBlur: userLoginSchema,
       onSubmit: userLoginSchema,
     },
-    onSubmit: async ({ values }) => {
+    onSubmit: async ({ value }) => {
       try {
-        const result = await login(values)
+        const result = await login(value)
   
         if (!result.isSuccess) {
           throw result.error
@@ -83,18 +73,10 @@ export function Login() {
           },
         })
       } catch (err) {
-        handleError(err, formm)
+        handleError(err)
       }
     },
   })
-  
-  // const formm = useForm<SchemaType>({
-  //   resolver: zodResolver(userLoginSchema),
-  //   defaultValues: {
-  //     email: '',
-  //     password: '',
-  //   }
-  // })
   
   function dispatchToastUnavailableForNow() {
     toast({
@@ -103,26 +85,6 @@ export function Login() {
     })
   }
   
-  // async function onSubmit(values: SchemaType) {
-  //   try {
-  //     const result = await login(values)
-
-  //     if (!result.isSuccess) {
-  //       throw result.error
-  //     }
-      
-  //     navigate({
-  //       to: '/',
-  //       replace: true,
-  //       state: {
-  //         message: 'Login realizado com sucesso',
-  //       },
-  //     })
-  //   } catch (err) {
-  //     handleError(err, formm)
-  //   }
-  // }
-
   return (
     <form
       className="space-y-6"
@@ -143,68 +105,65 @@ export function Login() {
           <CardContent>
             <div className="grid gap-4">
               <div className="grid gap-3">
-                
                 <form.AppField name="email">
                   {(field) => <field.TextField type="email" label="Email" placeholder="Digite seu email" />}
                 </form.AppField>
 
-                {/* <FormField
-                  control={formm.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input type="email" inputMode="email" placeholder="Digite seu email" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                /> */}
-                
-                <form.AppField name="password">
-                  {(field) => <field.TextField type="password" label="Senha" placeholder="Digite seu email" />}
-                </form.AppField>
-                
-                <FormField
-                    control={formm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="flex items-center">
-                          <FormLabel>Senha</FormLabel>
-                          <Button variant="link" asChild>
-                            <Link
-                              to={Route.fullPath}
-                              tabIndex={-1}
-                              onClick={e => {
-                                e.preventDefault()
-                                dispatchToastUnavailableForNow()
-                              }}
-                              className="ml-auto inline-block text-sm underline"
-                              title="Indisponível no momento"
-                            >
-                              Esqueceu sua senha?
-                            </Link>
-                          </Button>
+                <form.AppField
+                  name="password"
+                  children={(field) => (
+                    <div className="relative">
+                      <div>
+                        <Label className="mb-2 text-xl font-bold">
+                          Email
+                        </Label>
+                        
+                        <div className="relative">
+                          <Input
+                            ref={passwordInputRef}
+                            type="password"
+                            value={field.state.value}
+                            placeholder={'*'.repeat(8)}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                          />
+
+                          <EyeViewPasswordIcon ref={passwordInputRef} />
                         </div>
-                        <PasswordControl field={field} />
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                        
+                        {field.state.meta.isTouched && <em>{field.state.meta.errors.join(',')}</em>}
+                      </div>
+                      
+                      <Button variant="link" asChild className="absolute right-0">
+                        <Link
+                          to={Route.fullPath}
+                          tabIndex={-1}
+                          onClick={e => {
+                            e.preventDefault()
+                            e.currentTarget.toggleAttribute('data-disabled', true)
+                            dispatchToastUnavailableForNow()
+                            setTimeout(() => e.currentTarget.toggleAttribute('data-disabled', false), 500)
+                          }}
+                          className="ml-auto inline-block text-sm underline [&[data-disabled]]:opacity-50 [&[data-disabled]]:pointer-events-none"
+                          title="Indisponível no momento"
+                        >
+                          Esqueceu sua senha?
+                        </Link>
+                      </Button>
+                    </div>
+                  )}
+                />
               </div>
               
-              <FormRootErrorMessage />
+              {/* <FormRootErrorMessage /> */}
+              
+              <div className="w-full">
+                <form.AppForm>
+                  <form.SubscribeButton label="Login" IconLeft={<LogInIcon />} />
+                </form.AppForm>
+              </div>
 
-              <Button
-                type="submit" className="w-full"
-                isLoading={formm.formState.isLoading || formm.formState.isSubmitting}
-                IconLeft={<LogInIcon />}
-              >
-                Login
-              </Button>
-              <Button
+              <SubmitButton
                 type="button"
                 variant="outline" className="w-full"
                 title="Indisponível no momento"
@@ -212,11 +171,11 @@ export function Login() {
                   e.preventDefault()
                   dispatchToastUnavailableForNow()
                 }}
-                isLoading={formm.formState.isLoading || formm.formState.isSubmitting}
+                disabled={form.state.isSubmitting}
                 IconLeft={<GoogleSvg />}
               >
                 Fazer login com Google
-              </Button>
+              </SubmitButton>
             </div>
             <div className="mt-4 text-center text-sm">
               <span>Não tem conta?</span>{' '}
