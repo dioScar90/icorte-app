@@ -12,6 +12,7 @@ import reportWebVitals from './reportWebVitals.ts'
 import { useError } from './hooks/use-error.tsx'
 import { useProxy } from './hooks/use-proxy.ts'
 import { useAuth } from './hooks/use-auth.tsx'
+import type { SweetAlertOptions } from "sweetalert2"
 
 // Create a new router instance
 const router = createRouter({
@@ -37,20 +38,27 @@ declare module '@tanstack/react-router' {
 
 declare module '@tanstack/history' {
   interface HistoryState {
-    message?: string
+    alert?: {
+      message?: undefined
+    } | {
+      message: string
+      title?: string
+      icon?: 'success' | 'error'
+      isHtml?: boolean
+    }
   }
 }
 
 function App() {
   const httpClient = useProxy()
-  const handleError = useError()
+  // const handleError = useError()
   const auth = useAuth(httpClient)
 
   return (
     <RouterProvider
       router={router}
       context={{
-        handleError,
+        ...useError(),
         httpClient,
         auth,
       }}

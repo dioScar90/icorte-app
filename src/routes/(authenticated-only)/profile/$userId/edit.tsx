@@ -58,7 +58,9 @@ function RouteComponent() {
           userId: profile.id,
         },
         state: {
-          message: 'Perfil alterado com sucesso',
+          alert: {
+            message: 'Perfil alterado com sucesso',
+          },
         },
       })
     } catch (err) {

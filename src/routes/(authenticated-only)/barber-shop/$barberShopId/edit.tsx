@@ -68,7 +68,9 @@ function RouteComponent() {
           barberShopId: barberShop.id,
         },
         state: {
-          message: 'Barbearia alterada com sucesso',
+          alert: {
+            message: 'Barbearia alterada com sucesso',
+          },
         },
       })
     } catch (err) {

@@ -2,6 +2,8 @@
 import axios, { AxiosError } from 'axios'
 import { BaseDataError, InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from "@/hooks/use-error"
 
+console.log('baseurl', import.meta.env.VITE_BASE_URL)
+
 const httpClient = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   headers: {

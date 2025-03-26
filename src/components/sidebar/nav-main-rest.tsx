@@ -2,6 +2,7 @@ import { SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from ".
 import { Link, useRouteContext } from "@tanstack/react-router"
 import { LogInIcon, UserRoundPlusIcon } from "lucide-react"
 import type { SidebarNavProps } from "./app-sidebar"
+import { Route } from "@/routes/__root"
 
 function getItems(): SidebarNavProps[] {
   return [
@@ -23,7 +24,7 @@ function getItems(): SidebarNavProps[] {
 }
 
 export function NavMainRest() {
-  const isAuthenticated = useRouteContext({ from: '/', select: (s) => s.auth.isAuthenticated })
+  const isAuthenticated = Route.useRouteContext({ select: (s) => s.auth.isAuthenticated })
 
   if (isAuthenticated) {
     return null

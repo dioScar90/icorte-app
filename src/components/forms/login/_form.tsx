@@ -4,7 +4,7 @@ import { useFieldContext, useFormContext } from '@/hooks/forms/form-contexts'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useRef, useState, type RefObject } from 'react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
 import { Eye, EyeOff, LogInIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
@@ -17,18 +17,27 @@ export function LoginEmailField() {
   return <TextField type="email" label="Email" placeholder="Digite seu email" />
 }
 
+type PassType = 'text' | 'password'
+
 function EyeViewPasswordIcon({ ref }: { ref: RefObject<HTMLInputElement | null> }) {
-  const [isViewPassword, setIsViewPassword] = useState(false)
-  const Icon = isViewPassword ? Eye : EyeOff
+  const [inputType, setInputType] = useState<PassType>('password')
+  const Icon = inputType === 'password' ? EyeOff : Eye
+  
+  useEffect(() => {
+    if (ref.current) {
+      setInputType(() => ref.current!.type as PassType)
+    }
+  }, [ref.current?.type])
   
   return (
     <Icon
       className="absolute-middle-y right-4 z-10 cursor-pointer text-gray-500"
-      onClick={() => {
-        setIsViewPassword(prev => !prev)
-    
+      onClick={(e) => {
+        e.stopPropagation()
+        
         if (ref?.current) {
-          ref.current.setAttribute('type', isViewPassword ? 'text' : 'password')
+          const currentType = ref.current.type as PassType
+          ref.current.type = currentType === 'password' ? 'text' : 'password'
         }
       }}
     />
@@ -36,22 +45,35 @@ function EyeViewPasswordIcon({ ref }: { ref: RefObject<HTMLInputElement | null> 
 }
 
 function ForgotPasswordButton() {
+  const linkRef = useRef<HTMLAnchorElement>(null)
   const unavailableForNow = Route.useRouteContext({ select: (s) => s.unavailableForNow })
 
+  function toggleDisabled(disable = false) {
+    if (linkRef?.current) {
+      linkRef.current.toggleAttribute('data-disabled', disable)
+    }
+  }
+
   return (
-    <Button variant="link" asChild className="absolute right-0">
+    <Button variant="link" asChild className="absolute top-0 right-0">
       <Link
+        ref={linkRef}
         to={Route.fullPath}
         tabIndex={-1}
         className="ml-auto inline-block text-sm underline [&[data-disabled]]:opacity-50 [&[data-disabled]]:pointer-events-none"
         title="Indisponível no momento"
+        preloadDelay={Number.POSITIVE_INFINITY}
         onClick={(e) => {
           e.preventDefault()
-          e.currentTarget.toggleAttribute('data-disabled', true)
+          toggleDisabled(true)
 
-          unavailableForNow()
+          unavailableForNow(() => {
+            console.log('começou')
+            toggleDisabled(false)
+            console.log('terminou?')
+          })
               
-          setTimeout(() => e.currentTarget.toggleAttribute('data-disabled', false), 500)
+          // setTimeout(() => e.currentTarget.toggleAttribute('data-disabled', false), 500)
         }}
       >
           Esqueceu sua senha?
@@ -70,7 +92,7 @@ export function LoginPasswordField() {
     <div className="relative">
       <div>
         <Label className="mb-2 text-xl font-bold">
-            Email
+            Senha
         </Label>
         
         <div className="relative">
@@ -100,9 +122,10 @@ function LoginWithGoogleButton({ isSubmitting }: { isSubmitting: boolean }) {
   return (
     <SubmitButton
       type="button"
-      variant="outline" className="w-full"
+      variant="outline"
+      className="w-full"
       title="Indisponível no momento"
-      onClick={unavailableForNow}
+      onClick={() => unavailableForNow()}
       disabled={isSubmitting}
       IconLeft={<GoogleSvg />}
     >
@@ -119,7 +142,8 @@ export function LoginSubscribeButton() {
       {(isSubmitting) => (
         <>
           <SubmitButton
-            type="submit" className="w-full"
+            type="submit"
+            className="w-full"
             disabled={isSubmitting}
             IconLeft={<LogInIcon />}
           >

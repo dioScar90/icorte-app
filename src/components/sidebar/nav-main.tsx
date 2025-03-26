@@ -20,6 +20,7 @@ import { Link, useRouteContext } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 import type { SidebarNavProps } from "./app-sidebar"
 import type { AuthContext } from "@/hooks/use-auth"
+import { Route } from "@/routes/__root"
 
 function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: AuthContext) {
   const items: SidebarNavProps[] = []
@@ -155,7 +156,7 @@ function getNavMainItemsToSidebar({ isClient, isBarberShop, isAdmin, user }: Aut
 }
 
 export function NavMain() {
-  const authInfos = useRouteContext({ from: '/', select: (s) => s.auth })
+  const authInfos = Route.useRouteContext({ select: (s) => s.auth })
 
   const [items, setItems] = useState(getNavMainItemsToSidebar(authInfos))
 

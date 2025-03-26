@@ -82,7 +82,9 @@ function RouteComponent() {
           barberShopId: result.value.item.id,
         },
         state: {
-          message: result.value?.message,
+          alert: {
+            message: result.value?.message,
+          },
         },
       })
     } catch (err) {

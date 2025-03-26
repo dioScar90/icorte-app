@@ -1,7 +1,9 @@
 // ErrorContext.tsx
 import type { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { toast } from 'sonner';
-import Swal, { type SweetAlertOptions } from 'sweetalert2';
+import { type HistoryState } from '@tanstack/react-router'
+import { useCallback } from 'react';
+import { Route } from '@/routes';
 
 type PropsToastMustHave<K> = [K, {
   message: string,
@@ -90,10 +92,23 @@ export class BaseDataError extends Error {
     this.errors = errors ?? {}
   }
 
-  private getHtmlForSwalBody() {
-    const div = document.createElement('div')
+  // private getHtmlForSwalBody() {
+  //   const div = document.createElement('div')
 
-    div.innerHTML = `
+  //   div.innerHTML = `
+  //     <p>${this.detail}</p>
+  //     <ul>
+  //       ${Object.entries(this.errors).map(([_, values]) => `
+  //         <li>=> ${values[0]}</li>
+  //       `)}
+  //     </ul>
+  //   `
+
+  //   return div
+  // }
+
+  private getHtmlForSwalBody() {
+    return `
       <p>${this.detail}</p>
       <ul>
         ${Object.entries(this.errors).map(([_, values]) => `
@@ -101,16 +116,15 @@ export class BaseDataError extends Error {
         `)}
       </ul>
     `
-    return div
-
   }
 
   getSwalOptions() {
     return {
       icon: 'error',
       title: this.title,
-      html: this.getHtmlForSwalBody()
-    } as SweetAlertOptions
+      message: this.getHtmlForSwalBody(),
+      isHtml: true,
+    } satisfies HistoryState['alert']
   }
 
   static throwNewPromiseReject(data?: DataResponseError) {
@@ -124,63 +138,131 @@ export class NetworkConnectionError extends Error {
   }
 }
 
-export function handleError
-  <
-    TForm extends FieldValues,
-    KField extends "root" | `root.${string}` | Path<TForm>,
-  >
-  (error: Error | string | unknown, reactHookForm?: UseFormReturn<TForm>) {
-  if (!error) {
-    return
-  }
-  
-  const isReactHookForm = (form: any): form is UseFormReturn<TForm> => !!form
-  const isFieldError = (err: any): err is FieldError<KField> => err instanceof FieldError
-  const isKeyFromPath = (key: string): key is Path<TForm> => !key.startsWith('root')
-
-  console.log('error', error)
-  console.log('reactHookForm', reactHookForm)
-
-  if (isReactHookForm(reactHookForm) && isFieldError(error)) {
-    const toForm = error.getFormErrorOptions()
-    console.log('toForm', toForm)
-    toForm.forEach(item => reactHookForm.setError(...item))
-
-    let lastValidKey: Path<TForm> | undefined
-
-    for (const [key, { message, description }] of error.getToastOptions()) {
-      toast.error(message, { description })
-      
-      lastValidKey = isKeyFromPath(key) ? key : lastValidKey
-    }
-
-    if (lastValidKey) {
-      reactHookForm.setFocus(lastValidKey)
-    }
-
-    return
-  }
-
+function getAlertDetails(error: Error | string | unknown) {
   if (error instanceof BaseDataError) {
-    Swal.fire(error.getSwalOptions())
-    return
+    return error.getSwalOptions()
   }
 
   if (error instanceof Error) {
-    Swal.fire({
+    return {
       icon: 'error',
-      title: 'title' in error ? (error.title ?? undefined) : undefined,
-      text: error.message,
-    })
-    return
+      title: 'title' in error && typeof error.title === 'string' ? error.title : undefined,
+      message: error.message,
+    } satisfies HistoryState['alert']
   }
-
-  Swal.fire({
+  
+  return {
     icon: 'error',
-    text: error === 'string' ? error : 'Erro desconhecido, tente novamente',
-  })
+    message: error === 'string' ? error : 'Erro desconhecido, tente novamente',
+  } satisfies HistoryState['alert']
 }
 
-export const useError = () => handleError
+export function useError() {
+  const navigate = Route.useNavigate()
 
-export type HandleError = ReturnType<typeof useError>
+
+  const handleError = useCallback(
+    <
+      TForm extends FieldValues,
+      KField extends "root" | `root.${string}` | Path<TForm>,
+    >
+    (error: Error | string | unknown, reactHookForm?: UseFormReturn<TForm>) => {
+    if (!error) {
+      return
+    }
+    
+    const isReactHookForm = (form: any): form is UseFormReturn<TForm> => !!form
+    const isFieldError = (err: any): err is FieldError<KField> => err instanceof FieldError
+    const isKeyFromPath = (key: string): key is Path<TForm> => !key.startsWith('root')
+  
+    console.log('error', error)
+    console.log('reactHookForm', reactHookForm)
+  
+    if (isReactHookForm(reactHookForm) && isFieldError(error)) {
+      const toForm = error.getFormErrorOptions()
+      console.log('toForm', toForm)
+      toForm.forEach(item => reactHookForm.setError(...item))
+  
+      let lastValidKey: Path<TForm> | undefined
+  
+      for (const [key, { message, description }] of error.getToastOptions()) {
+        toast.error(message, { description })
+        
+        lastValidKey = isKeyFromPath(key) ? key : lastValidKey
+      }
+  
+      if (lastValidKey) {
+        reactHookForm.setFocus(lastValidKey)
+      }
+  
+      return
+    }
+    
+    navigate({
+      to: location.pathname,
+      params: (prev) => ({ ...prev }),
+      search: (prev) => ({ ...prev }),
+      state: (prev) => ({
+        ...prev,
+        alert: getAlertDetails(error),
+      }),
+    })
+  }, [])
+
+  return {
+    handleError
+  }
+}
+
+// export function handleError
+//   <
+//     TForm extends FieldValues,
+//     KField extends "root" | `root.${string}` | Path<TForm>,
+//   >
+//   (error: Error | string | unknown, reactHookForm?: UseFormReturn<TForm>) {
+//   const { pathname } = useLocation()
+//   const navigate = useNavigate()
+
+//   if (!error) {
+//     return
+//   }
+  
+//   const isReactHookForm = (form: any): form is UseFormReturn<TForm> => !!form
+//   const isFieldError = (err: any): err is FieldError<KField> => err instanceof FieldError
+//   const isKeyFromPath = (key: string): key is Path<TForm> => !key.startsWith('root')
+
+//   console.log('error', error)
+//   console.log('reactHookForm', reactHookForm)
+
+//   if (isReactHookForm(reactHookForm) && isFieldError(error)) {
+//     const toForm = error.getFormErrorOptions()
+//     console.log('toForm', toForm)
+//     toForm.forEach(item => reactHookForm.setError(...item))
+
+//     let lastValidKey: Path<TForm> | undefined
+
+//     for (const [key, { message, description }] of error.getToastOptions()) {
+//       toast.error(message, { description })
+      
+//       lastValidKey = isKeyFromPath(key) ? key : lastValidKey
+//     }
+
+//     if (lastValidKey) {
+//       reactHookForm.setFocus(lastValidKey)
+//     }
+
+//     return
+//   }
+  
+//   navigate({
+//     to: pathname,
+//     state: {
+//       alert: getAlertDetails(error),
+//     },
+//   })
+// }
+
+// export const useError = () => handleError
+
+export type HandleError = ReturnType<typeof useError>['handleError']
+

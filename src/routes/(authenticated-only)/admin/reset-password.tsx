@@ -43,7 +43,9 @@ function RouteComponent() {
       navigate({
         to: '/admin/dashboard',
         state: {
-          message: 'Senha resetada',
+          alert: {
+            message: 'Senha resetada',
+          },
         },
       })
     } catch (err) {

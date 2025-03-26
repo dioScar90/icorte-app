@@ -48,9 +48,14 @@ export function FormNewAppointment() {
     if (appointmentId && message) {
       navigate({
         to: '/barber-schedule/dashboard/$appointmentId',
-        params: { appointmentId },
-        replace: true,
-        state: { message },
+        params: {
+          appointmentId,
+        },
+        state: {
+          alert: {
+            message,
+          },
+        },
       })
     }
   }

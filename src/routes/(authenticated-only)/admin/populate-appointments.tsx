@@ -49,7 +49,9 @@ function RouteComponent() {
       navigate({
         to: '/admin/dashboard',
         state: {
-          message: 'Novos horários inseridos, menos pra vc ;(',
+          alert: {
+            message: 'Novos horários inseridos, menos pra vc ;(',
+          },
         },
       })
     } catch (err) {

@@ -77,7 +77,9 @@ function FormRemoveAppointment({ appointment, closeModal, setLoadingState, formI
         to: pathname,
         replace: true,
         state: {
-          message: 'Agendamento removido com sucesso',
+          alert: {
+            message: 'Agendamento removido com sucesso',
+          },
         },
       })
     } catch (err) {

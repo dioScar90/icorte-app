@@ -5,7 +5,7 @@ import TanstackQueryLayout from '../integrations/tanstack-query/layout'
 
 import indexCss from '@/styles.css?url'
 import { seo } from '@/utils/seo'
-import { useLayoutEffect, type ComponentProps, type PropsWithChildren } from 'react'
+import { useCallback, useLayoutEffect, type ComponentProps, type PropsWithChildren } from 'react'
 import { ThemeProvider } from 'next-themes'
 import { cn } from '@/lib/utils'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
@@ -63,7 +63,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
         replace: true,
       })
     }
-
+    
     const unauthenticatedOnly = location.pathname === '/login' || location.pathname === '/register'
     
     if (context.auth.isAuthenticated && unauthenticatedOnly) {
@@ -124,11 +124,20 @@ function RootComponent() {
   const navigate = useNavigate()
   const { pathname, state } = useLocation()
   
-  useLayoutEffect(() => {
-    if (state?.message) {
+  const checkForMessage = useCallback((alert: typeof state['alert']) => {
+    if (alert?.message) {
       Swal.fire({
-        icon: "success",
-        title: state?.message,
+        icon: alert?.icon ?? 'success',
+        title: alert?.title ?? undefined,
+        ...(
+          alert?.isHtml === true
+            ? {
+              html: alert?.message,
+            }
+            : {
+              message: alert?.message,
+            }
+        )
       })
       
       navigate({
@@ -136,7 +145,11 @@ function RootComponent() {
         replace: true,
       })
     }
-  }, [state?.message])
+  }, [])
+  
+  useLayoutEffect(() => {
+    checkForMessage(state?.alert)
+  }, [state?.alert?.message])
   
   return (
     <MainProviders>

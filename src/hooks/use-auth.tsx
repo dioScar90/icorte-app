@@ -28,6 +28,13 @@ export type AuthContext<TUser extends AuthUser | null = AuthUser | null> = {
   logout: () => ReturnType<IAuthService['logout']>
 }
 
+function isTypeUser(value: unknown): value is AuthUser {
+  return typeof value === 'object'
+    && value !== null
+    && 'id' in value
+    && typeof value.id === 'number'
+}
+
 function getRandomInt(seed?: number, isBarberShop?: boolean) {
   const MINIMUM = 1
   const LIMIT = !!isBarberShop ? 950 : 99
@@ -158,7 +165,7 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
 
     const result = await service.register(...args)
 
-    if (result.isSuccess) {
+    if (result.isSuccess && isTypeUser(result.value.item)) {
       dispatch({ type: 'SET_USER', payload: result.value.item })
     } else {
       dispatch({ type: 'LOGIN_FAILURE' })
@@ -189,7 +196,7 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
   useLayoutEffect(() => {
     getMe(httpClient)
       .then(user => {
-        if (user) {
+        if (isTypeUser(user)) {
           dispatch({ type: 'SET_USER', payload: user })
         } else {
           dispatch({ type: 'LOGOUT' })
@@ -199,7 +206,7 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
   }, [httpClient])
 
   useEffect(() => {
-    if (user) {
+    if (isTypeUser(user)) {
       dispatch({ type: 'SET_USER', payload: user })
     } else {
       dispatch({ type: 'LOGOUT' })

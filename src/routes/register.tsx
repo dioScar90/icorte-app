@@ -64,7 +64,11 @@ export function Register() {
 
       navigate({
         to: '/',
-        state: { message: result.value?.message }
+        state: {
+          alert: {
+            message: result.value?.message,
+          },
+        },
       })
     } catch (err) {
       handleError(err, form)

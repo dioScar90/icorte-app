@@ -48,7 +48,11 @@ function RouteComponent() {
       
       navigate({
         to: '/admin/dashboard',
-        state: { message },
+        state: {
+          alert: {
+            message,
+          },
+        },
       })
     } catch (err) {
       handleError(err, form)

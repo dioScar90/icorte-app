@@ -42,7 +42,9 @@ function RouteComponent() {
       navigate({
         to: '/admin/dashboard',
         state: {
-          message: 'Usuários reinseridos, menos você né pae...',
+          alert: {
+            message: 'Usuários reinseridos, menos você né pae...',
+          },
         },
       })
     } catch (err) {

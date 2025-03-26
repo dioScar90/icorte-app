@@ -32,6 +32,7 @@ import { useEffect, useState } from "react"
 import Swal from "sweetalert2"
 import { Link, useNavigate, useRouteContext } from "@tanstack/react-router"
 import type { AuthContext } from "@/hooks/use-auth"
+import { Route } from "@/routes/__root"
 
 function getInfos(user: NonNullable<SidebarFooterItselfProps['user']>) {
   return {
@@ -183,7 +184,7 @@ type NavUserProps = {
 }
 
 export function NavUserFooter({ closeSidebar }: NavUserProps) {
-  const { isAuthenticated, ...rest } = useRouteContext({ from: '/', select: (s) => s.auth })
+  const { isAuthenticated, ...rest } = Route.useRouteContext({ select: (s) => s.auth })
 
   if (!isAuthenticated) {
     return null

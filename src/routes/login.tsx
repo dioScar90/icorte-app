@@ -8,7 +8,10 @@ import { toast } from "sonner"
 export const Route = createFileRoute('/login')({
   component: Login,
   beforeLoad: () => ({
-    unavailableForNow: () => toast.error('Indisponível no momento'),
+    unavailableForNow: (onClose?: () => void) => toast.error('Indisponível no momento', {
+      onDismiss: onClose,
+      onAutoClose: onClose,
+    }),
   }),
 })
 
@@ -28,7 +31,7 @@ export function Login() {
       password: '',
     },
     validators: {
-      onBlur: userLoginSchema,
+      // onBlur: userLoginSchema,
       onSubmit: userLoginSchema,
     },
     onSubmit: async ({ value }) => {
@@ -41,9 +44,10 @@ export function Login() {
         
         navigate({
           to: '/',
-          replace: true,
           state: {
-            message: 'Login realizado com sucesso',
+            alert: {
+              message: 'Login realizado com sucesso',
+            },
           },
         })
       } catch (err) {

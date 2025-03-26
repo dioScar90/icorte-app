@@ -47,8 +47,11 @@ export function BarberShopServiceForm() {
 
             navigate({
               search: ({ open, ...rest }) => ({ ...rest }),
-              replace: true,
-              state: { message },
+              state: {
+                alert: {
+                  message,
+                },
+              },
             })
           } catch (err) {
             handleError(err, form)

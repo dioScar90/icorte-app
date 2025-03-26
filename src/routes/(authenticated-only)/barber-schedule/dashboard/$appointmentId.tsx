@@ -83,7 +83,9 @@ function FormUpdatePaymentType({ currentPaymentType, formId, setLoadingState, re
       navigate({
         to: pathname,
         state: {
-          message: 'Forma de pagamento atualizada com sucesso',
+          alert: {
+            message: 'Forma de pagamento atualizada com sucesso',
+          },
         },
       })
 
