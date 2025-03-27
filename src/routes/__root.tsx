@@ -1,12 +1,11 @@
-import { Outlet, createRootRouteWithContext, redirect, useLocation, useNavigate, useRouterState } from '@tanstack/react-router'
+import { Outlet, createRootRouteWithContext, redirect, useLocation, useRouter, useRouterState } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
-import TanstackQueryLayout from '../integrations/tanstack-query/layout'
+import TanstackQueryLayout from '@/providers/tanstack-query/layout'
 
 import indexCss from '@/styles.css?url'
 import { seo } from '@/utils/seo'
-import { useCallback, useLayoutEffect, type ComponentProps, type PropsWithChildren } from 'react'
-import { ThemeProvider } from 'next-themes'
+import { useCallback, useEffect, useLayoutEffect, type PropsWithChildren } from 'react'
 import { cn } from '@/lib/utils'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/sidebar/app-sidebar'
@@ -17,7 +16,7 @@ import Swal from 'sweetalert2'
 
 import type { QueryClient } from '@tanstack/react-query'
 import type { ProxyContext } from '@/hooks/use-proxy'
-import type { HandleError } from '@/hooks/use-error'
+import { useErrorHandler, type HandleError } from '@/providers/errors/error-handler-provider'
 import type { AuthContext } from '@/hooks/use-auth'
 
 interface RouterAppContext {
@@ -69,26 +68,13 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
     if (context.auth.isAuthenticated && unauthenticatedOnly) {
       goHome()
     }
-
+    
     return {
       goHome,
     }
   },
   component: RootComponent,
 })
-
-function MainProviders({ children }: PropsWithChildren) {
-  const theme = {
-    defaultTheme: 'dark',
-    storageKey: 'vite-ui-theme',
-  } satisfies Omit<ComponentProps<typeof ThemeProvider>, 'children'>
-
-  return (
-    <ThemeProvider { ...theme }>
-      {children}
-    </ThemeProvider>
-  )
-}
 
 function MainBody() {
   const isLoading = useRouterState({ select: ({ isLoading }) => isLoading })
@@ -120,28 +106,22 @@ function MainBody() {
   )
 }
 
-function RootComponent() {
-  const navigate = useNavigate()
-  const { pathname, state } = useLocation()
+function HistoryAlertChecker({ children }: PropsWithChildren) {
+  const { navigate } = useRouter()
+  const { state } = useLocation()
   
   const checkForMessage = useCallback((alert: typeof state['alert']) => {
     if (alert?.message) {
+      const messageKey = alert?.isHtml === true ? 'html' : 'text'
+      
       Swal.fire({
         icon: alert?.icon ?? 'success',
         title: alert?.title ?? undefined,
-        ...(
-          alert?.isHtml === true
-            ? {
-              html: alert?.message,
-            }
-            : {
-              message: alert?.message,
-            }
-        )
+        [messageKey]: alert.message,
       })
       
       navigate({
-        to: pathname,
+        // to: pathname,
         replace: true,
       })
     }
@@ -150,16 +130,58 @@ function RootComponent() {
   useLayoutEffect(() => {
     checkForMessage(state?.alert)
   }, [state?.alert?.message])
+
+  return (
+    <>
+      {children}
+    </>
+  )
+}
+
+function ErrorMessageChecker({ children }: PropsWithChildren) {
+  const { alert, clearErrors } = useErrorHandler()
+  
+  const { navigate } = useRouter()
+  
+  useEffect(() => {
+    if (!alert || !alert?.message) {
+      return
+    }
+    
+    navigate({
+      // to: location,
+      // search: (prev) => prev,
+      // params: (prev) => prev,
+      state: (prev) => ({
+        ...prev,
+        alert,
+      }),
+    })
+
+    clearErrors()
+  }, [alert])
   
   return (
-    <MainProviders>
+    <>
+      {children}
+    </>
+  )
+}
 
-      <MainBody />
+function RootComponent() {
+  return (
+    <HistoryAlertChecker>
 
-      <TanStackRouterDevtools />
+      <ErrorMessageChecker>
 
-      <TanstackQueryLayout />
+        <MainBody />
 
-    </MainProviders>
+        <TanStackRouterDevtools />
+
+        <TanstackQueryLayout />
+        
+      </ErrorMessageChecker>
+
+    </HistoryAlertChecker>
   )
 }

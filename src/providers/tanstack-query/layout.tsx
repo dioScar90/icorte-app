@@ -1,5 +1,5 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-export default function LayoutAddition() {
+export default function TanstackQueryLayout() {
   return <ReactQueryDevtools buttonPosition="bottom-right" />
 }

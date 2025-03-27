@@ -2,25 +2,25 @@ import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 
-import * as TanstackQuery from './integrations/tanstack-query/root-provider.tsx'
+import { getContext } from './providers/tanstack-query/root-provider.tsx'
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
-import './styles.css'
-import reportWebVitals from './reportWebVitals.ts'
-import { useError } from './hooks/use-error.tsx'
-import { useProxy } from './hooks/use-proxy.ts'
-import { useAuth } from './hooks/use-auth.tsx'
-import type { SweetAlertOptions } from "sweetalert2"
+import '@/styles.css'
+import reportWebVitals from '@/reportWebVitals.ts'
+import { useProxy } from '@/hooks/use-proxy.ts'
+import { useErrorHandler } from '@/providers/errors/error-handler-provider.tsx'
+import { useAuth } from '@/hooks/use-auth.ts'
+import { MainProviders } from '@/providers/main-providers.tsx'
 
 // Create a new router instance
 const router = createRouter({
   routeTree,
   context: {
-    ...TanstackQuery.getContext(),
-    httpClient: undefined!,
+    ...getContext(),
     handleError: undefined!,
+    httpClient: undefined!,
     auth: undefined!,
   },
   defaultPreload: 'intent',
@@ -50,15 +50,15 @@ declare module '@tanstack/history' {
 }
 
 function App() {
+  const { handleError } = useErrorHandler()
   const httpClient = useProxy()
-  // const handleError = useError()
   const auth = useAuth(httpClient)
-
+  
   return (
     <RouterProvider
       router={router}
       context={{
-        ...useError(),
+        handleError,
         httpClient,
         auth,
       }}
@@ -68,13 +68,14 @@ function App() {
 
 // Render the app
 const rootElement = document.getElementById('root')
+
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <TanstackQuery.Provider>
+      <MainProviders>
         <App />
-      </TanstackQuery.Provider>
+      </MainProviders>
     </StrictMode>,
   )
 }
