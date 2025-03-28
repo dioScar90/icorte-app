@@ -13,7 +13,7 @@ import { ErrorMessages, TextField } from '../default'
 import { SubmitButton } from '@/components/ui/submit-button'
 import { GoogleSvg } from '@/components/ui/google-svg'
 
-export function LoginEmailField() {
+export function RegisterEmailField() {
   return <TextField type="email" label="Email" placeholder="Digite seu email" />
 }
 
@@ -65,15 +65,9 @@ function ForgotPasswordButton() {
         preloadDelay={Number.POSITIVE_INFINITY}
         onClick={(e) => {
           e.preventDefault()
-          toggleDisabled(true)
 
-          unavailableForNow(() => {
-            console.log('começou')
-            toggleDisabled(false)
-            console.log('terminou?')
-          })
-              
-          // setTimeout(() => e.currentTarget.toggleAttribute('data-disabled', false), 500)
+          toggleDisabled(true)
+          unavailableForNow(() => toggleDisabled(false))
         }}
       >
           Esqueceu sua senha?
@@ -82,7 +76,7 @@ function ForgotPasswordButton() {
   )
 }
 
-export function LoginPasswordField() {
+export function RegisterPasswordField({ isLogin }: { isLogin?: boolean }) {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
 
@@ -111,12 +105,12 @@ export function LoginPasswordField() {
         {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
       </div>
       
-      <ForgotPasswordButton />
+      {!!isLogin && <ForgotPasswordButton />}
     </div>
   )
 }
 
-function LoginWithGoogleButton({ isSubmitting }: { isSubmitting: boolean }) {
+function RegisterWithGoogleButton({ isSubmitting, isLogin }: { isSubmitting: boolean, isLogin?: boolean }) {
   const unavailableForNow = Route.useRouteContext({ select: (s) => s.unavailableForNow })
 
   return (
@@ -129,12 +123,12 @@ function LoginWithGoogleButton({ isSubmitting }: { isSubmitting: boolean }) {
       disabled={isSubmitting}
       IconLeft={<GoogleSvg />}
     >
-      Fazer login com Google
+      {!!isLogin ? 'Fazer login com Google' : 'Cadastre-se com o Google'}
     </SubmitButton>
   )
 }
 
-export function LoginSubscribeButton() {
+export function RegisterSubscribeButton({ isLogin }: { isLogin?: boolean }) {
   const form = useFormContext()
 
   return (
@@ -147,10 +141,10 @@ export function LoginSubscribeButton() {
             disabled={isSubmitting}
             IconLeft={<LogInIcon />}
           >
-            Login
+            {!!isLogin ? 'Login' : 'Cadastrar'}
           </SubmitButton>
 
-          <LoginWithGoogleButton isSubmitting={isSubmitting} />
+          <RegisterWithGoogleButton isSubmitting={isSubmitting} isLogin={isLogin} />
         </>
       )}
     </form.Subscribe>

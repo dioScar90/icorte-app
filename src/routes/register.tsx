@@ -16,6 +16,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { useRegisterForm } from "@/hooks/forms/use-register";
+import { z } from "zod";
 
 export const Route = createFileRoute('/register')({
   component: Register,
@@ -31,10 +33,30 @@ export function Register() {
   
   const navigate = useNavigate()
 
+  const form = useRegisterForm({
+    defaultValues: {
+      email: '',
+      profile: {
+        gender: undefined,
+      },
+    },
+    validators: {
+      onSubmit: z.object({
+        email: z.string().email(),
+        profile: z.object({
+          gender: z.enum(['Female', 'Male']),
+        }),
+      }),
+    },
+    onSubmit: async ({ value }) => {
+      // do stuff
+    },
+  })
+
   const [isViewPassword, setIsViewPassword] = useState(false)
   const EyeViewPasswordIcon = isViewPassword ? Eye : EyeOff
 
-  const form = useForm<UserRegisterZod>({
+  const formmm = useForm<UserRegisterZod>({
     resolver: zodResolver(userRegisterSchema),
     defaultValues: {
       email: '',
@@ -71,20 +93,20 @@ export function Register() {
         },
       })
     } catch (err) {
-      handleError(err, form)
+      handleError(err, formmm)
     }
   }
 
-  const phoneNumber = form.watch('profile.phoneNumber')
+  const phoneNumber = formmm.watch('profile.phoneNumber')
 
   useEffect(() => {
-    form.setValue('profile.phoneNumber', applyMask('PHONE_NUMBER', phoneNumber))
+    formmm.setValue('profile.phoneNumber', applyMask('PHONE_NUMBER', phoneNumber))
   }, [phoneNumber])
 
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <Form {...formmm}>
+        <form onSubmit={formmm.handleSubmit(onSubmit)} className="space-y-6">
           <div className="before-card">
             <Card className="w-full md:max-w-96">
               <CardHeader>
@@ -100,7 +122,7 @@ export function Register() {
                       type="button"
                       variant="outline" className="w-full"
                       onClick={unavailableForNow}
-                      disabled={form.formState.isLoading || form.formState.isSubmitting}
+                      disabled={formmm.formState.isLoading || formmm.formState.isSubmitting}
                       IconLeft={<GoogleSvg />}
                     >
                       Cadastre-se com o Google
@@ -115,7 +137,7 @@ export function Register() {
 
                   <div className="grid gap-3">
                     <FormField
-                      control={form.control}
+                      control={formmm.control}
                       name="profile.firstName"
                       render={({ field }) => (
                         <FormItem>
@@ -129,7 +151,7 @@ export function Register() {
                     />
 
                     <FormField
-                      control={form.control}
+                      control={formmm.control}
                       name="profile.lastName"
                       render={({ field }) => (
                         <FormItem>
@@ -143,7 +165,7 @@ export function Register() {
                     />
 
                     <FormField
-                      control={form.control}
+                      control={formmm.control}
                       name="profile.phoneNumber"
                       render={({ field }) => (
                         <FormItem>
@@ -157,7 +179,7 @@ export function Register() {
                     />
 
                     <FormField
-                      control={form.control}
+                      control={formmm.control}
                       name="profile.gender"
                       render={({ field }) => (
                         <FormItem>
@@ -183,7 +205,7 @@ export function Register() {
                     />
 
                     <FormField
-                      control={form.control}
+                      control={formmm.control}
                       name="email"
                       render={({ field }) => (
                         <FormItem>
@@ -197,7 +219,7 @@ export function Register() {
                     />
 
                     <FormField
-                      control={form.control}
+                      control={formmm.control}
                       name="password"
                       render={({ field }) => (
                         <FormItem>
@@ -217,7 +239,7 @@ export function Register() {
                     />
 
                     <FormField
-                      control={form.control}
+                      control={formmm.control}
                       name="confirmPassword"
                       render={({ field }) => (
                         <FormItem>
@@ -236,7 +258,7 @@ export function Register() {
                   <div className="mt-3 grid gap-3">
                     <SubmitButton
                       type="submit"
-                      disabled={form.formState.isLoading || form.formState.isSubmitting}
+                      disabled={formmm.formState.isLoading || formmm.formState.isSubmitting}
                       IconLeft={<UserRoundPlusIcon />}
                     >
                       Cadastrar

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useLoginForm } from "@/hooks/forms/use-login-form"
+import { useLoginForm } from "@/hooks/forms/use-login"
 import { userLoginSchema } from "@/schemas/user"
 import { Link } from "@tanstack/react-router"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
@@ -77,18 +77,18 @@ export function Login() {
             <div className="grid gap-4">
               <div className="grid gap-3">
                 <form.AppField name="email">
-                  {(field) => <field.LoginEmailField />}
+                  {(field) => <field.RegisterEmailField />}
                 </form.AppField>
                 
                 <form.AppField name="password">
-                  {(field) => <field.LoginPasswordField />}
+                  {(field) => <field.RegisterPasswordField isLogin />}
                 </form.AppField>
               </div>
               
               {/* <FormRootErrorMessage /> */}
               
               <form.AppForm>
-                <form.LoginSubscribeButton />
+                <form.RegisterSubscribeButton isLogin />
               </form.AppForm>
             </div>
             <div className="mt-4 text-center text-sm">

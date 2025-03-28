@@ -13,6 +13,16 @@ function getUrl(final?: UrlType) {
   return !final ? baseEndpoint : `${baseEndpoint}/${final}`
 }
 
+function transformGenderIntoEnum([data]: Parameters<Interface['register']>) {
+  return {
+    ...data,
+    profile: {
+      ...data.profile,
+      gender: data.profile.gender,
+    }
+  }
+}
+
 export class AuthService implements Interface {
   constructor(private readonly httpClient: ProxyContext) {}
 
