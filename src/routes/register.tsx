@@ -1,23 +1,15 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form";
-import { userRegisterSchema, type UserRegisterZod } from "@/schemas/user";
-import { type MouseEvent, useEffect, useState } from "react";
-import { applyMask } from "@/utils/mask";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { getEnumAsArray, getEnumAsString } from "@/utils/enum-as-array";
+import { userRegisterSchema } from "@/schemas/user";
+import { FormRootErrorMessage } from "@/components/ui/form";
 import { GenderEnum } from "@/schemas/profile";
-import { Eye, EyeOff, UserRoundPlusIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GoogleSvg } from "@/components/ui/google-svg";
 import { Separator } from "@/components/ui/separator";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
-import { toast } from "sonner";
-import { SubmitButton } from "@/components/ui/submit-button";
 import { useRegisterForm } from "@/hooks/forms/use-register";
 import { z } from "zod";
+
+// type TSchemaInput = z.input<typeof userRegisterSchema>
+// type TSchemaOutput = z.output<typeof userRegisterSchema>
 
 export const Route = createFileRoute('/register')({
   component: Register,
@@ -30,34 +22,10 @@ export function Register() {
       s.auth.register,
     ] as const
   })
-  
+
   const navigate = useNavigate()
 
   const form = useRegisterForm({
-    defaultValues: {
-      email: '',
-      profile: {
-        gender: undefined,
-      },
-    },
-    validators: {
-      onSubmit: z.object({
-        email: z.string().email(),
-        profile: z.object({
-          gender: z.enum(['Female', 'Male']),
-        }),
-      }),
-    },
-    onSubmit: async ({ value }) => {
-      // do stuff
-    },
-  })
-
-  const [isViewPassword, setIsViewPassword] = useState(false)
-  const EyeViewPasswordIcon = isViewPassword ? Eye : EyeOff
-
-  const formmm = useForm<UserRegisterZod>({
-    resolver: zodResolver(userRegisterSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -67,216 +35,124 @@ export function Register() {
         lastName: '',
         phoneNumber: '',
         gender: undefined,
-      }
-    }
-  })
-
-  function unavailableForNow(e: MouseEvent) {
-    e.preventDefault()
-    toast.error('Indisponível no momento')
-  }
-
-  async function onSubmit(values: UserRegisterZod) {
-    try {
-      const result = await register(values)
-
-      if (!result.isSuccess) {
-        throw result.error
-      }
-
-      navigate({
-        to: '/',
-        state: {
-          alert: {
-            message: result.value?.message,
+      },
+    } as z.input<typeof userRegisterSchema>,
+    validators: {
+      onSubmit: userRegisterSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        const values = userRegisterSchema.parse(value)
+        const result = await register(values)
+  
+        if (!result.isSuccess) {
+          throw result.error
+        }
+  
+        navigate({
+          to: '/',
+          state: {
+            alert: {
+              message: result.value?.message,
+            },
           },
-        },
-      })
-    } catch (err) {
-      handleError(err, formmm)
-    }
-  }
-
-  const phoneNumber = formmm.watch('profile.phoneNumber')
-
-  useEffect(() => {
-    formmm.setValue('profile.phoneNumber', applyMask('PHONE_NUMBER', phoneNumber))
-  }, [phoneNumber])
-
+        })
+      } catch (err) {
+        handleError(err)
+      }
+    },
+  })
+  
   return (
-    <>
-      <Form {...formmm}>
-        <form onSubmit={formmm.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="before-card">
-            <Card className="w-full md:max-w-96">
-              <CardHeader>
-                <CardTitle className="text-2xl">Novo usuário</CardTitle>
-                <CardDescription>
-                  Vamos começar. Preencha os campos abaixo.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <SubmitButton
-                      type="button"
-                      variant="outline" className="w-full"
-                      onClick={unavailableForNow}
-                      disabled={formmm.formState.isLoading || formmm.formState.isSubmitting}
-                      IconLeft={<GoogleSvg />}
-                    >
-                      Cadastre-se com o Google
-                    </SubmitButton>
-                  </div>
+    <form
+      className="space-y-6"
+      onSubmit={e => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
+    >
+      <div className="before-card">
+        <Card className="w-full md:max-w-96">
+          <CardHeader>
+            <CardTitle className="text-2xl">Novo usuário</CardTitle>
+            <CardDescription>
+              Vamos começar. Preencha os campos abaixo.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <form.AppForm>
+                  <form.RegisterSubscribeWithGoogleButton />
+                </form.AppForm>
+              </div>
 
-                  <div className="flex items-center gap-4">
-                    <Separator className="flex-1" />
-                    <span className="text-muted-foreground">OU</span>
-                    <Separator className="flex-1" />
-                  </div>
+              <div className="flex items-center gap-4">
+                <Separator className="flex-1" />
+                <span className="text-muted-foreground">OU</span>
+                <Separator className="flex-1" />
+              </div>
 
-                  <div className="grid gap-3">
-                    <FormField
-                      control={formmm.control}
-                      name="profile.firstName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Nome</FormLabel>
-                          <FormControl>
-                            <Input type="text" placeholder="Nome" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+              <div className="grid gap-3">
+                <form.AppField name="profile.firstName">
+                  {(field) => <field.RegisterFirstNameField />}
+                </form.AppField>
+                
+                <form.AppField name="profile.lastName">
+                  {(field) => <field.RegisterLastNameField />}
+                </form.AppField>
+                
+                <form.AppField name="profile.phoneNumber">
+                  {(field) => <field.RegisterPhoneNumberField />}
+                </form.AppField>
+                
+                <form.AppField name="profile.gender">
+                  {(field) => (
+                    <field.Select
+                      label="Gênero"
+                      values={GenderEnum.map(gen => ({
+                        label: gen,
+                        value: gen,
+                      }))}
                     />
+                  )}
+                </form.AppField>
+                
+                <form.AppField name="email">
+                  {(field) => <field.RegisterEmailField />}
+                </form.AppField>
+                
+                <form.AppField name="email">
+                  {(field) => <field.RegisterEmailField />}
+                </form.AppField>
+                
+                <form.AppField name="password">
+                  {(field) => <field.RegisterPasswordField />}
+                </form.AppField>
+                
+                <form.AppField name="confirmPassword">
+                  {(field) => <field.RegisterConfirmPasswordField />}
+                </form.AppField>
 
-                    <FormField
-                      control={formmm.control}
-                      name="profile.lastName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Sobrenome</FormLabel>
-                          <FormControl>
-                            <Input type="text" placeholder="Sobrenome" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                <FormRootErrorMessage />
+              </div>
 
-                    <FormField
-                      control={formmm.control}
-                      name="profile.phoneNumber"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Telefone</FormLabel>
-                          <FormControl>
-                            <Input type="tel" inputMode="tel" placeholder="Telefone" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+              <div className="mt-3 grid gap-3">
+                <form.AppForm>
+                  <form.RegisterSubscribeButton />
+                </form.AppForm>
 
-                    <FormField
-                      control={formmm.control}
-                      name="profile.gender"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Gênero</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={getEnumAsString(GenderEnum, field.value)}>
-                            <FormControl>
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Gênero" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectGroup>
-                                {getEnumAsArray(GenderEnum).map(gender => (
-                                  <SelectItem key={gender} value={gender}>{gender}</SelectItem>
-                                ))}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={formmm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input type="email" inputMode="email" placeholder="Digite seu email" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={formmm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Senha</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Input type={isViewPassword ? 'text' : 'password'} placeholder="Digite sua senha" {...field} />
-                              <EyeViewPasswordIcon
-                                className="absolute-middle-y right-4 z-10 cursor-pointer text-gray-500"
-                                onClick={() => setIsViewPassword(!isViewPassword)}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={formmm.control}
-                      name="confirmPassword"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Confirmação</FormLabel>
-                          <FormControl>
-                            <Input type="password" placeholder="Confirme sua senha" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormRootErrorMessage />
-                  </div>
-
-                  <div className="mt-3 grid gap-3">
-                    <SubmitButton
-                      type="submit"
-                      disabled={formmm.formState.isLoading || formmm.formState.isSubmitting}
-                      IconLeft={<UserRoundPlusIcon />}
-                    >
-                      Cadastrar
-                    </SubmitButton>
-
-                    <div className="text-center text-sm">
-                      <span>Já possui uma conta?</span>{' '}
-                      <Link to="/login" className="underline">
-                        Login
-                      </Link>
-                    </div>
-                  </div>
+                <div className="text-center text-sm">
+                  <span>Já possui uma conta?</span>{' '}
+                  <Link to="/login" className="underline">
+                    Login
+                  </Link>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </form>
-      </Form>
-    </>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </form>
   )
 }

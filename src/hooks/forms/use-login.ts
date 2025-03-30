@@ -1,15 +1,21 @@
 import { createFormHook } from '@tanstack/react-form'
 
 import { fieldContext, formContext } from './form-contexts'
-import { RegisterEmailField, RegisterPasswordField, RegisterSubscribeButton } from '@/components/forms/register/_form'
+import {
+  RegisterEmailField as LoginEmailField,
+  RegisterPasswordField as LoginPasswordField,
+  RegisterSubscribeButton as LoginSubscribeButton,
+  RegisterSubscribeWithGoogleButton as LoginSubscribeWithGoogleButton,
+} from '@/components/forms/register/_form'
 
 export const { useAppForm: useLoginForm } = createFormHook({
   fieldComponents: {
-    RegisterEmailField,
-    RegisterPasswordField,
+    LoginEmailField,
+    LoginPasswordField,
   },
   formComponents: {
-    RegisterSubscribeButton,
+    LoginSubscribeButton,
+    LoginSubscribeWithGoogleButton,
   },
   fieldContext,
   formContext,

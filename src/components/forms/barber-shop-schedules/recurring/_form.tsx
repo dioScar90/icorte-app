@@ -6,7 +6,7 @@ import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
 import { type TimeString } from "@/utils/types/time-string"
 import { useNavigate } from "@tanstack/react-router"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getEnumAsArray, getEnumAsString } from "@/utils/enum-as-array"
+import { getEnumAsArray, getEnumAsString } from "@/utils/enum-transformer"
 import { DayOfWeekEnum } from "@/schemas/recurringSchedule"
 import { useRecurringScheduleFormContext } from "./_useScheduleForm"
 import { Route } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
@@ -25,13 +25,13 @@ export function BarberShopRecurringScheduleForm() {
   function handleTimeChange(e: ChangeEvent<HTMLInputElement>) {
     const maskedValue = applyMask('TIME_ONLY', e.currentTarget.value) as TimeString
     const name = e.currentTarget.name as 'openTime' | 'closeTime'
-    
+
     form.setValue(name, maskedValue) // Atualiza o valor do campo no React Hook Form
     e.currentTarget.value = maskedValue // Define o valor no input
-    
+
     e.currentTarget.focus()
   }
-  
+
   return (
     <Form {...form}>
       <form
@@ -123,7 +123,7 @@ export function BarberShopRecurringScheduleForm() {
               </FormItem>
             )}
           />
-          
+
           <FormRootErrorMessage />
         </div>
       </form>

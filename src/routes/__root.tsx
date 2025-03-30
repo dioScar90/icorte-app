@@ -11,7 +11,7 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/sidebar/app-sidebar'
 import { NavbarHeader } from '@/components/sidebar/navbar-header'
 import { Footer } from '@/components/footer'
-import { Toaster } from 'sonner'
+import { toast, Toaster } from 'sonner'
 import Swal from 'sweetalert2'
 
 import type { QueryClient } from '@tanstack/react-query'
@@ -71,6 +71,10 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
     
     return {
       goHome,
+      unavailableForNow: (onClose?: () => void) => toast.error('Indisponível no momento', {
+        onDismiss: onClose,
+        onAutoClose: onClose,
+      }),
     }
   },
   component: RootComponent,

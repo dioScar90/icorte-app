@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { SubmitButton } from '@/components/ui/submit-button'
 import { StateEnum } from '@/schemas/address'
 import { barberShopSchema, type BarberShopZod } from '@/schemas/barberShop'
-import { getEnumAsArray } from '@/utils/enum-as-array'
+import { getEnumAsArray } from '@/utils/enum-transformer'
 import { applyMask } from '@/utils/mask'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
@@ -45,9 +45,9 @@ function RouteComponent() {
       s.barberShop.register,
     ] as const
   })
-  
+
   const navigate = useNavigate()
-  
+
   const form = useForm<BarberShopZod>({
     resolver: zodResolver(barberShopSchema),
     defaultValues: {
@@ -71,11 +71,11 @@ function RouteComponent() {
   async function onSubmit(values: BarberShopZod) {
     try {
       const result = await register(values)
-      
+
       if (!result.isSuccess) {
         throw result.error
       }
-      
+
       navigate({
         to: '/barber-shop/$barberShopId/dashboard',
         params: {
@@ -94,7 +94,7 @@ function RouteComponent() {
 
   const comercialNumber = form.watch('comercialNumber')
   const postalCode = form.watch('address.postalCode')
-  
+
   useEffect(() => {
     form.setValue('comercialNumber', applyMask('PHONE_NUMBER', comercialNumber))
   }, [comercialNumber])
@@ -173,7 +173,7 @@ function RouteComponent() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="address.street"
@@ -297,10 +297,10 @@ function RouteComponent() {
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormRootErrorMessage />
                   </div>
-                  
+
                   <div className="mt-3">
                     <SubmitButton
                       type="submit" variant="default"

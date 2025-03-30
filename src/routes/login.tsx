@@ -3,16 +3,9 @@ import { useLoginForm } from "@/hooks/forms/use-login"
 import { userLoginSchema } from "@/schemas/user"
 import { Link } from "@tanstack/react-router"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { toast } from "sonner"
 
 export const Route = createFileRoute('/login')({
   component: Login,
-  beforeLoad: () => ({
-    unavailableForNow: (onClose?: () => void) => toast.error('Indisponível no momento', {
-      onDismiss: onClose,
-      onAutoClose: onClose,
-    }),
-  }),
 })
 
 export function Login() {
@@ -77,18 +70,19 @@ export function Login() {
             <div className="grid gap-4">
               <div className="grid gap-3">
                 <form.AppField name="email">
-                  {(field) => <field.RegisterEmailField />}
+                  {(field) => <field.LoginEmailField />}
                 </form.AppField>
                 
                 <form.AppField name="password">
-                  {(field) => <field.RegisterPasswordField isLogin />}
+                  {(field) => <field.LoginPasswordField isLogin />}
                 </form.AppField>
               </div>
               
               {/* <FormRootErrorMessage /> */}
               
               <form.AppForm>
-                <form.RegisterSubscribeButton isLogin />
+                <form.LoginSubscribeButton isLogin />
+                <form.LoginSubscribeWithGoogleButton isLogin />
               </form.AppForm>
             </div>
             <div className="mt-4 text-center text-sm">

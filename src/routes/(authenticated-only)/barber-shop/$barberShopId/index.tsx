@@ -2,7 +2,7 @@ import { AspectRatio } from '@/components/ui/aspect-ratio'
 import { buttonVariants } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { StateEnum } from '@/schemas/address'
-import { getEnumAsString } from '@/utils/enum-as-array'
+import { getEnumAsString } from '@/utils/enum-transformer'
 import { applyMask } from '@/utils/mask'
 import { createFileRoute, Link } from '@tanstack/react-router'
 
@@ -15,7 +15,7 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const barberShop = Route.useLoaderData()!
-  
+
   return (
     <>
       <div className="max-w-3xl mx-auto p-6 rounded-lg shadow-lg">
@@ -89,7 +89,7 @@ function RouteComponent() {
           </div>
         </div>
       </div>
-      
+
       <div className="flex justify-center align-center gap-x-3">
         <Link
           className={buttonVariants({ variant: "link" })}

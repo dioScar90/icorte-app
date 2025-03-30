@@ -8,24 +8,55 @@ import { useEffect, useRef, useState, type RefObject } from 'react'
 import { Eye, EyeOff, LogInIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
-import { Route } from '@/routes/login'
+// import { Route } from '@/routes/login'
+import { Route } from '@/routes/__root'
 import { ErrorMessages, TextField } from '../default'
 import { SubmitButton } from '@/components/ui/submit-button'
 import { GoogleSvg } from '@/components/ui/google-svg'
+import { applyMask } from '@/utils/mask'
 
 export function RegisterEmailField() {
   return <TextField type="email" label="Email" placeholder="Digite seu email" />
 }
 
-type PassType = 'text' | 'password'
+export function RegisterPhoneNumberField() {
+  const field = useFieldContext<string>()
+  const errors = useStore(field.store, (state) => state.meta.errors)
+  
+  return (
+    <div>
+      <Label htmlFor="Telefone" className="mb-2 text-xl font-bold">
+        Telefone
+      </Label>
+      <Input
+        type="tel"
+        value={field.state.value}
+        placeholder="Telefone"
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(applyMask('PHONE_NUMBER', e.target.value))}
+      />
+      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+    </div>
+  )
+}
+
+export function RegisterFirstNameField() {
+  return <TextField type="text" label="Nome" placeholder="Nome" />
+}
+
+export function RegisterLastNameField() {
+  return <TextField type="text" label="Sobrenome" placeholder="Sobrenome" />
+}
 
 function EyeViewPasswordIcon({ ref }: { ref: RefObject<HTMLInputElement | null> }) {
-  const [inputType, setInputType] = useState<PassType>('password')
+  type TPassType = 'text' | 'password'
+
+  const [inputType, setInputType] = useState<TPassType>('password')
   const Icon = inputType === 'password' ? EyeOff : Eye
   
   useEffect(() => {
     if (ref.current) {
-      setInputType(() => ref.current!.type as PassType)
+      setInputType(() => ref.current!.type as TPassType)
     }
   }, [ref.current?.type])
   
@@ -36,7 +67,7 @@ function EyeViewPasswordIcon({ ref }: { ref: RefObject<HTMLInputElement | null> 
         e.stopPropagation()
         
         if (ref?.current) {
-          const currentType = ref.current.type as PassType
+          const currentType = ref.current.type as TPassType
           ref.current.type = currentType === 'password' ? 'text' : 'password'
         }
       }}
@@ -110,6 +141,29 @@ export function RegisterPasswordField({ isLogin }: { isLogin?: boolean }) {
   )
 }
 
+export function RegisterConfirmPasswordField() {
+  const field = useFieldContext<string>()
+  const errors = useStore(field.store, (state) => state.meta.errors)
+
+  return (
+    <div>
+      <Label className="mb-2 text-xl font-bold">
+          Confirme sua senha
+      </Label>
+      
+      <Input
+        type="password"
+        value={field.state.value}
+        placeholder={'*'.repeat(8)}
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(e.target.value)}
+      />
+      
+      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+    </div>
+  )
+}
+
 function RegisterWithGoogleButton({ isSubmitting, isLogin }: { isSubmitting: boolean, isLogin?: boolean }) {
   const unavailableForNow = Route.useRouteContext({ select: (s) => s.unavailableForNow })
 
@@ -134,18 +188,29 @@ export function RegisterSubscribeButton({ isLogin }: { isLogin?: boolean }) {
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
       {(isSubmitting) => (
-        <>
-          <SubmitButton
-            type="submit"
-            className="w-full"
-            disabled={isSubmitting}
-            IconLeft={<LogInIcon />}
-          >
-            {!!isLogin ? 'Login' : 'Cadastrar'}
-          </SubmitButton>
+        <SubmitButton
+          type="submit"
+          className="w-full"
+          disabled={isSubmitting}
+          IconLeft={<LogInIcon />}
+        >
+          {!!isLogin ? 'Login' : 'Cadastrar'}
+        </SubmitButton>
+      )}
+    </form.Subscribe>
+  )
+}
 
-          <RegisterWithGoogleButton isSubmitting={isSubmitting} isLogin={isLogin} />
-        </>
+export function RegisterSubscribeWithGoogleButton({ isLogin }: { isLogin?: boolean }) {
+  const form = useFormContext()
+
+  return (
+    <form.Subscribe selector={(state) => state.isSubmitting}>
+      {(isSubmitting) => (
+        <RegisterWithGoogleButton
+          isSubmitting={isSubmitting}
+          isLogin={isLogin}
+        />
       )}
     </form.Subscribe>
   )

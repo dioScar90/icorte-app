@@ -1,31 +1,15 @@
-
-type EnumObj = Record<string, string | number>
-type Func = <T extends EnumObj>(enumItself: T) => (keyof T)[]
-
-export const getEnumAsArray: Func = (enumItself) => {
+export function getEnumAsArray<
+  TEnum extends Record<string, string | number>,
+  TKey extends keyof TEnum = keyof TEnum
+>(enumItself: TEnum) {
   return Object.keys(enumItself)
-    .filter(key => Number.isNaN(+key))
+    .filter(key => Number.isNaN(+key)) as [TKey, ...TKey[]]
 }
 
-enum GenderEnum {
-  // Deixar em pt-br mesmo, porque sim. Isso já foi testado, apenas aceite.
-  Feminino,
-  Masculino,
-}
-
-const enummm = [
-  'Feminino',
-  'Masculino',
-] as const
-
-type MamaMia = keyof typeof GenderEnum
-
-const vamos: MamaMia = 'aldskfj'
-console.log(vamos)
-
-type Func2 = <T extends EnumObj>(enumItself: T, enumVal?: number) => keyof T | undefined
-
-export const transformEnum: Func2 = (enumItself, enumVal) => {
+export function getEnumAsString<
+  TEnum extends Record<string, string | number>,
+  TKey extends keyof TEnum = keyof TEnum
+>(enumItself: TEnum, enumVal?: number) {
   if (enumVal === undefined) {
     return undefined
   }
@@ -37,5 +21,5 @@ export const transformEnum: Func2 = (enumItself, enumVal) => {
     return undefined
   }
 
-  return record[0]
+  return record[0] as TKey
 }

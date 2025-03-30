@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { SubmitButton } from '@/components/ui/submit-button'
 import { StateEnum } from '@/schemas/address'
 import { barberShopSchema, type BarberShopZod } from '@/schemas/barberShop'
-import { getEnumAsArray, getEnumAsString } from '@/utils/enum-as-array'
+import { getEnumAsArray, getEnumAsString } from '@/utils/enum-transformer'
 import { applyMask } from '@/utils/mask'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@tanstack/react-router'
@@ -31,7 +31,7 @@ function RouteComponent() {
       s.barberShop.update,
     ] as const
   })
-  
+
   const navigate = useNavigate()
 
   const form = useForm<BarberShopZod>({
@@ -61,7 +61,7 @@ function RouteComponent() {
       if (!result.isSuccess) {
         throw result.error
       }
-      
+
       navigate({
         to: '/barber-shop/$barberShopId',
         params: {

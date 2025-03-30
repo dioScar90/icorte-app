@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getEnumAsArray } from "@/utils/enum-as-array"
+import { getEnumAsArray } from "@/utils/enum-transformer"
 import { PaymentTypeEnum } from "@/schemas/appointment"
 import { InputFieldsDatesAndTimeSpans } from "./_formDateTImeFields"
 import { CheckboxFieldsServices } from "./_formCheckboxFieldsServices"
@@ -18,19 +18,19 @@ export function FormNewAppointment() {
       s.barberSchedule.createAppointment,
     ] as const
   })
-  
+
   const navigate = useNavigate({
     from: '/barber-schedule/new-appointment/'
   })
-  
+
   const onSubmit: Parameters<typeof form.handleSubmit>[0] = async ({ serviceIds, ...values }) => {
     const data = { ...values, serviceIds: [...serviceIds] }
 
     let appointmentId, message
-    
+
     try {
       const result = await createAppointment(data)
-      
+
       if (!result.isSuccess) {
         throw result.error
       }
@@ -44,7 +44,7 @@ export function FormNewAppointment() {
         search: ({ newAppointment, ...rest }) => ({ ...rest }),
       })
     }
-    
+
     if (appointmentId && message) {
       navigate({
         to: '/barber-schedule/dashboard/$appointmentId',
@@ -59,14 +59,14 @@ export function FormNewAppointment() {
       })
     }
   }
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} id={formId} className="space-y-6">
         <div className="grid gap-1">
 
           <InputFieldsDatesAndTimeSpans />
-          
+
           <FormField
             control={form.control}
             name="paymentType"
@@ -92,7 +92,7 @@ export function FormNewAppointment() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="notes"
@@ -106,7 +106,7 @@ export function FormNewAppointment() {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="serviceIds"
@@ -118,14 +118,14 @@ export function FormNewAppointment() {
                     Selecione os serviços desejados.
                   </FormDescription>
                 </div>
-                  
+
                 <CheckboxFieldsServices />
-                  
+
                 <FormMessage />
               </FormItem>
             )}
           />
-          
+
           <FormRootErrorMessage />
         </div>
       </form>

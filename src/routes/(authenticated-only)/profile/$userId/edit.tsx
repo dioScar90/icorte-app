@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { SubmitButton } from '@/components/ui/submit-button'
 import { GenderEnum } from '@/schemas/profile'
 import { userUpdateSchema, type UserUpdateZod } from '@/schemas/user'
-import { getEnumAsArray, getEnumAsString } from '@/utils/enum-as-array'
+import { getEnumAsArray, getEnumAsString } from '@/utils/enum-transformer'
 import { applyMask } from '@/utils/mask'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from '@tanstack/react-router'
@@ -31,7 +31,7 @@ function RouteComponent() {
   })
 
   const navigate = useNavigate()
-  
+
   const form = useForm<UserUpdateZod>({
     resolver: zodResolver(userUpdateSchema),
     defaultValues: {
@@ -51,7 +51,7 @@ function RouteComponent() {
       if (!result.isSuccess) {
         throw result.error
       }
-      
+
       navigate({
         to: '/profile/$userId',
         params: {

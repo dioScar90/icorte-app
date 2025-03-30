@@ -1,6 +1,7 @@
 // import { createContext, PropsWithChildren, useContext } from "react"
 import axios, { AxiosError } from 'axios'
-import { BaseDataError, InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from "@/hooks/use-error"
+// import { BaseDataError, InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from "@/hooks/use-error"
+import { BaseDataError, InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from '@/providers/errors/error-handler-provider'
 
 console.log('baseurl', import.meta.env.VITE_BASE_URL)
 
