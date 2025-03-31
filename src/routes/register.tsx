@@ -1,15 +1,12 @@
 import { userRegisterSchema } from "@/schemas/user";
 import { FormRootErrorMessage } from "@/components/ui/form";
-import { GenderEnum } from "@/schemas/profile";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { genders } from "@/schemas/profile";
 import { Link } from "@tanstack/react-router";
 import { useRegisterForm } from "@/hooks/forms/use-register";
 import { z } from "zod";
-
-// type TSchemaInput = z.input<typeof userRegisterSchema>
-// type TSchemaOutput = z.output<typeof userRegisterSchema>
 
 export const Route = createFileRoute('/register')({
   component: Register,
@@ -107,15 +104,7 @@ export function Register() {
                 </form.AppField>
                 
                 <form.AppField name="profile.gender">
-                  {(field) => (
-                    <field.Select
-                      label="Gênero"
-                      values={GenderEnum.map(gen => ({
-                        label: gen,
-                        value: gen,
-                      }))}
-                    />
-                  )}
+                  {(field) => <field.RegisterGenderField baseEnum={genders} />}
                 </form.AppField>
                 
                 <form.AppField name="email">

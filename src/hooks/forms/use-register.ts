@@ -4,6 +4,7 @@ import { fieldContext, formContext } from './form-contexts'
 import {
   RegisterEmailField,
   RegisterPhoneNumberField,
+  RegisterGenderField,
   RegisterFirstNameField,
   RegisterLastNameField,
   RegisterPasswordField,
@@ -11,17 +12,16 @@ import {
   RegisterSubscribeButton,
   RegisterSubscribeWithGoogleButton
 } from '@/components/forms/register/_form'
-import { Select } from '@/components/forms/default'
 
 export const { useAppForm: useRegisterForm } = createFormHook({
   fieldComponents: {
     RegisterEmailField,
     RegisterPhoneNumberField,
+    RegisterGenderField,
     RegisterFirstNameField,
     RegisterLastNameField,
     RegisterPasswordField,
     RegisterConfirmPasswordField,
-    Select,
   },
   formComponents: {
     RegisterSubscribeButton,

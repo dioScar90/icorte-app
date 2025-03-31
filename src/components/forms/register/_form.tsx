@@ -4,13 +4,13 @@ import { useFieldContext, useFormContext } from '@/hooks/forms/form-contexts'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useEffect, useRef, useState, type RefObject } from 'react'
+import { useEffect, useRef, useState, type ComponentProps, type RefObject } from 'react'
 import { Eye, EyeOff, LogInIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
 // import { Route } from '@/routes/login'
 import { Route } from '@/routes/__root'
-import { ErrorMessages, TextField } from '../default'
+import { ErrorMessages, Select, TextField } from '../default'
 import { SubmitButton } from '@/components/ui/submit-button'
 import { GoogleSvg } from '@/components/ui/google-svg'
 import { applyMask } from '@/utils/mask'
@@ -37,6 +37,15 @@ export function RegisterPhoneNumberField() {
       />
       {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
     </div>
+  )
+}
+
+export function RegisterGenderField({ baseEnum }: Pick<ComponentProps<typeof Select>, 'baseEnum'>) {
+  return (
+    <Select
+      baseEnum={baseEnum}
+      label="Gênero"
+    />
   )
 }
 

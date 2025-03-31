@@ -1,4 +1,4 @@
-import { z, ZodEnum } from 'zod'
+import { z } from 'zod'
 import { phoneNumberValidator } from './sharedValidators/phoneNumberValidator'
 // import { getEnumAsArray } from '@/utils/enum-transformer'
 import { nativeEnumValidator } from './sharedValidators/nativeEnumValidator'
@@ -8,12 +8,12 @@ import { nativeEnumValidator } from './sharedValidators/nativeEnumValidator'
 //   Masculino,
 // }
 
-export const GenderEnum = [
+export const genders = [
   'Feminino',
   'Masculino',
 ] as const
 
-const gender = nativeEnumValidator(GenderEnum, 'Gênero inválido')
+const gender = nativeEnumValidator(genders, 'Gênero inválido')
 
 export const profileSchema = z.object({
   firstName: z.string({ required_error: 'Nome obrigatório' })

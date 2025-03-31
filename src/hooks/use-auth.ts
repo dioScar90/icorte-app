@@ -3,7 +3,7 @@ import type { UserLoginZod, UserRegisterZod } from "@/schemas/user"
 import type { UserMe } from "@/types/models/user"
 import { useEffect, useReducer, useLayoutEffect } from "react"
 import type { IAuthService } from "@/data/services/interfaces/IAuthService"
-import { GenderEnum } from "@/schemas/profile"
+import { genders } from "@/schemas/profile"
 import type { ProxyContext } from "./use-proxy"
 import { UserService } from "@/data/services/UserService"
 
@@ -63,8 +63,10 @@ export function getProfileImageUrl(profile: AuthUser['profile']) {
   if (profile?.gender === undefined || profile?.gender === null) {
     return undefined
   }
+
+  const maleIndex = genders.indexOf('Masculino')
   
-  const gender = profile.gender === GenderEnum.Masculino ? 'men' : 'women'
+  const gender = profile.gender === maleIndex ? 'men' : 'women'
   const imageId = profile.fullName === 'Diogo Scarmagnani' ? 1 : getRandomInt(profile.id)
   return `https://randomuser.me/api/portraits/${gender}/${imageId}.jpg`
 }

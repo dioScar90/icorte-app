@@ -1,4 +1,5 @@
 import { useStore } from '@tanstack/react-form'
+import * as LabelPrimitive from "@radix-ui/react-label"
 
 import { useFieldContext, useFormContext } from '@/hooks/forms/form-contexts'
 
@@ -10,17 +11,33 @@ import { Switch as ShadcnSwitch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import type { ComponentProps } from 'react'
 import { SubmitButton } from '@/components/ui/submit-button'
+import { getEnumAsArray, getEnumAsString } from '@/schemas/sharedValidators/nativeEnumValidator'
+import { cn } from '@/lib/utils'
 
-export function SubscribeButton({ label }: { label: string } & Pick<ComponentProps<typeof SubmitButton>, 'IconLeft' | 'IconRight'>) {
-  const form = useFormContext()
+function FormItem({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <form.Subscribe selector={(state) => state.isSubmitting}>
-      {(isSubmitting) => (
-        <SubmitButton type="submit" disabled={isSubmitting}>
-          {label}
-        </SubmitButton>
-      )}
-    </form.Subscribe>
+    <div
+      data-slot="form-item"
+      className={cn("grid gap-2", className)}
+      {...props}
+    />
+  )
+}
+
+function FormLabel({
+  hasErrors,
+  className,
+  htmlFor,
+  ...props
+}: React.ComponentProps<typeof LabelPrimitive.Root> & { hasErrors?: boolean }) {
+  return (
+    <Label
+      data-slot="form-label"
+      data-error={!!hasErrors}
+      className={cn("data-[error=true]:text-destructive", className)}
+      htmlFor={htmlFor}
+      {...props}
+    />
   )
 }
 
@@ -35,11 +52,29 @@ export function ErrorMessages({
         <div
           key={typeof error === 'string' ? error : error.message}
           className="text-red-500 mt-1 font-semibold text-sm"
+          // text-destructive
         >
           {typeof error === 'string' ? error : error.message}
         </div>
       ))}
     </>
+  )
+}
+
+export function FormRootErrorMessage() {
+  return null
+}
+
+export function SubscribeButton({ label }: { label: string } & Pick<ComponentProps<typeof SubmitButton>, 'IconLeft' | 'IconRight'>) {
+  const form = useFormContext()
+  return (
+    <form.Subscribe selector={(state) => state.isSubmitting}>
+      {(isSubmitting) => (
+        <SubmitButton type="submit" disabled={isSubmitting}>
+          {label}
+        </SubmitButton>
+      )}
+    </form.Subscribe>
   )
 }
 
@@ -56,10 +91,10 @@ export function TextField({
   const errors = useStore(field.store, (state) => state.meta.errors)
 
   return (
-    <div>
-      <Label htmlFor={label} className="mb-2 text-xl font-bold">
+    <FormItem>
+      <FormLabel htmlFor={label} hasErrors={field.state.meta.isTouched}>
         {label}
-      </Label>
+      </FormLabel>
       <Input
         type={type}
         value={field.state.value}
@@ -68,7 +103,7 @@ export function TextField({
         onChange={(e) => field.handleChange(e.target.value)}
       />
       {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
-    </div>
+    </FormItem>
   )
 }
 
@@ -83,10 +118,10 @@ export function TextArea({
   const errors = useStore(field.store, (state) => state.meta.errors)
 
   return (
-    <div>
-      <Label htmlFor={label} className="mb-2 text-xl font-bold">
+    <FormItem>
+      <FormLabel htmlFor={label} hasErrors={field.state.meta.isTouched}>
         {label}
-      </Label>
+      </FormLabel>
       <ShadcnTextarea
         id={label}
         value={field.state.value}
@@ -95,45 +130,56 @@ export function TextArea({
         onChange={(e) => field.handleChange(e.target.value)}
       />
       {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
-    </div>
+    </FormItem>
   )
 }
 
 export function Select({
   label,
-  values,
+  // values,
   placeholder,
+  baseEnum,
 }: {
   label: string
-  values: Array<{ label: string; value: string }>
+  // values: Array<{ label: string; value: string }>
   placeholder?: string
+  // baseEnum: Parameters<typeof getEnumAsString>[0]
+  baseEnum: readonly [string, ...string[]]
 }) {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
 
+  function getValueAsString(value: unknown) {
+    return getEnumAsString(baseEnum, Number(value))
+  }
+  
   return (
-    <div>
+    <FormItem>
       <ShadcnSelect.Select
         name={field.name}
-        value={field.state.value}
-        onValueChange={(value) => field.handleChange(value)}
+        value={getValueAsString(field.state.value)}
+        onValueChange={field.handleChange}
+        // onValueChange={(value) => field.handleChange(getValueAsString(value))}
+        defaultValue={getValueAsString(field.state.value)}
       >
-        <ShadcnSelect.SelectTrigger className="w-full">
+        <ShadcnSelect.SelectTrigger className="w-[180px]">
           <ShadcnSelect.SelectValue placeholder={placeholder} />
         </ShadcnSelect.SelectTrigger>
+
         <ShadcnSelect.SelectContent>
           <ShadcnSelect.SelectGroup>
             <ShadcnSelect.SelectLabel>{label}</ShadcnSelect.SelectLabel>
-            {values.map((value) => (
-              <ShadcnSelect.SelectItem key={value.value} value={value.value}>
-                {value.label}
+            {baseEnum.map(value => (
+              <ShadcnSelect.SelectItem key={value} value={value}>
+                {value}
               </ShadcnSelect.SelectItem>
             ))}
           </ShadcnSelect.SelectGroup>
         </ShadcnSelect.SelectContent>
       </ShadcnSelect.Select>
+      
       {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
-    </div>
+    </FormItem>
   )
 }
 
@@ -142,10 +188,10 @@ export function Slider({ label }: { label: string }) {
   const errors = useStore(field.store, (state) => state.meta.errors)
 
   return (
-    <div>
-      <Label htmlFor={label} className="mb-2 text-xl font-bold">
+    <FormItem>
+      <FormLabel htmlFor={label} hasErrors={field.state.meta.isTouched}>
         {label}
-      </Label>
+      </FormLabel>
       <ShadcnSlider
         id={label}
         onBlur={field.handleBlur}
@@ -153,7 +199,7 @@ export function Slider({ label }: { label: string }) {
         onValueChange={(value) => field.handleChange(value[0])}
       />
       {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
-    </div>
+    </FormItem>
   )
 }
 
@@ -162,7 +208,7 @@ export function Switch({ label }: { label: string }) {
   const errors = useStore(field.store, (state) => state.meta.errors)
 
   return (
-    <div>
+    <FormItem>
       <div className="flex items-center gap-2">
         <ShadcnSwitch
           id={label}
@@ -170,9 +216,12 @@ export function Switch({ label }: { label: string }) {
           checked={field.state.value}
           onCheckedChange={(checked) => field.handleChange(checked)}
         />
-        <Label htmlFor={label}>{label}</Label>
+        
+        <FormLabel htmlFor={label} hasErrors={field.state.meta.isTouched}>
+          {label}
+        </FormLabel>
       </div>
       {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
-    </div>
+    </FormItem>
   )
 }
