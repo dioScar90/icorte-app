@@ -1,20 +1,15 @@
 import { z } from 'zod'
 import { getStringAsTimeString } from './sharedValidators/timeString'
+import { nativeEnumValidator } from './sharedValidators/nativeEnumValidator'
 
-export enum DayOfWeekEnum {
-  DOMINGO, SEGUNDA, TERCA, QUARTA, QUINTA, SEXTA, SÁBADO
-}
-
-const DayOfWeekEnumAsConst = [
+export const daysOfWeek = [
   'DOMINGO', 'SEGUNDA', 'TERCA', 'QUARTA', 'QUINTA', 'SEXTA', 'SÁBADO',
 ] as const
 
+const dayOfWeek = nativeEnumValidator(daysOfWeek, 'Dia da semana inválido')
+
 export const recurringScheduleSchema = z.object({
-  dayOfWeek: z.enum(DayOfWeekEnumAsConst, {
-    required_error: 'Dia da semana obrigatório',
-    message: 'Dia da semana inválido',
-  })
-    .transform(day => DayOfWeekEnum[day]),
+  dayOfWeek,
 
   openTime: z.string({ required_error: 'Horário de abertura obrigatório' })
     .time('Horário de abertura inválido')

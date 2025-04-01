@@ -1,0 +1,52 @@
+import { useStore } from '@tanstack/react-form'
+
+import { useFieldContext } from '@/hooks/forms/form-contexts'
+
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { type ComponentProps } from 'react'
+import { ErrorMessages, Select, TextField } from '../default'
+import { applyMask } from '@/utils/mask'
+
+function BaseTimeField({ label, placeholder, disabled }: { label: string, placeholder: string, disabled?: boolean }) {
+  const field = useFieldContext<string>()
+  const errors = useStore(field.store, (state) => state.meta.errors)
+  
+  return (
+    <div>
+      <Label htmlFor={label} className="mb-2 text-xl font-bold">
+        {label}
+      </Label>
+      <Input
+        inputMode="numeric"
+        value={field.state.value}
+        placeholder={placeholder}
+        onBlur={field.handleBlur}
+        onChange={(e) => {
+          field.handleChange(applyMask('TIME_ONLY', e.currentTarget.value))
+          e.currentTarget.focus()
+        }}
+        disabled={disabled}
+      />
+      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+    </div>
+  )
+}
+
+export function OpenTimeField({ disabled }: { disabled?: boolean }) {
+  return <BaseTimeField label="Hora de abertura" placeholder="08:00:00" disabled={disabled} />
+}
+
+export function CloseTimeField({ disabled }: { disabled?: boolean }) {
+  return <BaseTimeField label="Hora de fechamento" placeholder="18:00:00" disabled={disabled} />
+}
+
+export function DayOfWeekField({ baseEnum, disabled }: Pick<ComponentProps<typeof Select>, 'baseEnum'> & { disabled?: boolean }) {
+  return (
+    <Select
+      baseEnum={baseEnum}
+      label="Dia da Semana"
+      disabled={disabled}
+    />
+  )
+}

@@ -8,7 +8,6 @@ import { useEffect, useRef, useState, type ComponentProps, type RefObject } from
 import { Eye, EyeOff, LogInIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
-// import { Route } from '@/routes/login'
 import { Route } from '@/routes/__root'
 import { ErrorMessages, Select, TextField } from '../default'
 import { SubmitButton } from '@/components/ui/submit-button'

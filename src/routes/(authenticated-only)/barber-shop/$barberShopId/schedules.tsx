@@ -9,11 +9,14 @@ import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from
 import { RecurringScheduleService } from '@/data/services/RecurringScheduleService'
 import { SpecialScheduleService } from '@/data/services/SpecialScheduleService'
 import { cn } from '@/lib/utils'
-import { DayOfWeekEnum } from '@/schemas/recurringSchedule'
+import { daysOfWeek } from '@/schemas/recurringSchedule'
 import { getStringAsDateString, isValidDateString } from '@/schemas/sharedValidators/dateString'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ShoppingBag } from 'lucide-react'
 import { z } from 'zod'
+import { nativeEnumValidator } from '@/schemas/sharedValidators/nativeEnumValidator'
+
+const dayOfWeekEnumValidator = nativeEnumValidator(daysOfWeek)
 
 const scheduleValidateSchema = z.object({
   open: z.discriminatedUnion('scheduleType', [
@@ -26,7 +29,7 @@ const scheduleValidateSchema = z.object({
         }),
         z.object({
           action: z.enum(['UPDATE', 'REMOVE']),
-          dayOfWeek: z.nativeEnum(DayOfWeekEnum),
+          dayOfWeek: dayOfWeekEnumValidator,
         }),
       ]),
     }),

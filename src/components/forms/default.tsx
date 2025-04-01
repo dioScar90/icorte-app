@@ -11,7 +11,7 @@ import { Switch as ShadcnSwitch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import type { ComponentProps } from 'react'
 import { SubmitButton } from '@/components/ui/submit-button'
-import { getEnumAsArray, getEnumAsString } from '@/schemas/sharedValidators/nativeEnumValidator'
+import { getEnumAsString } from '@/schemas/sharedValidators/nativeEnumValidator'
 import { cn } from '@/lib/utils'
 
 function FormItem({ className, ...props }: React.ComponentProps<"div">) {
@@ -65,12 +65,12 @@ export function FormRootErrorMessage() {
   return null
 }
 
-export function SubscribeButton({ label }: { label: string } & Pick<ComponentProps<typeof SubmitButton>, 'IconLeft' | 'IconRight'>) {
+export function SubscribeButton({ label, ...rest }: { label: string } & ComponentProps<typeof SubmitButton>) {
   const form = useFormContext()
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
       {(isSubmitting) => (
-        <SubmitButton type="submit" disabled={isSubmitting}>
+        <SubmitButton type="submit" {...rest} disabled={isSubmitting}>
           {label}
         </SubmitButton>
       )}
@@ -134,14 +134,13 @@ export function TextArea({
 
 export function Select({
   label,
-  // values,
   placeholder,
+  disabled,
   baseEnum,
 }: {
   label: string
-  // values: Array<{ label: string; value: string }>
   placeholder?: string
-  // baseEnum: Parameters<typeof getEnumAsString>[0]
+  disabled?: boolean
   baseEnum: readonly [string, ...string[]]
 }) {
   const field = useFieldContext<string>()
@@ -157,8 +156,8 @@ export function Select({
         name={field.name}
         value={getValueAsString(field.state.value)}
         onValueChange={field.handleChange}
-        // onValueChange={(value) => field.handleChange(getValueAsString(value))}
         defaultValue={getValueAsString(field.state.value)}
+        disabled={disabled}
       >
         <ShadcnSelect.SelectTrigger className="w-[180px]">
           <ShadcnSelect.SelectValue placeholder={placeholder} />

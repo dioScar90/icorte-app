@@ -1,9 +1,10 @@
 import { createContext, useContext, useMemo } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import type { RecurringSchedule } from '@/types/models/recurringSchedule'
-import { DayOfWeekEnum, recurringScheduleSchema } from '@/schemas/recurringSchedule'
+import { daysOfWeek, recurringScheduleSchema } from '@/schemas/recurringSchedule'
 import { Route } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
+import { useBarberShopSchedulesForm } from '@/hooks/forms/use-barber-shop-schedules'
+import { getEnumAsString } from '@/schemas/sharedValidators/nativeEnumValidator'
+import { useNavigate } from '@tanstack/react-router'
+import type { z } from 'zod'
 
 type Action = 'REGISTER' | 'UPDATE' | 'REMOVE'
 
@@ -56,6 +57,8 @@ export function useInitValuesRecurringScheduleFormContext() {
   if (scheduleType !== 'recurring') {
     throw new Error('Impossible error')
   }
+
+  const navigate = useNavigate({ from: Route.fullPath })
   
   const { action, dayOfWeek } = openProps.details
   
@@ -65,8 +68,9 @@ export function useInitValuesRecurringScheduleFormContext() {
     ] as const
   })
   
-  const [register, update, remove] = Route.useRouteContext({
+  const [handleError, register, update, remove] = Route.useRouteContext({
     select: (s) => [
+      s.handleError,
       s.recurring.register,
       s.recurring.update,
       s.recurring.remove,
@@ -81,48 +85,61 @@ export function useInitValuesRecurringScheduleFormContext() {
     ...getDialogInfos(action),
   } as const), [scheduleType, action, barberShopId])
 
-  const form = useForm<RecurringSchedule>({
-    resolver: action === 'REMOVE' ? undefined : zodResolver(recurringScheduleSchema),
+  const form = useBarberShopSchedulesForm({
     defaultValues: {
-      dayOfWeek: schedule?.dayOfWeek ?? DayOfWeekEnum.SEGUNDA,
+      dayOfWeek: getEnumAsString(daysOfWeek, schedule?.dayOfWeek) ?? daysOfWeek[1],
       openTime: schedule?.openTime ?? undefined,
       closeTime: schedule?.closeTime ?? undefined,
+    } as z.input<typeof recurringScheduleSchema>,
+    validators: {
+      onSubmit: action === 'REMOVE' ? undefined : recurringScheduleSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        const values = action === 'REMOVE' ? null : recurringScheduleSchema.parse(value)
+        
+        const infos = {
+          REGISTER: {
+            method: () => register(barberShopId, values!),
+            defaultMessage: 'Serviço criado com sucesso',
+          },
+          UPDATE: {
+            method: () => update(barberShopId, dayOfWeek!, values!),
+            defaultMessage: 'Serviço atualizado com sucesso',
+          },
+          REMOVE: {
+            method: () => remove(barberShopId, dayOfWeek!),
+            defaultMessage: 'Serviço removido com sucesso',
+          },
+        } as const
+        
+        const { method, defaultMessage } = infos[action]
+    
+        const result = await method()
+    
+        if (!result.isSuccess) {
+          throw result.error
+        }
+        
+        navigate({
+          search: ({ open, ...rest }) => ({ ...rest }),
+          state: {
+            alert: {
+              message: result.value?.message ?? defaultMessage,
+            },
+          },
+        })
+      } catch (err) {
+        handleError(err)
+      } finally {
+        // TODO: closeModal()
+      }
     },
   })
-  
-  const doStuff = async (values: Parameters<Parameters<typeof form.handleSubmit>[0]>[0]) => {
-    const infos = {
-      REGISTER: {
-        method: () => register(barberShopId, values),
-        defaultMessage: 'Serviço criado com sucesso',
-      },
-      UPDATE: {
-        method: () => update(barberShopId, dayOfWeek!, values),
-        defaultMessage: 'Serviço atualizado com sucesso',
-      },
-      REMOVE: {
-        method: () => remove(barberShopId, dayOfWeek!),
-        defaultMessage: 'Serviço removido com sucesso',
-      },
-    } as const
-
-    const { method, defaultMessage } = infos[action]
-
-    const result = await method()
-
-    if (!result.isSuccess) {
-      throw result.error
-    }
-
-    return {
-      message: result.value?.message ?? defaultMessage
-    }
-  }
   
   return {
     ...basicValues,
     form,
-    doStuff,
   }
 }
 

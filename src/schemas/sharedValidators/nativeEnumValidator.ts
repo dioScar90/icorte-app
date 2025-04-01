@@ -24,13 +24,13 @@ export function getEnumAsString<
     return undefined
   }
   
-  return enumItself[enumVal]
+  return enumItself[enumVal] as TEnum[number]
 }
 
 export function nativeEnumValidator<
   TArr extends TReadonlyArr,
   TIdx extends IndexesOf<TArr> = IndexesOf<TArr>,
->(arr: TArr, errorMessage: string) {
+>(arr: TArr, errorMessage?: string) {
   function getIndexOf(el: z.Writeable<TArr>[number]): TIdx {
     return arr.indexOf(el) as TIdx
   }

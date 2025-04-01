@@ -91,10 +91,6 @@ export function PostalCodeField() {
   )
 }
 
-// export function PostalCodeField() {
-//   return <TextField label="CEP" inputMode="numeric" placeholder="CEP" />
-// }
-
 export function CountryField() {
   return <TextField label="País" placeholder="País" />
 }

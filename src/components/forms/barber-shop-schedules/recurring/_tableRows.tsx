@@ -3,17 +3,17 @@ import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { useNavigate } from '@tanstack/react-router'
 import { Edit, Trash2 } from 'lucide-react'
-import { getEnumAsString } from '@/utils/enum-transformer'
-import { DayOfWeekEnum } from '@/schemas/recurringSchedule'
+import { getEnumAsString } from '@/schemas/sharedValidators/nativeEnumValidator'
+import { daysOfWeek } from '@/schemas/recurringSchedule'
 import { getFormattedHour } from '@/schemas/sharedValidators/timeString'
-import { Route as BarberShopSchedulesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
+import { Route } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
 
 export function TableBodyWithRowsRecurringSchedules() {
-  const schedules = BarberShopSchedulesRoute.useLoaderData({
+  const schedules = Route.useLoaderData({
     select: (s) => s.recurringSchedules,
   })
 
-  const navigate = useNavigate({ from: BarberShopSchedulesRoute.fullPath })
+  const navigate = useNavigate({ from: Route.fullPath })
 
   if (!schedules.length) {
     return (
@@ -31,7 +31,7 @@ export function TableBodyWithRowsRecurringSchedules() {
 
   return schedules.map(({ barberShopId, ...schedule }) => (
     <TableRow key={schedule.dayOfWeek} data-barber-shop-id={barberShopId}>
-      <TableCell className="text-center">{getEnumAsString(DayOfWeekEnum, schedule.dayOfWeek)}</TableCell>
+      <TableCell className="text-center">{getEnumAsString(daysOfWeek, schedule.dayOfWeek)}</TableCell>
       <TableCell className="text-center">{getFormattedHour(schedule.openTime, true)}</TableCell>
       <TableCell className="text-center">{getFormattedHour(schedule.closeTime, true)}</TableCell>
       <TableCell className="text-center w-[100px]">
@@ -44,9 +44,11 @@ export function TableBodyWithRowsRecurringSchedules() {
               search: (prev) => ({
                 ...prev,
                 open: {
-                  action: 'UPDATE',
                   scheduleType: 'recurring',
-                  dayOfWeek: schedule.dayOfWeek,
+                  details: {
+                    action: 'UPDATE',
+                    dayOfWeek: getEnumAsString(daysOfWeek, schedule.dayOfWeek),
+                  },
                 },
               })
             })}
@@ -61,9 +63,11 @@ export function TableBodyWithRowsRecurringSchedules() {
               search: (prev) => ({
                 ...prev,
                 open: {
-                  action: 'REMOVE',
                   scheduleType: 'recurring',
-                  dayOfWeek: schedule.dayOfWeek,
+                  details: {
+                    action: 'REMOVE',
+                    dayOfWeek: getEnumAsString(daysOfWeek, schedule.dayOfWeek),
+                  },
                 },
               })
             })}

@@ -1,6 +1,4 @@
 import { createContext, useContext, useMemo } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import type { SpecialSchedule } from '@/types/models/specialSchedule'
 import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
 import { specialScheduleSchema } from '@/schemas/specialSchedule'
@@ -58,6 +56,8 @@ export function useInitValuesSpecialScheduleFormContext() {
     throw new Error('Impossible error')
   }
   
+  const navigate = useNavigate({ from: Route.fullPath })
+  
   const { action, date } = openProps.details
   
   const [schedule] = Route.useLoaderData({
@@ -66,8 +66,9 @@ export function useInitValuesSpecialScheduleFormContext() {
     ] as const
   })
   
-  const [register, update, remove] = Route.useRouteContext({
+  const [handleError, register, update, remove] = Route.useRouteContext({
     select: (s) => [
+      s.handleError,
       s.special.register,
       s.special.update,
       s.special.remove,
@@ -82,50 +83,63 @@ export function useInitValuesSpecialScheduleFormContext() {
     ...getDialogInfos(action),
   } as const), [scheduleType, action, barberShopId])
 
-  const form = useForm<SpecialSchedule>({
-    resolver: action === 'REMOVE' ? undefined : zodResolver(specialScheduleSchema),
+  const form = useBarberShopSchedulesForm({
     defaultValues: {
       date: schedule?.date ? getFormattedDate(schedule.date) as SpecialSchedule['date'] : undefined,
       notes: schedule?.notes ?? undefined,
       openTime: schedule?.openTime ?? undefined,
       closeTime: schedule?.closeTime ?? undefined,
       isClosed: schedule?.isClosed ?? false,
+    } as z.input<typeof specialScheduleSchema>,
+    validators: {
+      onSubmit: action === 'REMOVE' ? undefined : specialScheduleSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        const values = action === 'REMOVE' ? null : specialScheduleSchema.parse(value)
+        
+        const infos = {
+          REGISTER: {
+            method: () => register(barberShopId, values),
+            defaultMessage: 'Serviço criado com sucesso',
+          },
+          UPDATE: {
+            method: () => update(barberShopId, date!, values),
+            defaultMessage: 'Serviço atualizado com sucesso',
+          },
+          REMOVE: {
+            method: () => remove(barberShopId, date!),
+            defaultMessage: 'Serviço removido com sucesso',
+          },
+        } as const
+        
+        const { method, defaultMessage } = infos[action]
+    
+        const result = await method()
+    
+        if (!result.isSuccess) {
+          throw result.error
+        }
+        
+        navigate({
+          search: ({ open, ...rest }) => ({ ...rest }),
+          state: {
+            alert: {
+              message: result.value?.message ?? defaultMessage,
+            },
+          },
+        })
+      } catch (err) {
+        handleError(err)
+      } finally {
+        // TODO: closeModal()
+      }
     },
   })
-  
-  const doStuff = async (values: Parameters<Parameters<typeof form.handleSubmit>[0]>[0]) => {
-    const infos = {
-      REGISTER: {
-        method: () => register(barberShopId, values),
-        defaultMessage: 'Serviço criado com sucesso',
-      },
-      UPDATE: {
-        method: () => update(barberShopId, date!, values),
-        defaultMessage: 'Serviço atualizado com sucesso',
-      },
-      REMOVE: {
-        method: () => remove(barberShopId, date!),
-        defaultMessage: 'Serviço removido com sucesso',
-      },
-    } as const
-
-    const { method, defaultMessage } = infos[action]
-
-    const result = await method()
-
-    if (!result.isSuccess) {
-      throw result.error
-    }
-
-    return {
-      message: result.value?.message ?? defaultMessage
-    }
-  }
   
   return {
     ...basicValues,
     form,
-    doStuff,
   }
 }
 
