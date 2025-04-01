@@ -82,11 +82,8 @@ export function TextField({
   type,
   label,
   placeholder,
-}: {
-  type: ComponentProps<typeof Input>['type']
-  label: string
-  placeholder?: string
-}) {
+  ...rest
+}: ComponentProps<typeof Input> & { label?: string }) {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
 
@@ -96,7 +93,8 @@ export function TextField({
         {label}
       </FormLabel>
       <Input
-        type={type}
+        {...rest}
+        type={type ?? 'text'}
         value={field.state.value}
         placeholder={placeholder}
         onBlur={field.handleBlur}

@@ -1,15 +1,14 @@
 import { z } from 'zod'
 import { postalCodeValidator } from './sharedValidators/postalCodeValidator'
+import { nativeEnumValidator } from './sharedValidators/nativeEnumValidator'
 
-export enum StateEnum {
-  AC, AL, AP, AM, BA, CE, DF, ES, GO, MA, MT, MS, MG, PA,
-  PB, PR, PE, PI, RJ, RN, RS, RO, RR, SC, SP, SE, TO,
-}
-
-export const StateEnumAsConst = [
+export const states = [
   'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA',
   'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO',
 ] as const
+
+const state = nativeEnumValidator(states, 'Estado inválido')
+const postalCode = postalCodeValidator()
 
 export const addressSchema = z.object({
   street: z.string({ required_error: 'Logradouro obrigatório' })
@@ -33,13 +32,8 @@ export const addressSchema = z.object({
     .trim()
     .min(3, { message: 'Cidade precisa ter pelo menos 3 caracteres' }),
 
-  state: z.enum(StateEnumAsConst, {
-    required_error: 'Estado obrigatório',
-    message: 'Estado inválido',
-  })
-    .transform(state => StateEnum[state]),
-
-  postalCode: postalCodeValidator(),
+  state,
+  postalCode,
 
   country: z.string({ required_error: 'País obrigatório' })
     .trim()

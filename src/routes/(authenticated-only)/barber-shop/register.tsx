@@ -1,18 +1,11 @@
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { SubmitButton } from '@/components/ui/submit-button'
-import { StateEnum } from '@/schemas/address'
-import { barberShopSchema, type BarberShopZod } from '@/schemas/barberShop'
-import { getEnumAsArray } from '@/utils/enum-transformer'
+import { useBarberShopForm } from '@/hooks/forms/use-barber-shop'
+import { states } from '@/schemas/address'
+import { barberShopSchema } from '@/schemas/barberShop'
 import { applyMask } from '@/utils/mask'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { StoreIcon } from 'lucide-react'
-import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import type { z } from 'zod'
 
 export const Route = createFileRoute(
   '/(authenticated-only)/barber-shop/register',
@@ -45,11 +38,10 @@ function RouteComponent() {
       s.barberShop.register,
     ] as const
   })
-
+  
   const navigate = useNavigate()
 
-  const form = useForm<BarberShopZod>({
-    resolver: zodResolver(barberShopSchema),
+  const form = useBarberShopForm({
     defaultValues: {
       name: '',
       description: '',
@@ -65,257 +57,117 @@ function RouteComponent() {
         postalCode: '',
         country: 'Brasil',
       }
-    }
-  })
-
-  async function onSubmit(values: BarberShopZod) {
-    try {
-      const result = await register(values)
-
-      if (!result.isSuccess) {
-        throw result.error
-      }
-
-      navigate({
-        to: '/barber-shop/$barberShopId/dashboard',
-        params: {
-          barberShopId: result.value.item.id,
-        },
-        state: {
-          alert: {
-            message: result.value?.message,
+    } as z.input<typeof barberShopSchema>,
+    validators: {
+      onSubmit: barberShopSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        const values = barberShopSchema.parse(value)
+        const result = await register(values)
+  
+        if (!result.isSuccess) {
+          throw result.error
+        }
+  
+        navigate({
+          to: '/barber-shop/$barberShopId/dashboard',
+          params: {
+            barberShopId: result.value.item.id,
           },
-        },
-      })
-    } catch (err) {
-      handleError(err, form)
-    }
-  }
-
-  const comercialNumber = form.watch('comercialNumber')
-  const postalCode = form.watch('address.postalCode')
-
-  useEffect(() => {
-    form.setValue('comercialNumber', applyMask('PHONE_NUMBER', comercialNumber))
-  }, [comercialNumber])
-
-  useEffect(() => {
-    form.setValue('address.postalCode', applyMask('CEP', postalCode))
-  }, [postalCode])
-
+          state: {
+            alert: {
+              message: result.value?.message,
+            },
+          },
+        })
+      } catch (err) {
+        handleError(err)
+      }
+    },
+  })
+  
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="before-card">
-            <Card className="w-full md:max-w-96">
-              <CardHeader>
-                <CardTitle className="text-2xl">Cadastrar barbearia</CardTitle>
-                <CardDescription>
-                  Vamos começar. Preencha os campos abaixo.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4">
-                  <div className="grid gap-2">
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Nome</FormLabel>
-                          <FormControl>
-                            <Input type="text" placeholder="Nome" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+      <form
+        className="space-y-6"
+        onSubmit={(e) => {
+          e.preventDefault()
+          form.handleSubmit()
+        }}
+      >
+        <div className="before-card">
+          <Card className="w-full md:max-w-96">
+            <CardHeader>
+              <CardTitle className="text-2xl">Cadastrar barbearia</CardTitle>
+              <CardDescription>
+                Vamos começar. Preencha os campos abaixo.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <form.AppField name="name">
+                    {(field) => <field.NameField />}
+                  </form.AppField>
 
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Descrição</FormLabel>
-                          <FormControl>
-                            <Input type="text" placeholder="Opcional. Ex.: A sua barbearia..." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <form.AppField name="description">
+                    {(field) => <field.DescriptionField />}
+                  </form.AppField>
 
-                    <FormField
-                      control={form.control}
-                      name="comercialNumber"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Telefone Comercial</FormLabel>
-                          <FormControl>
-                            <Input type="tel" inputMode="tel" placeholder="Telefone comercial" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <form.AppField name="comercialEmail">
+                    {(field) => <field.ComercialNumberField />}
+                  </form.AppField>
 
-                    <FormField
-                      control={form.control}
-                      name="comercialEmail"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email Comercial</FormLabel>
-                          <FormControl>
-                            <Input type="email" inputMode="email" placeholder="Email comercial" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <form.AppField name="comercialEmail">
+                    {(field) => <field.ComercialEmailField />}
+                  </form.AppField>
 
-                    <FormField
-                      control={form.control}
-                      name="address.street"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Rua</FormLabel>
-                          <FormControl>
-                            <Input type="text" placeholder="Rua" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <form.AppField name="address.street">
+                    {(field) => <field.StreetField />}
+                  </form.AppField>
 
-                    <FormField
-                      control={form.control}
-                      name="address.number"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Número</FormLabel>
-                          <FormControl>
-                            <Input type="text" inputMode="numeric" placeholder="Número" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <form.AppField name="address.number">
+                    {(field) => <field.NumberField />}
+                  </form.AppField>
 
-                    <FormField
-                      control={form.control}
-                      name="address.complement"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Complemento</FormLabel>
-                          <FormControl>
-                            <Input type="text" placeholder="Complemento" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <form.AppField name="address.complement">
+                    {(field) => <field.ComplementField />}
+                  </form.AppField>
 
-                    <FormField
-                      control={form.control}
-                      name="address.neighborhood"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Bairro</FormLabel>
-                          <FormControl>
-                            <Input type="text" placeholder="Bairro" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <form.AppField name="address.neighborhood">
+                    {(field) => <field.NeighborhoodField />}
+                  </form.AppField>
 
-                    <FormField
-                      control={form.control}
-                      name="address.city"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Cidade</FormLabel>
-                          <FormControl>
-                            <Input type="text" placeholder="Cidade" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <form.AppField name="address.city">
+                    {(field) => <field.CityField />}
+                  </form.AppField>
 
-                    <FormField
-                      control={form.control}
-                      name="address.state"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Estado</FormLabel>
-                          <Select onValueChange={field.onChange}>
-                            <FormControl>
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Estado" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectGroup>
-                                {getEnumAsArray(StateEnum).map(state => (
-                                  <SelectItem key={state} value={state}>{state}</SelectItem>
-                                ))}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
+                  <form.AppField name="address.state">
+                    {(field) => <field.StateField baseEnum={states} />}
+                  </form.AppField>
 
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <form.AppField name="address.postalCode">
+                    {(field) => <field.PostalCodeField />}
+                  </form.AppField>
 
-                    <FormField
-                      control={form.control}
-                      name="address.postalCode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>CEP</FormLabel>
-                          <FormControl>
-                            <Input type="text" inputMode="numeric" placeholder="CEP" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="address.country"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>País</FormLabel>
-                          <FormControl>
-                            <Input type="text" placeholder="País" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormRootErrorMessage />
-                  </div>
-
-                  <div className="mt-3">
-                    <SubmitButton
-                      type="submit" variant="default"
-                      disabled={form.formState.isLoading || form.formState.isSubmitting}
-                      IconLeft={<StoreIcon />}
-                    >
-                      Cadastrar
-                    </SubmitButton>
-                  </div>
+                  <form.AppField name="address.country">
+                    {(field) => <field.CountryField />}
+                  </form.AppField>
+                  
+                  {/* <FormRootErrorMessage /> */}
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </form>
-      </Form>
+                
+                <div className="mt-3">
+                  <form.AppForm>
+                    <form.SubscribeButton label="Cadastrar" IconLeft={<StoreIcon />} />
+                  </form.AppForm>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </form>
     </>
   )
 }

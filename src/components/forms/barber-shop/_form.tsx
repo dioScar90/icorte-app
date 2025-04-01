@@ -1,0 +1,100 @@
+import { useStore } from '@tanstack/react-form'
+
+import { useFieldContext } from '@/hooks/forms/form-contexts'
+
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { type ComponentProps } from 'react'
+import { ErrorMessages, Select, TextField } from '../default'
+import { applyMask } from '@/utils/mask'
+
+export function NameField() {
+  return <TextField label="Nome" placeholder="Nome" />
+}
+
+export function DescriptionField() {
+  return <TextField label="Descrição" placeholder="Opcional. Ex.: A sua barbearia..." />
+}
+
+export function ComercialNumberField() {
+  const field = useFieldContext<string>()
+  const errors = useStore(field.store, (state) => state.meta.errors)
+  
+  return (
+    <div>
+      <Label htmlFor="Telefone Comercial" className="mb-2 text-xl font-bold">
+        Telefone Comercial
+      </Label>
+      <Input
+        type="tel"
+        value={field.state.value}
+        placeholder="Telefone Comercial"
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(applyMask('PHONE_NUMBER', e.target.value))}
+      />
+      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+    </div>
+  )
+}
+
+export function ComercialEmailField() {
+  return <TextField type="email" label="Email Comercial" placeholder="Email Comercial" />
+}
+
+export function StreetField() {
+  return <TextField label="Rua" placeholder="Rua" />
+}
+
+export function NumberField() {
+  return <TextField label="Número" inputMode="numeric" placeholder="Número" />
+}
+
+export function ComplementField() {
+  return <TextField label="Complemento" placeholder="Complemento" />
+}
+
+export function NeighborhoodField() {
+  return <TextField label="Bairro" placeholder="Bairro" />
+}
+
+export function CityField() {
+  return <TextField label="Bairro" placeholder="Bairro" />
+}
+
+export function StateField({ baseEnum }: Pick<ComponentProps<typeof Select>, 'baseEnum'>) {
+  return (
+    <Select
+      baseEnum={baseEnum}
+      label="Estado"
+    />
+  )
+}
+
+export function PostalCodeField() {
+  const field = useFieldContext<string>()
+  const errors = useStore(field.store, (state) => state.meta.errors)
+  
+  return (
+    <div>
+      <Label htmlFor="CEP" className="mb-2 text-xl font-bold">
+        CEP
+      </Label>
+      <Input
+        inputMode="numeric"
+        value={field.state.value}
+        placeholder="CEP"
+        onBlur={field.handleBlur}
+        onChange={(e) => field.handleChange(applyMask('CEP', e.target.value))}
+      />
+      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+    </div>
+  )
+}
+
+// export function PostalCodeField() {
+//   return <TextField label="CEP" inputMode="numeric" placeholder="CEP" />
+// }
+
+export function CountryField() {
+  return <TextField label="País" placeholder="País" />
+}
