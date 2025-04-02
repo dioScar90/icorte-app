@@ -5,17 +5,17 @@ import { TableCell, TableRow } from '@/components/ui/table'
 import { getNumberAsCurrency } from '@/utils/currency'
 import { useNavigate } from '@tanstack/react-router'
 import { Edit, Trash2 } from 'lucide-react'
-import { Route as BarberShopServicesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/services'
+import { Route } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/services'
 
 export function TableBodyWithRows() {
-  const [services] = BarberShopServicesRoute.useLoaderData({
+  const [services] = Route.useLoaderData({
     select: (s) => [
       s.services,
     ] as const
   })
   
   const navigate = useNavigate({
-    from: BarberShopServicesRoute.fullPath,
+    from: Route.fullPath,
   })
   
   if (!services.length) {

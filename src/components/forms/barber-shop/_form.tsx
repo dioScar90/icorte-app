@@ -8,12 +8,12 @@ import { type ComponentProps } from 'react'
 import { ErrorMessages, Select, TextField } from '../default'
 import { applyMask } from '@/utils/mask'
 
-export function NameField() {
-  return <TextField label="Nome" placeholder="Nome" />
+export function NameField({ label, placeholder, disabled, ...rest }: ComponentProps<typeof TextField>) {
+  return <TextField label={label ?? 'Nome'} placeholder={placeholder ?? 'Nome'} disabled={disabled} {...rest} />
 }
 
-export function DescriptionField() {
-  return <TextField label="Descrição" placeholder="Opcional. Ex.: A sua barbearia..." />
+export function DescriptionField({ label, placeholder, disabled, ...rest }: ComponentProps<typeof TextField>) {
+  return <TextField label={label ?? 'Descrição'} placeholder={placeholder ?? 'Opcional. Ex.: A sua barbearia...'} disabled={disabled} {...rest} />
 }
 
 export function ComercialNumberField() {

@@ -1,135 +1,35 @@
-import { Input } from "@/components/ui/input"
-import { ChangeEvent } from "react"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form"
-import { applyMask } from "@/utils/mask"
-import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
-import { type TimeString } from "@/types/datetime/time-string"
-import { useNavigate } from "@tanstack/react-router"
-import { useBarberShopServiceFormContext } from "./_dialog"
-import { Route as BarberShopServicesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/services'
+import { useServiceFormContext } from "./_useServicesForm"
 
 export function BarberShopServiceForm() {
-  const { form, doStuff, formId, action } = useBarberShopServiceFormContext()
-
-  const [handleError] = BarberShopServicesRoute.useRouteContext({
-    select: (s) => [
-      s.handleError,
-    ] as const
-  })
-
-  const navigate = useNavigate({ from: BarberShopServicesRoute.fullPath })
-
-  function handlePriceChange(e: ChangeEvent<HTMLInputElement>) {
-    const maskedValue = applyMask('MONEY', e.currentTarget.value)
-
-    form.setValue('price', maskedValue) // Atualiza o valor do campo no React Hook Form
-    e.currentTarget.value = maskedValue // Define o valor no input
-
-    e.currentTarget.focus()
-  }
-
-  function handleDurationChange(e: ChangeEvent<HTMLInputElement>) {
-    const maskedValue = applyMask('TIME_ONLY', e.currentTarget.value) as TimeString
-
-    form.setValue('duration', maskedValue) // Atualiza o valor do campo no React Hook Form
-    e.currentTarget.value = maskedValue // Define o valor no input
-
-    e.currentTarget.focus()
-  }
-
+  const { form, formId, action } = useServiceFormContext()
+  
   return (
-    <Form {...form}>
-      <form
-        id={formId} className="space-y-6"
-        onSubmit={form.handleSubmit(async (data) => {
-          try {
-            const { message } = await doStuff(data)
+    <form
+      id={formId} className="space-y-6"
+      onSubmit={(e) => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
+    >
+      <div className="grid gap-3">
+        <form.AppField name="name">
+          {(field) => <field.NameField label="Nome" placeholder="Nome" disabled={action === 'REGISTER'} />}
+        </form.AppField>
 
-            navigate({
-              search: ({ open, ...rest }) => ({ ...rest }),
-              state: {
-                alert: {
-                  message,
-                },
-              },
-            })
-          } catch (err) {
-            handleError(err, form)
-          } finally {
-            // TODO: closeModal()
-          }
-        })}
-      >
-        <div className="grid gap-3">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nome</FormLabel>
-                <FormControl>
-                  <Input type="text" placeholder="Nome" {...field} disabled={action === 'REGISTER'} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <form.AppField name="description">
+          {(field) => <field.DescriptionField label="Descrição" placeholder="Descrição (opcional)" disabled={action === 'REGISTER'} />}
+        </form.AppField>
 
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Descrição</FormLabel>
-                <FormControl>
-                  <Input type="text" placeholder="Descrição (opcional)" {...field} disabled={action === 'REGISTER'} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <form.AppField name="description">
+          {(field) => <field.PriceField disabled={action === 'REGISTER'} />}
+        </form.AppField>
 
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Preço</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="text" inputMode="decimal" placeholder="R$ 45,00"
-                    onChange={handlePriceChange} onFocus={navigateToEndAfterFocus}
-                    disabled={action === 'REGISTER'}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="duration"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Duração</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="text" inputMode="numeric" placeholder="00:30:00"
-                    onChange={handleDurationChange} onFocus={navigateToEndAfterFocus}
-                    disabled={action === 'REGISTER'}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormRootErrorMessage />
-        </div>
-      </form>
-    </Form>
+        <form.AppField name="duration">
+          {(field) => <field.DurationField label="Duração" placeholder="00:30:00" disabled={action === 'REGISTER'} />}
+        </form.AppField>
+        
+        {/* <FormRootErrorMessage /> */}
+      </div>
+    </form>
   )
 }
