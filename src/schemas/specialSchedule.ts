@@ -54,6 +54,10 @@ export const specialScheduleSchema = z.object({
 
     return
   }
-})
+}).transform((values) => ({
+  ...values,
+  openTime: values.isClosed ? undefined : values.openTime,
+  closeTime: values.isClosed ? undefined : values.closeTime,
+}))
 
 export type SpecialScheduleZod = z.infer<typeof specialScheduleSchema>

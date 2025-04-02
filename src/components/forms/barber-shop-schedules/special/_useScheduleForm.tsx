@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import type { SpecialSchedule } from '@/types/models/specialSchedule'
 import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
 import { specialScheduleSchema } from '@/schemas/specialSchedule'
@@ -59,6 +59,7 @@ export function useInitValuesSpecialScheduleFormContext() {
     throw new Error('Impossible error')
   }
   
+  const [isClosed, setIsClosed] = useState(false)
   const navigate = useNavigate({ from: Route.fullPath })
   
   const { action, date } = openProps.details
@@ -140,8 +141,22 @@ export function useInitValuesSpecialScheduleFormContext() {
     },
   })
   
+  useEffect(() => {
+    return form.store.subscribe(() => {
+      if (form.store.state.values.isClosed) {
+        form.setFieldValue('openTime', undefined)
+        form.setFieldValue('closeTime', undefined)
+      }
+
+      if (isClosed !== form.store.state.values.isClosed) {
+        setIsClosed(form.store.state.values.isClosed)
+      }
+    })
+  }, [form.store])
+  
   return {
     ...basicValues,
+    isClosed,
     form,
   }
 }
