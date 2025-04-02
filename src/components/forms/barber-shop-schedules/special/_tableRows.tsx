@@ -5,14 +5,14 @@ import { useNavigate } from '@tanstack/react-router'
 import { DoorClosed, DoorOpen, Edit, Trash2 } from 'lucide-react'
 import { getFormattedHour } from '@/schemas/sharedValidators/timeString'
 import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
-import { Route as BarberShopSchedulesRoute } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
+import { Route } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
 
 export function TableBodyWithRowsSpecialSchedules() {
-  const schedules = BarberShopSchedulesRoute.useLoaderData({
+  const schedules = Route.useLoaderData({
     select: (s) => s.specialSchedules,
   })
 
-  const navigate = useNavigate({ from: BarberShopSchedulesRoute.fullPath })
+  const navigate = useNavigate({ from: Route.fullPath })
 
   if (!schedules.length) {
     return (
@@ -51,11 +51,13 @@ export function TableBodyWithRowsSpecialSchedules() {
             onClick={() => navigate({
               search: (prev) => ({
                 ...prev,
-                scheduleType: 'special',
-                details: {
-                  action: 'UPDATE',
-                  date: schedule.date,
-                },
+                open: {
+                  scheduleType: 'special',
+                  details: {
+                    action: 'UPDATE',
+                    date: schedule.date,
+                  },
+                }
               })
             })}
           >

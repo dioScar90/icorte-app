@@ -14,11 +14,21 @@ import { SubmitButton } from '@/components/ui/submit-button'
 import { getEnumAsString } from '@/schemas/sharedValidators/nativeEnumValidator'
 import { cn } from '@/lib/utils'
 
-function FormItem({ className, ...props }: React.ComponentProps<"div">) {
+function FormItem({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       data-slot="form-item"
       className={cn("grid gap-2", className)}
+      {...props}
+    />
+  )
+}
+
+function FormDescription({ className, ...props }: ComponentProps<"p">) {
+  return (
+    <p
+      data-slot="form-description"
+      className={cn("text-muted-foreground text-sm", className)}
       {...props}
     />
   )
@@ -29,7 +39,7 @@ function FormLabel({
   className,
   htmlFor,
   ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root> & { hasErrors?: boolean }) {
+}: ComponentProps<typeof LabelPrimitive.Root> & { hasErrors?: boolean }) {
   return (
     <Label
       data-slot="form-label"
@@ -200,24 +210,57 @@ export function Slider({ label }: { label: string }) {
   )
 }
 
-export function Switch({ label }: { label: string }) {
+export function Switch({
+  label, description, className, ...shadcnSwitchProps
+}: {
+  label: string, description?: string, className?: string
+} & ComponentProps<typeof ShadcnSwitch>) {
   const field = useFieldContext<boolean>()
   const errors = useStore(field.store, (state) => state.meta.errors)
 
+  // return (
+  //   <FormItem className={className}>
+  //     <div className="flex items-center gap-2">
+  //       <ShadcnSwitch
+  //         id={label}
+  //         onBlur={field.handleBlur}
+  //         checked={field.state.value}
+  //         onCheckedChange={(checked) => field.handleChange(checked)}
+  //       />
+        
+  //       <FormLabel htmlFor={label} hasErrors={field.state.meta.isTouched}>
+  //         {label}
+  //       </FormLabel>
+  //     </div>
+  //     {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+  //   </FormItem>
+  // )
+
   return (
-    <FormItem>
-      <div className="flex items-center gap-2">
+    <FormItem className={className}>
+      <div className="space-y-0.5">
+        <FormLabel className="text-base">
+          {label}
+          {/* Barbearia Fechada */}
+        </FormLabel>
+        <FormDescription>
+          {description}
+          {/* Caso queira fechar nesse dia */}
+        </FormDescription>
+      </div>
+      {/* <div className="flex items-center gap-2"> */}
         <ShadcnSwitch
+          {...shadcnSwitchProps}
           id={label}
           onBlur={field.handleBlur}
           checked={field.state.value}
           onCheckedChange={(checked) => field.handleChange(checked)}
         />
         
-        <FormLabel htmlFor={label} hasErrors={field.state.meta.isTouched}>
+        {/* <FormLabel htmlFor={label} hasErrors={field.state.meta.isTouched}>
           {label}
-        </FormLabel>
-      </div>
+        </FormLabel> */}
+      {/* </div> */}
       {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
     </FormItem>
   )

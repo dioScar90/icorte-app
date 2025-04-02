@@ -1,5 +1,5 @@
 import { type ReportZod } from "@/schemas/report"
-import { type Prettify } from "@/utils/types/prettify"
+import { type Prettify } from "@/types/prettify"
 
 export type Report = Prettify<
   {

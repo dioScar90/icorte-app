@@ -31,7 +31,7 @@ export const specialScheduleSchema = z.object({
   if (isClosed) {
     return
   }
-
+  
   if (openTime && closeTime && openTime >= closeTime) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,

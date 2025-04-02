@@ -2,7 +2,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { BarberShopSpecialScheduleForm } from './_form'
 import { Button } from '@/components/ui/button'
 import { ShoppingBag } from 'lucide-react'
-import { PropsWithChildren } from 'react'
+import { type PropsWithChildren } from 'react'
 import { useInitValuesSpecialScheduleFormContext, SpecialScheduleFormContext, useSpecialScheduleFormContext } from './_useScheduleForm'
 import { Route } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
 

@@ -1,6 +1,6 @@
 import type { BaseResult, CreatedResult, Pagination, PaginationResult } from "@/data/result";
 import type { SpecialScheduleZod } from "@/schemas/specialSchedule";
-import type { DateString } from "@/utils/types/datetime/date-string";
+import type { DateString } from "@/types/datetime/date-string";
 import type { SpecialSchedule } from "@/types/models/specialSchedule";
 
 export interface ISpecialScheduleService {

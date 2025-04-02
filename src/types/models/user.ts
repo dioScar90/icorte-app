@@ -1,4 +1,4 @@
-import { type Prettify } from "@/utils/types/prettify"
+import { type Prettify } from "@/types/prettify"
 import { type BarberShop } from "./barberShop"
 import { type Profile } from "./profile"
 import { type UserRegisterZod } from "@/schemas/user"

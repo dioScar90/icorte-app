@@ -1,4 +1,6 @@
+import { getStringAsDateString } from "@/schemas/sharedValidators/dateString"
 import { getNumberAsCurrency } from "./currency"
+import { getStringAsTimeString } from "@/schemas/sharedValidators/timeString"
 
 function getPhone(value: string) {
   return value
@@ -44,7 +46,11 @@ function getTimeString(value: string) {
     .replace(/(\d{2})(\d)/, '$1:$2')
     .replace(/(\d{2})(\d)/, '$1:$2')
 
-  return hasOnlyZerosAfterExcludeNonNumerics(value) ? '' : value
+  if (hasOnlyZerosAfterExcludeNonNumerics(value)) {
+    return ''
+  }
+
+  return getStringAsTimeString(value)
 }
 
 function getDateString(value: string) {
@@ -60,8 +66,8 @@ function getDateString(value: string) {
   if (putFirstBar) {
     value = value.slice(0, 2) + '/' + value.slice(2)
   }
-
-  return value
+  
+  return getStringAsDateString(value)
 }
 
 function getMoney(value: number | string) {
@@ -79,59 +85,31 @@ function getMoney(value: number | string) {
   return getNumberAsCurrency(money)
 }
 
-const types = [
-  'CPF',
-  'CNPJ',
-  'CEP',
-  'PHONE_NUMBER',
-  'TIME_ONLY',
-  'MONEY',
-  'DATE_ISO',
-] as const
+const maskObj = {
+  CPF: getCpf,
+  CNPJ: getCnpj,
+  CEP: getCep,
+  PHONE_NUMBER: getPhone,
+  TIME_ONLY: getTimeString,
+  MONEY: getMoney,
+  DATE_ISO: getDateString,
+} as const
 
-type MaskType = typeof types[number]
+type MaskObj = typeof maskObj
+type MaskObjKey = keyof MaskObj
 
-type MaskFunc =
-  <
-    TType extends MaskType,
-    TValue extends TType extends 'MONEY' ? number | string : string,
-  >
-    (type: TType, value?: TValue) => string
-
-export const applyMask: MaskFunc = (type, value) => {
-  if (value === undefined) {
+export const applyMask = 
+<
+  TType extends MaskObjKey,
+  TValues extends Parameters<MaskObj[TType]>,
+>(type: TType, ...value: TValues): ReturnType<MaskObj[TType]> => {
+  if (!value.length || value[0] === undefined || !(type in (maskObj as MaskObj))) {
     return ''
   }
-
-  const isMoneyType = (t: typeof type, v: unknown): v is number | string => t === 'MONEY' && (typeof v === 'number' || typeof v === 'string')
-
-  if (isMoneyType(type, value)) {
-    return getMoney(value)
-  }
-
-  if (type === 'CPF') {
-    return getCpf(value)
-  }
-
-  if (type === 'CNPJ') {
-    return getCnpj(value)
-  }
-
-  if (type === 'CEP') {
-    return getCep(value)
-  }
-
-  if (type === 'PHONE_NUMBER') {
-    return getPhone(value)
-  }
-
-  if (type === 'TIME_ONLY') {
-    return getTimeString(value)
-  }
-
-  if (type === 'DATE_ISO') {
-    return getDateString(value)
-  }
-
-  return ''
+  
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  return maskObj[type](...value)
 }
+
+const aee = applyMask('DATE_ISO', 'ADF')
+console.log(aee)

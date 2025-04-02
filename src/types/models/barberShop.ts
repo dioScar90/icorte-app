@@ -1,4 +1,4 @@
-import { type Prettify } from "@/utils/types/prettify"
+import { type Prettify } from "@/types/prettify"
 import { type RecurringSchedule } from "./recurringSchedule"
 import { type Report } from "./report"
 import { type Service } from "./service"
