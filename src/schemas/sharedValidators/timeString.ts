@@ -1,4 +1,4 @@
-import { type TimeString } from "@/utils/types/time-string";
+import { type TimeString } from "@/utils/types/datetime/time-string";
 
 const isValidHour = (hour: string) => !isNaN(+hour) && +hour >= 0 && +hour < 24
 const isValidMinute = (minute: string) => !isNaN(+minute) && +minute >= 0 && +minute < 60

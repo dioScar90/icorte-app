@@ -1,5 +1,5 @@
 import type { IRecurringScheduleService as Interface } from "./interfaces/IRecurringScheduleService";
-import type { DayOfWeek } from "@/utils/types/day-of-week";
+import type { DayOfWeek } from "@/utils/types/datetime/day-of-week";
 import type { ProxyContext } from "@/hooks/use-proxy";
 import { Result } from "../result";
 

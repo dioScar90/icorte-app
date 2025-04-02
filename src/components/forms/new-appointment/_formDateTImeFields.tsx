@@ -2,7 +2,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { Suspense, useRef, useState } from "react"
 import { CalendarIcon, ChevronDown, Loader2 } from "lucide-react"
-import { type DateString } from "@/utils/types/date-string"
+import { type DateString } from "@/utils/types/datetime/date-string"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"

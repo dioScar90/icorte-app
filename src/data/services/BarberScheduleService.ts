@@ -1,4 +1,4 @@
-import type { DateString } from "@/utils/types/date-string";
+import type { DateString } from "@/utils/types/datetime/date-string";
 import type { IBarberScheduleService as Interface } from "./interfaces/IBarberScheduleService";
 import type { ProxyContext } from "@/hooks/use-proxy";
 import { Result } from "@/data/result";

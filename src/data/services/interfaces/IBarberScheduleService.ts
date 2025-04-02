@@ -1,7 +1,7 @@
 import type { ServiceByName } from "@/types/custom-models/service-by-name";
 import type { TopBarberShop } from "@/types/models/barberShop";
-import type { DateString } from "@/utils/types/date-string";
-import type { TimeString } from "@/utils/types/time-string";
+import type { DateString } from "@/utils/types/datetime/date-string";
+import type { TimeString } from "@/utils/types/datetime/time-string";
 import type { BaseResult, Pagination, PaginationResult } from "@/data/result";
 
 export interface IBarberScheduleService {

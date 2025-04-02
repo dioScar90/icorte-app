@@ -1,5 +1,5 @@
-import { type DateString } from "@/utils/types/date-string"
-import { type TimeString } from "@/utils/types/time-string"
+import { type DateString } from "@/utils/types/datetime/date-string"
+import { type TimeString } from "@/utils/types/datetime/time-string"
 
 type GetTodayProps = {
   dateString?: DateString,

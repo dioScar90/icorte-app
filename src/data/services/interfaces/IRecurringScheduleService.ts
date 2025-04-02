@@ -1,4 +1,4 @@
-import type { DayOfWeek } from "@/utils/types/day-of-week";
+import type { DayOfWeek } from "@/utils/types/datetime/day-of-week";
 import type { RecurringScheduleZod } from "@/schemas/recurringSchedule";
 import type { RecurringSchedule } from "@/types/models/recurringSchedule";
 import type { BaseResult, CreatedResult, Pagination, PaginationResult } from "@/data/result";

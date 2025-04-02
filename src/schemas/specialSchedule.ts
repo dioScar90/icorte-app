@@ -27,34 +27,33 @@ export const specialScheduleSchema = z.object({
     .transform(value => value ? getStringAsTimeString(value) : undefined),
 
   isClosed: z.coerce.boolean(),
-})
-  .superRefine(({ openTime, closeTime, isClosed }, ctx) => {
-    if (isClosed) {
-      return
-    }
+}).superRefine(({ openTime, closeTime, isClosed }, ctx) => {
+  if (isClosed) {
+    return
+  }
 
-    if (openTime && closeTime && openTime >= closeTime) {
+  if (openTime && closeTime && openTime >= closeTime) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Horário de encerramento precisa ser maior que horário de abertura',
+      path: ['closeTime'],
+    })
+    return
+  }
+
+  if (!openTime && !closeTime) {
+    const pathes = ['openTime', 'closeTime']
+
+    pathes.forEach(path =>
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'Horário de encerramento precisa ser maior que horário de abertura',
-        path: ['closeTime'],
+        message: 'É preciso informar pelo menos um dos novos horários',
+        path: [path],
       })
-      return
-    }
+    )
 
-    if (!openTime && !closeTime) {
-      const pathes = ['openTime', 'closeTime']
-
-      pathes.forEach(path =>
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'É preciso informar pelo menos um dos novos horários',
-          path: [path],
-        })
-      )
-
-      return
-    }
-  })
+    return
+  }
+})
 
 export type SpecialScheduleZod = z.infer<typeof specialScheduleSchema>

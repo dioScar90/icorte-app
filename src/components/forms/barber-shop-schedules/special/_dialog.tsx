@@ -24,15 +24,14 @@ function FormSubmitButton() {
   const { formId, submitBtnInfos, form } = useSpecialScheduleFormContext()
 
   return (
-    <Button
-      type="submit"
-      variant={submitBtnInfos.variant}
-      form={formId}
-      isLoading={form.formState.isSubmitting}
-      IconLeft={<ShoppingBag />}
-    >
-      {submitBtnInfos.innerText}
-    </Button>
+    <form.AppForm>
+      <form.SubscribeButton
+        variant={submitBtnInfos.variant}
+        form={formId}
+        label={submitBtnInfos.innerText}
+        IconLeft={<ShoppingBag />}
+      />
+    </form.AppForm>
   )
 }
 

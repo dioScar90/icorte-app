@@ -2,7 +2,10 @@ import { createContext, useContext, useMemo } from 'react'
 import type { SpecialSchedule } from '@/types/models/specialSchedule'
 import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
 import { specialScheduleSchema } from '@/schemas/specialSchedule'
+import { useBarberShopSchedulesForm } from '@/hooks/forms/use-barber-shop-schedules'
+import { useNavigate } from '@tanstack/react-router'
 import { Route } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
+import type { z } from 'zod'
 
 type Action = 'REGISTER' | 'UPDATE' | 'REMOVE'
 
@@ -100,11 +103,11 @@ export function useInitValuesSpecialScheduleFormContext() {
         
         const infos = {
           REGISTER: {
-            method: () => register(barberShopId, values),
+            method: () => register(barberShopId, values!),
             defaultMessage: 'Serviço criado com sucesso',
           },
           UPDATE: {
-            method: () => update(barberShopId, date!, values),
+            method: () => update(barberShopId, date!, values!),
             defaultMessage: 'Serviço atualizado com sucesso',
           },
           REMOVE: {

@@ -51,9 +51,9 @@ export function TableBodyWithRowsSpecialSchedules() {
             onClick={() => navigate({
               search: (prev) => ({
                 ...prev,
-                open: {
+                scheduleType: 'special',
+                details: {
                   action: 'UPDATE',
-                  scheduleType: 'special',
                   date: schedule.date,
                 },
               })
@@ -69,9 +69,11 @@ export function TableBodyWithRowsSpecialSchedules() {
               search: (prev) => ({
                 ...prev,
                 open: {
-                  action: 'REMOVE',
                   scheduleType: 'special',
-                  date: schedule.date,
+                  details: {
+                    action: 'REMOVE',
+                    date: schedule.date,
+                  },
                 },
               })
             })}
