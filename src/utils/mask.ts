@@ -110,6 +110,3 @@ export const applyMask =
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   return maskObj[type](...value)
 }
-
-const aee = applyMask('DATE_ISO', 'ADF')
-console.log(aee)

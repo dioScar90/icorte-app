@@ -3,13 +3,11 @@ import { useStore } from '@tanstack/react-form'
 import { useFieldContext, useFormContext } from '@/hooks/forms/form-contexts'
 
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { useEffect, useRef, useState, type ComponentProps, type RefObject } from 'react'
 import { Eye, EyeOff, LogInIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
 import { Route } from '@/routes/__root'
-import { ErrorMessages, Select, TextField } from '../default'
+import { ErrorMessages, FormItem, FormLabel, Select, TextField } from '../default'
 import { SubmitButton } from '@/components/ui/submit-button'
 import { GoogleSvg } from '@/components/ui/google-svg'
 import { applyMask } from '@/utils/mask'
@@ -23,10 +21,10 @@ export function RegisterPhoneNumberField() {
   const errors = useStore(field.store, (state) => state.meta.errors)
   
   return (
-    <div>
-      <Label htmlFor="Telefone" className="mb-2 text-xl font-bold">
+    <FormItem>
+      <FormLabel htmlFor="Telefone" className="mb-2 text-xl font-bold">
         Telefone
-      </Label>
+      </FormLabel>
       <Input
         type="tel"
         value={field.state.value}
@@ -35,7 +33,7 @@ export function RegisterPhoneNumberField() {
         onChange={(e) => field.handleChange(applyMask('PHONE_NUMBER', e.target.value))}
       />
       {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
-    </div>
+    </FormItem>
   )
 }
 
@@ -86,32 +84,30 @@ function EyeViewPasswordIcon({ ref }: { ref: RefObject<HTMLInputElement | null> 
 function ForgotPasswordButton() {
   const linkRef = useRef<HTMLAnchorElement>(null)
   const unavailableForNow = Route.useRouteContext({ select: (s) => s.unavailableForNow })
-
-  function toggleDisabled(disable = false) {
-    if (linkRef?.current) {
-      linkRef.current.toggleAttribute('data-disabled', disable)
-    }
-  }
-
+  
+  const toggleDisabled = (state: boolean) => linkRef?.current?.classList.toggle('disabled', state)
+  
   return (
-    <Button variant="link" asChild className="absolute top-0 right-0">
+    <div
+      data-forgot-password
+      className="absolute top-0 right-0 has-[.disabled]:cursor-not-allowed"
+    >
       <Link
         ref={linkRef}
         to={Route.fullPath}
-        tabIndex={-1}
-        className="ml-auto inline-block text-sm underline [&[data-disabled]]:opacity-50 [&[data-disabled]]:pointer-events-none"
         title="Indisponível no momento"
         preloadDelay={Number.POSITIVE_INFINITY}
+        className="ml-auto inline-block text-sm font-bold underline [&.disabled]:opacity-50 [&.disabled]:pointer-events-none"
         onClick={(e) => {
           e.preventDefault()
-
+          
           toggleDisabled(true)
           unavailableForNow(() => toggleDisabled(false))
         }}
       >
-          Esqueceu sua senha?
+        Esqueceu sua senha?
       </Link>
-    </Button>
+    </div>
   )
 }
 
@@ -122,30 +118,28 @@ export function RegisterPasswordField({ isLogin }: { isLogin?: boolean }) {
   const passwordInputRef = useRef<HTMLInputElement>(null)
   
   return (
-    <div className="relative">
-      <div>
-        <Label className="mb-2 text-xl font-bold">
-            Senha
-        </Label>
-        
-        <div className="relative">
-            <Input
-              ref={passwordInputRef}
-              type="password"
-              value={field.state.value}
-              placeholder={'*'.repeat(8)}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
+    <FormItem className="has-[[data-forgot-password]]:relative">
+      <FormLabel>
+        Senha
+      </FormLabel>
+      
+      <div className="relative">
+        <Input
+          ref={passwordInputRef}
+          type="password"
+          value={field.state.value}
+          placeholder={'*'.repeat(8)}
+          onBlur={field.handleBlur}
+          onChange={(e) => field.handleChange(e.target.value)}
+        />
 
-            <EyeViewPasswordIcon ref={passwordInputRef} />
-        </div>
-        
-        {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+        <EyeViewPasswordIcon ref={passwordInputRef} />
       </div>
       
       {!!isLogin && <ForgotPasswordButton />}
-    </div>
+      
+      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+    </FormItem>
   )
 }
 
@@ -154,10 +148,10 @@ export function RegisterConfirmPasswordField() {
   const errors = useStore(field.store, (state) => state.meta.errors)
 
   return (
-    <div>
-      <Label className="mb-2 text-xl font-bold">
-          Confirme sua senha
-      </Label>
+    <FormItem>
+      <FormLabel className="mb-2 text-xl font-bold">
+        Confirme sua senha
+      </FormLabel>
       
       <Input
         type="password"
@@ -168,7 +162,7 @@ export function RegisterConfirmPasswordField() {
       />
       
       {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
-    </div>
+    </FormItem>
   )
 }
 

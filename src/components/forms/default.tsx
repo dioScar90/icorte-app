@@ -14,7 +14,7 @@ import { SubmitButton } from '@/components/ui/submit-button'
 import { getEnumAsString } from '@/schemas/sharedValidators/nativeEnumValidator'
 import { cn } from '@/lib/utils'
 
-function FormItem({ className, ...props }: ComponentProps<"div">) {
+export function FormItem({ className, ...props }: ComponentProps<"div">) {
   return (
     <div
       data-slot="form-item"
@@ -24,7 +24,7 @@ function FormItem({ className, ...props }: ComponentProps<"div">) {
   )
 }
 
-function FormDescription({ className, ...props }: ComponentProps<"p">) {
+export function FormDescription({ className, ...props }: ComponentProps<"p">) {
   return (
     <p
       data-slot="form-description"
@@ -34,7 +34,7 @@ function FormDescription({ className, ...props }: ComponentProps<"p">) {
   )
 }
 
-function FormLabel({
+export function FormLabel({
   hasErrors,
   className,
   htmlFor,
@@ -96,7 +96,7 @@ export function TextField({
 }: ComponentProps<typeof Input> & { label?: string }) {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
-
+  
   return (
     <FormItem>
       <FormLabel htmlFor={label} hasErrors={field.state.meta.isTouched}>
