@@ -3,7 +3,7 @@ import { useStore } from '@tanstack/react-form'
 import { useFieldContext, useFormContext } from '@/hooks/forms/form-contexts'
 
 import { Input } from '@/components/ui/input'
-import { useEffect, useRef, useState, type ComponentProps, type RefObject } from 'react'
+import { useRef, type ComponentProps, type PropsWithChildren, type RefObject } from 'react'
 import { Eye, EyeOff, LogInIcon } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { Route } from '@/routes/__root'
@@ -22,7 +22,7 @@ export function RegisterPhoneNumberField() {
   
   return (
     <FormItem>
-      <FormLabel htmlFor="Telefone" className="mb-2 text-xl font-bold">
+      <FormLabel htmlFor="Telefone">
         Telefone
       </FormLabel>
       <Input
@@ -54,30 +54,32 @@ export function RegisterLastNameField() {
   return <TextField type="text" label="Sobrenome" placeholder="Sobrenome" />
 }
 
-function EyeViewPasswordIcon({ ref }: { ref: RefObject<HTMLInputElement | null> }) {
-  type TPassType = 'text' | 'password'
-
-  const [inputType, setInputType] = useState<TPassType>('password')
-  const Icon = inputType === 'password' ? EyeOff : Eye
-  
-  useEffect(() => {
-    if (ref.current) {
-      setInputType(() => ref.current!.type as TPassType)
+function PasswordInputWithEyeIconContainer({ children: passwordInputChild, ref: passwordInputRef }: PropsWithChildren<{ ref: RefObject<HTMLInputElement | null>}>) {
+  const toggleInputType = () => {
+    if (passwordInputRef?.current) {
+      const currentType = passwordInputRef.current.type
+      passwordInputRef.current.type = currentType === 'password' ? 'text' : 'password'
     }
-  }, [ref.current?.type])
+  }
   
   return (
-    <Icon
-      className="absolute-middle-y right-4 z-10 cursor-pointer text-gray-500"
-      onClick={(e) => {
-        e.stopPropagation()
-        
-        if (ref?.current) {
-          const currentType = ref.current.type as TPassType
-          ref.current.type = currentType === 'password' ? 'text' : 'password'
-        }
-      }}
-    />
+    <div className="group relative">
+      
+      {passwordInputChild}
+
+      <button
+        type="button"
+        className="absolute-middle-y right-4 z-10 cursor-pointer text-gray-500"
+        onClick={(e) => {
+          e.stopPropagation()
+          toggleInputType()
+        }}
+      >
+        <EyeOff className="group-not-has-[input[type=password]]:hidden" />
+        <Eye className="group-has-[input[type=password]]:hidden" />
+      </button>
+
+    </div>
   )
 }
 
@@ -123,7 +125,7 @@ export function RegisterPasswordField({ isLogin }: { isLogin?: boolean }) {
         Senha
       </FormLabel>
       
-      <div className="relative">
+      <PasswordInputWithEyeIconContainer ref={passwordInputRef}>
         <Input
           ref={passwordInputRef}
           type="password"
@@ -132,9 +134,7 @@ export function RegisterPasswordField({ isLogin }: { isLogin?: boolean }) {
           onBlur={field.handleBlur}
           onChange={(e) => field.handleChange(e.target.value)}
         />
-
-        <EyeViewPasswordIcon ref={passwordInputRef} />
-      </div>
+      </PasswordInputWithEyeIconContainer>
       
       {!!isLogin && <ForgotPasswordButton />}
       
@@ -149,7 +149,7 @@ export function RegisterConfirmPasswordField() {
 
   return (
     <FormItem>
-      <FormLabel className="mb-2 text-xl font-bold">
+      <FormLabel>
         Confirme sua senha
       </FormLabel>
       
