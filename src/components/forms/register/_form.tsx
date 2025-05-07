@@ -11,6 +11,7 @@ import { ErrorMessages, FormItem, FormLabel, Select, TextField } from '../defaul
 import { SubmitButton } from '@/components/ui/submit-button'
 import { GoogleSvg } from '@/components/ui/google-svg'
 import { applyMask } from '@/utils/mask'
+import { cn } from '@/lib/utils'
 
 export function RegisterEmailField() {
   return <TextField type="email" label="Email" placeholder="Digite seu email" />
@@ -69,7 +70,7 @@ function PasswordInputWithEyeIconContainer({ children: passwordInputChild, ref: 
 
       <button
         type="button"
-        className="absolute-middle-y right-4 z-10 cursor-pointer text-gray-500"
+        className={cn('absolute-middle-y', 'right-4 z-10 cursor-pointer text-gray-500')}
         onClick={(e) => {
           e.stopPropagation()
           toggleInputType()

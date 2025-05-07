@@ -1,3 +1,4 @@
+import { DivBeforeCard } from '@/components/div-before-card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -172,59 +173,57 @@ function RouteComponent() {
   }, [q])
   
   return (
-    <>
-      <div className="before-card">
-        <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
-          <CardHeader>
-            <CardTitle className="text-2xl">Usuários</CardTitle>
-            <CardDescription>
-              Pesquise um email desejado para continuar
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Input
-                  placeholder="Digite para pesquisar"
-                  value={q} type="search" inputMode="search"
-                  onChange={e => {
-                    setQ(e.currentTarget.value)
-                    setQParam(e.currentTarget.value)
-                  }}
-                  className="max-w-sm"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[100px] text-center">Nome</TableHead>
-                      <TableHead className="text-center">Email</TableHead>
-                      <TableHead className="text-center"></TableHead>
-                      <TableHead className="text-center">Telefone</TableHead>
-                      <TableHead className="text-center">Tipo</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableBodyWithRows state={state} />
-                  </TableBody>
-                </Table>
-              </div>
+    <DivBeforeCard>
+      <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
+        <CardHeader>
+          <CardTitle className="text-2xl">Usuários</CardTitle>
+          <CardDescription>
+            Pesquise um email desejado para continuar
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Input
+                placeholder="Digite para pesquisar"
+                value={q} type="search" inputMode="search"
+                onChange={e => {
+                  setQ(e.currentTarget.value)
+                  setQParam(e.currentTarget.value)
+                }}
+                className="max-w-sm"
+              />
             </div>
-            
-            <div className="flex justify-center align-center mt-4">
-              <Link
-                className={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}
-                to="/admin/last-users"
-              >
-                <ListEnd />
-                Last users
-              </Link>
+            <div className="grid gap-2">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[100px] text-center">Nome</TableHead>
+                    <TableHead className="text-center">Email</TableHead>
+                    <TableHead className="text-center"></TableHead>
+                    <TableHead className="text-center">Telefone</TableHead>
+                    <TableHead className="text-center">Tipo</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableBodyWithRows state={state} />
+                </TableBody>
+              </Table>
             </div>
-          </CardContent>
+          </div>
+          
+          <div className="flex justify-center align-center mt-4">
+            <Link
+              className={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}
+              to="/admin/last-users"
+            >
+              <ListEnd />
+              Last users
+            </Link>
+          </div>
+        </CardContent>
 
-        </Card>
-      </div>
-    </>
+      </Card>
+    </DivBeforeCard>
   )
 }

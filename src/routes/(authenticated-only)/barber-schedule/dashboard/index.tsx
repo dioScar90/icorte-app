@@ -20,6 +20,7 @@ import { createFileRoute, useLocation, useNavigate } from '@tanstack/react-route
 import { DoorClosed, DoorOpen, ShoppingBag, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { DivBeforeCard } from '@/components/div-before-card'
 
 export const Route = createFileRoute(
   '/(authenticated-only)/barber-schedule/dashboard/',
@@ -224,7 +225,7 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="before-card">
+      <DivBeforeCard>
         <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
           <CardHeader className="py-4 px-2 md:px-3 lg:px-4">
             <CardTitle className="text-2xl">Meus agendamentos - {userFullName}</CardTitle>
@@ -304,7 +305,7 @@ function RouteComponent() {
 
             <div className="w-full h-14 relative">
               <Link
-                className={cn(buttonVariants({ size: 'lg' }), 'w-full md:w-auto', 'absolute-middle-y right-0')}
+                className={cn(buttonVariants({ size: 'lg' }), 'w-full md:w-auto', 'absolute-middle-y')}
                 to="/barber-schedule/new-appointment"
               >
                 <ShoppingBag />
@@ -313,7 +314,7 @@ function RouteComponent() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </DivBeforeCard>
 
       <Dialog open={state.open} onOpenChange={handleDialogOpenChange}>
         <DialogContent>

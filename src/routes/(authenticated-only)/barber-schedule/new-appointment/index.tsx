@@ -1,3 +1,4 @@
+import { DivBeforeCard } from '@/components/div-before-card'
 import { DialogNewAppointment } from '@/components/forms/new-appointment/_dialog'
 import { TableBodyWithRows } from '@/components/forms/new-appointment/_tableRows'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -45,7 +46,7 @@ function InputQ() {
 function RouteComponent() {
   return (
     <>
-      <div className="before-card">
+      <DivBeforeCard>
         <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
           <CardHeader>
             <CardTitle className="text-2xl">Serviços</CardTitle>
@@ -77,7 +78,7 @@ function RouteComponent() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </DivBeforeCard>
 
       <DialogNewAppointment />
     </>

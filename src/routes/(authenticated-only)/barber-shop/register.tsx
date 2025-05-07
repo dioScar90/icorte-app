@@ -1,3 +1,4 @@
+import { DivBeforeCard } from '@/components/div-before-card'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useBarberShopForm } from '@/hooks/forms/use-barber-shop'
 import { states } from '@/schemas/address'
@@ -88,86 +89,84 @@ function RouteComponent() {
   })
   
   return (
-    <>
-      <form
-        className="space-y-6"
-        onSubmit={(e) => {
-          e.preventDefault()
-          form.handleSubmit()
-        }}
-      >
-        <div className="before-card">
-          <Card className="w-full md:max-w-96">
-            <CardHeader>
-              <CardTitle className="text-2xl">Cadastrar barbearia</CardTitle>
-              <CardDescription>
-                Vamos começar. Preencha os campos abaixo.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <form.AppField name="name">
-                    {(field) => <field.NameField />}
-                  </form.AppField>
+    <form
+      className="space-y-6"
+      onSubmit={(e) => {
+        e.preventDefault()
+        form.handleSubmit()
+      }}
+    >
+      <DivBeforeCard>
+        <Card className="w-full md:max-w-96">
+          <CardHeader>
+            <CardTitle className="text-2xl">Cadastrar barbearia</CardTitle>
+            <CardDescription>
+              Vamos começar. Preencha os campos abaixo.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <form.AppField name="name">
+                  {(field) => <field.NameField />}
+                </form.AppField>
 
-                  <form.AppField name="description">
-                    {(field) => <field.DescriptionField />}
-                  </form.AppField>
+                <form.AppField name="description">
+                  {(field) => <field.DescriptionField />}
+                </form.AppField>
 
-                  <form.AppField name="comercialEmail">
-                    {(field) => <field.ComercialNumberField />}
-                  </form.AppField>
+                <form.AppField name="comercialEmail">
+                  {(field) => <field.ComercialNumberField />}
+                </form.AppField>
 
-                  <form.AppField name="comercialEmail">
-                    {(field) => <field.ComercialEmailField />}
-                  </form.AppField>
+                <form.AppField name="comercialEmail">
+                  {(field) => <field.ComercialEmailField />}
+                </form.AppField>
 
-                  <form.AppField name="address.street">
-                    {(field) => <field.StreetField />}
-                  </form.AppField>
+                <form.AppField name="address.street">
+                  {(field) => <field.StreetField />}
+                </form.AppField>
 
-                  <form.AppField name="address.number">
-                    {(field) => <field.NumberField />}
-                  </form.AppField>
+                <form.AppField name="address.number">
+                  {(field) => <field.NumberField />}
+                </form.AppField>
 
-                  <form.AppField name="address.complement">
-                    {(field) => <field.ComplementField />}
-                  </form.AppField>
+                <form.AppField name="address.complement">
+                  {(field) => <field.ComplementField />}
+                </form.AppField>
 
-                  <form.AppField name="address.neighborhood">
-                    {(field) => <field.NeighborhoodField />}
-                  </form.AppField>
+                <form.AppField name="address.neighborhood">
+                  {(field) => <field.NeighborhoodField />}
+                </form.AppField>
 
-                  <form.AppField name="address.city">
-                    {(field) => <field.CityField />}
-                  </form.AppField>
+                <form.AppField name="address.city">
+                  {(field) => <field.CityField />}
+                </form.AppField>
 
-                  <form.AppField name="address.state">
-                    {(field) => <field.StateField baseEnum={states} />}
-                  </form.AppField>
+                <form.AppField name="address.state">
+                  {(field) => <field.StateField baseEnum={states} />}
+                </form.AppField>
 
-                  <form.AppField name="address.postalCode">
-                    {(field) => <field.PostalCodeField />}
-                  </form.AppField>
+                <form.AppField name="address.postalCode">
+                  {(field) => <field.PostalCodeField />}
+                </form.AppField>
 
-                  <form.AppField name="address.country">
-                    {(field) => <field.CountryField />}
-                  </form.AppField>
-                  
-                  {/* <FormRootErrorMessage /> */}
-                </div>
+                <form.AppField name="address.country">
+                  {(field) => <field.CountryField />}
+                </form.AppField>
                 
-                <div className="mt-3">
-                  <form.AppForm>
-                    <form.SubscribeButton label="Cadastrar" IconLeft={<StoreIcon />} />
-                  </form.AppForm>
-                </div>
+                {/* <FormRootErrorMessage /> */}
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </form>
-    </>
+              
+              <div className="mt-3">
+                <form.AppForm>
+                  <form.SubscribeButton label="Cadastrar" IconLeft={<StoreIcon />} />
+                </form.AppForm>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </DivBeforeCard>
+    </form>
   )
 }

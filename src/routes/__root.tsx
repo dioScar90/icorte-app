@@ -80,9 +80,25 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
   component: RootComponent,
 })
 
-function MainBody() {
+function OutletInsideMainSection() {
   const isLoading = useRouterState({ select: ({ isLoading }) => isLoading })
 
+  return (
+    <section
+      role="main"
+      className={cn(
+        'flex flex-1 flex-col gap-3 p-2 md:pl-1 pt-0 min-h-[--role-main-min-height]',
+        isLoading && 'opacity-35 transition-opacity duration-200 delay-75'
+      )}
+    >
+      <div className="flex-1 rounded-xl">
+        <Outlet />
+      </div>
+    </section>
+  )
+}
+
+function MainBody() {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -90,17 +106,7 @@ function MainBody() {
       <SidebarInset> {/* Here is the <main> tag */}
         <NavbarHeader />
 
-        <section
-          role="main"
-          className={cn(
-            'main-container',
-            isLoading && 'loading-new-page'
-          )}
-        >
-          <div className="before-outlet">
-            <Outlet />
-          </div>
-        </section>
+        <OutletInsideMainSection />
         
         <Footer />
       </SidebarInset>

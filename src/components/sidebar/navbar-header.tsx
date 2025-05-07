@@ -5,8 +5,8 @@ import { Separator } from "@/components/ui/separator";
 
 export function NavbarHeader() {
   return (
-    <header>
-      <div className="header-container">
+    <header className="flex h-[--header-height] shrink-0 items-center gap-2">
+      <div className="flex items-center gap-2 px-2">
         <SidebarTrigger className="-ml-1 md:-ml-2" />
         <div className="absolute pr-2 right-0">
           <ModeToggle />

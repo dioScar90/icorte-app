@@ -15,6 +15,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ShoppingBag } from 'lucide-react'
 import { z } from 'zod'
 import { nativeEnumValidator } from '@/schemas/sharedValidators/nativeEnumValidator'
+import { DivBeforeCard } from '@/components/div-before-card'
 
 const dayOfWeekEnumValidator = nativeEnumValidator(daysOfWeek)
 
@@ -136,7 +137,7 @@ function FullCardWithTableAndOtherStuffs({
 
         <div className="w-full h-14 relative">
           <Button
-            type="button" className="absolute-middle-y right-0"
+            type="button" className="absolute-middle-y"
             onClick={onClickBtn}
           >
             <ShoppingBag />
@@ -223,7 +224,7 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="before-card">
+      <DivBeforeCard>
         <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
           <CardRecurringSchedules barberShopName={barberShopName} />
 
@@ -231,7 +232,7 @@ function RouteComponent() {
 
           <CardSpecialSchedules barberShopName={barberShopName} />
         </Card>
-      </div>
+      </DivBeforeCard>
       
       <BarberShopRecurringScheduleDialog />
       <BarberShopSpecialScheduleDialog />

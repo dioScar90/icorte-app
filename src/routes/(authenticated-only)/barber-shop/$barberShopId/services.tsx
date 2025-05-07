@@ -1,3 +1,4 @@
+import { DivBeforeCard } from '@/components/div-before-card'
 import { BarberShopServiceDialog } from '@/components/forms/barber-shop-services/_dialog'
 import { TableBodyWithRows } from '@/components/forms/barber-shop-services/_tableRows'
 import { Button } from '@/components/ui/button'
@@ -58,7 +59,7 @@ function RouteComponent() {
   
   return (
     <>
-      <div className="before-card">
+      <DivBeforeCard>
         <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
           <CardHeader className="py-4 px-2 md:px-3 lg:px-4">
             <CardTitle className="text-2xl">Serviços - {barberShopName}</CardTitle>
@@ -85,7 +86,7 @@ function RouteComponent() {
 
             <div className="w-full h-14 relative">
               <Button
-                type="button" className="absolute-middle-y right-0"
+                type="button" className="absolute-middle-y"
                 onClick={() => navigate({
                   search: (prev) => ({
                     ...prev,
@@ -101,7 +102,7 @@ function RouteComponent() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </DivBeforeCard>
 
       <BarberShopServiceDialog />
     </>

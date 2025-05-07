@@ -1,3 +1,4 @@
+import { DivBeforeCard } from '@/components/div-before-card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -209,37 +210,35 @@ function RouteComponent() {
   })
 
   return (
-    <>
-      <div className="before-card">
-        <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
-          <CardHeader className="py-4 px-2 md:px-3 lg:px-4">
-            <CardTitle className="text-2xl">Meus agendamentos - {barberShop.name}</CardTitle>
-            <CardDescription>
-              Veja aqui os agendamentos que os clientes marcaram com você.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="py-4 px-2 md:px-3 lg:px-4">
-            <Table>
-              <TableCaption>Sua lista de agendamentos.</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-center">Dia</TableHead>
-                  <TableHead className="text-center">Cliente</TableHead>
-                  <TableHead className="text-center">Comentário</TableHead>
-                  <TableHead className="text-center">Forma de pagamento</TableHead>
-                  <TableHead className="text-center">Início</TableHead>
-                  <TableHead className="text-center">Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <BarberShopDashboardTbody />
-              </TableBody>
-            </Table>
+    <DivBeforeCard>
+      <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
+        <CardHeader className="py-4 px-2 md:px-3 lg:px-4">
+          <CardTitle className="text-2xl">Meus agendamentos - {barberShop.name}</CardTitle>
+          <CardDescription>
+            Veja aqui os agendamentos que os clientes marcaram com você.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="py-4 px-2 md:px-3 lg:px-4">
+          <Table>
+            <TableCaption>Sua lista de agendamentos.</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-center">Dia</TableHead>
+                <TableHead className="text-center">Cliente</TableHead>
+                <TableHead className="text-center">Comentário</TableHead>
+                <TableHead className="text-center">Forma de pagamento</TableHead>
+                <TableHead className="text-center">Início</TableHead>
+                <TableHead className="text-center">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <BarberShopDashboardTbody />
+            </TableBody>
+          </Table>
 
-            <PaginationBarberShopAppointments />
-          </CardContent>
-        </Card>
-      </div>
-    </>
+          <PaginationBarberShopAppointments />
+        </CardContent>
+      </Card>
+    </DivBeforeCard>
   )
 }

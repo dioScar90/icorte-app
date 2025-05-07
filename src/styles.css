@@ -137,49 +137,13 @@ code {
     @apply bg-background text-foreground;
   }
 
-  main {
+  .custom--main {
     --header-height: 4rem;
     --footer-height: 50px;
     --role-main-min-height: calc(100vh - var(--header-height) - var(--footer-height));
-    
-    > header {
-      @apply flex h-[--header-height] shrink-0 items-center gap-2;
-      
-      > .header-container {
-        @apply flex items-center gap-2 px-2;
-      }
-    }
-
-    > section[role="main"] {
-      @apply flex flex-1 flex-col gap-3 p-2 md:pl-1 pt-0 min-h-[--role-main-min-height];
-
-      &.loading-new-page {
-        @apply opacity-35 transition-opacity duration-200 delay-75;
-      }
-
-      > .before-outlet {
-        @apply flex-1 rounded-xl;
-      }
-    }
-    
-    > footer {
-      @apply rounded-lg shadow mx-2 md:ml-1 py-2 mb-2 flex items-center justify-center h-[--footer-height];
-      
-      > .footer-container {
-        @apply w-full mx-auto max-w-screen-xl px-4 text-center;
-      }
-    }
-  }
-  
-  .before-card {
-    @apply flex w-full items-start justify-center py-4 px-1 md:px-2 lg:px-4;
   }
 
   .absolute-middle-y {
-    @apply absolute top-1/2 -translate-y-1/2
-  }
-
-  .absolute-middle-x {
-    @apply absolute left-1/2 -translate-x-1/2
+    @apply absolute top-1/2 -translate-y-1/2 right-0;
   }
 }

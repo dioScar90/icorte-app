@@ -7,6 +7,7 @@ import { genders } from "@/schemas/profile";
 import { Link } from "@tanstack/react-router";
 import { useRegisterForm } from "@/hooks/forms/use-register";
 import { z } from "zod";
+import { DivBeforeCard } from "@/components/div-before-card";
 
 export const Route = createFileRoute('/register')({
   component: Register,
@@ -68,7 +69,7 @@ export function Register() {
         form.handleSubmit()
       }}
     >
-      <div className="before-card">
+      <DivBeforeCard>
         <Card className="w-full md:max-w-96">
           <CardHeader>
             <CardTitle className="text-2xl">Novo usuário</CardTitle>
@@ -141,7 +142,7 @@ export function Register() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </DivBeforeCard>
     </form>
   )
 }

@@ -1,3 +1,4 @@
+import { DivBeforeCard } from "@/components/div-before-card"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useLoginForm } from "@/hooks/forms/use-login"
 import { userLoginSchema } from "@/schemas/user"
@@ -57,7 +58,7 @@ export function Login() {
         form.handleSubmit()
       }}
     >
-      <div className="before-card">
+      <DivBeforeCard>
         <Card className="w-full md:max-w-96">
           <CardHeader>
             <CardTitle className="text-2xl">Login</CardTitle>
@@ -92,7 +93,7 @@ export function Login() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </DivBeforeCard>
     </form>
   )
 }
