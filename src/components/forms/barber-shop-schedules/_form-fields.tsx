@@ -4,7 +4,7 @@ import { useFieldContext } from '@/hooks/forms/form-contexts'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { type ComponentProps } from 'react'
+import { Activity, type ComponentProps } from 'react'
 import { ErrorMessages, Switch, Select, TextField } from '../default'
 import { applyMask } from '@/utils/mask'
 import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
@@ -30,7 +30,9 @@ export function DateField({ label, placeholder, disabled }: { label: string, pla
         onFocus={navigateToEndAfterFocus}
         disabled={disabled}
       />
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </div>
   )
 }
@@ -60,7 +62,9 @@ function BaseTimeField({ label, placeholder, disabled }: { label: string, placeh
         onFocus={navigateToEndAfterFocus}
         disabled={disabled}
       />
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </div>
   )
 }

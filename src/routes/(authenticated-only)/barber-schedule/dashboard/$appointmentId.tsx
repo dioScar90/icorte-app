@@ -19,7 +19,7 @@ import { useLocation } from '@tanstack/react-router'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { createFileRoute } from '@tanstack/react-router'
 import { ChevronLeft, ShoppingBag } from 'lucide-react'
-import { Suspense, useCallback, useEffect, useState } from 'react'
+import { Activity, Suspense, useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -230,19 +230,19 @@ function AppointmentDetails() {
                   {getEnumAsString(PaymentTypeEnum, appointment.paymentType)}
                 </p>
 
-                {canModifyPayment && (
+                <Activity mode={canModifyPayment ? 'visible' : 'hidden'}>
                   <Button size="sm" onClick={() => setOpen(true)}>
                     Modificar
                   </Button>
-                )}
+                </Activity>
               </div>
             </div>
-            {appointment.notes && (
+            <Activity mode={appointment.notes ? 'visible' : 'hidden'}>
               <div>
                 <p className="text-sm text-gray-600">Notas:</p>
                 <p className="font-medium">{appointment.notes}</p>
               </div>
-            )}
+            </Activity>
             <div>
               <p className="text-sm text-gray-600">Status:</p>
               <Badge
@@ -263,7 +263,7 @@ function AppointmentDetails() {
         </CardContent>
       </Card>
 
-      {canModifyPayment && (
+      <Activity mode={canModifyPayment ? 'visible' : 'hidden'}>
         <Dialog open={open} onOpenChange={handleDialogOpenChange}>
           <DialogContent>
             <DialogHeader>
@@ -273,7 +273,7 @@ function AppointmentDetails() {
               </DialogDescription>
             </DialogHeader>
 
-            {open && (
+            <Activity mode={open ? 'visible' : 'hidden'}>
               <FormUpdatePaymentType
                 currentPaymentType={appointment.paymentType}
                 formId={formId}
@@ -281,7 +281,7 @@ function AppointmentDetails() {
                 refetch={refetch}
                 closeModal={closeModal}
               />
-            )}
+            </Activity>
 
             <DialogFooter className="grid grid-cols-2 md:flex md:justify-end gap-2">
               <DialogClose asChild>
@@ -290,7 +290,7 @@ function AppointmentDetails() {
                 </Button>
               </DialogClose>
 
-              {open && (
+              <Activity mode={open ? 'visible' : 'hidden'}>
                 <SubmitButton
                   type="submit"
                   form={formId}
@@ -299,11 +299,11 @@ function AppointmentDetails() {
                 >
                   Modificar
                 </SubmitButton>
-              )}
+              </Activity>
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      )}
+      </Activity>
     </>
   )
 }

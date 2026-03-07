@@ -5,6 +5,7 @@ import { StateEnum } from '@/schemas/address'
 import { getEnumAsString } from '@/utils/enum-transformer'
 import { applyMask } from '@/utils/mask'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { Activity } from 'react'
 
 export const Route = createFileRoute(
   '/(authenticated-only)/barber-shop/$barberShopId/',
@@ -31,9 +32,9 @@ function RouteComponent() {
           <div className="text-xl font-semibold">{barberShop.name}</div>
         </div>
 
-        {barberShop.description && (
+        <Activity mode={barberShop.description ? 'visible' : 'hidden'}>
           <p className="mt-1 text-gray-600">{barberShop.description}</p>
-        )}
+        </Activity>
 
         <div className="mt-6">
           <h3 className="text-lg font-medium">Informações de Contato</h3>
@@ -60,12 +61,12 @@ function RouteComponent() {
                 {barberShop.address.street}, {barberShop.address.number}
               </span>
             </div>
-            {barberShop.address.complement && (
+            <Activity mode={barberShop.address.complement ? 'visible' : 'hidden'}>
               <div className="flex justify-between">
                 <span className="font-semibold">Complemento</span>
                 <span className="text-gray-600">{barberShop.address.complement}</span>
               </div>
-            )}
+            </Activity>
             <div className="flex justify-between">
               <span className="font-semibold">Bairro</span>
               <span className="text-gray-600">{barberShop.address.neighborhood}</span>

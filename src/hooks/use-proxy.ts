@@ -30,24 +30,24 @@ httpClient.interceptors.response.use(
   },
   (error) => {
     const suamae = error as AxiosError
-    
+
     suamae.response?.data
     if (error.code === 'ERR_NETWORK') {
       return Promise.reject(new NetworkConnectionError())
     }
 
     if (error.config.url === '/auth/login' && error.response.status === 401) {
-      return InvalidUsernameOrPasswordError.throwNewPromiseReject()
+      return InvalidUsernameOrPasswordError.rejectedPromise()
     }
 
     if (error.response.status === 422 && error.response.data.title === 'UnprocessableEntity') {
       const title: string = error.response.data.detail
       const errors: Record<string, string[]> = error.response.data.errors
-      return UnprocessableEntityError.throwNewPromiseReject(errors, title)
+      return UnprocessableEntityError.rejectedPromise(errors, title)
     }
 
     if ('detail' in error.response.data || 'errors' in error.response.data) {
-      return BaseDataError.throwNewPromiseReject(error.response.data)
+      return BaseDataError.rejectedPromise(error.response.data)
     }
 
     return Promise.reject(error)

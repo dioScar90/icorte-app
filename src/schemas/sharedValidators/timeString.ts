@@ -4,8 +4,12 @@ const isValidHour = (hour: string) => !isNaN(+hour) && +hour >= 0 && +hour < 24
 const isValidMinute = (minute: string) => !isNaN(+minute) && +minute >= 0 && +minute < 60
 const isValidSecond = (second: string) => !isNaN(+second) && +second >= 0 && +second < 60
 
+export function isTimePattern(date: string) {
+  return /^\d{2}:\d{2}(:\d{2}(.\d{1,})?)?$/.test(date)
+}
+
 export function isValidTimeString(date: string): date is TimeString {
-  if (!/^\d{2}:\d{2}:\d{2}$/.test(date)) {
+  if (!isTimePattern(date)) {
     return false
   }
 
