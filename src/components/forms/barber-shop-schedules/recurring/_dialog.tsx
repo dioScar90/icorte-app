@@ -10,13 +10,11 @@ function RecurringScheduleFormProvider({ children }: PropsWithChildren) {
   const values = useInitValuesRecurringScheduleFormContext()
   
   return (
-    <RecurringScheduleFormContext.Provider
-      value={{
-        ...values
-      }}
+    <RecurringScheduleFormContext
+      value={values}
     >
       {children}
-    </RecurringScheduleFormContext.Provider>
+    </RecurringScheduleFormContext>
   )
 }
 

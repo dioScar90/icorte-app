@@ -1,4 +1,4 @@
-import { type AxiosResponse } from "axios"
+// import { type AxiosResponse } from "axios"
 import { z } from "zod"
 
 export const getPaginationObj = (page: number, pageSize?: number) => ({ page: Math.max(1, page), pageSize })
@@ -58,9 +58,9 @@ export type BaseResult<T> = Promise<Result<T | null>>
 export type CreatedResult<T> = Promise<Result<CreatedResponse<T> | null>>
 export type PaginationResult<T> = Promise<Result<PaginationResponse<T> | null>>
 
-export type BaseAxiosResult<T> = Promise<AxiosResponse<T | null>>
-export type CreatedAxiosResult<T> = Promise<AxiosResponse<CreatedResponse<T> | null>>
-export type PaginationAxiosResult<T> = Promise<AxiosResponse<PaginationResponse<T> | null>>
+// export type BaseAxiosResult<T> = Promise<AxiosResponse<T | null>>
+// export type CreatedAxiosResult<T> = Promise<AxiosResponse<CreatedResponse<T> | null>>
+// export type PaginationAxiosResult<T> = Promise<AxiosResponse<PaginationResponse<T> | null>>
 
 export const paginationSchemaValidation = z.object({
   pagination: z.object({

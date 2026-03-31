@@ -49,13 +49,9 @@ class FieldError<K extends string = string> extends Error {
 }
 
 export class UnprocessableEntityError extends FieldError {
-  constructor(errors: Record<string, string[]>, title: string) {
+  constructor(errors: DataResponseError['errors'], title: DataResponseError['title']) {
     const message = 'Erro no login'
-    super(errors, title, message)
-  }
-
-  static throwNewPromiseReject(errors: Record<string, string[]>, title: string) {
-    return Promise.reject<UnprocessableEntityError>(new UnprocessableEntityError(errors, title))
+    super(errors ?? {}, title, message)
   }
 }
 
@@ -66,10 +62,6 @@ export class InvalidUsernameOrPasswordError extends FieldError {
     const title = 'Erro no login'
     super(errors, title, message)
   }
-
-  static throwNewPromiseReject() {
-    return Promise.reject<InvalidUsernameOrPasswordError>(new InvalidUsernameOrPasswordError())
-  }
 }
 
 type DataResponseError = {
@@ -77,6 +69,25 @@ type DataResponseError = {
   status?: number
   detail?: string
   errors?: Record<string, string[]>
+}
+
+export function isDataResponseError(data: unknown): data is DataResponseError {
+  if (!data) {
+    return false
+  }
+
+  if (typeof data !== 'object') {
+    return false
+  }
+  
+  if (!('title' in data && 'status' in data && 'detail' in data && 'errors' in data)) {
+    return false
+  }
+  
+  return typeof data?.title === 'string'
+    && typeof data?.status === 'number'
+    && typeof data?.detail === 'string'
+    && typeof data?.errors === 'object'
 }
 
 export class BaseDataError extends Error {
@@ -109,10 +120,6 @@ export class BaseDataError extends Error {
       message: this.getHtmlForSwalBody(),
       isHtml: true,
     } satisfies AlertWithMessage
-  }
-
-  static throwNewPromiseReject(data?: DataResponseError) {
-    return Promise.reject<BaseDataError>(new BaseDataError(data ?? {}))
   }
 }
 

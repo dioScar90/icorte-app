@@ -1,17 +1,115 @@
 // import { createContext, PropsWithChildren, useContext } from "react"
-import axios, { AxiosError } from 'axios'
-// import { BaseDataError, InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from "@/hooks/use-error"
-import { BaseDataError, InvalidUsernameOrPasswordError, NetworkConnectionError, UnprocessableEntityError } from '@/providers/errors/error-handler-provider'
+import { BaseDataError, InvalidUsernameOrPasswordError, isDataResponseError, NetworkConnectionError, UnprocessableEntityError } from '@/providers/errors/error-handler-provider'
 
-console.log('baseurl', import.meta.env.VITE_BASE_URL)
+type Method = 'get' | 'post' | 'put' | 'delete'
+type FetchOptions = Parameters<typeof fetch>[1]
 
-const httpClient = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true,
-})
+function getFetchParams(url: string, options?: FetchOptions, method?: Method, data?: any) {
+  const fullUrl = import.meta.env.VITE_BASE_URL + url
+  
+  const requestParams = {
+    method: method ?? 'get',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: typeof data === 'undefined' ? undefined : JSON.stringify(data),
+    credentials: 'include', // equivalent to withCredentials
+    ...(options ?? {})
+  } satisfies FetchOptions
+  
+  return [fullUrl, requestParams] as const
+}
+
+async function getDataOrError<T>(res: Awaited<ReturnType<typeof fetch>>): Promise<T | null | Error> {
+  let data: T | null
+  
+  try {
+    data = await res.json() as T
+  } catch (_) {
+    data = null
+  }
+  
+  if (res.ok) {
+    return data
+  }
+  
+  if (res.statusText === 'ERR_NETWORK') {
+    return new NetworkConnectionError()
+  }
+  
+  if (res.url.endsWith('/auth/login') && res.status === 401) {
+    return new InvalidUsernameOrPasswordError()
+  }
+  
+  if (!isDataResponseError(data)) {
+    return new Error(String(data))
+  }
+  
+  if (res.status === 422 && data?.title === 'UnprocessableEntity') {
+    return new UnprocessableEntityError(data?.errors, data?.detail)
+  }
+  
+  if ('detail' in data || 'errors' in data) {
+    return new BaseDataError(data)
+  }
+  
+  return new Error('Erro desconhecido')
+}
+
+async function _get(url: string, options?: FetchOptions) {
+  try {
+    const res = await fetch(...getFetchParams(url, options))
+
+    return {
+      data: await getDataOrError(res)
+    }
+  } catch (err) {
+    return err
+  }
+}
+
+async function _post(url: string, data?: any, options?: FetchOptions) {
+  try {
+    const res = await fetch(...getFetchParams(url, options, 'post', data))
+
+    return {
+      data: await getDataOrError(res)
+    }
+  } catch (err) {
+    return err
+  }
+}
+
+async function _put(url: string, data?: any, options?: FetchOptions) {
+  try {
+    const res = await fetch(...getFetchParams(url, options, 'put', data))
+
+    return {
+      data: await getDataOrError(res)
+    }
+  } catch (err) {
+    return err
+  }
+}
+
+async function _delete(url: string, options?: FetchOptions) {
+  try {
+    const res = await fetch(...getFetchParams(url, options, 'delete'))
+
+    return {
+      data: await getDataOrError(res)
+    }
+  } catch (err) {
+    return err
+  }
+}
+
+const httpClient = {
+  get: _get,
+  post: _post,
+  put: _put,
+  delete: _delete,
+} as const
 
 /*
   There is no need to set 'config.headers.Authorization = `Bearer ${token}`' because
@@ -22,37 +120,6 @@ const httpClient = axios.create({
   'response.headers.location' for some reason . Nothing I tried to do worked.
   I'm redirecting it by myself then.
 */
-
-httpClient.interceptors.response.use(
-  response => {
-    console.log('firstResponse', response)
-    return response
-  },
-  (error) => {
-    const suamae = error as AxiosError
-    
-    suamae.response?.data
-    if (error.code === 'ERR_NETWORK') {
-      return Promise.reject(new NetworkConnectionError())
-    }
-
-    if (error.config.url === '/auth/login' && error.response.status === 401) {
-      return InvalidUsernameOrPasswordError.throwNewPromiseReject()
-    }
-
-    if (error.response.status === 422 && error.response.data.title === 'UnprocessableEntity') {
-      const title: string = error.response.data.detail
-      const errors: Record<string, string[]> = error.response.data.errors
-      return UnprocessableEntityError.throwNewPromiseReject(errors, title)
-    }
-
-    if ('detail' in error.response.data || 'errors' in error.response.data) {
-      return BaseDataError.throwNewPromiseReject(error.response.data)
-    }
-
-    return Promise.reject(error)
-  }
-)
 
 export const useProxy = () => httpClient
 
