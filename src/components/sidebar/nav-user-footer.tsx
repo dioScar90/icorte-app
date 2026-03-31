@@ -28,7 +28,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
-import { useEffect, useState } from "react"
+import { Activity, useEffect, useState } from "react"
 import Swal from "sweetalert2"
 import { Link, useNavigate, useRouteContext } from "@tanstack/react-router"
 import type { AuthContext } from "@/hooks/use-auth"
@@ -129,14 +129,14 @@ function SidebarFooterItself({ user: userFromUseAuth, logout, closeSidebar }: Si
                   </DropdownMenuItem>
                 </Link>
 
-                {!user.isBarber && (
+                <Activity mode={!user.isBarber ? 'visible' : 'hidden'}>
                   <Link to="/barber-shop/register">
                     <DropdownMenuItem className="cursor-pointer">
                       <StoreIcon />
                       Cadastrar Barbearia
                     </DropdownMenuItem>
                   </Link>
-                )}
+                </Activity>
               </DropdownMenuGroup>
               
               <DropdownMenuSeparator />

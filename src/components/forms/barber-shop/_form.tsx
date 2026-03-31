@@ -4,7 +4,7 @@ import { useFieldContext } from '@/hooks/forms/form-contexts'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { type ComponentProps } from 'react'
+import { Activity, type ComponentProps } from 'react'
 import { ErrorMessages, Select, TextField } from '../default'
 import { applyMask } from '@/utils/mask'
 
@@ -32,7 +32,9 @@ export function ComercialNumberField() {
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(applyMask('PHONE_NUMBER', e.target.value))}
       />
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </div>
   )
 }
@@ -86,7 +88,9 @@ export function PostalCodeField() {
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(applyMask('CEP', e.target.value))}
       />
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </div>
   )
 }

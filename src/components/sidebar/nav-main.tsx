@@ -17,7 +17,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { Link, useRouteContext } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { Activity, useEffect, useState } from "react"
 import type { SidebarNavProps } from "./app-sidebar"
 import type { AuthContext } from "@/hooks/use-auth"
 import { Route } from "@/routes/__root"
@@ -178,7 +178,7 @@ export function NavMain() {
                   <span>{item.title}</span>
                 </Link>
               </SidebarMenuButton>
-              {!!item.items?.length && (
+              <Activity mode={item.items?.length ? 'visible' : 'hidden'}>
                 <>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuAction className="data-[state=open]:rotate-90">
@@ -200,7 +200,7 @@ export function NavMain() {
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </>
-              )}
+              </Activity>
             </SidebarMenuItem>
           </Collapsible>
         ))}

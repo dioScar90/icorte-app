@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { ErrorMessages } from '../default'
 import { applyMask } from '@/utils/mask'
 import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
-import type { ComponentProps } from 'react'
+import { Activity, type ComponentProps } from 'react'
 
 export function PriceField({ disabled }: { disabled?: boolean }) {
   const field = useFieldContext<string>()
@@ -30,7 +30,9 @@ export function PriceField({ disabled }: { disabled?: boolean }) {
         onFocus={navigateToEndAfterFocus}
         disabled={disabled}
       />
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </div>
   )
 }
@@ -56,7 +58,9 @@ function BaseTimeField({ label, placeholder, disabled }: { label: string, placeh
         onFocus={navigateToEndAfterFocus}
         disabled={disabled}
       />
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </div>
   )
 }

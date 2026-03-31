@@ -4,13 +4,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRoo
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import { format } from 'date-fns'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { CalendarArrowUp, CalendarIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { SubmitButton } from '@/components/ui/submit-button'
+import { useDateTime } from '@/hooks/use-datetime'
 
 export const Route = createFileRoute(
   '/(authenticated-only)/admin/populate-appointments',
@@ -26,6 +26,8 @@ function RouteComponent() {
       s.admin.appointmentsAdminSchema,
     ] as const
   })
+  
+  const { format } = useDateTime()
   
   const navigate = useNavigate()
   

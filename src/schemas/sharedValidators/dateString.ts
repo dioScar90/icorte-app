@@ -10,8 +10,12 @@ const isValidYear = (year: string) => !isNaN(+year) && +year > 2000
 const isValidMonth = (month: string) => !isNaN(+month) && +month > 0 && +month <= 12
 const isValidDay = (day: string) => !isNaN(+day) && +day > 0 && +day <= 31
 
+export function isDatePattern(date: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(date)
+}
+
 export function isValidDateString(date: string): date is DateString {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+  if (!isDatePattern(date)) {
     return false
   }
 

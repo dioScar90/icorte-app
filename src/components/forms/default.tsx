@@ -1,3 +1,4 @@
+import { Activity } from 'react'
 import { useStore } from '@tanstack/react-form'
 import * as LabelPrimitive from "@radix-ui/react-label"
 
@@ -110,7 +111,9 @@ export function TextField({
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.value)}
       />
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </FormItem>
   )
 }
@@ -137,7 +140,9 @@ export function TextArea({
         rows={rows}
         onChange={(e) => field.handleChange(e.target.value)}
       />
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </FormItem>
   )
 }
@@ -185,7 +190,9 @@ export function Select({
         </ShadcnSelect.SelectContent>
       </ShadcnSelect.Select>
       
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </FormItem>
   )
 }
@@ -205,7 +212,9 @@ export function Slider({ label }: { label: string }) {
         value={[field.state.value]}
         onValueChange={(value) => field.handleChange(value[0])}
       />
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </FormItem>
   )
 }
@@ -217,25 +226,7 @@ export function Switch({
 } & ComponentProps<typeof ShadcnSwitch>) {
   const field = useFieldContext<boolean>()
   const errors = useStore(field.store, (state) => state.meta.errors)
-
-  // return (
-  //   <FormItem className={className}>
-  //     <div className="flex items-center gap-2">
-  //       <ShadcnSwitch
-  //         id={label}
-  //         onBlur={field.handleBlur}
-  //         checked={field.state.value}
-  //         onCheckedChange={(checked) => field.handleChange(checked)}
-  //       />
-        
-  //       <FormLabel htmlFor={label} hasErrors={field.state.meta.isTouched}>
-  //         {label}
-  //       </FormLabel>
-  //     </div>
-  //     {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
-  //   </FormItem>
-  // )
-
+  
   return (
     <FormItem className={className}>
       <div className="space-y-0.5">
@@ -261,7 +252,9 @@ export function Switch({
           {label}
         </FormLabel> */}
       {/* </div> */}
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </FormItem>
   )
 }

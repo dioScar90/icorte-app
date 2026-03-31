@@ -3,7 +3,7 @@ import { useStore } from '@tanstack/react-form'
 import { useFieldContext, useFormContext } from '@/hooks/forms/form-contexts'
 
 import { Input } from '@/components/ui/input'
-import { useRef, type ComponentProps, type PropsWithChildren, type RefObject } from 'react'
+import { Activity, useRef, type ComponentProps, type PropsWithChildren, type RefObject } from 'react'
 import { Eye, EyeOff, LogInIcon } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { Route } from '@/routes/__root'
@@ -33,7 +33,9 @@ export function RegisterPhoneNumberField() {
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(applyMask('PHONE_NUMBER', e.target.value))}
       />
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </FormItem>
   )
 }
@@ -137,9 +139,13 @@ export function RegisterPasswordField({ isLogin }: { isLogin?: boolean }) {
         />
       </PasswordInputWithEyeIconContainer>
       
-      {!!isLogin && <ForgotPasswordButton />}
+      <Activity mode={!!isLogin ? 'visible' : 'hidden'}>
+        <ForgotPasswordButton />
+      </Activity>
       
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </FormItem>
   )
 }
@@ -162,7 +168,9 @@ export function RegisterConfirmPasswordField() {
         onChange={(e) => field.handleChange(e.target.value)}
       />
       
-      {field.state.meta.isTouched && <ErrorMessages errors={errors} />}
+      <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
+        <ErrorMessages errors={errors} />
+      </Activity>
     </FormItem>
   )
 }

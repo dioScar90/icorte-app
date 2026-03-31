@@ -18,7 +18,7 @@ import { type TimeString } from '@/types/datetime/time-string'
 import { Link } from '@tanstack/react-router'
 import { createFileRoute, useLocation, useNavigate } from '@tanstack/react-router'
 import { DoorClosed, DoorOpen, ShoppingBag, Trash2 } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { Activity, useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { DivBeforeCard } from '@/components/div-before-card'
 
@@ -152,7 +152,7 @@ function FormRemoveAppointment({ appointment, closeModal, setLoadingState, formI
             )}
           />
 
-          {appointment.notes && (
+          <Activity mode={appointment.notes ? 'visible' : 'hidden'}>
             <FormField
               control={form.control}
               name="notes"
@@ -166,7 +166,7 @@ function FormRemoveAppointment({ appointment, closeModal, setLoadingState, formI
                 </FormItem>
               )}
             />
-          )}
+          </Activity>
 
           <FormItem>
             <FormLabel>Total</FormLabel>
@@ -325,9 +325,9 @@ function RouteComponent() {
             </DialogDescription>
           </DialogHeader>
 
-          {state.open && (
+          <Activity mode={state.open ? 'visible' : 'hidden'}>
             <FormRemoveAppointment {...state.props} />
-          )}
+          </Activity>
 
           <DialogFooter className="grid grid-cols-2 md:flex md:justify-end gap-2">
             <DialogClose asChild>
@@ -336,7 +336,7 @@ function RouteComponent() {
               </Button>
             </DialogClose>
 
-            {state.open && (
+            <Activity mode={state.open ? 'visible' : 'hidden'}>
               <SubmitButton
                 type="submit"
                 variant="destructive"
@@ -346,7 +346,7 @@ function RouteComponent() {
               >
                 Excuir
               </SubmitButton>
-            )}
+            </Activity>
           </DialogFooter>
         </DialogContent>
       </Dialog>

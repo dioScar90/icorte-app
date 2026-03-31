@@ -101,7 +101,7 @@ export class BaseDataError extends Error {
     this.detail = detail ?? 'Erro desconhecido, tente novamente'
     this.errors = errors ?? {}
   }
-  
+
   private getHtmlForSwalBody() {
     return `
       <p>${this.detail}</p>
@@ -141,7 +141,7 @@ function getAlertDetails(error: Error | string | unknown) {
       message: error.message,
     } satisfies AlertWithMessage
   }
-  
+
   return {
     icon: 'error',
     message: error === 'string' ? error : 'Erro desconhecido, tente novamente',
@@ -157,7 +157,7 @@ function handler
   if (!error) {
     return
   }
-  
+
   const isReactHookForm = (form: any): form is UseFormReturn<TForm> => !!form
   const isFieldError = (err: any): err is FieldError<KField> => err instanceof FieldError
   const isKeyFromPath = (key: string): key is Path<TForm> => !key.startsWith('root')
@@ -174,7 +174,7 @@ function handler
 
     for (const [key, { message, description }] of error.getToastOptions()) {
       toast.error(message, { description })
-      
+
       lastValidKey = isKeyFromPath(key) ? key : lastValidKey
     }
 
@@ -202,17 +202,17 @@ export function ErrorHandlerProvider({ children }: PropsWithChildren) {
   const [alert, _setAlert] = useState<ErrorsContextType['alert']>()
 
   const clearErrors: ErrorsContextType['clearErrors'] = useCallback(() => _setAlert(null), [])
-  
+
   const handleError: ErrorsContextType['handleError'] = useCallback((...args) => {
     const newAlert = handler(...args)
-    
+
     _setAlert(
       !!newAlert && typeof newAlert === 'object' && 'message' in newAlert
         ? { ...newAlert }
         : null
     )
   }, [])
-  
+
   return (
     <ErrorHandler value={{ handleError, clearErrors, alert }}>
       {children}

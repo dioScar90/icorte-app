@@ -13,7 +13,7 @@ import { getEnumAsString } from '@/utils/enum-transformer'
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { DoorClosed, DoorOpen } from 'lucide-react'
-import { Suspense, useEffect } from 'react'
+import { Activity, Suspense, useEffect } from 'react'
 
 export const Route = createFileRoute(
   '/(authenticated-only)/barber-shop/$barberShopId/dashboard',
@@ -155,7 +155,7 @@ function PaginationBarberShopAppointments() {
           <PaginationEllipsis />
         </PaginationItem>
 
-        {'prev' in pagination && (
+        <Activity mode={'prev' in pagination ? 'visible' : 'hidden'}>
           <PaginationItem>
             <PaginationLink
               from={Route.fullPath}
@@ -164,7 +164,7 @@ function PaginationBarberShopAppointments() {
               {pagination.prev}
             </PaginationLink>
           </PaginationItem>
-        )}
+        </Activity>
 
         <PaginationItem>
           <PaginationLink
@@ -176,7 +176,7 @@ function PaginationBarberShopAppointments() {
           </PaginationLink>
         </PaginationItem>
 
-        {'next' in pagination && (
+        <Activity mode={'next' in pagination ? 'visible' : 'hidden'}>
           <PaginationItem>
             <PaginationLink
               from={Route.fullPath}
@@ -185,7 +185,7 @@ function PaginationBarberShopAppointments() {
               {pagination.next}
             </PaginationLink>
           </PaginationItem>
-        )}
+        </Activity>
 
         <PaginationItem>
           <PaginationEllipsis />
