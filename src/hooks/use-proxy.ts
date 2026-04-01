@@ -28,13 +28,17 @@ function getFetchParams(url: string, options?: FetchOptions, method?: Method, da
   return [fullUrl, requestParams] as const
 }
 
-async function getDataOrError<T>(res: Awaited<ReturnType<typeof fetch>>): Promise<T | null | Error> {
-  let data: T | null
+async function getDataOrError<T>(res: Awaited<ReturnType<typeof fetch>>): Promise<T | Error> {
+  let data: T
   
   try {
     data = await res.json() as T
-  } catch (_) {
-    data = null
+  } catch (err) {
+    if (err instanceof SyntaxError) {
+      return err
+    }
+
+    return new Error('Erro desconhecido')
   }
   
   if (res.ok) {
@@ -64,51 +68,55 @@ async function getDataOrError<T>(res: Awaited<ReturnType<typeof fetch>>): Promis
   return new Error('Erro desconhecido')
 }
 
-async function _get(url: string, options?: FetchOptions) {
-  try {
-    const res = await fetch(...getFetchParams(url, options))
-
-    return {
-      data: await getDataOrError(res)
-    }
-  } catch (err) {
-    return err
+async function _get<T = void>(url: string, options?: FetchOptions) {
+  const res = await fetch(...getFetchParams(url, options))
+  const value = await getDataOrError<T>(res)
+  
+  if (value instanceof Error) {
+    throw value
+  }
+  
+  return {
+    data: value
   }
 }
 
-async function _post(url: string, data?: any, options?: FetchOptions) {
-  try {
-    const res = await fetch(...getFetchParams(url, options, 'post', data))
-
-    return {
-      data: await getDataOrError(res)
-    }
-  } catch (err) {
-    return err
+async function _post<T = void>(url: string, data?: any, options?: FetchOptions) {
+  const res = await fetch(...getFetchParams(url, options, 'post', data))
+  const value = await getDataOrError<T>(res)
+  
+  if (value instanceof Error) {
+    throw value
+  }
+  
+  return {
+    data: value
   }
 }
 
-async function _put(url: string, data?: any, options?: FetchOptions) {
-  try {
-    const res = await fetch(...getFetchParams(url, options, 'put', data))
-
-    return {
-      data: await getDataOrError(res)
-    }
-  } catch (err) {
-    return err
+async function _put<T = void>(url: string, data?: any, options?: FetchOptions) {
+  const res = await fetch(...getFetchParams(url, options, 'put', data))
+  const value = await getDataOrError<T>(res)
+  
+  if (value instanceof Error) {
+    throw value
+  }
+  
+  return {
+    data: value
   }
 }
 
-async function _delete(url: string, options?: FetchOptions) {
-  try {
-    const res = await fetch(...getFetchParams(url, options, 'delete'))
-
-    return {
-      data: await getDataOrError(res)
-    }
-  } catch (err) {
-    return err
+async function _delete<T = void>(url: string, options?: FetchOptions) {
+  const res = await fetch(...getFetchParams(url, options, 'delete'))
+  const value = await getDataOrError<T>(res)
+  
+  if (value instanceof Error) {
+    throw value
+  }
+  
+  return {
+    data: value
   }
 }
 

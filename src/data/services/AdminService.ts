@@ -81,7 +81,7 @@ export class AdminService implements Interface {
     const url = getUrl('populate-all')
     
     try {
-      await this.httpClient.post(url, null, getPassphraseAsCustomizedHeader(passphrase))
+      await this.httpClient.post<void>(url, null, getPassphraseAsCustomizedHeader(passphrase))
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)

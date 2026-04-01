@@ -1,6 +1,8 @@
-import type { IBarberShopService as Interface } from "./interfaces/IBarberShopService";
 import type { ProxyContext } from "@/hooks/use-proxy";
-import { type Pagination, Result } from "@/data/result";
+import { type Pagination, type PaginationResult, Result } from "@/data/result";
+import type { BarberShopZod } from "@/schemas/barberShop";
+import type { BarberShop } from "@/types/models/barberShop";
+import type { AppointmentByBarberShop } from "@/types/custom-models/appointment-by-barber-shop";
 
 function getUrl(id?: number, appointments?: boolean) {
   const baseEndpoint = `/barber-shop`
@@ -31,54 +33,54 @@ function getQueryParams(pag?: Pagination) {
   return '?' + searchParams.toString()
 }
 
-export class BarberShopService implements Interface {
+export class BarberShopService {
   constructor(private readonly httpClient: ProxyContext) {}
-
-  createBarberShop: Interface['createBarberShop'] = async (data) => {
+  
+  async createBarberShop(data: BarberShopZod) {
     const url = getUrl()
     
     try {
-      const res = await this.httpClient.post(url, { ...data })
+      const res = await this.httpClient.post<BarberShop>(url, data)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
   }
-
-  getBarberShop: Interface['getBarberShop'] = async (id) => {
+  
+  async getBarberShop(id: number) {
     const url = getUrl(id)
     
     try {
-      const res = await this.httpClient.get(url)
+      const res = await this.httpClient.get<BarberShop>(url)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
   }
-
-  getAppointmentsByBarberShop: Interface['getAppointmentsByBarberShop'] = async (barberShopId, pag) => {
+  
+  async getAppointmentsByBarberShop(barberShopId: number, pag?: Pagination) {
     const url = getUrl(barberShopId, true) + getQueryParams(pag)
     
     try {
-      const res = await this.httpClient.get(url)
+      const res = await this.httpClient.get<PaginationResult<AppointmentByBarberShop>>(url)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
   }
-
-  updateBarberShop: Interface['updateBarberShop'] = async (id, data) => {
+  
+  async updateBarberShop(id: number, data: BarberShopZod) {
     const url = getUrl(id)
     
     try {
-      await this.httpClient.put(url, { ...data })
+      await this.httpClient.put(url, data)
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)
     }
   }
-
-  deleteBarberShop: Interface['deleteBarberShop'] = async (id) => {
+  
+  async deleteBarberShop(id: number) {
     const url = getUrl(id)
     
     try {
