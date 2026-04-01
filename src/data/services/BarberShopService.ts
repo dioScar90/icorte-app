@@ -1,5 +1,5 @@
 import type { ProxyContext } from "@/hooks/use-proxy";
-import { type Pagination, type PaginationResult, Result } from "@/data/result";
+import { type BaseResult, type CreatedResult, type Pagination, type PaginationResult, Result } from "@/data/result";
 import type { BarberShopZod } from "@/schemas/barberShop";
 import type { BarberShop } from "@/types/models/barberShop";
 import type { AppointmentByBarberShop } from "@/types/custom-models/appointment-by-barber-shop";
@@ -40,7 +40,7 @@ export class BarberShopService {
     const url = getUrl()
     
     try {
-      const res = await this.httpClient.post<BarberShop>(url, data)
+      const res = await this.httpClient.post<CreatedResult<BarberShop>>(url, data)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
@@ -51,7 +51,7 @@ export class BarberShopService {
     const url = getUrl(id)
     
     try {
-      const res = await this.httpClient.get<BarberShop>(url)
+      const res = await this.httpClient.get<BaseResult<BarberShop>>(url)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
@@ -73,7 +73,7 @@ export class BarberShopService {
     const url = getUrl(id)
     
     try {
-      await this.httpClient.put(url, data)
+      await this.httpClient.put<BaseResult<void>>(url, data)
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)
@@ -84,7 +84,7 @@ export class BarberShopService {
     const url = getUrl(id)
     
     try {
-      await this.httpClient.delete(url)
+      await this.httpClient.delete<BaseResult<void>>(url)
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)
