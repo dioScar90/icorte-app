@@ -1,4 +1,3 @@
-// import { createContext, PropsWithChildren, useContext } from "react"
 import { BaseDataError, InvalidUsernameOrPasswordError, isDataResponseError, NetworkConnectionError, UnprocessableEntityError } from '@/providers/errors/error-handler-provider'
 
 type Method = 'get' | 'post' | 'put' | 'delete'
@@ -11,6 +10,15 @@ function getFetchParams(url: string, options?: FetchOptions, method?: Method, da
     method: method ?? 'get',
     headers: {
       'Content-Type': 'application/json',
+      /*
+        There is no need to set 'Authorization: `Bearer ${token}`' because
+        once we're using cookies and 'credentials: true' the token will automatically
+        be sent.
+
+        The URL to be redirected is not coming in 201 Created Responses inside
+        'response.headers.location' for some reason . Nothing I tried to do worked.
+        I'm redirecting it by myself then.
+      */
     },
     body: typeof data === 'undefined' ? undefined : JSON.stringify(data),
     credentials: 'include', // equivalent to withCredentials
@@ -110,16 +118,6 @@ const httpClient = {
   put: _put,
   delete: _delete,
 } as const
-
-/*
-  There is no need to set 'config.headers.Authorization = `Bearer ${token}`' because
-  once we're using cookies and 'withCredentials: true' the token will automatically
-  be sent.
-
-  The URL to be redirected is not coming in 201 Created Responses inside
-  'response.headers.location' for some reason . Nothing I tried to do worked.
-  I'm redirecting it by myself then.
-*/
 
 export const useProxy = () => httpClient
 
