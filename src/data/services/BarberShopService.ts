@@ -1,8 +1,9 @@
 import type { ProxyContext } from "@/hooks/use-proxy";
-import { type BaseResult, type CreatedResult, type Pagination, type PaginationResult, Result } from "@/data/result";
+import { type Pagination, type PaginationResult, Result } from "@/data/result";
 import type { BarberShopZod } from "@/schemas/barberShop";
 import type { BarberShop } from "@/types/models/barberShop";
 import type { AppointmentByBarberShop } from "@/types/custom-models/appointment-by-barber-shop";
+import { BaseService } from "./_baseService";
 
 function getUrl(id?: number, appointments?: boolean) {
   const baseEndpoint = `/barber-shop`
@@ -33,29 +34,17 @@ function getQueryParams(pag?: Pagination) {
   return '?' + searchParams.toString()
 }
 
-export class BarberShopService {
-  constructor(private readonly httpClient: ProxyContext) {}
+export class BarberShopService extends BaseService<BarberShop, BarberShopZod> {
+  constructor(httpClient: ProxyContext) {
+    super(httpClient, getUrl, getQueryParams)
+  }
   
   async createBarberShop(data: BarberShopZod) {
-    const url = getUrl()
-    
-    try {
-      const res = await this.httpClient.post<CreatedResult<BarberShop>>(url, data)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await super.create(data)
   }
   
   async getBarberShop(id: number) {
-    const url = getUrl(id)
-    
-    try {
-      const res = await this.httpClient.get<BaseResult<BarberShop>>(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await super.get(id)
   }
   
   async getAppointmentsByBarberShop(barberShopId: number, pag?: Pagination) {
@@ -70,24 +59,10 @@ export class BarberShopService {
   }
   
   async updateBarberShop(id: number, data: BarberShopZod) {
-    const url = getUrl(id)
-    
-    try {
-      await this.httpClient.put<BaseResult<void>>(url, data)
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await super.update(data, id)
   }
   
   async deleteBarberShop(id: number) {
-    const url = getUrl(id)
-    
-    try {
-      await this.httpClient.delete<BaseResult<void>>(url)
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await super.delete(id)
   }
 }
