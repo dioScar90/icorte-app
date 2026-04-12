@@ -2,12 +2,11 @@ import type { IUserService as Interface } from "./interfaces/IUserService"
 import type { ProxyContext } from "@/hooks/use-proxy"
 import { Result } from "@/data/result"
 
-type UrlType = [
-  'me',
-  'changeEmail',
-  'changePassword',
-  'changePhoneNumber',
-][number]
+type UrlType =
+  | 'me'
+  | 'changeEmail'
+  | 'changePassword'
+  | 'changePhoneNumber'
 
 function getUrl(final?: UrlType) {
   const baseEndpoint = `/user`

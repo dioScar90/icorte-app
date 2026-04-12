@@ -1,10 +1,10 @@
-import type { ProxyContext } from "@/hooks/use-proxy"
-import type { IProfileService as Interface } from "./interfaces/IProfileService"
 import { Result } from "@/data/result"
+import { BaseService } from "./_baseService"
+import type { Profile } from "@/types/models/profile"
+import type { ProfileZod } from "@/schemas/profile"
 
-type UrlType = [
-  'image',
-][number]
+type UrlType =
+  | 'image'
 
 function getUrl(id?: number, final?: UrlType) {
   const baseEndpoint = `/profile`
@@ -20,43 +20,24 @@ function getUrl(id?: number, final?: UrlType) {
   return `${baseEndpoint}/${id}/${final}`
 }
 
-export class ProfileService implements Interface {
-  constructor(private readonly httpClient: ProxyContext) {}
-
-  createProfile: Interface['createProfile'] = async (data) => {
-    const url = getUrl()
-    
-    try {
-      const res = await this.httpClient.post(url, data)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+export class ProfileService extends BaseService<Profile, ProfileZod> {
+  constructor(httpClient: ConstructorParameters<typeof BaseService>[0]) {
+    super(httpClient, getUrl)
+  }
+  
+  async createProfile(data: ProfileZod) {
+    return await this.create(data)
   }
 
-  getProfileById: Interface['getProfileById'] = async (id) => {
-    const url = getUrl(id)
-    
-    try {
-      const res = await this.httpClient.get(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+  async getProfileById(id: number) {
+    return await this.get(id)
   }
 
-  updateProfile: Interface['updateProfile'] = async (id, data) => {
-    const url = getUrl(id)
-    
-    try {
-      await this.httpClient.put(url, data)
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
+  async updateProfile(id: number, data: ProfileZod) {
+    return await this.update(data, id)
   }
-
-  updateProfileImage: Interface['updateProfileImage'] = async (id, file) => {
+  
+  async updateProfileImage(id: number, file: File) {
     const url = getUrl(id, 'image')
     
     try {
