@@ -1,75 +1,51 @@
-import type { IServiceService as Interface } from "./interfaces/IServiceService";
-import { getBrlMoneyIntoFloat } from "@/schemas/sharedValidators/brlMoney";
-import type { ProxyContext } from "@/hooks/use-proxy";
-import { Result } from "@/data/result";
+import { getBrlMoneyIntoFloatString } from "@/schemas/sharedValidators/brlMoney";
+import { Result, type PaginationResult } from "@/data/result";
+import { BaseService } from "./_baseService";
+import type { ServiceZod } from "@/schemas/service";
+import type { Service } from "@/types/models/service";
 
 function getUrl(barberShopId: number, id?: number) {
   const baseEndpoint = `/barber-shop/${barberShopId}/service`
   return !id ? baseEndpoint : `${baseEndpoint}/${id}`
 }
 
-function getDataWithPriceIntoFloat(data: Parameters<Interface['createService']>[1]) {
+function getDataWithPriceIntoFloat(data: ServiceZod) {
   return {
     ...data,
-    price: getBrlMoneyIntoFloat(data.price),
+    price: getBrlMoneyIntoFloatString(data.price),
   }
 }
 
-export class ServiceService implements Interface {
-  constructor(private readonly httpClient: ProxyContext) {}
+export class ServiceService extends BaseService<Service, ServiceZod> {
+  constructor(httpClient: ConstructorParameters<typeof BaseService>[0]) {
+    super(httpClient, getUrl)
+  }
   
-  createService: Interface['createService'] = async (barberShopId, data) => {
+  async createService(barberShopId: number, data: ServiceZod) {
+    data = getDataWithPriceIntoFloat(data)
+    return await this.create(data, barberShopId)
+  }
+
+  async getService(barberShopId: number, serviceId: number) {
+    return await this.get(barberShopId, serviceId)
+  }
+
+  async getAllServices(barberShopId: number) {
     const url = getUrl(barberShopId)
     
     try {
-      const res = await this.httpClient.post(url, { ...getDataWithPriceIntoFloat(data) })
+      const res = await this.httpClient.get<PaginationResult<Service>>(url)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
   }
 
-  getService: Interface['getService'] = async (barberShopId, serviceId) => {
-    const url = getUrl(barberShopId, serviceId)
-    
-    try {
-      const res = await this.httpClient.get(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+  async updateService(barberShopId: number, serviceId: number, data: ServiceZod) {
+    return await this.update(data, barberShopId, serviceId)
   }
 
-  getAllServices: Interface['getAllServices'] = async (barberShopId) => {
-    const url = getUrl(barberShopId)
-    
-    try {
-      const res = await this.httpClient.get(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
-  }
-
-  updateService: Interface['updateService'] = async (barberShopId, serviceId, data) => {
-    const url = getUrl(barberShopId, serviceId)
-    
-    try {
-      await this.httpClient.put(url, { ...getDataWithPriceIntoFloat(data) })
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
-  }
-
-  deleteService: Interface['deleteService'] = async (barberShopId, serviceId) => {
-    const url = getUrl(barberShopId, serviceId)
-    
-    try {
-      await this.httpClient.delete(url)
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
+  async deleteService(barberShopId: number, serviceId: number) {
+    return await this.delete(barberShopId, serviceId)
   }
 }

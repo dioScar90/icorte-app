@@ -1,4 +1,3 @@
-import type { ProxyContext } from "@/hooks/use-proxy";
 import { type Pagination, type PaginationResult, Result } from "@/data/result";
 import type { BarberShopZod } from "@/schemas/barberShop";
 import type { BarberShop } from "@/types/models/barberShop";
@@ -35,16 +34,16 @@ function getQueryParams(pag?: Pagination) {
 }
 
 export class BarberShopService extends BaseService<BarberShop, BarberShopZod> {
-  constructor(httpClient: ProxyContext) {
+  constructor(httpClient: ConstructorParameters<typeof BaseService>[0]) {
     super(httpClient, getUrl, getQueryParams)
   }
   
   async createBarberShop(data: BarberShopZod) {
-    return await super.create(data)
+    return await this.create(data)
   }
   
   async getBarberShop(id: number) {
-    return await super.get(id)
+    return await this.get(id)
   }
   
   async getAppointmentsByBarberShop(barberShopId: number, pag?: Pagination) {
@@ -59,10 +58,10 @@ export class BarberShopService extends BaseService<BarberShop, BarberShopZod> {
   }
   
   async updateBarberShop(id: number, data: BarberShopZod) {
-    return await super.update(data, id)
+    return await this.update(data, id)
   }
   
   async deleteBarberShop(id: number) {
-    return await super.delete(id)
+    return await this.delete(id)
   }
 }

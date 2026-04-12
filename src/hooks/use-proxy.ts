@@ -1,6 +1,6 @@
 import { BaseDataError, InvalidUsernameOrPasswordError, isDataResponseError, NetworkConnectionError, UnprocessableEntityError } from '@/providers/errors/error-handler-provider'
 
-type Method = 'get' | 'post' | 'put' | 'delete'
+type Method = 'get' | 'post' | 'patch' | 'put' | 'delete'
 type FetchOptions = Parameters<typeof fetch>[1]
 
 function getFetchParams(url: string, options?: FetchOptions, method?: Method, data?: any) {
@@ -94,6 +94,19 @@ async function _post<T = void>(url: string, data?: any, options?: FetchOptions) 
   }
 }
 
+async function _patch<T = void>(url: string, data?: any, options?: FetchOptions) {
+  const res = await fetch(...getFetchParams(url, options, 'patch', data))
+  const value = await getDataOrError<T>(res)
+  
+  if (value instanceof Error) {
+    throw value
+  }
+  
+  return {
+    data: value
+  }
+}
+
 async function _put<T = void>(url: string, data?: any, options?: FetchOptions) {
   const res = await fetch(...getFetchParams(url, options, 'put', data))
   const value = await getDataOrError<T>(res)
@@ -123,6 +136,7 @@ async function _delete<T = void>(url: string, options?: FetchOptions) {
 const httpClient = {
   get: _get,
   post: _post,
+  patch: _patch,
   put: _put,
   delete: _delete,
 } as const

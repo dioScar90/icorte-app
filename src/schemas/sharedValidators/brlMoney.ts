@@ -14,6 +14,6 @@ export function isBrMoneyGreaterThenZero(value: string) {
   return +(value.replace(/\D/g, '')) > 0
 }
 
-export function getBrlMoneyIntoFloat(value: string) {
-  return +(value.replace(/[^0-9,]/g, '').replace(',', '.')) || 0.00
+export function getBrlMoneyIntoFloatString(value: string) {
+  return String(+(value.replace(/[^0-9,]/g, '').replace(',', '.')) || 0.00)
 }

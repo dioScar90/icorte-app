@@ -1,68 +1,43 @@
-import type { IRecurringScheduleService as Interface } from "./interfaces/IRecurringScheduleService";
 import type { DayOfWeek } from "@/types/datetime/day-of-week";
-import type { ProxyContext } from "@/hooks/use-proxy";
-import { Result } from "../result";
+import { Result, type PaginationResult } from "../result";
+import { BaseService } from "./_baseService";
+import type { RecurringSchedule } from "@/types/models/recurringSchedule";
+import type { RecurringScheduleZod } from "@/schemas/recurringSchedule";
 
 function getUrl(barberShopId: number, dayOfWeek?: DayOfWeek) {
   const baseEndpoint = `/barber-shop/${barberShopId}/recurring-schedule`
   return dayOfWeek === undefined ? baseEndpoint : `${baseEndpoint}/${dayOfWeek}`
 }
 
-export class RecurringScheduleService implements Interface {
-  constructor(private readonly httpClient: ProxyContext) { }
+export class RecurringScheduleService extends BaseService<RecurringSchedule, RecurringScheduleZod> {
+  constructor(httpClient: ConstructorParameters<typeof BaseService>[0]) {
+    super(httpClient, getUrl)
+  }
 
-  createRecurringSchedule: Interface['createRecurringSchedule'] = async (barberShopId, data) => {
+  async createRecurringSchedule(barberShopId: number, data: RecurringScheduleZod) {
+    return await this.create(data, barberShopId)
+  }
+
+  async getRecurringSchedule(barberShopId: number, dayOfWeek: DayOfWeek) {
+    return await this.get(barberShopId, dayOfWeek)
+  }
+
+  async getAllRecurringSchedules(barberShopId: number) {
     const url = getUrl(barberShopId)
 
     try {
-      const res = await this.httpClient.post(url, { ...data })
+      const res = await this.httpClient.get<PaginationResult<RecurringSchedule>>(url)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
   }
 
-  getRecurringSchedule: Interface['getRecurringSchedule'] = async (barberShopId, dayOfWeek) => {
-    const url = getUrl(barberShopId, dayOfWeek)
-
-    try {
-      const res = await this.httpClient.get(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+  async updateRecurringSchedule(barberShopId: number, dayOfWeek: DayOfWeek, data: RecurringScheduleZod) {
+    return await this.update(data, barberShopId, dayOfWeek)
   }
 
-  getAllRecurringSchedules: Interface['getAllRecurringSchedules'] = async (barberShopId) => {
-    const url = getUrl(barberShopId)
-
-    try {
-      const res = await this.httpClient.get(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
-  }
-
-  updateRecurringSchedule: Interface['updateRecurringSchedule'] = async (barberShopId, dayOfWeek, data) => {
-    const url = getUrl(barberShopId, dayOfWeek)
-
-    try {
-      await this.httpClient.put(url, { ...data })
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
-  }
-
-  deleteRecurringSchedule: Interface['deleteRecurringSchedule'] = async (barberShopId, dayOfWeek) => {
-    const url = getUrl(barberShopId, dayOfWeek)
-
-    try {
-      await this.httpClient.delete(url)
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
+  async deleteRecurringSchedule(barberShopId: number, dayOfWeek: DayOfWeek) {
+    return await this.delete(barberShopId, dayOfWeek)
   }
 }

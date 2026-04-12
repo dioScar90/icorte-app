@@ -1,15 +1,15 @@
 import type { ProxyContext } from "@/hooks/use-proxy";
 import { type BaseResult, type CreatedResult, type Pagination, Result } from "@/data/result";
 
-export class BaseService<TEntity, TZod> {
+export abstract class BaseService<TEntity, TZod> {
   constructor(
     protected readonly httpClient: ProxyContext,
     protected readonly getUrl: (...ids: any[]) => string,
-    protected readonly getQueryParams: (pag?: Pagination) => string,
+    protected readonly getQueryParams: (pag?: Pagination) => string = (_pag?: Pagination) => '',
   ) {}
   
-  async create(data: TZod) {
-    const url = this.getUrl()
+  async create(data: TZod, ...ids: any[]) {
+    const url = this.getUrl(...ids)
     
     try {
       const res = await this.httpClient.post<CreatedResult<TEntity>>(url, data)
@@ -19,7 +19,7 @@ export class BaseService<TEntity, TZod> {
     }
   }
   
-  async get(...ids: number[]) {
+  async get(...ids: any[]) {
     const url = this.getUrl(...ids)
     
     try {
@@ -30,7 +30,7 @@ export class BaseService<TEntity, TZod> {
     }
   }
   
-  async update(data: TZod, ...ids: number[]) {
+  async update(data: TZod, ...ids: any[]) {
     const url = this.getUrl(...ids)
     
     try {
@@ -41,7 +41,7 @@ export class BaseService<TEntity, TZod> {
     }
   }
   
-  async delete(...ids: number[]) {
+  async delete(...ids: any[]) {
     const url = this.getUrl(...ids)
     
     try {

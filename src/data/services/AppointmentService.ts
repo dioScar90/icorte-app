@@ -1,60 +1,44 @@
-import type { IAppointmentService as Interface } from "./interfaces/IAppointmentService";
-import type { ProxyContext } from "@/hooks/use-proxy";
-import { Result } from "@/data/result";
+import { Result, type PaginationResult } from "@/data/result";
+import { BaseService } from "./_baseService";
+import type { Appointment } from "@/types/models/appointment";
+import type { AppointmentZod } from "@/schemas/appointment";
 
-function getUrl(id?: number) {
+function getUrl(id?: number, services?: boolean) {
   const baseEndpoint = `/appointment`
-  return !id ? baseEndpoint : `${baseEndpoint}/${id}`
+  const urlWithoutServices = !id ? baseEndpoint : `${baseEndpoint}/${id}`
+  const servicesMaybe = services ? '?services=true' : ''
+  return urlWithoutServices + servicesMaybe
 }
 
-export class AppointmentService implements Interface {
-  constructor(private readonly httpClient: ProxyContext) {}
+export class AppointmentService extends BaseService<Appointment, AppointmentZod> {
+  constructor(httpClient: ConstructorParameters<typeof BaseService>[0]) {
+    super(httpClient, getUrl)
+  }
   
-  createAppointment: Interface['createAppointment'] = async (data) => {
+  async createAppointment(data: AppointmentZod) {
+    return await this.create(data)
+  }
+  
+  async getAppointment(id: number, services?: boolean) {
+    return await this.get(id, services)
+  }
+  
+  async getAllAppointments() {
     const url = getUrl()
     
     try {
-      const res = await this.httpClient.post(url, { ...data })
+      const res = await this.httpClient.get<PaginationResult<Appointment>>(url)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
   }
   
-  getAppointment: Interface['getAppointment'] = async (id, services) => {
-    const url = getUrl(id) + (services ? '?services=true' : '')
-    
-    try {
-      const res = await this.httpClient.get(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+  async updateAppointment(id: number, data: AppointmentZod) {
+    return await this.update(data, id)
   }
-
-  getAllAppointments: Interface['getAllAppointments'] = async () => {
-    const url = getUrl()
-    
-    try {
-      const res = await this.httpClient.get(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
-  }
-
-  updateAppointment: Interface['updateAppointment'] = async (id, data) => {
-    const url = getUrl(id)
-    
-    try {
-      await this.httpClient.put(url, { ...data })
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
-  }
-
-  updatePaymentType: Interface['updatePaymentType'] = async (id, paymentType) => {
+  
+  async updatePaymentType(id: number, paymentType: AppointmentZod['paymentType']) {
     const url = getUrl(id)
     
     try {
@@ -65,14 +49,7 @@ export class AppointmentService implements Interface {
     }
   }
 
-  deleteAppointment: Interface['deleteAppointment'] = async (id) => {
-    const url = getUrl(id)
-    
-    try {
-      await this.httpClient.delete(url)
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
+  async deleteAppointment(id: number) {
+    return await this.delete(id)
   }
 }
