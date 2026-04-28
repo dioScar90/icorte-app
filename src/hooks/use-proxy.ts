@@ -2,12 +2,15 @@ import { BaseDataError, InvalidUsernameOrPasswordError, isDataResponseError, Net
 
 type Method = 'get' | 'post' | 'patch' | 'put' | 'delete'
 type FetchOptions = Parameters<typeof fetch>[1]
+type Headers = NonNullable<FetchOptions>['headers']
 
-function getFetchParams(url: string, options?: FetchOptions, method?: Method, data?: any) {
+async function _fetch(url: string, options?: FetchOptions, method?: Method, data?: any, headers?: Headers) {
   const fullUrl = import.meta.env.VITE_BASE_URL + url
+
+  method ??= 'get'
   
-  const requestParams = {
-    method: method ?? 'get',
+  return await fetch(fullUrl, {
+    method,
     headers: {
       'Content-Type': 'application/json',
       /*
@@ -19,13 +22,12 @@ function getFetchParams(url: string, options?: FetchOptions, method?: Method, da
         'response.headers.location' for some reason . Nothing I tried to do worked.
         I'm redirecting it by myself then.
       */
+      ...headers,
     },
     body: typeof data === 'undefined' ? undefined : JSON.stringify(data),
     credentials: 'include', // equivalent to withCredentials
     ...(options ?? {})
-  } satisfies FetchOptions
-  
-  return [fullUrl, requestParams] as const
+  })
 }
 
 async function getDataOrError<T>(res: Awaited<ReturnType<typeof fetch>>): Promise<T | Error> {
@@ -69,7 +71,7 @@ async function getDataOrError<T>(res: Awaited<ReturnType<typeof fetch>>): Promis
 }
 
 async function _get<T = void>(url: string, options?: FetchOptions) {
-  const res = await fetch(...getFetchParams(url, options))
+  const res = await _fetch(url, options)
   const value = await getDataOrError<T>(res)
   
   if (value instanceof Error) {
@@ -82,7 +84,7 @@ async function _get<T = void>(url: string, options?: FetchOptions) {
 }
 
 async function _post<T = void>(url: string, data?: any, options?: FetchOptions) {
-  const res = await fetch(...getFetchParams(url, options, 'post', data))
+  const res = await _fetch(url, options, 'post', data)
   const value = await getDataOrError<T>(res)
   
   if (value instanceof Error) {
@@ -95,7 +97,7 @@ async function _post<T = void>(url: string, data?: any, options?: FetchOptions) 
 }
 
 async function _patch<T = void>(url: string, data?: any, options?: FetchOptions) {
-  const res = await fetch(...getFetchParams(url, options, 'patch', data))
+  const res = await _fetch(url, options, 'patch', data)
   const value = await getDataOrError<T>(res)
   
   if (value instanceof Error) {
@@ -108,7 +110,7 @@ async function _patch<T = void>(url: string, data?: any, options?: FetchOptions)
 }
 
 async function _put<T = void>(url: string, data?: any, options?: FetchOptions) {
-  const res = await fetch(...getFetchParams(url, options, 'put', data))
+  const res = await _fetch(url, options, 'put', data)
   const value = await getDataOrError<T>(res)
   
   if (value instanceof Error) {
@@ -121,7 +123,7 @@ async function _put<T = void>(url: string, data?: any, options?: FetchOptions) {
 }
 
 async function _delete<T = void>(url: string, options?: FetchOptions) {
-  const res = await fetch(...getFetchParams(url, options, 'delete'))
+  const res = await _fetch(url, options, 'delete')
   const value = await getDataOrError<T>(res)
   
   if (value instanceof Error) {
