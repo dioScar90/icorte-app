@@ -1,18 +1,58 @@
-import { BaseDataError, InvalidUsernameOrPasswordError, isDataResponseError, NetworkConnectionError, UnprocessableEntityError } from '@/providers/errors/error-handler-provider'
+import {
+  BaseDataError,
+  InvalidUsernameOrPasswordError,
+  isDataResponseError,
+  NetworkConnectionError,
+  UnprocessableEntityError,
+} from '@/providers/errors/error-handler-provider'
 
 type Method = 'get' | 'post' | 'patch' | 'put' | 'delete'
 type FetchOptions = Parameters<typeof fetch>[1]
 type Headers = NonNullable<FetchOptions>['headers']
 
+function getContentTypeHeader(data?: any) {
+  if (data == null) {
+    return undefined
+  }
+  
+  const isAutoInferrableType =
+       data instanceof FormData
+    || data instanceof URLSearchParams
+    || data instanceof Blob
+    || data instanceof File
+    || data instanceof ReadableStream
+    
+  if (isAutoInferrableType) {
+    return undefined
+  }
+  
+  if (typeof data === "string") {
+    return { "Content-Type": "text/plain;charset=UTF-8" }
+  }
+  
+  return { "Content-Type": "application/json" }
+}
+
+function getAuthorizationHeader() {
+  const token = '' // getToken()
+
+  if (!token) {
+    return undefined
+  }
+  
+  return { 'Authorization': `Bearer ${token}` }
+}
+
 async function _fetch(url: string, options?: FetchOptions, method?: Method, data?: any, headers?: Headers) {
   const fullUrl = import.meta.env.VITE_BASE_URL + url
-
+  
   method ??= 'get'
   
   return await fetch(fullUrl, {
     method,
     headers: {
-      'Content-Type': 'application/json',
+      ...getContentTypeHeader(data),
+      ...getAuthorizationHeader(),
       /*
         There is no need to set 'Authorization: `Bearer ${token}`' because
         once we're using cookies and 'credentials: true' the token will automatically
