@@ -1,58 +1,48 @@
-import type { IAuthService as Interface } from "./interfaces/IAuthService"
 import type { ProxyContext } from "@/hooks/use-proxy"
-import { Result } from "@/data/result"
+import { Result, type BaseResult, type CreatedResult } from "@/data/result"
+import type { UserLoginZod, UserRegisterZod } from "@/schemas/user"
+import type { UserMe } from "@/types/models/user"
 
-type UrlType = [
-  'register',
-  'login',
-  'logout',
-][number]
+type UrlType =
+  | 'register'
+  | 'login'
+  | 'logout'
 
 function getUrl(final?: UrlType) {
   const baseEndpoint = `/auth`
   return !final ? baseEndpoint : `${baseEndpoint}/${final}`
 }
 
-function transformGenderIntoEnum([data]: Parameters<Interface['register']>) {
-  return {
-    ...data,
-    profile: {
-      ...data.profile,
-      gender: data.profile.gender,
-    }
-  }
-}
-
-export class AuthService implements Interface {
+export class AuthService {
   constructor(private readonly httpClient: ProxyContext) {}
-
-  register: Interface['register'] = async (data) => {
+  
+  async register(data: UserRegisterZod) {
     const url = getUrl('register')
     
     try {
-      const res = await this.httpClient.post(url, { ...data })
+      const res = await this.httpClient.post<CreatedResult<UserMe>>(url, { ...data })
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
   }
 
-  login: Interface['login'] = async (data) => {
+  async login(data: UserLoginZod) {
     const url = getUrl('login')
     
     try {
-      await this.httpClient.post(url, { ...data })
+      await this.httpClient.post<BaseResult<void>>(url, { ...data })
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)
     }
   }
 
-  logout: Interface['logout'] = async () => {
+  async logout() {
     const url = getUrl('logout')
     
     try {
-      await this.httpClient.post(url)
+      await this.httpClient.post<BaseResult<void>>(url)
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)

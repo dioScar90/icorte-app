@@ -1,6 +1,7 @@
-import type { IUserService as Interface } from "./interfaces/IUserService"
 import type { ProxyContext } from "@/hooks/use-proxy"
-import { Result } from "@/data/result"
+import { Result, type BaseResult } from "@/data/result"
+import type { UserMe } from "@/types/models/user"
+import type { UserEmailUpdateZod, UserPasswordUpdateZod, UserPhoneNumberUpdateZod } from "@/schemas/user"
 
 type UrlType =
   | 'me'
@@ -13,58 +14,58 @@ function getUrl(final?: UrlType) {
   return !final ? baseEndpoint : `${baseEndpoint}/${final}`
 }
 
-export class UserService implements Interface {
+export class UserService {
   constructor(private readonly httpClient: ProxyContext) { }
-
-  getMe: Interface['getMe'] = async () => {
+  
+  async getMe() {
     const url = getUrl('me')
     
     try {
-      const res = await this.httpClient.get(url)
+      const res = await this.httpClient.get<BaseResult<UserMe>>(url)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
   }
   
-  changeEmail: Interface['changeEmail'] = async (data) => {
+  async changeEmail(data: UserEmailUpdateZod) {
     const url = getUrl('changeEmail')
     
     try {
-      await this.httpClient.patch(url, { ...data })
+      await this.httpClient.patch<BaseResult<void>>(url, { ...data })
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)
     }
   }
   
-  changePassword: Interface['changePassword'] = async (data) => {
+  async changePassword(data: UserPasswordUpdateZod) {
     const url = getUrl('changePassword')
     
     try {
-      await this.httpClient.patch(url, { ...data })
+      await this.httpClient.patch<BaseResult<void>>(url, { ...data })
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)
     }
   }
   
-  changePhoneNumber: Interface['changePhoneNumber'] = async (data) => {
+  async changePhoneNumber(data: UserPhoneNumberUpdateZod) {
     const url = getUrl('changePhoneNumber')
     
     try {
-      await this.httpClient.patch(url, { ...data })
+      await this.httpClient.patch<BaseResult<void>>(url, { ...data })
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)
     }
   }
 
-  delete: Interface['delete'] = async () => {
+  async delete() {
     const url = getUrl()
     
     try {
-      await this.httpClient.delete(url)
+      await this.httpClient.delete<BaseResult<void>>(url)
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)

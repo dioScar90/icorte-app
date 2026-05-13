@@ -1,13 +1,14 @@
 import type { DateString } from "@/types/datetime/date-string";
-import type { IBarberScheduleService as Interface } from "./interfaces/IBarberScheduleService";
 import type { ProxyContext } from "@/hooks/use-proxy";
-import { Result } from "@/data/result";
+import { Result, type BaseResult, type Pagination, type PaginationResult } from "@/data/result";
+import type { TimeString } from "@/types/datetime/time-string";
+import type { TopBarberShop } from "@/types/models/barberShop";
+import type { ServiceByName } from "@/types/custom-models/service-by-name";
 
-type StrBeforeDateEnum = [
-  'dates',
-  'slots',
-  'services',
-][number]
+type StrBeforeDateEnum =
+  | 'dates'
+  | 'slots'
+  | 'services'
 
 type GetUrlProps = {
   date?: DateString
@@ -63,47 +64,47 @@ function getQueryParams(params?: QueryParamsType) {
   return '?' + searchParams.toString()
 }
 
-export class BarberScheduleService implements Interface {
+export class BarberScheduleService {
   constructor(private readonly httpClient: ProxyContext) { }
 
-  getAvailableDatesForBarber: Interface['getAvailableDatesForBarber'] = async (barberShopId, dateOfWeek) => {
+  async getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateString) {
     const url = getUrl({ date: dateOfWeek, beforeDate: 'dates', barberShopId })
 
     try {
-      const res = await this.httpClient.get(url)
+      const res = await this.httpClient.get<BaseResult<DateString[]>>(url)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
   }
 
-  getAvailableSlots: Interface['getAvailableSlots'] = async (barberShopId, date, serviceIds) => {
+  async getAvailableSlots(barberShopId: number, date: DateString, serviceIds: number[]) {
     const url = getUrl({ date, beforeDate: 'slots', barberShopId }) + getQueryParams({ serviceIds })
 
     try {
-      const res = await this.httpClient.get(url)
+      const res = await this.httpClient.get<BaseResult<TimeString[]>>(url)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
   }
 
-  getTopBarbersWithAvailability: Interface['getTopBarbersWithAvailability'] = async (dateOfWeek) => {
+  async getTopBarbersWithAvailability(dateOfWeek: DateString, pag?: Pagination) {
     const url = getUrl({ date: dateOfWeek })
-
+    
     try {
-      const res = await this.httpClient.get(url)
+      const res = await this.httpClient.get<PaginationResult<TopBarberShop>>(url)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
   }
 
-  searchServicesByNameAsync: Interface['searchServicesByNameAsync'] = async (q) => {
+  async searchServicesByNameAsync(q: string, pag?: Pagination) {
     const url = getUrl({ beforeDate: 'services' }) + getQueryParams({ q })
-
+    
     try {
-      const res = await this.httpClient.get(url)
+      const res = await this.httpClient.get<PaginationResult<ServiceByName>>(url)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
