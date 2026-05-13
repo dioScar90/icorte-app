@@ -178,7 +178,7 @@ function AppointmentDetails() {
     )
   }
 
-  const appointment = appointmentRes.value
+  const appointment = appointmentRes.value.value
 
   const isFinalized = appointment.status === AppointmentStatusEnum.Finalizado
   const canModifyPayment = !isFinalized && userId === appointment.clientId

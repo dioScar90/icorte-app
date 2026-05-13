@@ -32,7 +32,7 @@ export const Route = createFileRoute(
       return []
     }
 
-    return res.value.items ?? []
+    return res.value.value.items ?? []
   },
 })
 

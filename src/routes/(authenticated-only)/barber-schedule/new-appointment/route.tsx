@@ -32,14 +32,14 @@ export const Route = createFileRoute(
               throw resp.error
             }
             
-            if (!resp.value.items.length) {
+            if (!resp.value.value.items.length) {
               return {
                 id: 'NOT_FOUND',
                 description: 'Não encontrado',
               } as const
             }
             
-            return resp.value.items
+            return resp.value.value.items
           })
           .catch(err => {
             handleError(err)
@@ -60,7 +60,7 @@ export const Route = createFileRoute(
               throw resp.error
             }
             
-            if (!resp.value.length) {
+            if (!resp.value.value.length) {
               return []
             }
             
@@ -82,11 +82,11 @@ export const Route = createFileRoute(
               throw resp.error
             }
             
-            if (!resp.value.items.length) {
+            if (!resp.value.value.items.length) {
               return []
             }
             
-            return resp.value.items
+            return resp.value.value.items
           })
           .catch(err => {
             handleError(err)

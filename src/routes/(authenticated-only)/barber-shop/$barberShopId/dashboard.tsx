@@ -20,14 +20,14 @@ export const Route = createFileRoute(
   component: RouteComponent,
   beforeLoad: ({ context, params, search }) => {
     function getPaginationObj(resp?: Awaited<ReturnType<typeof context.barberShop.getAppointments>>) {
-      if (!resp?.value?.items?.length) {
+      if (!resp?.value?.value?.items?.length) {
         return {
           appointments: [],
           pagination: undefined,
         }
       }
 
-      const { items: appointments, ...pagination } = resp.value
+      const { items: appointments, ...pagination } = resp.value.value
 
       return {
         appointments,
