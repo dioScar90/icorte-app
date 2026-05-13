@@ -8,12 +8,11 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { SubmitButton } from '@/components/ui/submit-button'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
-import { type AppointmentZod, PaymentTypeEnum } from '@/schemas/appointment'
+import { type AppointmentZod, paymentTypeAsConst, PaymentTypeEnum } from '@/schemas/appointment'
 import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
 import { getFormattedHour } from '@/schemas/sharedValidators/timeString'
 import { type Appointment } from '@/types/models/appointment'
 import { getNumberAsCurrency } from '@/utils/currency'
-import { getEnumAsArray, getEnumAsString } from '@/utils/enum-transformer'
 import { type TimeString } from '@/types/datetime/time-string'
 import { Link } from '@tanstack/react-router'
 import { createFileRoute, useLocation, useNavigate } from '@tanstack/react-router'
@@ -132,7 +131,7 @@ function FormRemoveAppointment({ appointment, closeModal, setLoadingState, formI
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Forma de pagamento</FormLabel>
-                <Select onValueChange={field.onChange} value={getEnumAsString(PaymentTypeEnum, field.value)} disabled>
+                <Select onValueChange={field.onChange} value={PaymentTypeEnum[field.value]} disabled>
                   <FormControl>
                     <SelectTrigger className="w-[180px]">
                       <SelectValue placeholder="Escolha" />
@@ -140,7 +139,7 @@ function FormRemoveAppointment({ appointment, closeModal, setLoadingState, formI
                   </FormControl>
                   <SelectContent>
                     <SelectGroup>
-                      {getEnumAsArray(PaymentTypeEnum).map(paymentType => (
+                      {paymentTypeAsConst.map(paymentType => (
                         <SelectItem key={paymentType} value={paymentType}>{paymentType}</SelectItem>
                       ))}
                     </SelectGroup>
@@ -253,7 +252,7 @@ function RouteComponent() {
                       <TableCell className="text-center">{getFormattedDate(appointment.date)}</TableCell>
                       <TableCell className="text-center">{appointment.notes ?? '---'}</TableCell>
                       <TableCell className="text-center">
-                        {getEnumAsString(PaymentTypeEnum, appointment.paymentType)}
+                        {PaymentTypeEnum[appointment.paymentType]}
                       </TableCell>
                       <TableCell className="text-center">
                         <Link

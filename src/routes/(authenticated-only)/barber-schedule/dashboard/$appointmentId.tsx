@@ -6,12 +6,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormRoo
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SubmitButton } from '@/components/ui/submit-button'
-import { appointmentSchema, type AppointmentZod, PaymentTypeEnum } from '@/schemas/appointment'
+import { appointmentSchema, type AppointmentZod, paymentTypeAsConst, PaymentTypeEnum } from '@/schemas/appointment'
 import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
 import { getFormattedHour } from '@/schemas/sharedValidators/timeString'
 import { type Appointment, AppointmentStatusEnum } from '@/types/models/appointment'
 import { getNumberAsCurrency } from '@/utils/currency'
-import { getEnumAsArray, getEnumAsString } from '@/utils/enum-transformer'
 import { type TimeString } from '@/types/datetime/time-string'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, type UseQueryResult } from '@tanstack/react-query'
@@ -111,7 +110,7 @@ function FormUpdatePaymentType({ currentPaymentType, formId, setLoadingState, re
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Forma de pagamento</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={getEnumAsString(PaymentTypeEnum, field.value)}>
+                <Select onValueChange={field.onChange} defaultValue={PaymentTypeEnum[field.value]}>
                   <FormControl>
                     <SelectTrigger className="w-[180px]">
                       <SelectValue placeholder="Escolha" />
@@ -119,7 +118,7 @@ function FormUpdatePaymentType({ currentPaymentType, formId, setLoadingState, re
                   </FormControl>
                   <SelectContent>
                     <SelectGroup>
-                      {getEnumAsArray(PaymentTypeEnum).map(paymentType => (
+                      {paymentTypeAsConst.map(paymentType => (
                         <SelectItem key={paymentType} value={paymentType}>{paymentType}</SelectItem>
                       ))}
                     </SelectGroup>
@@ -227,7 +226,7 @@ function AppointmentDetails() {
 
               <div className="flex items-center gap-x-2">
                 <p className={`font-medium`}>
-                  {getEnumAsString(PaymentTypeEnum, appointment.paymentType)}
+                  {PaymentTypeEnum[appointment.paymentType]}
                 </p>
 
                 <Activity mode={canModifyPayment ? 'visible' : 'hidden'}>
@@ -248,7 +247,7 @@ function AppointmentDetails() {
               <Badge
                 variant={isFinalized ? 'success' : 'outline'}
               >
-                {getEnumAsString(AppointmentStatusEnum, appointment.status)}
+                {AppointmentStatusEnum[appointment.status]}
               </Badge>
             </div>
 

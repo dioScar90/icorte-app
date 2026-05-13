@@ -7,7 +7,7 @@ export enum PaymentTypeEnum {
   Pix,
 }
 
-const paymentTypeAsConst = [
+export const paymentTypeAsConst = [
   'Cartão',
   'Dinheiro',
   'Pix',

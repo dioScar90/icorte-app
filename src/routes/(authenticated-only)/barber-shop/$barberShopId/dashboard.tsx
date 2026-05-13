@@ -9,7 +9,6 @@ import { cn } from '@/lib/utils'
 import { PaymentTypeEnum } from '@/schemas/appointment'
 import { getFormattedDate } from '@/schemas/sharedValidators/dateString'
 import { getFormattedHour } from '@/schemas/sharedValidators/timeString'
-import { getEnumAsString } from '@/utils/enum-transformer'
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { DoorClosed, DoorOpen } from 'lucide-react'
@@ -98,7 +97,7 @@ function BarberShopDashboardTbodyItems() {
       <TableCell className="text-center">{client.fullName}</TableCell>
       <TableCell className="text-center">{appointment.notes ?? '---'}</TableCell>
       <TableCell className="text-center">
-        {getEnumAsString(PaymentTypeEnum, appointment.paymentType)}
+        {PaymentTypeEnum[appointment.paymentType]}
       </TableCell>
       <TableCell className="text-center">
         <Link

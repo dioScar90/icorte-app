@@ -1,8 +1,7 @@
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, FormRootErrorMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getEnumAsArray } from "@/utils/enum-transformer"
-import { PaymentTypeEnum } from "@/schemas/appointment"
+import { paymentTypeAsConst } from "@/schemas/appointment"
 import { InputFieldsDatesAndTimeSpans } from "./_formDateTImeFields"
 import { CheckboxFieldsServices } from "./_formCheckboxFieldsServices"
 import { useNavigate, useRouteContext } from "@tanstack/react-router"
@@ -81,7 +80,7 @@ export function FormNewAppointment() {
                   </FormControl>
                   <SelectContent>
                     <SelectGroup>
-                      {getEnumAsArray(PaymentTypeEnum).map(paymentType => (
+                      {paymentTypeAsConst.map(paymentType => (
                         <SelectItem key={paymentType} value={paymentType}>{paymentType}</SelectItem>
                       ))}
                     </SelectGroup>
