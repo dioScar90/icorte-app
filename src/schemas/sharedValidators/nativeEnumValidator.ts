@@ -16,17 +16,6 @@ export function getEnumAsArray<
     .filter(key => Number.isNaN(+key)) as [TKey, ...TKey[]]
 }
 
-export function getEnumAsString<
-  TEnum extends TReadonlyArr,
-  // TKey extends keyof TEnum = keyof TEnum
->(enumItself: TEnum, enumVal?: number) {
-  if (enumVal === undefined) {
-    return undefined
-  }
-  
-  return enumItself[enumVal] as TEnum[number]
-}
-
 export function nativeEnumValidator<
   TArr extends TReadonlyArr,
   TIdx extends IndexesOf<TArr> = IndexesOf<TArr>,

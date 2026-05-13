@@ -2,7 +2,6 @@ import { createContext, useContext, useMemo } from 'react'
 import { daysOfWeek, recurringScheduleSchema } from '@/schemas/recurringSchedule'
 import { Route } from '@/routes/(authenticated-only)/barber-shop/$barberShopId/schedules'
 import { useBarberShopSchedulesForm } from '@/hooks/forms/use-barber-shop-schedules'
-import { getEnumAsString } from '@/schemas/sharedValidators/nativeEnumValidator'
 import { useNavigate } from '@tanstack/react-router'
 import type { z } from 'zod'
 
@@ -87,7 +86,7 @@ export function useInitValuesRecurringScheduleFormContext() {
 
   const form = useBarberShopSchedulesForm({
     defaultValues: {
-      dayOfWeek: getEnumAsString(daysOfWeek, schedule?.dayOfWeek) ?? daysOfWeek[1],
+      dayOfWeek: daysOfWeek[schedule?.dayOfWeek] ?? daysOfWeek[1],
       openTime: schedule?.openTime ?? undefined,
       closeTime: schedule?.closeTime ?? undefined,
     } as z.input<typeof recurringScheduleSchema>,

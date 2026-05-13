@@ -2,7 +2,6 @@ import { buttonVariants } from '@/components/ui/button'
 import { useProfileForm } from '@/hooks/forms/use-profile'
 import { genders } from '@/schemas/profile'
 import { userUpdateSchema } from '@/schemas/user'
-import { getEnumAsString } from '@/schemas/sharedValidators/nativeEnumValidator'
 import { applyMask } from '@/utils/mask'
 import { Link } from '@tanstack/react-router'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
@@ -32,7 +31,7 @@ function RouteComponent() {
       profile: {
         firstName: profile.firstName,
         lastName: profile.lastName,
-        gender: getEnumAsString(genders, profile.gender),
+        gender: genders[profile.gender],
         phoneNumber: applyMask('PHONE_NUMBER', userPhoneNumber),
       },
     } as z.input<typeof userUpdateSchema>,

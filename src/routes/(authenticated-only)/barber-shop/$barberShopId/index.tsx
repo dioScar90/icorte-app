@@ -1,8 +1,7 @@
 import { AspectRatio } from '@/components/ui/aspect-ratio'
 import { buttonVariants } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { StateEnum } from '@/schemas/address'
-import { getEnumAsString } from '@/utils/enum-transformer'
+import { states } from '@/schemas/address'
 import { applyMask } from '@/utils/mask'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Activity } from 'react'
@@ -77,7 +76,7 @@ function RouteComponent() {
             </div>
             <div className="flex justify-between">
               <span className="font-semibold">Estado</span>
-              <span className="text-gray-600">{getEnumAsString(StateEnum, barberShop.address.state)}</span>
+              <span className="text-gray-600">{states[barberShop.address.state]}</span>
             </div>
             <div className="flex justify-between">
               <span className="font-semibold">CEP</span>

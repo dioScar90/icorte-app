@@ -35,8 +35,8 @@ export const Route = createFileRoute(
             }
 
             return {
-              ...res.value,
-              imageUrl: getBarberShopImageUrl(res.value),
+              ...res.value.value,
+              imageUrl: getBarberShopImageUrl(res.value.value),
             }
           })
       }

@@ -12,7 +12,6 @@ import { Switch as ShadcnSwitch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import type { ComponentProps } from 'react'
 import { SubmitButton } from '@/components/ui/submit-button'
-import { getEnumAsString } from '@/schemas/sharedValidators/nativeEnumValidator'
 import { cn } from '@/lib/utils'
 
 export function FormItem({ className, ...props }: ComponentProps<"div">) {
@@ -160,9 +159,9 @@ export function Select({
 }) {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
-
+  
   function getValueAsString(value: unknown) {
-    return getEnumAsString(baseEnum, Number(value))
+    return baseEnum[Number(value)]
   }
   
   return (

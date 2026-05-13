@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useBarberShopForm } from '@/hooks/forms/use-barber-shop'
 import { states } from '@/schemas/address'
 import { barberShopSchema } from '@/schemas/barberShop'
-import { getEnumAsString } from '@/schemas/sharedValidators/nativeEnumValidator'
 import { applyMask } from '@/utils/mask'
 import { Link } from '@tanstack/react-router'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
@@ -42,7 +41,7 @@ function RouteComponent() {
         complement: barberShop.address.complement,
         neighborhood: barberShop.address.neighborhood,
         city: barberShop.address.city,
-        state: getEnumAsString(states, barberShop.address.state),
+        state: states[barberShop.address.state],
         postalCode: applyMask('CEP', barberShop.address.postalCode),
         country: barberShop.address.country,
       }
