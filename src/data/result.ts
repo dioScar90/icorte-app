@@ -1,7 +1,4 @@
-// import { type AxiosResponse } from "axios"
-// import { z } from "zod"
-
-// export const getPaginationObj = (page: number, pageSize?: number) => ({ page: Math.max(1, page), pageSize })
+import { z } from "zod"
 
 export type Pagination = {
   totalItems: number,
@@ -33,12 +30,6 @@ export type PaginationResult<TValue> = {
   },
 }
 
-// export type Result<TValue = null, TError = Error | null> = {
-//   error: TError,
-//   // data: TError extends Error ? null : (BaseResult<TValue> | PaginationResult<TValue>),
-//   data: TError extends Error ? null : (BaseResult<TValue> | PaginationResult<TValue>),
-// }
-
 export type Result<TValue = null, TError = Error | null> =
   | ErrorResult
   | BaseResult<TValue>
@@ -69,18 +60,7 @@ export const Result = {
       items = []
     }
     
-    const pagination = {
-      totalPages: +p?.totalPages || 0,
-      totalItems: +p?.totalItems || 0,
-      pageSize: +p?.pageSize || 0,
-      page: +p?.page || 1,
-      next: 1,
-      prev: 1,
-    }
-    
-    pagination.page = Math.min(pagination.page, pagination.totalPages)
-    pagination.next = Math.min(pagination.page + 1, pagination.totalPages)
-    pagination.prev = Math.min(pagination.page - 1, 1)
+    const pagination = paginationSchemaValidation.safeParse(p).data?.pagination ?? getSafePagination()
     
     return {
       error: null,
@@ -92,83 +72,41 @@ export const Result = {
   },
 } as const
 
-// export class Result<TValue, TError extends TValue extends null ? Error : null> {
-//   #isSuccess: boolean
-//   #error: TError
-//   #value: TValue
+function getSafePagination(values?: Partial<Pagination>) {
+  const p = {
+    totalItems: 0,
+    totalPages: 0,
+    page: 1,
+    pageSize: 0,
+    next: 0,
+    prev: 0,
+  } satisfies Pagination
   
-//   private constructor(value: TValue, error: TError) {
-//     this.#error = error
-//     this.#isSuccess = !(this.#error instanceof Error)
-//     this.#value = value
-//     this.#value = value
-//   }
+  if (typeof values === 'undefined') {
+    return p
+  }
   
-//   get isSuccess() {
-//     return this.#isSuccess
-//   }
+  for (const _key in p) {
+    const key = _key as keyof Pagination
+    p[key] = +values[key]! || p[key]
+  }
   
-//   get value() {
-//     if (!this.#isSuccess) {
-//       throw this.#error!
-//     }
-
-//     return this.#value!
-//   }
+  p.page = p.totalPages > 0 ? Math.min(p.page, p.totalPages) : 1
+  p.next = p.totalPages > 0 ? Math.min(p.page + 1, p.totalPages) : 0
+  p.prev = p.totalPages > 0 ? Math.min(p.page - 1, 1) : 0
   
-//   get error() {
-//     return this.#error
-//   }
+  return p
+}
 
-//   static Success<TValue = void>(value?: TValue) {
-//     return new Result(value, null)
-//   }
-  
-//   static Failure(error: unknown) {
-//     return new Result(null, error instanceof Error ? error : new Error(String(error)))
-//   }
-// }
-
-// export type BaseResult<TValue> = Promise<Result<TValue | null>>
-// export type CreatedResult<TValue> = Promise<Result<CreatedResponse<TValue> | null>>
-// export type PaginationResult<TValue> = Promise<Result<PaginationResponse<TValue> | null>>
-
-// // export type BaseAxiosResult<T> = Promise<AxiosResponse<T | null>>
-// // export type CreatedAxiosResult<T> = Promise<AxiosResponse<CreatedResponse<T> | null>>
-// // export type PaginationAxiosResult<T> = Promise<AxiosResponse<PaginationResponse<T> | null>>
-
-// export const paginationSchemaValidation = z.object({
-//   pagination: z.object({
-//     totalPages: z.number().int().min(0).catch(0),
-//     totalItems: z.number().int().min(0).catch(0),
-//     pageSize: z.number().int().min(0).catch(0),
-//     page: z.number().int().min(1).catch(1),
-//     next: z.number().int().min(1).optional().catch(1),
-//     prev: z.number().int().min(1).optional().catch(1),
-//   }).transform(values => {
-//     if (values.totalPages === 0) {
-//       const { next, prev, ...rest } = values
-      
-//       return {
-//         ...rest,
-//         page: 1,
-//       }
-//     }
-    
-//     const page = Math.min(values.page, values.totalPages)
-//     const next = Math.min(page + 1, values.totalPages)
-//     const prev = Math.min(page - 1, 1)
-    
-//     return {
-//       ...values,
-//       page,
-//       next,
-//       prev,
-//     }
-//   }).optional(),
-// }) /*satisfies z.ZodType<{
-//   pagination?: Omit<PaginationResponse, 'items'> & {
-//     next?: number
-//     prev?: number
-//   }
-// }>*/
+export const paginationSchemaValidation = z.object({
+  pagination: z.object({
+    totalPages: z.number().int().min(0).catch(0),
+    totalItems: z.number().int().min(0).catch(0),
+    pageSize: z.number().int().min(0).catch(0),
+    page: z.number().int().min(1).catch(1),
+    next: z.number().int().min(1).optional().catch(1),
+    prev: z.number().int().min(1).optional().catch(1),
+  }).transform(getSafePagination).optional(),
+}) satisfies z.ZodType<{
+  pagination?: Pagination
+}>
