@@ -1,18 +1,17 @@
 import type { ProxyContext } from "@/hooks/use-proxy";
-import { type BaseResult, type CreatedResult, type Pagination, Result } from "@/data/result";
+import { type BaseResult, type PaginationResult, Result } from "@/data/result";
 
 export abstract class BaseService<TEntity, TZod> {
   constructor(
     protected readonly httpClient: ProxyContext,
     protected readonly getUrl: (...ids: any[]) => string,
-    protected readonly getQueryParams: (pag?: Pagination) => string = (_pag?: Pagination) => '',
   ) {}
   
   async create(data: TZod, ...ids: any[]) {
     const url = this.getUrl(...ids)
     
     try {
-      const res = await this.httpClient.post<CreatedResult<TEntity>>(url, data)
+      const res = await this.httpClient.post<BaseResult<TEntity>['data']>(url, data)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
@@ -23,8 +22,17 @@ export abstract class BaseService<TEntity, TZod> {
     const url = this.getUrl(...ids)
     
     try {
-      const res = await this.httpClient.get<BaseResult<TEntity>>(url)
+      const res = await this.httpClient.get<BaseResult<TEntity>['data']>(url)
       return Result.Success(res.data)
+    } catch (err) {
+      return Result.Failure(err)
+    }
+  }
+  
+  async getAll(url: string) {
+    try {
+      const res = await this.httpClient.get<PaginationResult<TEntity>['data']>(url)
+      return Result.Pagination(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
@@ -34,7 +42,7 @@ export abstract class BaseService<TEntity, TZod> {
     const url = this.getUrl(...ids)
     
     try {
-      await this.httpClient.put<BaseResult<void>>(url, data)
+      await this.httpClient.put(url, data)
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)
@@ -45,7 +53,7 @@ export abstract class BaseService<TEntity, TZod> {
     const url = this.getUrl(...ids)
     
     try {
-      await this.httpClient.delete<BaseResult<void>>(url)
+      await this.httpClient.delete(url)
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)

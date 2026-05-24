@@ -1,5 +1,4 @@
 import type { DateString } from "@/types/datetime/date-string";
-import { Result, type PaginationResult } from "@/data/result";
 import { BaseService } from "./_baseService";
 import type { SpecialSchedule } from "@/types/models/specialSchedule";
 import type { SpecialScheduleZod } from "@/schemas/specialSchedule";
@@ -24,13 +23,7 @@ export class SpecialScheduleService extends BaseService<SpecialSchedule, Special
 
   async getAllSpecialSchedules(barberShopId: number) {
     const url = getUrl(barberShopId)
-
-    try {
-      const res = await this.httpClient.get<PaginationResult<SpecialSchedule>>(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this.getAll(url)
   }
 
   async updateSpecialSchedule(barberShopId: number, date: DateString, data: SpecialScheduleZod) {

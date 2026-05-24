@@ -24,13 +24,7 @@ export class RecurringScheduleService extends BaseService<RecurringSchedule, Rec
 
   async getAllRecurringSchedules(barberShopId: number) {
     const url = getUrl(barberShopId)
-
-    try {
-      const res = await this.httpClient.get<PaginationResult<RecurringSchedule>>(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this.getAll(url)
   }
 
   async updateRecurringSchedule(barberShopId: number, dayOfWeek: DayOfWeek, data: RecurringScheduleZod) {

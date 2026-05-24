@@ -33,7 +33,7 @@ export const Route = createFileRoute(
             if (!res.isSuccess) {
               return null
             }
-
+            
             return {
               ...res.value.value,
               imageUrl: getBarberShopImageUrl(res.value.value),

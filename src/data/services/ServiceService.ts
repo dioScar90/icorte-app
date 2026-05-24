@@ -1,5 +1,4 @@
 import { getBrlMoneyIntoFloatString } from "@/schemas/sharedValidators/brlMoney";
-import { Result, type PaginationResult } from "@/data/result";
 import { BaseService } from "./_baseService";
 import type { ServiceZod } from "@/schemas/service";
 import type { Service } from "@/types/models/service";
@@ -32,13 +31,7 @@ export class ServiceService extends BaseService<Service, ServiceZod> {
 
   async getAllServices(barberShopId: number) {
     const url = getUrl(barberShopId)
-    
-    try {
-      const res = await this.httpClient.get<PaginationResult<Service>>(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this.getAll(url)
   }
 
   async updateService(barberShopId: number, serviceId: number, data: ServiceZod) {

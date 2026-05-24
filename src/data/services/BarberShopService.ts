@@ -35,7 +35,7 @@ function getQueryParams(pag?: Pagination) {
 
 export class BarberShopService extends BaseService<BarberShop, BarberShopZod> {
   constructor(httpClient: ConstructorParameters<typeof BaseService>[0]) {
-    super(httpClient, getUrl, getQueryParams)
+    super(httpClient, getUrl)
   }
   
   async createBarberShop(data: BarberShopZod) {
@@ -48,13 +48,7 @@ export class BarberShopService extends BaseService<BarberShop, BarberShopZod> {
   
   async getAppointmentsByBarberShop(barberShopId: number, pag?: Pagination) {
     const url = getUrl(barberShopId, true) + getQueryParams(pag)
-    
-    try {
-      const res = await this.httpClient.get<PaginationResult<AppointmentByBarberShop>>(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this.getAll(url)
   }
   
   async updateBarberShop(id: number, data: BarberShopZod) {

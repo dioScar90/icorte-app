@@ -1,4 +1,3 @@
-import { Result, type PaginationResult } from "@/data/result";
 import { BaseService } from "./_baseService";
 import type { ReportZod } from "@/schemas/report";
 import type { Report } from "@/types/models/report";
@@ -23,13 +22,7 @@ export class ReportService extends BaseService<Report, ReportZod> {
 
   async getAllReports(barberShopId: number) {
     const url = getUrl(barberShopId)
-    
-    try {
-      const res = await this.httpClient.get<PaginationResult<Report>>(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this.getAll(url)
   }
 
   async updateReport(barberShopId: number, id: number, data: ReportZod) {

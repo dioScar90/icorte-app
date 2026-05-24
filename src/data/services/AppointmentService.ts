@@ -25,13 +25,7 @@ export class AppointmentService extends BaseService<Appointment, AppointmentZod>
   
   async getAllAppointments() {
     const url = getUrl()
-    
-    try {
-      const res = await this.httpClient.get<PaginationResult<Appointment>>(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this.getAll(url)
   }
   
   async updateAppointment(id: number, data: AppointmentZod) {

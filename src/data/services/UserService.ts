@@ -21,7 +21,7 @@ export class UserService {
     const url = getUrl('me')
     
     try {
-      const res = await this.httpClient.get<BaseResult<UserMe>>(url)
+      const res = await this.httpClient.get<BaseResult<UserMe>['data']>(url)
       return Result.Success(res.data)
     } catch (err) {
       return Result.Failure(err)
@@ -32,7 +32,7 @@ export class UserService {
     const url = getUrl('changeEmail')
     
     try {
-      await this.httpClient.patch<BaseResult<void>>(url, { ...data })
+      await this.httpClient.patch(url, { ...data })
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)
@@ -43,7 +43,7 @@ export class UserService {
     const url = getUrl('changePassword')
     
     try {
-      await this.httpClient.patch<BaseResult<void>>(url, { ...data })
+      await this.httpClient.patch(url, { ...data })
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)
@@ -54,7 +54,7 @@ export class UserService {
     const url = getUrl('changePhoneNumber')
     
     try {
-      await this.httpClient.patch<BaseResult<void>>(url, { ...data })
+      await this.httpClient.patch(url, { ...data })
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)
@@ -65,7 +65,7 @@ export class UserService {
     const url = getUrl()
     
     try {
-      await this.httpClient.delete<BaseResult<void>>(url)
+      await this.httpClient.delete(url)
       return Result.Success()
     } catch (err) {
       return Result.Failure(err)

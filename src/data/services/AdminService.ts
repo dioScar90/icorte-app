@@ -3,17 +3,18 @@ import { Result } from "@/data/result";
 import type { AppointmentsAdminZod, BaseAdminZod, ResetPasswordZod } from "@/routes/(authenticated-only)/admin/route";
 import type { UserByName } from "@/types/custom-models/user-by-name";
 
-type UrlType =
-  | 'remove-all'
-  | 'populate-all'
-  | 'populate-appointments'
-  | 'reset-password'
-  | 'search-users'
-  | 'last-users'
+const URL_TYPE_METHODS = {
+  'remove-all': 'delete',
+  'populate-all': 'post',
+  'populate-appointments': 'post',
+  'reset-password': 'post',
+  'search-users': 'get',
+  'last-users': 'get',
+} as const
 
-function getUrl(type: UrlType) {
+function getUrl(urlType: keyof typeof URL_TYPE_METHODS) {
   const baseEndpoint = `/admin`
-  return `${baseEndpoint}/${type}`
+  return `${baseEndpoint}/${urlType}`
 }
 
 type QueryParamsType = Partial<{
@@ -52,7 +53,7 @@ function getQueryParams(params?: QueryParamsType) {
   return '?' + searchParams.toString()
 }
 
-function getPassphraseAsCustomizedHeader(passphrase: string) {
+function getCustomHeader(passphrase: string) {
   const CUSTOMIZED_HEADER_PASSPHRASE_NAME = 'X-Admin-Passphrase'
 
   return {
@@ -67,12 +68,16 @@ export class AdminService {
   
   private async _fetch<
     TReturn = void,
-    TMethod extends keyof ProxyContext = keyof ProxyContext,
+    TUrlType extends keyof typeof URL_TYPE_METHODS = keyof typeof URL_TYPE_METHODS,
+    TMethod extends typeof URL_TYPE_METHODS[TUrlType] = typeof URL_TYPE_METHODS[TUrlType],
     TArgs extends Parameters<ProxyContext[TMethod]> = Parameters<ProxyContext[TMethod]>,
-  >(method: TMethod, ...[url, ...rest]: TArgs) {
+  >(urlType: TUrlType, ...[url, ...rest]: TArgs) {
     try {
-      if (method === 'get') {
-        return Result.Success(await this.httpClient[method]<TReturn>(url, ...rest))
+      const method = URL_TYPE_METHODS[urlType]
+      
+      if (urlType === 'search-users' || urlType === 'last-users') {
+        const res = await this.httpClient[method]<TReturn>(url, ...rest)
+        return Result.Success({ item: res.data })
       }
       
       await this.httpClient[method]<TReturn>(url, ...rest)
@@ -83,36 +88,38 @@ export class AdminService {
   }
   
   async removeAll({ passphrase, evenMasterAdmin }: BaseAdminZod) {
-    const url = getUrl('remove-all') + getQueryParams({ evenMasterAdmin })
-    const options = getPassphraseAsCustomizedHeader(passphrase)
-    return await this._fetch('delete', url, options)
+    const urlType = 'remove-all'
+    const url = getUrl(urlType) + getQueryParams({ evenMasterAdmin })
+    return await this._fetch(urlType, url, getCustomHeader(passphrase))
   }
   
   async populateAll({ passphrase }: BaseAdminZod) {
-    const url = getUrl('populate-all')
-    const options = getPassphraseAsCustomizedHeader(passphrase)
-    return await this._fetch('post', url, null, options)
+    const urlType = 'populate-all'
+    const url = getUrl(urlType)
+    return await this._fetch(urlType, url, null, getCustomHeader(passphrase))
   }
   
   async populateWithAppointments({ passphrase, ...rest }: AppointmentsAdminZod) {
-    const url = getUrl('populate-appointments') + getQueryParams(rest)
-    const options = getPassphraseAsCustomizedHeader(passphrase)
-    return await this._fetch('post', url, null, options)
+    const urlType = 'populate-appointments'
+    const url = getUrl(urlType) + getQueryParams(rest)
+    return await this._fetch(urlType, url, null, getCustomHeader(passphrase))
   }
   
   async resetPasswordForSomeUser({ passphrase, email }: ResetPasswordZod) {
-    const url = getUrl('reset-password')
-    const options = getPassphraseAsCustomizedHeader(passphrase)
-    return await this._fetch('post', url, { email }, options)
+    const urlType = 'reset-password'
+    const url = getUrl(urlType)
+    return await this._fetch(urlType, url, { email }, getCustomHeader(passphrase))
   }
 
   async searchUserByName(q: string) {
-    const url = getUrl('search-users') + getQueryParams({ q })
-    return await this._fetch<UserByName[]>('get', url)
+    const urlType = 'search-users'
+    const url = getUrl(urlType) + getQueryParams({ q })
+    return await this._fetch<UserByName[]>(urlType, url)
   }
   
   async getLastUsers(take?: number) {
-    const url = getUrl('last-users') + getQueryParams({ take })
-    return await this._fetch<UserByName[]>('get', url)
+    const urlType = 'last-users'
+    const url = getUrl(urlType) + getQueryParams({ take })
+    return await this._fetch<UserByName[]>(urlType, url)
   }
 }
