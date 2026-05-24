@@ -22,15 +22,15 @@ export const Route = createFileRoute(
       queryFn: () => context.admin.getLastUsers(init ?? search?.take)
         .then(resp => resp)
         .then(resp => {
-          if (!resp.isSuccess) {
+          if (resp.error) {
             throw resp.error
           }
 
-          if (!resp.value?.length) {
+          if (!resp.data.item?.length) {
             return []
           }
 
-          return resp.value
+          return resp.data.item
         })
         .catch(err => {
           context.handleError(err)

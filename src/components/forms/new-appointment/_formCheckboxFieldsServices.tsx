@@ -22,9 +22,9 @@ function LoadedFieldsServices() {
     from: '/(authenticated-only)/barber-schedule/new-appointment',
     select: (s) => s.allServicesQueryOptions,
   })
-
+  
   const { data: services } = useSuspenseQuery(queryOptions(barberShopId))
-
+  
   if (!services?.length) {
     return (
       <p>Nenhum item para exibir</p>

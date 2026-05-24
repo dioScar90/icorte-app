@@ -35,7 +35,7 @@ function RouteComponent() {
     try {
       const result = await populateAll(values)
 
-      if (!result.isSuccess) {
+      if (result.error) {
         throw result.error
       }
       

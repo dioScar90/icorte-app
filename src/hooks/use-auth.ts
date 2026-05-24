@@ -2,7 +2,6 @@ import { AuthService } from "@/data/services/AuthService"
 import type { UserLoginZod, UserRegisterZod } from "@/schemas/user"
 import type { UserMe } from "@/types/models/user"
 import { useEffect, useReducer, useLayoutEffect } from "react"
-import type { IAuthService } from "@/data/services/interfaces/IAuthService"
 import { genders } from "@/schemas/profile"
 import type { ProxyContext } from "./use-proxy"
 import { UserService } from "@/data/services/UserService"
@@ -23,9 +22,9 @@ export type AuthContext<TUser extends AuthUser | null = AuthUser | null> = {
   isClient: TUser extends AuthUser ? boolean : false
   isBarberShop: TUser extends AuthUser ? boolean : false
   isAdmin: TUser extends AuthUser ? boolean : false
-  register: (data: UserRegisterZod) => ReturnType<IAuthService['register']>
-  login: (data: UserLoginZod) => ReturnType<IAuthService['login']>
-  logout: () => ReturnType<IAuthService['logout']>
+  register: (data: UserRegisterZod) => ReturnType<AuthService['register']>
+  login: (data: UserLoginZod) => ReturnType<AuthService['login']>
+  logout: () => ReturnType<AuthService['logout']>
 }
 
 function isTypeUser(value: unknown): value is AuthUser {
@@ -149,8 +148,8 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 async function getMe(httpClient: ProxyContext) {
   const service = new UserService(httpClient)
   const resp = await service.getMe()
-
-  return resp.isSuccess ? resp?.value : null
+  
+  return resp.error ? null : resp.data.item
 }
 
 export function useAuth(httpClient: ProxyContext): AuthContext {
@@ -167,10 +166,10 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
 
     const result = await service.register(...args)
 
-    if (result.isSuccess && isTypeUser(result.value.item)) {
-      dispatch({ type: 'SET_USER', payload: result.value.item })
-    } else {
+    if (result.error) {
       dispatch({ type: 'LOGIN_FAILURE' })
+    } else {
+      dispatch({ type: 'SET_USER', payload: result.data.item })
     }
     
     return result
@@ -180,13 +179,13 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
     dispatch({ type: 'SET_LOADING' })
 
     const result = await service.login(...args)
-
-    if (result.isSuccess) {
-      dispatch({ type: 'LOGIN_SUCCESS' })
-    } else {
+    
+    if (result.error) {
       dispatch({ type: 'LOGIN_FAILURE' })
+    } else {
+      dispatch({ type: 'LOGIN_SUCCESS' })
     }
-
+    
     return result
   }
 

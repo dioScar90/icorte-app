@@ -75,7 +75,7 @@ function FormUpdatePaymentType({ currentPaymentType, formId, setLoadingState, re
     try {
       const result = await updatePaymentType(appointmentId, paymentType)
 
-      if (!result.isSuccess) {
+      if (result.error) {
         throw result.error
       }
 
@@ -168,7 +168,7 @@ function AppointmentDetails() {
     return <Skeleton className="h-40 w-full" />
   }
 
-  if (error || !appointmentRes?.isSuccess) {
+  if (error || appointmentRes?.error) {
     const errorMessage = error?.message || appointmentRes?.error?.message || 'Erro ao carregar os detalhes do agendamento.'
 
     return (
@@ -177,9 +177,9 @@ function AppointmentDetails() {
       </p>
     )
   }
-
-  const appointment = appointmentRes.value.value
-
+  
+  const appointment = appointmentRes!.data.item
+  
   const isFinalized = appointment.status === AppointmentStatusEnum.Finalizado
   const canModifyPayment = !isFinalized && userId === appointment.clientId
 

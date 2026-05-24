@@ -30,12 +30,12 @@ export function FormNewAppointment() {
     try {
       const result = await createAppointment(data)
 
-      if (!result.isSuccess) {
+      if (result.error) {
         throw result.error
       }
 
-      appointmentId = result.value.item.id
-      message = result.value?.message ?? 'Horário marcado com sucesso'
+      appointmentId = result.data.item.id
+      message = result.data?.message ?? 'Horário marcado com sucesso'
     } catch (err) {
       handleError(err, form)
     } finally {

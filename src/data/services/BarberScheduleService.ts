@@ -1,6 +1,6 @@
 import type { DateString } from "@/types/datetime/date-string";
 import type { ProxyContext } from "@/hooks/use-proxy";
-import { Result, type BaseResult, type Pagination, type PaginationResult } from "@/data/result";
+import { Result, type Pagination, type PaginationResult } from "@/data/result";
 import type { TimeString } from "@/types/datetime/time-string";
 import type { TopBarberShop } from "@/types/models/barberShop";
 import type { ServiceByName } from "@/types/custom-models/service-by-name";
@@ -71,8 +71,8 @@ export class BarberScheduleService {
     const url = getUrl({ date: dateOfWeek, beforeDate: 'dates', barberShopId })
 
     try {
-      const res = await this.httpClient.get<BaseResult<DateString[]>['data']>(url)
-      return Result.Success(res.data)
+      const res = await this.httpClient.get<PaginationResult<DateString[]>['data']>(url)
+      return Result.Pagination(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
@@ -82,8 +82,8 @@ export class BarberScheduleService {
     const url = getUrl({ date, beforeDate: 'slots', barberShopId }) + getQueryParams({ serviceIds })
     
     try {
-      const res = await this.httpClient.get<BaseResult<TimeString[]>['data']>(url)
-      return Result.Success(res.data)
+      const res = await this.httpClient.get<PaginationResult<TimeString[]>['data']>(url)
+      return Result.Pagination(res.data)
     } catch (err) {
       return Result.Failure(err)
     }

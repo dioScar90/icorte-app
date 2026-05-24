@@ -67,18 +67,18 @@ function RouteComponent() {
         const values = barberShopSchema.parse(value)
         const result = await register(values)
   
-        if (!result.isSuccess) {
+        if (result.error) {
           throw result.error
         }
   
         navigate({
           to: '/barber-shop/$barberShopId/dashboard',
           params: {
-            barberShopId: result.value.item.id,
+            barberShopId: result.data.item.id,
           },
           state: {
             alert: {
-              message: result.value?.message,
+              message: result.data?.message,
             },
           },
         })

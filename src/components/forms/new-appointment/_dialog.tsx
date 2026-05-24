@@ -3,10 +3,10 @@ import { FormNewAppointment } from './_form'
 import { Button } from '@/components/ui/button'
 import { Scissors } from 'lucide-react'
 import { useSearch } from '@tanstack/react-router'
-import { createContext, PropsWithChildren, useContext } from 'react'
+import { createContext, type PropsWithChildren, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { appointmentSchema, AppointmentZod } from '@/schemas/appointment'
+import { appointmentSchema, type AppointmentZod } from '@/schemas/appointment'
 
 type ContextType = {
   formId: string

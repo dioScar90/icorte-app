@@ -30,13 +30,13 @@ export const Route = createFileRoute(
         loadBarber: () => context.barberShop.service.getBarberShop(params.barberShopId)
           .then(res => res)
           .then(res => {
-            if (!res.isSuccess) {
+            if (res.error) {
               return null
             }
             
             return {
-              ...res.value.value,
-              imageUrl: getBarberShopImageUrl(res.value.value),
+              ...res.data.item,
+              imageUrl: getBarberShopImageUrl(res.data.item),
             }
           })
       }

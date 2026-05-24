@@ -28,18 +28,18 @@ export const Route = createFileRoute(
         queryFn: () => barberSchedule.servicesByName(search.q!)
           .then(resp => resp)
           .then(resp => {
-            if (!resp.isSuccess) {
+            if (resp.error) {
               throw resp.error
             }
             
-            if (!resp.value.value.items.length) {
+            if (!resp.data.items.length) {
               return {
                 id: 'NOT_FOUND',
                 description: 'Não encontrado',
               } as const
             }
             
-            return resp.value.value.items
+            return resp.data.items
           })
           .catch(err => {
             handleError(err)
@@ -56,15 +56,15 @@ export const Route = createFileRoute(
         queryFn: () => barberSchedule.getAbailableSlots(...args)
           .then(resp => resp)
           .then(resp => {
-            if (!resp.isSuccess) {
+            if (resp.error) {
               throw resp.error
             }
             
-            if (!resp.value.value.length) {
+            if (!resp.data.items.length) {
               return []
             }
             
-            return resp.value
+            return resp.data.items
           })
           .catch(err => {
             handleError(err)
@@ -78,15 +78,15 @@ export const Route = createFileRoute(
         queryFn: () => barberSchedule.getAllServices(...args)
           .then(resp => resp)
           .then(resp => {
-            if (!resp.isSuccess) {
+            if (resp.error) {
               throw resp.error
             }
             
-            if (!resp.value.value.items.length) {
+            if (!resp.data.items.length) {
               return []
             }
             
-            return resp.value.value.items
+            return resp.data.items
           })
           .catch(err => {
             handleError(err)

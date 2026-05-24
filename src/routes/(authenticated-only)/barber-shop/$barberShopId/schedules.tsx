@@ -66,7 +66,7 @@ export const Route = createFileRoute(
 
         getAll: () => recurringRep.getAllRecurringSchedules(params.barberShopId)
           .then(res => res)
-          .then(res => res.isSuccess && res.value.items?.length > 0 ? res.value.items : [])
+          .then(res => !res.error && res.data.items.length > 0 ? res.data.items : [])
           .catch(() => []),
       },
 
@@ -77,7 +77,7 @@ export const Route = createFileRoute(
 
         getAll: () => specialRep.getAllSpecialSchedules(params.barberShopId)
           .then(res => res)
-          .then(res => res.isSuccess && res.value.items?.length > 0 ? res.value.items : [])
+          .then(res => !res.error && res.data.items.length > 0 ? res.data.items : [])
           .catch(() => []),
       },
     }

@@ -54,7 +54,7 @@ function RouteComponent() {
         const values = barberShopSchema.parse(value)
         const result = await update(barberShop.id, values)
   
-        if (!result.isSuccess) {
+        if (result.error) {
           throw result.error
         }
   

@@ -36,7 +36,7 @@ function RouteComponent() {
     try {
       const result = await removeAll(values)
 
-      if (!result.isSuccess) {
+      if (result.error) {
         throw result.error
       }
 

@@ -44,7 +44,7 @@ function RouteComponent() {
     try {
       const result = await popAppointments(values)
 
-      if (!result.isSuccess) {
+      if (result.error) {
         throw result.error
       }
       
