@@ -30,7 +30,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Activity, useEffect, useState } from "react"
 import Swal from "sweetalert2"
-import { Link, useNavigate, useRouteContext } from "@tanstack/react-router"
+import { Link, useNavigate } from "@tanstack/react-router"
 import type { AuthContext } from "@/hooks/use-auth"
 import { Route } from "@/routes/__root"
 
@@ -70,7 +70,7 @@ function SidebarFooterItself({ user: userFromUseAuth, logout, closeSidebar }: Si
       .then(async ({ isConfirmed }) => {
         if (isConfirmed) {
           logout()
-            .then(({ isSuccess }) => isSuccess ? navigate({ to: '/login' }) : null)
+            .then(({ error }) => error ? null : navigate({ to: '/login' }))
         }
       })
   }

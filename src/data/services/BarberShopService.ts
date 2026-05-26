@@ -1,7 +1,6 @@
-import { type Pagination, type PaginationResult, Result } from "@/data/result";
+import { type Pagination } from "@/data/result";
 import type { BarberShopZod } from "@/schemas/barberShop";
 import type { BarberShop } from "@/types/models/barberShop";
-import type { AppointmentByBarberShop } from "@/types/custom-models/appointment-by-barber-shop";
 import { BaseService } from "./_baseService";
 
 function getUrl(id?: number, appointments?: boolean) {

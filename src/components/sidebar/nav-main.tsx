@@ -16,7 +16,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import { Link, useRouteContext } from "@tanstack/react-router"
+import { Link } from "@tanstack/react-router"
 import { Activity, useEffect, useState } from "react"
 import type { SidebarNavProps } from "./app-sidebar"
 import type { AuthContext } from "@/hooks/use-auth"

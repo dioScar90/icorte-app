@@ -71,7 +71,7 @@ export class BarberScheduleService {
     const url = getUrl({ date: dateOfWeek, beforeDate: 'dates', barberShopId })
 
     try {
-      const res = await this.httpClient.get<PaginationResult<DateString[]>['data']>(url)
+      const res = await this.httpClient.get<PaginationResult<DateString>['data']>(url)
       return Result.Pagination(res.data)
     } catch (err) {
       return Result.Failure(err)
@@ -82,14 +82,14 @@ export class BarberScheduleService {
     const url = getUrl({ date, beforeDate: 'slots', barberShopId }) + getQueryParams({ serviceIds })
     
     try {
-      const res = await this.httpClient.get<PaginationResult<TimeString[]>['data']>(url)
+      const res = await this.httpClient.get<PaginationResult<TimeString>['data']>(url)
       return Result.Pagination(res.data)
     } catch (err) {
       return Result.Failure(err)
     }
   }
 
-  async getTopBarbersWithAvailability(dateOfWeek: DateString, pag?: Pagination) {
+  async getTopBarbersWithAvailability(dateOfWeek: DateString, _pag?: Pagination) {
     const url = getUrl({ date: dateOfWeek })
     
     try {
@@ -100,7 +100,7 @@ export class BarberScheduleService {
     }
   }
 
-  async searchServicesByNameAsync(q: string, pag?: Pagination) {
+  async searchServicesByNameAsync(q: string, _pag?: Pagination) {
     const url = getUrl({ beforeDate: 'services' }) + getQueryParams({ q })
     
     try {

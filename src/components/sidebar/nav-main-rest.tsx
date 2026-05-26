@@ -1,5 +1,5 @@
 import { SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar"
-import { Link, useRouteContext } from "@tanstack/react-router"
+import { Link } from "@tanstack/react-router"
 import { LogInIcon, UserRoundPlusIcon } from "lucide-react"
 import type { SidebarNavProps } from "./app-sidebar"
 import { Route } from "@/routes/__root"

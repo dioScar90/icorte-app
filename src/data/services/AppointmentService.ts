@@ -1,4 +1,4 @@
-import { Result, type PaginationResult } from "@/data/result";
+import { Result } from "@/data/result";
 import { BaseService } from "./_baseService";
 import type { Appointment } from "@/types/models/appointment";
 import type { AppointmentZod } from "@/schemas/appointment";

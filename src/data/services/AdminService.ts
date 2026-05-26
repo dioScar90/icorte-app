@@ -1,19 +1,56 @@
-import type { ProxyContext } from "@/hooks/use-proxy";
-import { Result } from "@/data/result";
 import type { AppointmentsAdminZod, BaseAdminZod, ResetPasswordZod } from "@/routes/(authenticated-only)/admin/route";
 import type { UserByName } from "@/types/custom-models/user-by-name";
+import { BaseCustomService } from "./_baseCustomService";
 
-const URL_TYPE_METHODS = {
-  'remove-all': 'delete',
-  'populate-all': 'post',
-  'populate-appointments': 'post',
-  'reset-password': 'post',
-  'search-users': 'get',
-  'last-users': 'get',
+const ROUTE_DETAILS = {
+  REMOVE_ALL: {
+    key: 'REMOVE_ALL',
+    route: 'remove-all',
+    method: 'delete',
+    mustReturn: false,
+    isPagination: false,
+  },
+  POPULATE_ALL: {
+    key: 'POPULATE_ALL',
+    route: 'populate-all',
+    method: 'post',
+    mustReturn: false,
+    isPagination: false,
+  },
+  POPULATE_APPOINTMENTS: {
+    key: 'POPULATE_APPOINTMENTS',
+    route: 'populate-appointments',
+    method: 'post',
+    mustReturn: false,
+    isPagination: false,
+  },
+  RESET_PASSWORD: {
+    key: 'RESET_PASSWORD',
+    route: 'reset-password',
+    method: 'post',
+    mustReturn: false,
+    isPagination: false,
+  },
+  SEARCH_USERS: {
+    key: 'SEARCH_USERS',
+    route: 'search-users',
+    method: 'get',
+    mustReturn: true,
+    isPagination: true,
+  },
+  LAST_USERS: {
+    key: 'LAST_USERS',
+    route: 'last-users',
+    method: 'get',
+    mustReturn: true,
+    isPagination: true,
+  },
 } as const
 
-function getUrl(urlType: keyof typeof URL_TYPE_METHODS) {
+function getUrl(routeKey: keyof typeof ROUTE_DETAILS) {
+  const urlType = ROUTE_DETAILS[routeKey].route
   const baseEndpoint = `/admin`
+
   return `${baseEndpoint}/${urlType}`
 }
 
@@ -55,7 +92,7 @@ function getQueryParams(params?: QueryParamsType) {
 
 function getCustomHeader(passphrase: string) {
   const CUSTOMIZED_HEADER_PASSPHRASE_NAME = 'X-Admin-Passphrase'
-
+  
   return {
     headers: {
       [CUSTOMIZED_HEADER_PASSPHRASE_NAME]: passphrase
@@ -63,63 +100,38 @@ function getCustomHeader(passphrase: string) {
   }
 }
 
-export class AdminService {
-  constructor(private readonly httpClient: ProxyContext) { }
-  
-  private async _fetch<
-    TReturn = void,
-    TUrlType extends keyof typeof URL_TYPE_METHODS = keyof typeof URL_TYPE_METHODS,
-    TMethod extends typeof URL_TYPE_METHODS[TUrlType] = typeof URL_TYPE_METHODS[TUrlType],
-    TArgs extends Parameters<ProxyContext[TMethod]> = Parameters<ProxyContext[TMethod]>,
-  >(urlType: TUrlType, ...[url, ...rest]: TArgs) {
-    try {
-      const method = URL_TYPE_METHODS[urlType]
-      
-      if (urlType === 'search-users' || urlType === 'last-users') {
-        const res = await this.httpClient[method]<TReturn>(url, ...rest)
-        return Result.Success({ item: res.data })
-      }
-      
-      await this.httpClient[method]<TReturn>(url, ...rest)
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
+export class AdminService extends BaseCustomService {
+  constructor(httpClient: ConstructorParameters<typeof BaseCustomService>[0]) {
+    super(httpClient, ROUTE_DETAILS)
   }
   
   async removeAll({ passphrase, evenMasterAdmin }: BaseAdminZod) {
-    const urlType = 'remove-all'
-    const url = getUrl(urlType) + getQueryParams({ evenMasterAdmin })
-    return await this._fetch(urlType, url, getCustomHeader(passphrase))
+    const url = getUrl(ROUTE_DETAILS.REMOVE_ALL.key) + getQueryParams({ evenMasterAdmin })
+    return await this._fetch(ROUTE_DETAILS.REMOVE_ALL.key, url, getCustomHeader(passphrase))
   }
   
   async populateAll({ passphrase }: BaseAdminZod) {
-    const urlType = 'populate-all'
-    const url = getUrl(urlType)
-    return await this._fetch(urlType, url, null, getCustomHeader(passphrase))
+    const url = getUrl(ROUTE_DETAILS.POPULATE_ALL.key)
+    return await this._fetch(ROUTE_DETAILS.POPULATE_ALL.key, url, null, getCustomHeader(passphrase))
   }
   
   async populateWithAppointments({ passphrase, ...rest }: AppointmentsAdminZod) {
-    const urlType = 'populate-appointments'
-    const url = getUrl(urlType) + getQueryParams(rest)
-    return await this._fetch(urlType, url, null, getCustomHeader(passphrase))
+    const url = getUrl(ROUTE_DETAILS.POPULATE_APPOINTMENTS.key) + getQueryParams(rest)
+    return await this._fetch(ROUTE_DETAILS.POPULATE_APPOINTMENTS.key, url, null, getCustomHeader(passphrase))
   }
   
   async resetPasswordForSomeUser({ passphrase, email }: ResetPasswordZod) {
-    const urlType = 'reset-password'
-    const url = getUrl(urlType)
-    return await this._fetch(urlType, url, { email }, getCustomHeader(passphrase))
+    const url = getUrl(ROUTE_DETAILS.RESET_PASSWORD.key)
+    return await this._fetch(ROUTE_DETAILS.RESET_PASSWORD.key, url, { email }, getCustomHeader(passphrase))
   }
-
+  
   async searchUserByName(q: string) {
-    const urlType = 'search-users'
-    const url = getUrl(urlType) + getQueryParams({ q })
-    return await this._fetch<UserByName[]>(urlType, url)
+    const url = getUrl(ROUTE_DETAILS.SEARCH_USERS.key) + getQueryParams({ q })
+    return await this._fetch<UserByName>(ROUTE_DETAILS.SEARCH_USERS.key, url)
   }
   
   async getLastUsers(take?: number) {
-    const urlType = 'last-users'
-    const url = getUrl(urlType) + getQueryParams({ take })
-    return await this._fetch<UserByName[]>(urlType, url)
+    const url = getUrl(ROUTE_DETAILS.LAST_USERS.key) + getQueryParams({ take })
+    return await this._fetch<UserByName>(ROUTE_DETAILS.LAST_USERS.key, url)
   }
 }

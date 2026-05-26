@@ -1,5 +1,4 @@
 import type { DayOfWeek } from "@/types/datetime/day-of-week";
-import { Result, type PaginationResult } from "../result";
 import { BaseService } from "./_baseService";
 import type { RecurringSchedule } from "@/types/models/recurringSchedule";
 import type { RecurringScheduleZod } from "@/schemas/recurringSchedule";
