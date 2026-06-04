@@ -2,26 +2,25 @@ import type { ProxyContext } from "@/hooks/use-proxy";
 import { Result, type BaseResult, type PaginationResult } from "@/data/result";
 
 type RouteDetails = {
-  readonly [K in Uppercase<string>]: {
-    readonly key: K,
-    readonly route: Lowercase<string>,
-    readonly method: keyof ProxyContext,
-    readonly mustReturn: boolean,
-    readonly isPagination: boolean,
-  }
+  route: Lowercase<string>,
+  method: keyof ProxyContext,
+  mustReturn: boolean,
+  isPagination: boolean,
 }
 
-export abstract class BaseCustomService {
+export abstract class BaseCustomService<
+    TRoutesDetails extends Record<string, RouteDetails>,
+    TKey extends keyof TRoutesDetails = keyof TRoutesDetails,
+> {
   constructor(
     protected readonly httpClient: ProxyContext,
-    protected readonly ROUTE_DETAILS: RouteDetails,
+    protected readonly ROUTES_DETAILS: TRoutesDetails,
   ) {}
   
   protected async _fetch<
     TReturn = void,
-    TRouteKey extends keyof RouteDetails = keyof RouteDetails,
-  >(routeKey: TRouteKey, ...[url, ...rest]: Parameters<ProxyContext[RouteDetails[TRouteKey]['method']]>) {
-    const { method, mustReturn, isPagination } = this.ROUTE_DETAILS[routeKey]
+  >(routeKey: TKey, ...[url, ...rest]: Parameters<ProxyContext[TRoutesDetails[TKey]['method']]>) {
+    const { method, mustReturn, isPagination } = this.ROUTES_DETAILS[routeKey]
     
     try {
       if (!mustReturn) {
