@@ -39,7 +39,7 @@ const ROUTES_DETAILS = {
     mustReturn: true,
     isPagination: true,
   },
-} as const
+} as const satisfies ConstructorParameters<typeof BaseCustomService>[1]
 
 function getQueryParams(params?: Partial<{ evenMasterAdmin: boolean, firstDate: string, limitDate: string, q: string, take: number }>) {
   if (!params) {

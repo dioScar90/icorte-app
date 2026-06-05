@@ -2,10 +2,10 @@ import type { ProxyContext } from "@/hooks/use-proxy";
 import { Result, type BaseResult, type PaginationResult } from "@/data/result";
 
 type RouteDetails = {
-  route: Lowercase<string>,
+  route: string,
   method: keyof ProxyContext,
-  mustReturn: boolean,
-  isPagination: boolean,
+  mustReturn?: boolean,
+  isPagination?: boolean,
 }
 
 export abstract class BaseCustomService<
@@ -17,9 +17,15 @@ export abstract class BaseCustomService<
     protected readonly ROUTES_DETAILS: TRoutesDetails,
   ) {}
   
-  protected async _fetch<
-    TReturn = void,
-  >(routeKey: TKey, ...[url, ...rest]: Parameters<ProxyContext[TRoutesDetails[TKey]['method']]>) {
+  protected async _fetch<TReturn = void>(
+    routeKey: TKey,
+    ...[url, ...rest]: Parameters<ProxyContext[TRoutesDetails[TKey]['method']]>
+  ): Promise<
+    Result<TReturn> &
+    TRoutesDetails[TKey]['isPagination'] extends true
+      ? PaginationResult<TReturn>
+      : BaseResult<TReturn>
+  > {
     const { method, mustReturn, isPagination } = this.ROUTES_DETAILS[routeKey]
     
     try {

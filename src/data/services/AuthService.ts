@@ -1,51 +1,49 @@
-import type { ProxyContext } from "@/hooks/use-proxy"
-import { Result, type BaseResult } from "@/data/result"
 import type { UserLoginZod, UserRegisterZod } from "@/schemas/user"
-import type { UserMe } from "@/types/models/user"
+import { BaseCustomService } from "./_baseCustomService"
 
-type UrlType =
-  | 'register'
-  | 'login'
-  | 'logout'
+const ROUTES_DETAILS = {
+  REGISTER: {
+    route: 'register',
+    method: 'post',
+  },
+  LOGIN: {
+    route: 'login',
+    method: 'post',
+  },
+  LOGOUT: {
+    route: 'logout',
+    method: 'post',
+  },
+} as const satisfies ConstructorParameters<typeof BaseCustomService>[1]
 
-function getUrl(final?: UrlType) {
+function getUrl(final?: keyof typeof ROUTES_DETAILS) {
   const baseEndpoint = `/auth`
   return !final ? baseEndpoint : `${baseEndpoint}/${final}`
 }
 
-export class AuthService {
-  constructor(private readonly httpClient: ProxyContext) {}
+export class AuthService extends BaseCustomService<typeof ROUTES_DETAILS> {
+  constructor(httpClient: ConstructorParameters<typeof BaseCustomService>[0]) {
+    super(httpClient, ROUTES_DETAILS)
+  }
   
   async register(data: UserRegisterZod) {
-    const url = getUrl('register')
+    const routeKey = 'REGISTER'
+    const url = getUrl(routeKey)
     
-    try {
-      const res = await this.httpClient.post<BaseResult<UserMe>['data']>(url, { ...data })
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this._fetch(routeKey, url, { ...data })
   }
 
   async login(data: UserLoginZod) {
-    const url = getUrl('login')
+    const routeKey = 'LOGIN'
+    const url = getUrl(routeKey)
     
-    try {
-      await this.httpClient.post(url, { ...data })
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this._fetch(routeKey, url, { ...data })
   }
 
   async logout() {
-    const url = getUrl('logout')
+    const routeKey = 'LOGOUT'
+    const url = getUrl(routeKey)
     
-    try {
-      await this.httpClient.post(url)
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this._fetch(routeKey, url)
   }
 }
