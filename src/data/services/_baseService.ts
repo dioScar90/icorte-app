@@ -1,62 +1,34 @@
-import type { ProxyContext } from "@/hooks/use-proxy";
-import { type BaseResult, type PaginationResult, Result } from "@/data/result";
+import { BaseFetch } from "./_baseFetch";
 
-export abstract class BaseService<TEntity, TZod> {
+export abstract class BaseService<TEntity, TZod> extends BaseFetch {
   constructor(
-    protected readonly httpClient: ProxyContext,
+    protected readonly httpClient: ConstructorParameters<typeof BaseFetch>[0],
     protected readonly getUrl: (...ids: any[]) => string,
-  ) {}
+  ) {
+    super(httpClient)
+  }
   
   async create(data: TZod, ...ids: any[]) {
     const url = this.getUrl(...ids)
-    
-    try {
-      const res = await this.httpClient.post<BaseResult<TEntity>['data']>(url, data)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this._post<TEntity>(url, data)
   }
   
   async get(...ids: any[]) {
     const url = this.getUrl(...ids)
-    
-    try {
-      const res = await this.httpClient.get<BaseResult<TEntity>['data']>(url)
-      return Result.Success(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this._get<TEntity>(url)
   }
   
   async getAll(url: string) {
-    try {
-      const res = await this.httpClient.get<PaginationResult<TEntity>['data']>(url)
-      return Result.Pagination(res.data)
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this._getAll<TEntity>(url)
   }
   
   async update(data: TZod, ...ids: any[]) {
     const url = this.getUrl(...ids)
-    
-    try {
-      await this.httpClient.put(url, data)
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this._put(url, data)
   }
   
   async delete(...ids: any[]) {
     const url = this.getUrl(...ids)
-    
-    try {
-      await this.httpClient.delete(url)
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this._delete(url)
   }
 }

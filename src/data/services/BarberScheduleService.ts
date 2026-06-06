@@ -2,51 +2,34 @@ import type { DateString } from "@/types/datetime/date-string";
 import type { TimeString } from "@/types/datetime/time-string";
 import type { TopBarberShop } from "@/types/models/barberShop";
 import type { ServiceByName } from "@/types/custom-models/service-by-name";
-import { BaseCustomService } from "./_baseCustomService";
+import { BaseFetch } from "./_baseFetch";
 
-const BASE_ENDPOINT = `/barber-schedule`
-const PARAM_BARBER_SHOP_ID = ':barberShopId'
-const PARAM_DATE = ':date'
+const BASE_ENDPOINT = '/barber-schedule'
 
-const ROUTES_DETAILS = {
-  DATES: {
-    route: `${BASE_ENDPOINT}/${PARAM_BARBER_SHOP_ID}/dates/${PARAM_DATE}`,
-    method: 'get',
-    mustReturn: true,
-    isPagination: true,
-  },
-  SLOTS: {
-    route: `${BASE_ENDPOINT}/${PARAM_BARBER_SHOP_ID}/slots/${PARAM_DATE}`,
-    method: 'get',
-    mustReturn: true,
-    isPagination: true,
-  },
-  TOP_BARBERS: {
-    route: `${BASE_ENDPOINT}/top-barbers/${PARAM_DATE}`,
-    method: 'get',
-    mustReturn: true,
-    isPagination: true,
-  },
-  SERVICES: {
-    route: `${BASE_ENDPOINT}/services`,
-    method: 'get',
-    mustReturn: true,
-    isPagination: true,
-  },
-} as const satisfies ConstructorParameters<typeof BaseCustomService>[1]
+const PARAMS = {
+  BARBER_SHOP_ID: ':barberShopId',
+  DATE: ':date',
+} as const
 
-function _getUrl(routeKey: keyof typeof ROUTES_DETAILS, { date, barberShopId }: Partial<{ date: DateString, barberShopId: number }> = {}) {
-  const url = ROUTES_DETAILS[routeKey].route
-  
+const ROUTE_PATHS = {
+  DATES: `${BASE_ENDPOINT}/${PARAMS.BARBER_SHOP_ID}/dates/${PARAMS.DATE}`,
+  SLOTS: `${BASE_ENDPOINT}/${PARAMS.BARBER_SHOP_ID}/slots/${PARAMS.DATE}`,
+  TOP_BARBERS: `${BASE_ENDPOINT}/top-barbers/${PARAMS.DATE}`,
+  SERVICES: `${BASE_ENDPOINT}/services`,
+} as const
+
+function _getUrl(routeKey: keyof typeof ROUTE_PATHS, { date, barberShopId }: Partial<{ date: DateString, barberShopId: number }> = {}) {
+  const url = ROUTE_PATHS[routeKey]
+
   switch (routeKey) {
     case 'DATES':
     case 'SLOTS':
       return url
-        .replace(PARAM_BARBER_SHOP_ID, `${barberShopId!}`)
-        .replace(PARAM_DATE, date!)
+        .replace(PARAMS.BARBER_SHOP_ID, `${barberShopId!}`)
+        .replace(PARAMS.DATE, date!)
     case 'TOP_BARBERS':
       return url
-        .replace(PARAM_DATE, date!)
+        .replace(PARAMS.DATE, date!)
     case 'SERVICES':
       return url
   }
@@ -65,7 +48,7 @@ function getQueryParams(queryParams?: Partial<{ serviceIds: number[], q: string 
     if (value === undefined) {
       continue
     }
-    
+
     if (Array.isArray(value)) {
       value.forEach(item => searchParams.append(key, String(item)))
     } else {
@@ -84,36 +67,28 @@ function getUrl(...[paramKey, params, queryParams]: [...Parameters<typeof _getUr
   return _getUrl(paramKey, params) + getQueryParams(queryParams)
 }
 
-export class BarberScheduleService extends BaseCustomService<typeof ROUTES_DETAILS> {
-  constructor(httpClient: ConstructorParameters<typeof BaseCustomService>[0]) {
-    super(httpClient, ROUTES_DETAILS)
+export class BarberScheduleService extends BaseFetch {
+  constructor(httpClient: ConstructorParameters<typeof BaseFetch>[0]) {
+    super(httpClient)
   }
-  
+
   async getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateString) {
-    const routeKey = 'DATES'
-    const url = getUrl(routeKey, { date: dateOfWeek, barberShopId })
-    
-    return await this._fetch<DateString>(routeKey, url)
+    const url = getUrl('DATES', { date: dateOfWeek, barberShopId })
+    return await this._getAll<DateString>(url)
   }
-  
+
   async getAvailableSlots(barberShopId: number, date: DateString, serviceIds: number[]) {
-    const routeKey = 'SLOTS'
-    const url = getUrl(routeKey, { date, barberShopId }, { serviceIds })
-    
-    return await this._fetch<TimeString>(routeKey, url)
+    const url = getUrl('SLOTS', { date, barberShopId }, { serviceIds })
+    return await this._getAll<TimeString>(url)
   }
-  
-  async getTopBarbersWithAvailability(dateOfWeek: DateString, _pag?: Awaited<ReturnType<typeof this._fetch>>['data']['pagination']) {
-    const routeKey = 'TOP_BARBERS'
-    const url = getUrl(routeKey, { date: dateOfWeek })
-    
-    return await this._fetch<TopBarberShop>(routeKey, url)
+
+  async getTopBarbersWithAvailability(dateOfWeek: DateString) {
+    const url = getUrl('TOP_BARBERS', { date: dateOfWeek })
+    return await this._getAll<TopBarberShop>(url)
   }
-  
-  async searchServicesByNameAsync(q: string, _pag?: Awaited<ReturnType<typeof this._fetch>>['data']['pagination']) {
-    const routeKey = 'SERVICES'
-    const url = getUrl(routeKey, undefined, { q })
-    
-    return await this._fetch<ServiceByName>(routeKey, url)
+
+  async searchServicesByNameAsync(q: string) {
+    const url = getUrl('SERVICES', undefined, { q })
+    return await this._getAll<ServiceByName>(url)
   }
 }

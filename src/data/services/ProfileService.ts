@@ -1,4 +1,3 @@
-import { Result } from "@/data/result"
 import { BaseService } from "./_baseService"
 import type { Profile } from "@/types/models/profile"
 import type { ProfileZod } from "@/schemas/profile"
@@ -40,14 +39,9 @@ export class ProfileService extends BaseService<Profile, ProfileZod> {
   async updateProfileImage(id: number, file: File) {
     const url = getUrl(id, 'image')
     
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
+    const formData = new FormData()
+    formData.append('file', file)
 
-      await this.httpClient.patch(url, formData)
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this._patch(url, formData)
   }
 }

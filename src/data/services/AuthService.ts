@@ -1,49 +1,36 @@
 import type { UserLoginZod, UserRegisterZod } from "@/schemas/user"
-import { BaseCustomService } from "./_baseCustomService"
+import { BaseFetch } from "./_baseFetch"
 
-const ROUTES_DETAILS = {
-  REGISTER: {
-    route: 'register',
-    method: 'post',
-  },
-  LOGIN: {
-    route: 'login',
-    method: 'post',
-  },
-  LOGOUT: {
-    route: 'logout',
-    method: 'post',
-  },
-} as const satisfies ConstructorParameters<typeof BaseCustomService>[1]
+const BASE_ENDPOINT = '/auth'
 
-function getUrl(final?: keyof typeof ROUTES_DETAILS) {
-  const baseEndpoint = `/auth`
-  return !final ? baseEndpoint : `${baseEndpoint}/${final}`
+const ROUTE_PATHS = {
+  REGISTER: 'register',
+  LOGIN: 'login',
+  LOGOUT: 'logout',
+} as const
+
+function getUrl(routeKey: keyof typeof ROUTE_PATHS) {
+  const routePath = ROUTE_PATHS[routeKey]
+  return `${BASE_ENDPOINT}/${routePath}`
 }
 
-export class AuthService extends BaseCustomService<typeof ROUTES_DETAILS> {
-  constructor(httpClient: ConstructorParameters<typeof BaseCustomService>[0]) {
-    super(httpClient, ROUTES_DETAILS)
+export class AuthService extends BaseFetch {
+  constructor(httpClient: ConstructorParameters<typeof BaseFetch>[0]) {
+    super(httpClient)
   }
-  
+
   async register(data: UserRegisterZod) {
-    const routeKey = 'REGISTER'
-    const url = getUrl(routeKey)
-    
-    return await this._fetch(routeKey, url, { ...data })
+    const url = getUrl('REGISTER')
+    return await this._post(url, { ...data })
   }
 
   async login(data: UserLoginZod) {
-    const routeKey = 'LOGIN'
-    const url = getUrl(routeKey)
-    
-    return await this._fetch(routeKey, url, { ...data })
+    const url = getUrl('LOGIN')
+    return await this._post(url, { ...data })
   }
 
   async logout() {
-    const routeKey = 'LOGOUT'
-    const url = getUrl(routeKey)
-    
-    return await this._fetch(routeKey, url)
+    const url = getUrl('LOGOUT')
+    return await this._post(url)
   }
 }

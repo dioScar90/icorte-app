@@ -1,4 +1,3 @@
-import { Result } from "@/data/result";
 import { BaseService } from "./_baseService";
 import type { Appointment } from "@/types/models/appointment";
 import type { AppointmentZod } from "@/schemas/appointment";
@@ -34,13 +33,7 @@ export class AppointmentService extends BaseService<Appointment, AppointmentZod>
   
   async updatePaymentType(id: number, paymentType: AppointmentZod['paymentType']) {
     const url = getUrl(id)
-    
-    try {
-      await this.httpClient.patch(url, { paymentType })
-      return Result.Success()
-    } catch (err) {
-      return Result.Failure(err)
-    }
+    return await this._patch(url, { paymentType })
   }
 
   async deleteAppointment(id: number) {
