@@ -1,6 +1,6 @@
 import type { AppointmentsAdminZod, BaseAdminZod, ResetPasswordZod } from "@/routes/(authenticated-only)/admin/route";
 import type { UserByName } from "@/types/custom-models/user-by-name";
-import { BaseFetch } from "./_baseFetch";
+import { HttpFetch } from "../http-fetch";
 
 const BASE_ENDPOINT = '/barber-schedule'
 
@@ -56,38 +56,34 @@ function getXHeader(passphrase: string) {
   }
 }
 
-export class AdminService extends BaseFetch {
-  constructor(httpClient: ConstructorParameters<typeof BaseFetch>[0]) {
-    super(httpClient)
-  }
-
+export class AdminService {
   async removeAll({ passphrase, evenMasterAdmin }: BaseAdminZod) {
     const url = getUrl('REMOVE_ALL', { evenMasterAdmin })
-    return await this._delete(url, getXHeader(passphrase))
+    return await HttpFetch.getInstance().delete(url, getXHeader(passphrase))
   }
 
   async populateAll({ passphrase }: BaseAdminZod) {
     const url = getUrl('POPULATE_ALL')
-    return await this._post(url, null, getXHeader(passphrase))
+    return await HttpFetch.getInstance().post(url, null, getXHeader(passphrase))
   }
 
   async populateWithAppointments({ passphrase, ...rest }: AppointmentsAdminZod) {
     const url = getUrl('POPULATE_APPOINTMENTS', rest)
-    return await this._post(url, null, getXHeader(passphrase))
+    return await HttpFetch.getInstance().post(url, null, getXHeader(passphrase))
   }
 
   async resetPasswordForSomeUser({ passphrase, email }: ResetPasswordZod) {
     const url = getUrl('RESET_PASSWORD')
-    return await this._put(url, { email }, getXHeader(passphrase))
+    return await HttpFetch.getInstance().put(url, { email }, getXHeader(passphrase))
   }
 
   async searchUserByName(q: string) {
     const url = getUrl('SEARCH_USERS', { q })
-    return await this._getAll<UserByName>(url)
+    return await HttpFetch.getInstance().getAll<UserByName>(url)
   }
 
   async getLastUsers(take?: number) {
     const url = getUrl('LAST_USERS', { take })
-    return await this._getAll<UserByName>(url)
+    return await HttpFetch.getInstance().getAll<UserByName>(url)
   }
 }

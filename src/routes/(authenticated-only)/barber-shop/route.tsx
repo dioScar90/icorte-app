@@ -23,7 +23,7 @@ export const Route = createFileRoute(
         })
     }
 
-    const service = new BarberShopService(context.httpClient)
+    const service = new BarberShopService()
     
     return {
       barberShop: {

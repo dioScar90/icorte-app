@@ -54,9 +54,9 @@ export const Route = createFileRoute(
   '/(authenticated-only)/barber-shop/$barberShopId/schedules',
 )({
   component: RouteComponent,
-  beforeLoad: ({ context, params }) => {
-    const recurringRep = new RecurringScheduleService(context.httpClient)
-    const specialRep = new SpecialScheduleService(context.httpClient)
+  beforeLoad: ({ params }) => {
+    const recurringRep = new RecurringScheduleService()
+    const specialRep = new SpecialScheduleService()
 
     return {
       recurring: {

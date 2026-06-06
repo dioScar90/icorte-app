@@ -1,5 +1,6 @@
 import type { UserLoginZod, UserRegisterZod } from "@/schemas/user"
-import { BaseFetch } from "./_baseFetch"
+import { HttpFetch } from "../http-fetch"
+import type { UserMe } from "@/types/models/user"
 
 const BASE_ENDPOINT = '/auth'
 
@@ -14,23 +15,19 @@ function getUrl(routeKey: keyof typeof ROUTE_PATHS) {
   return `${BASE_ENDPOINT}/${routePath}`
 }
 
-export class AuthService extends BaseFetch {
-  constructor(httpClient: ConstructorParameters<typeof BaseFetch>[0]) {
-    super(httpClient)
-  }
-
+export class AuthService {
   async register(data: UserRegisterZod) {
     const url = getUrl('REGISTER')
-    return await this._post(url, { ...data })
+    return await HttpFetch.getInstance().post<UserMe>(url, { ...data })
   }
 
   async login(data: UserLoginZod) {
     const url = getUrl('LOGIN')
-    return await this._post(url, { ...data })
+    return await HttpFetch.getInstance().post(url, { ...data })
   }
 
   async logout() {
     const url = getUrl('LOGOUT')
-    return await this._post(url)
+    return await HttpFetch.getInstance().post(url)
   }
 }

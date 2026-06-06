@@ -20,8 +20,8 @@ function getUrl(id?: number, final?: UrlType) {
 }
 
 export class ProfileService extends BaseService<Profile, ProfileZod> {
-  constructor(httpClient: ConstructorParameters<typeof BaseService>[0]) {
-    super(httpClient, getUrl)
+  constructor() {
+    super(getUrl)
   }
   
   async createProfile(data: ProfileZod) {
@@ -42,6 +42,6 @@ export class ProfileService extends BaseService<Profile, ProfileZod> {
     const formData = new FormData()
     formData.append('file', file)
 
-    return await this._patch(url, formData)
+    return await this._fetch.patch(url, formData)
   }
 }

@@ -10,8 +10,8 @@ function getUrl(id?: number, services?: boolean) {
 }
 
 export class AppointmentService extends BaseService<Appointment, AppointmentZod> {
-  constructor(httpClient: ConstructorParameters<typeof BaseService>[0]) {
-    super(httpClient, getUrl)
+  constructor() {
+    super(getUrl)
   }
   
   async createAppointment(data: AppointmentZod) {
@@ -33,7 +33,7 @@ export class AppointmentService extends BaseService<Appointment, AppointmentZod>
   
   async updatePaymentType(id: number, paymentType: AppointmentZod['paymentType']) {
     const url = getUrl(id)
-    return await this._patch(url, { paymentType })
+    return await this._fetch.patch(url, { paymentType })
   }
 
   async deleteAppointment(id: number) {

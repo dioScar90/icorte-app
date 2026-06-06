@@ -9,7 +9,6 @@ import { routeTree } from './routeTree.gen'
 
 import '@/styles.css'
 import reportWebVitals from '@/reportWebVitals.ts'
-import { useProxy } from '@/hooks/use-proxy.ts'
 import { useErrorHandler } from '@/providers/errors/error-handler-provider.tsx'
 import { useAuth } from '@/hooks/use-auth.ts'
 import { MainProviders } from '@/providers/main-providers.tsx'
@@ -20,7 +19,6 @@ const router = createRouter({
   context: {
     ...getContext(),
     handleError: undefined!,
-    httpClient: undefined!,
     auth: undefined!,
   },
   defaultPreload: 'intent',
@@ -51,15 +49,13 @@ declare module '@tanstack/history' {
 
 function App() {
   const { handleError } = useErrorHandler()
-  const httpClient = useProxy()
-  const auth = useAuth(httpClient)
-  
+  const auth = useAuth()
+
   return (
     <RouterProvider
       router={router}
       context={{
         handleError,
-        httpClient,
         auth,
       }}
     />

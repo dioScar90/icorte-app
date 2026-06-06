@@ -8,8 +8,8 @@ function getUrl(barberShopId: number, id?: number) {
 }
 
 export class ReportService extends BaseService<Report, ReportZod> {
-  constructor(httpClient: ConstructorParameters<typeof BaseService>[0]) {
-    super(httpClient, getUrl)
+  constructor() {
+    super(getUrl)
   }
   
   async createReport(barberShopId: number, data: ReportZod) {

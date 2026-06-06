@@ -33,8 +33,8 @@ function getQueryParams(pag?: Pagination) {
 }
 
 export class BarberShopService extends BaseService<BarberShop, BarberShopZod> {
-  constructor(httpClient: ConstructorParameters<typeof BaseService>[0]) {
-    super(httpClient, getUrl)
+  constructor() {
+    super(getUrl)
   }
   
   async createBarberShop(data: BarberShopZod) {

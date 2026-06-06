@@ -4,8 +4,8 @@ import { createFileRoute, Outlet } from '@tanstack/react-router'
 export const Route = createFileRoute(
   '/(authenticated-only)/profile',
 )({
-  beforeLoad: async ({ context }) => {
-    const repository = new ProfileService(context.httpClient)
+  beforeLoad: async () => {
+    const repository = new ProfileService()
 
     return {
       getProfileById: repository.getProfileById,

@@ -9,8 +9,8 @@ function getUrl(barberShopId: number, date?: DateString) {
 }
 
 export class SpecialScheduleService extends BaseService<SpecialSchedule, SpecialScheduleZod> {
-  constructor(httpClient: ConstructorParameters<typeof BaseService>[0]) {
-    super(httpClient, getUrl)
+  constructor() {
+    super(getUrl)
   }
 
   async createSpecialSchedule(barberShopId: number, data: SpecialScheduleZod) {

@@ -9,8 +9,8 @@ function getUrl(barberShopId: number, dayOfWeek?: DayOfWeek) {
 }
 
 export class RecurringScheduleService extends BaseService<RecurringSchedule, RecurringScheduleZod> {
-  constructor(httpClient: ConstructorParameters<typeof BaseService>[0]) {
-    super(httpClient, getUrl)
+  constructor() {
+    super(getUrl)
   }
 
   async createRecurringSchedule(barberShopId: number, data: RecurringScheduleZod) {

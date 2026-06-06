@@ -26,8 +26,8 @@ export const Route = createFileRoute(
   '/(authenticated-only)/barber-shop/$barberShopId/services',
 )({
   component: RouteComponent,
-  beforeLoad: ({ context, params }) => {
-    const service = new ServiceService(context.httpClient)
+  beforeLoad: ({ params }) => {
+    const service = new ServiceService()
     
     return {
       services: {

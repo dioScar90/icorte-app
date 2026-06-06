@@ -2,7 +2,7 @@ import type { DateString } from "@/types/datetime/date-string";
 import type { TimeString } from "@/types/datetime/time-string";
 import type { TopBarberShop } from "@/types/models/barberShop";
 import type { ServiceByName } from "@/types/custom-models/service-by-name";
-import { BaseFetch } from "./_baseFetch";
+import { HttpFetch } from "../http-fetch";
 
 const BASE_ENDPOINT = '/barber-schedule'
 
@@ -67,28 +67,24 @@ function getUrl(...[paramKey, params, queryParams]: [...Parameters<typeof _getUr
   return _getUrl(paramKey, params) + getQueryParams(queryParams)
 }
 
-export class BarberScheduleService extends BaseFetch {
-  constructor(httpClient: ConstructorParameters<typeof BaseFetch>[0]) {
-    super(httpClient)
-  }
-
+export class BarberScheduleService {
   async getAvailableDatesForBarber(barberShopId: number, dateOfWeek: DateString) {
     const url = getUrl('DATES', { date: dateOfWeek, barberShopId })
-    return await this._getAll<DateString>(url)
+    return await HttpFetch.getInstance().getAll<DateString>(url)
   }
 
   async getAvailableSlots(barberShopId: number, date: DateString, serviceIds: number[]) {
     const url = getUrl('SLOTS', { date, barberShopId }, { serviceIds })
-    return await this._getAll<TimeString>(url)
+    return await HttpFetch.getInstance().getAll<TimeString>(url)
   }
 
   async getTopBarbersWithAvailability(dateOfWeek: DateString) {
     const url = getUrl('TOP_BARBERS', { date: dateOfWeek })
-    return await this._getAll<TopBarberShop>(url)
+    return await HttpFetch.getInstance().getAll<TopBarberShop>(url)
   }
 
   async searchServicesByNameAsync(q: string) {
     const url = getUrl('SERVICES', undefined, { q })
-    return await this._getAll<ServiceByName>(url)
+    return await HttpFetch.getInstance().getAll<ServiceByName>(url)
   }
 }

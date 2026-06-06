@@ -16,8 +16,8 @@ function getDataWithPriceIntoFloat(data: ServiceZod) {
 }
 
 export class ServiceService extends BaseService<Service, ServiceZod> {
-  constructor(httpClient: ConstructorParameters<typeof BaseService>[0]) {
-    super(httpClient, getUrl)
+  constructor() {
+    super(getUrl)
   }
   
   async createService(barberShopId: number, data: ServiceZod) {

@@ -175,14 +175,10 @@ async function _delete<T = void>(url: string, options?: FetchOptions) {
   }
 }
 
-const httpClient = {
+export const httpClient = {
   get: _get,
   post: _post,
   patch: _patch,
   put: _put,
   delete: _delete,
 } as const
-
-export const useProxy = () => httpClient
-
-export type ProxyContext = ReturnType<typeof useProxy>

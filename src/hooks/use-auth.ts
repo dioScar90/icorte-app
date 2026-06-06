@@ -3,7 +3,6 @@ import type { UserLoginZod, UserRegisterZod } from "@/schemas/user"
 import type { UserMe } from "@/types/models/user"
 import { useEffect, useReducer, useLayoutEffect } from "react"
 import { genders } from "@/schemas/profile"
-import type { ProxyContext } from "./use-proxy"
 import { UserService } from "@/data/services/UserService"
 
 export type AuthUser = {
@@ -48,7 +47,7 @@ export function getBarberShopImageUrl(barberShop: AuthUser['barberShop']) {
     // return barberShop.imageUrl
     return PLACEHOLDER_BRABERSHOP_IMAGE_URL
   }
-  
+
   // const imageId = getRandomInt(barberShop?.id!, true)
   // return `https://placebear.com/${imageId}/300.jpg`
   return PLACEHOLDER_BRABERSHOP_IMAGE_URL
@@ -58,13 +57,13 @@ export function getProfileImageUrl(profile: AuthUser['profile']) {
   if (profile?.imageUrl) {
     return profile.imageUrl
   }
-  
+
   if (profile?.gender === undefined || profile?.gender === null) {
     return undefined
   }
 
   const maleIndex = genders.indexOf('Masculino')
-  
+
   const gender = profile.gender === maleIndex ? 'men' : 'women'
   const imageId = profile.fullName === 'Diogo Scarmagnani' ? 1 : getRandomInt(profile.id)
   return `https://randomuser.me/api/portraits/${gender}/${imageId}.jpg`
@@ -72,11 +71,11 @@ export function getProfileImageUrl(profile: AuthUser['profile']) {
 
 function getUserWithCorrectImageUrl(payloadUser: NonNullable<AuthContext["user"]>) {
   const user = structuredClone(payloadUser)
-  
+
   if (user?.profile) {
     user.profile.imageUrl = getProfileImageUrl(user.profile)
   }
-  
+
   if (user?.barberShop) {
     user.barberShop.imageUrl = getBarberShopImageUrl(user.barberShop)
   }
@@ -100,13 +99,13 @@ type ActionType = [
 
 export type AuthAction<TType = ActionType> =
   TType extends 'SET_USER'
-    ? {
-      type: TType,
-      payload: AuthUser
-    } : {
-      type: TType,
-    }
-    
+  ? {
+    type: TType,
+    payload: AuthUser
+  } : {
+    type: TType,
+  }
+
 function authReducer(state: AuthState, action: AuthAction): AuthState {
   switch (action.type) {
     case 'SET_USER':
@@ -145,22 +144,22 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
   }
 }
 
-async function getMe(httpClient: ProxyContext) {
-  const service = new UserService(httpClient)
+async function getMe() {
+  const service = new UserService()
   const resp = await service.getMe()
-  
+
   return resp.error ? null : resp.data.item
 }
 
-export function useAuth(httpClient: ProxyContext): AuthContext {
+export function useAuth(): AuthContext {
   const [{ user, isLoading, isAuthenticated }, dispatch] = useReducer(authReducer, {
     user: null,
     isLoading: false,
     isAuthenticated: false,
   })
-  
-  const service = new AuthService(httpClient)
-  
+
+  const service = new AuthService()
+
   async function register(...args: Parameters<typeof service.register>) {
     dispatch({ type: 'SET_LOADING' })
 
@@ -171,7 +170,7 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
     } else {
       dispatch({ type: 'SET_USER', payload: result.data.item })
     }
-    
+
     return result
   }
 
@@ -179,13 +178,13 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
     dispatch({ type: 'SET_LOADING' })
 
     const result = await service.login(...args)
-    
+
     if (result.error) {
       dispatch({ type: 'LOGIN_FAILURE' })
     } else {
       dispatch({ type: 'LOGIN_SUCCESS' })
     }
-    
+
     return result
   }
 
@@ -195,7 +194,7 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
   }
 
   useLayoutEffect(() => {
-    getMe(httpClient)
+    getMe()
       .then(user => {
         if (isTypeUser(user)) {
           dispatch({ type: 'SET_USER', payload: user })
@@ -204,7 +203,7 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
         }
       })
       .catch(() => dispatch({ type: 'LOGIN_FAILURE' }))
-  }, [httpClient])
+  }, [])
 
   useEffect(() => {
     if (isTypeUser(user)) {
@@ -213,7 +212,7 @@ export function useAuth(httpClient: ProxyContext): AuthContext {
       dispatch({ type: 'LOGOUT' })
     }
   }, [user])
-  
+
   return {
     user,
     isLoading,

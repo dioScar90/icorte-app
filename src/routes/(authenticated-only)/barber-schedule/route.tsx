@@ -22,9 +22,9 @@ export const Route = createFileRoute(
       })
     }
         
-    const appointmentService = new AppointmentService(context.httpClient)
-    const barberScheduleService = new BarberScheduleService(context.httpClient)
-    const serviceService = new ServiceService(context.httpClient)
+    const appointmentService = new AppointmentService()
+    const barberScheduleService = new BarberScheduleService()
+    const serviceService = new ServiceService()
     
     return {
       barberSchedule: {

@@ -48,7 +48,7 @@ export const Route = createFileRoute(
       })
     }
     
-    const service = new AdminService(context.httpClient)
+    const service = new AdminService()
     
     return {
       admin: {

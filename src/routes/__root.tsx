@@ -15,13 +15,11 @@ import { toast, Toaster } from 'sonner'
 import Swal from 'sweetalert2'
 
 import type { QueryClient } from '@tanstack/react-query'
-import type { ProxyContext } from '@/hooks/use-proxy'
 import { useErrorHandler, type HandleError } from '@/providers/errors/error-handler-provider'
 import type { AuthContext } from '@/hooks/use-auth'
 
 interface RouterAppContext {
   queryClient: QueryClient
-  httpClient: ProxyContext
   handleError: HandleError
   auth: AuthContext
 }
