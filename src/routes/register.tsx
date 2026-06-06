@@ -43,7 +43,7 @@ export function Register() {
         const values = userRegisterSchema.parse(value)
         const result = await register(values)
   
-        if (!result.isSuccess) {
+        if (result.error) {
           throw result.error
         }
   
@@ -51,7 +51,7 @@ export function Register() {
           to: '/',
           state: {
             alert: {
-              message: result.value?.message,
+              message: result.data?.message,
             },
           },
         })

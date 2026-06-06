@@ -11,11 +11,11 @@ const dayOfWeek = nativeEnumValidator(daysOfWeek, 'Dia da semana inválido')
 export const recurringScheduleSchema = z.object({
   dayOfWeek,
 
-  openTime: z.string({ required_error: 'Horário de abertura obrigatório' })
+  openTime: z.string({ error: 'Horário de abertura obrigatório' })
     .time('Horário de abertura inválido')
     .transform(getStringAsTimeString),
 
-  closeTime: z.string({ required_error: 'Horário de encerramento obrigatório' })
+  closeTime: z.string({ error: 'Horário de encerramento obrigatório' })
     .time('Horário de encerramento inválido')
     .transform(getStringAsTimeString),
 })

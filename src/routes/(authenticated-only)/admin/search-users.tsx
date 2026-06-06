@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 import type { UserByName } from '@/types/custom-models/user-by-name'
 import { useClipBoard } from '@/utils/copy-to-clipboard'
 import { debounce } from '@/utils/debounce'
-import { applyMask } from '@/utils/mask'
+import { Mask } from '@/utils/mask'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { createFileRoute } from '@tanstack/react-router'
 import { ListEnd } from 'lucide-react'
@@ -58,12 +58,12 @@ type UserActionType = [
 
 type UserAction<TType = UserActionType> =
   TType extends 'SET_MANY'
-    ? {
-      type: TType,
-      payload: OneOrMoreUsers,
-    } : {
-      type: TType,
-    }
+  ? {
+    type: TType,
+    payload: OneOrMoreUsers,
+  } : {
+    type: TType,
+  }
 
 function userReducer(_: UserState, action: UserAction): UserState {
   switch (action.type) {
@@ -94,7 +94,7 @@ function TableBodyWithRows({ state }: { state: UserState }) {
       </TableRow>
     )
   }
-  
+
   if (isNotFound(state)) {
     return (
       <TableRow key={state.id}>
@@ -108,7 +108,7 @@ function TableBodyWithRows({ state }: { state: UserState }) {
       </TableRow>
     )
   }
-  
+
   return state.map(({ id, email, phoneNumber, isBarberShop, firstName, lastName }) => (
     <TableRow key={id}>
       <TableCell className="font-medium text-center">{firstName + ' ' + lastName}</TableCell>
@@ -116,7 +116,7 @@ function TableBodyWithRows({ state }: { state: UserState }) {
       <TableCell className="text-center">
         <CopyToClipboard onClick={() => copyToClipboard(email)} innerText="Copiar email" />
       </TableCell>
-      <TableCell className="text-center">{applyMask('PHONE_NUMBER', phoneNumber)}</TableCell>
+      <TableCell className="text-center">{Mask.PHONE_NUMBER(phoneNumber)}</TableCell>
       <TableCell className="text-center">{isBarberShop ? 'Barbeiro' : 'Cliente'}</TableCell>
     </TableRow>
   ))
@@ -129,24 +129,24 @@ function RouteComponent() {
       s.admin.searchByName,
     ] as const
   })
-  
+
   const navigate = useNavigate({ from: Route.fullPath })
   const search = Route.useSearch()
 
   const [state, dispatch] = useReducer(userReducer, initialState)
-  
+
   const [q, setQ] = useState(search?.q)
   const [qParam, _setQParam] = useState(search?.q)
 
   const setQParam = debounce((q?: string) => _setQParam(q))
-  
+
   useEffect(() => {
     navigate({
       search: (prev) => ({ ...prev, q: qParam }),
       replace: true,
     })
   }, [qParam])
-  
+
   useEffect(() => {
     if (!q?.length) {
       dispatch({ type: 'CLEAR' })
@@ -154,16 +154,16 @@ function RouteComponent() {
       searchByName(q)
         .then(resp => resp)
         .then(resp => {
-          if (!resp.isSuccess) {
+          if (resp.error) {
             throw resp.error
           }
-          
-          if (!resp.value?.length) {
+
+          if (!resp.data.items?.length) {
             dispatch({ type: 'SET_NOT_FOUND' })
             return
           }
-          
-          dispatch({ type: 'SET_MANY', payload: resp.value as OneOrMoreUsers })
+
+          dispatch({ type: 'SET_MANY', payload: resp.data.items as OneOrMoreUsers })
         })
         .catch(err => {
           dispatch({ type: 'CLEAR' })
@@ -171,7 +171,7 @@ function RouteComponent() {
         })
     }
   }, [q])
-  
+
   return (
     <DivBeforeCard>
       <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
@@ -211,7 +211,7 @@ function RouteComponent() {
               </Table>
             </div>
           </div>
-          
+
           <div className="flex justify-center align-center mt-4">
             <Link
               className={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}

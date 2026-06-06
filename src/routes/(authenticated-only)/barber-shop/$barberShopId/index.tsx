@@ -2,7 +2,7 @@ import { AspectRatio } from '@/components/ui/aspect-ratio'
 import { buttonVariants } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { states } from '@/schemas/address'
-import { applyMask } from '@/utils/mask'
+import { Mask } from '@/utils/mask'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Activity } from 'react'
 
@@ -40,7 +40,7 @@ function RouteComponent() {
           <div className="space-y-4 mt-4">
             <div className="flex justify-between">
               <span className="font-semibold">Número Comercial</span>
-              <span className="text-gray-600">{applyMask('PHONE_NUMBER', barberShop.comercialNumber)}</span>
+              <span className="text-gray-600">{Mask.PHONE_NUMBER(barberShop.comercialNumber)}</span>
             </div>
             <div className="flex justify-between">
               <span className="font-semibold">E-mail Comercial</span>
@@ -80,7 +80,7 @@ function RouteComponent() {
             </div>
             <div className="flex justify-between">
               <span className="font-semibold">CEP</span>
-              <span className="text-gray-600">{applyMask('CEP', barberShop.address.postalCode)}</span>
+              <span className="text-gray-600">{Mask.CEP(barberShop.address.postalCode)}</span>
             </div>
             <div className="flex justify-between">
               <span className="font-semibold">País</span>

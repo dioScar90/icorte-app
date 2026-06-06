@@ -3,7 +3,7 @@ import { getStringAsTimeString } from './sharedValidators/timeString'
 import { getStringAsDateString, isCorrectDateString, isDateGreaterThenToday } from './sharedValidators/dateString'
 
 export const specialScheduleSchema = z.object({
-  date: z.string({ required_error: 'Dia obrigatório' })
+  date: z.string('Dia obrigatório')
     .refine(isCorrectDateString, 'Dia inválido')
     .refine(isDateGreaterThenToday, 'Dia não pode ser inferior ou igual a hoje')
     .transform(getStringAsDateString),
@@ -13,15 +13,13 @@ export const specialScheduleSchema = z.object({
     .optional()
     .or(z.literal(''))
     .transform(value => value || undefined),
-
-  openTime: z.string({ required_error: 'Horário de abertura obrigatório' })
-    .time('Horário de abertura inválido')
+    
+  openTime: z.iso.time('Horário de abertura inválido')
     .optional()
     .or(z.literal(''))
     .transform(value => value ? getStringAsTimeString(value) : undefined),
 
-  closeTime: z.string({ required_error: 'Horário de encerramento obrigatório' })
-    .time('Horário de encerramento inválido')
+  closeTime: z.iso.time('Horário de encerramento inválido')
     .optional()
     .or(z.literal(''))
     .transform(value => value ? getStringAsTimeString(value) : undefined),

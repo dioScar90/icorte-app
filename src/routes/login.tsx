@@ -32,7 +32,7 @@ export function Login() {
       try {
         const result = await login(value)
   
-        if (!result.isSuccess) {
+        if (result.error) {
           throw result.error
         }
         

@@ -2,7 +2,7 @@ import { buttonVariants } from '@/components/ui/button'
 import { useProfileForm } from '@/hooks/forms/use-profile'
 import { genders } from '@/schemas/profile'
 import { userUpdateSchema } from '@/schemas/user'
-import { applyMask } from '@/utils/mask'
+import { Mask } from '@/utils/mask'
 import { Link } from '@tanstack/react-router'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ChevronLeft } from 'lucide-react'
@@ -32,7 +32,7 @@ function RouteComponent() {
         firstName: profile.firstName,
         lastName: profile.lastName,
         gender: genders[profile.gender],
-        phoneNumber: applyMask('PHONE_NUMBER', userPhoneNumber),
+        phoneNumber: Mask.PHONE_NUMBER(userPhoneNumber),
       },
     } as z.input<typeof userUpdateSchema>,
     validators: {
@@ -42,11 +42,11 @@ function RouteComponent() {
       try {
         const values = userUpdateSchema.parse(value)
         const result = await updateProfile(profile.id, values.profile)
-        
-        if (!result.isSuccess) {
+
+        if (result.error) {
           throw result.error
         }
-  
+
         navigate({
           to: '/profile/$userId',
           params: {
@@ -63,11 +63,11 @@ function RouteComponent() {
       }
     },
   })
-  
+
   return (
     <>
       <h3>{profile.fullName}</h3>
-      
+
       <form
         className="space-y-6"
         onSubmit={(e) => {
@@ -78,19 +78,19 @@ function RouteComponent() {
         <form.AppField name="profile.firstName">
           {(field) => <field.RegisterFirstNameField />}
         </form.AppField>
-        
+
         <form.AppField name="profile.lastName">
           {(field) => <field.RegisterLastNameField />}
         </form.AppField>
-        
+
         <form.AppField name="profile.phoneNumber">
           {(field) => <field.RegisterPhoneNumberField />}
         </form.AppField>
-        
+
         <form.AppField name="profile.gender">
           {(field) => <field.RegisterGenderField baseEnum={genders} />}
         </form.AppField>
-        
+
         {/* <FormRootErrorMessage /> */}
 
         <div className="flex justify-center align-center gap-x-3">

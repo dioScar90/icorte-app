@@ -14,19 +14,21 @@ export const paymentTypeAsConst = [
 ] as const
 
 export const appointmentSchema = z.object({
-  date: z.string({ required_error: 'Data do agendamento obrigatória' })
+  date: z.string({ error: 'Data do agendamento obrigatória' })
     .trim()
     .date('Data do agendamento inválida')
     // .refine(isValidDateString, { message: 'Data do agendamento inválida' })
     .refine(dataIsEqualOrGreaterThenToday, { message: 'Data do agendamento precisa ser maior ou igual à data de hoje' })
     .transform(getStringAsDateString),
 
-  startTime: z.string({ required_error: 'Horário de início obrigatório' })
-    .time('Horário de início inválido'),
+  startTime: z.iso.time('Horário de início inválido'),
 
   paymentType: z.enum(paymentTypeAsConst, {
-    required_error: 'Tipo de pagamento obrigatório',
-    message: 'Tipo de pagamento inválido',
+    error: (issues) => {
+      return issues.code === 'invalid_value'
+        ? 'Tipo de pagamento inválido'
+        : 'Tipo de pagamento obrigatório'
+    }
   })
     .transform(payment => PaymentTypeEnum[payment]),
 

@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useClipBoard } from '@/utils/copy-to-clipboard'
 import { debounce } from '@/utils/debounce'
-import { applyMask } from '@/utils/mask'
+import { Mask } from '@/utils/mask'
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
@@ -26,11 +26,11 @@ export const Route = createFileRoute(
             throw resp.error
           }
 
-          if (!resp.data.item?.length) {
+          if (!resp.data.items?.length) {
             return []
           }
 
-          return resp.data.item
+          return resp.data.items
         })
         .catch(err => {
           context.handleError(err)
@@ -52,20 +52,20 @@ function RouteComponent() {
   const search = Route.useSearch()
 
   const { data: users } = useSuspenseQuery(queryOptions())
-  
+
   const [take, setTake] = useState(search?.take)
   const [takeParam, _setTakeParam] = useState(search?.take)
   const { copyToClipboard } = useClipBoard()
 
   const setTakeParam = debounce((take?: number) => _setTakeParam(take))
-  
+
   useEffect(() => {
     navigate({
       search: (prev) => ({ ...prev, take: takeParam }),
       replace: true,
     })
   }, [takeParam])
-  
+
   return (
     <DivBeforeCard>
       <Card className="mx-auto max-w-sm min-w-[80vw] md:min-w-[750px] lg:min-w-[800px]">
@@ -109,7 +109,7 @@ function RouteComponent() {
                         <TableCell className="text-center">
                           <CopyToClipboard onClick={() => copyToClipboard(email)} innerText="Copiar email" />
                         </TableCell>
-                        <TableCell className="text-center">{applyMask('PHONE_NUMBER', phoneNumber)}</TableCell>
+                        <TableCell className="text-center">{Mask.PHONE_NUMBER(phoneNumber)}</TableCell>
                         <TableCell className="text-center">{isBarberShop ? 'Barbeiro' : 'Cliente'}</TableCell>
                       </TableRow>
                     ))

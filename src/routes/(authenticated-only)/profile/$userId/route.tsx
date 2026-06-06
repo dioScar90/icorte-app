@@ -12,12 +12,12 @@ export const Route = createFileRoute('/(authenticated-only)/profile/$userId')({
   beforeLoad: async ({ context, params }) => {
     const res = await context.getProfileById(params.userId)
     
-    if (!res.isSuccess) {
+    if (res.error) {
       context.goHome()
     }
     
     return {
-      profile: res.value!,
+      profile: res.data?.item!,
     }
   },
 })

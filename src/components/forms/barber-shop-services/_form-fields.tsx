@@ -5,14 +5,14 @@ import { useFieldContext } from '@/hooks/forms/form-contexts'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ErrorMessages } from '../default'
-import { applyMask } from '@/utils/mask'
+import { Mask } from '@/utils/mask'
 import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
 import { Activity, type ComponentProps } from 'react'
 
 export function PriceField({ disabled }: { disabled?: boolean }) {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
-  
+
   return (
     <div>
       <Label htmlFor="Preço" className="mb-2 text-xl font-bold">
@@ -24,7 +24,7 @@ export function PriceField({ disabled }: { disabled?: boolean }) {
         value={field.state.value}
         onBlur={field.handleBlur}
         onChange={(e) => {
-          field.handleChange(applyMask('MONEY', e.currentTarget.value))
+          field.handleChange(Mask.MONEY(e.currentTarget.value))
           e.currentTarget.focus()
         }}
         onFocus={navigateToEndAfterFocus}
@@ -40,7 +40,7 @@ export function PriceField({ disabled }: { disabled?: boolean }) {
 function BaseTimeField({ label, placeholder, disabled }: { label: string, placeholder: string, disabled?: boolean }) {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
-  
+
   return (
     <div>
       <Label htmlFor={label} className="mb-2 text-xl font-bold">
@@ -52,7 +52,7 @@ function BaseTimeField({ label, placeholder, disabled }: { label: string, placeh
         placeholder={placeholder}
         onBlur={field.handleBlur}
         onChange={(e) => {
-          field.handleChange(applyMask('TIME_ONLY', e.currentTarget.value))
+          field.handleChange(Mask.TIME_ONLY(e.currentTarget.value))
           e.currentTarget.focus()
         }}
         onFocus={navigateToEndAfterFocus}

@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useBarberShopForm } from '@/hooks/forms/use-barber-shop'
 import { states } from '@/schemas/address'
 import { barberShopSchema } from '@/schemas/barberShop'
-import { applyMask } from '@/utils/mask'
+import { Mask } from '@/utils/mask'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { StoreIcon } from 'lucide-react'
 import type { z } from 'zod'
@@ -39,14 +39,14 @@ function RouteComponent() {
       s.barberShop.register,
     ] as const
   })
-  
+
   const navigate = useNavigate()
 
   const form = useBarberShopForm({
     defaultValues: {
       name: '',
       description: '',
-      comercialNumber: applyMask('PHONE_NUMBER', user.phoneNumber),
+      comercialNumber: Mask.PHONE_NUMBER(user.phoneNumber),
       comercialEmail: user.email ?? '',
       address: {
         street: '',
@@ -66,11 +66,11 @@ function RouteComponent() {
       try {
         const values = barberShopSchema.parse(value)
         const result = await register(values)
-  
+
         if (result.error) {
           throw result.error
         }
-  
+
         navigate({
           to: '/barber-shop/$barberShopId/dashboard',
           params: {
@@ -87,7 +87,7 @@ function RouteComponent() {
       }
     },
   })
-  
+
   return (
     <form
       className="space-y-6"
@@ -154,10 +154,10 @@ function RouteComponent() {
                 <form.AppField name="address.country">
                   {(field) => <field.CountryField />}
                 </form.AppField>
-                
+
                 {/* <FormRootErrorMessage /> */}
               </div>
-              
+
               <div className="mt-3">
                 <form.AppForm>
                   <form.SubscribeButton label="Cadastrar" IconLeft={<StoreIcon />} />

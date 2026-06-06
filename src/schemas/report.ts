@@ -13,7 +13,7 @@ function getNumberAsRating(rating: number) {
 }
 
 export const reportSchema = z.object({
-  title: z.string({ required_error: 'Título obrigatório' })
+  title: z.string({ error: 'Título obrigatório' })
     .trim()
     .min(3, { message: 'Título precisa ter pelo menos 3 caracteres' }),
 
@@ -23,7 +23,7 @@ export const reportSchema = z.object({
     .or(z.literal(''))
     .transform(value => value?.trim() || undefined),
 
-  rating: z.coerce.number({ required_error: 'Nota obrigatória' })
+  rating: z.coerce.number({ error: 'Nota obrigatória' })
     .int('Nota inválida')
     .refine(isInRange, { message: `Nota precisa estar entre ${MIN_RATING} e ${MAX_RATING}` })
     .transform(getNumberAsRating),

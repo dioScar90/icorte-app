@@ -121,7 +121,7 @@ export function useInitValuesSpecialScheduleFormContext() {
     
         const result = await method()
     
-        if (!result.isSuccess) {
+        if (result.error) {
           throw result.error
         }
         
@@ -129,7 +129,7 @@ export function useInitValuesSpecialScheduleFormContext() {
           search: ({ open, ...rest }) => ({ ...rest }),
           state: {
             alert: {
-              message: result.value?.message ?? defaultMessage,
+              message: result.data?.message ?? defaultMessage,
             },
           },
         })

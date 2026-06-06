@@ -85,7 +85,7 @@ function getMoney(value: number | string) {
   return getNumberAsCurrency(money)
 }
 
-const maskObj = {
+export const Mask = {
   CPF: getCpf,
   CNPJ: getCnpj,
   CEP: getCep,
@@ -94,19 +94,3 @@ const maskObj = {
   MONEY: getMoney,
   DATE_ISO: getDateString,
 } as const
-
-type MaskObj = typeof maskObj
-type MaskObjKey = keyof MaskObj
-
-export const applyMask = 
-<
-  TType extends MaskObjKey,
-  TValues extends Parameters<MaskObj[TType]>,
->(type: TType, ...value: TValues): ReturnType<MaskObj[TType]> => {
-  if (!value.length || value[0] === undefined || !(type in (maskObj as MaskObj))) {
-    return ''
-  }
-  
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  return maskObj[type](...value)
-}

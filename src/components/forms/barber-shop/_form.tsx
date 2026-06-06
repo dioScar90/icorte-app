@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Activity, type ComponentProps } from 'react'
 import { ErrorMessages, Select, TextField } from '../default'
-import { applyMask } from '@/utils/mask'
+import { Mask } from '@/utils/mask'
 
 export function NameField({ label, placeholder, disabled, ...rest }: ComponentProps<typeof TextField>) {
   return <TextField label={label ?? 'Nome'} placeholder={placeholder ?? 'Nome'} disabled={disabled} {...rest} />
@@ -19,7 +19,7 @@ export function DescriptionField({ label, placeholder, disabled, ...rest }: Comp
 export function ComercialNumberField() {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
-  
+
   return (
     <div>
       <Label htmlFor="Telefone Comercial" className="mb-2 text-xl font-bold">
@@ -30,7 +30,7 @@ export function ComercialNumberField() {
         value={field.state.value}
         placeholder="Telefone Comercial"
         onBlur={field.handleBlur}
-        onChange={(e) => field.handleChange(applyMask('PHONE_NUMBER', e.target.value))}
+        onChange={(e) => field.handleChange(Mask.PHONE_NUMBER(e.target.value))}
       />
       <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
         <ErrorMessages errors={errors} />
@@ -75,7 +75,7 @@ export function StateField({ baseEnum }: Pick<ComponentProps<typeof Select>, 'ba
 export function PostalCodeField() {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
-  
+
   return (
     <div>
       <Label htmlFor="CEP" className="mb-2 text-xl font-bold">
@@ -86,7 +86,7 @@ export function PostalCodeField() {
         value={field.state.value}
         placeholder="CEP"
         onBlur={field.handleBlur}
-        onChange={(e) => field.handleChange(applyMask('CEP', e.target.value))}
+        onChange={(e) => field.handleChange(Mask.CEP(e.target.value))}
       />
       <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
         <ErrorMessages errors={errors} />

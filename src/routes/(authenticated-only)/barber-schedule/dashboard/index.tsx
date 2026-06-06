@@ -28,11 +28,11 @@ export const Route = createFileRoute(
   loader: async ({ context }) => {
     const res = await context.barberSchedule.getAllAppointments()
 
-    if (!res.isSuccess) {
+    if (res.error) {
       return []
     }
 
-    return res.value.value.items ?? []
+    return res.data.items ?? []
   },
 })
 
@@ -69,7 +69,7 @@ function FormRemoveAppointment({ appointment, closeModal, setLoadingState, formI
     try {
       const result = await deleteAppointment(appointment.id)
 
-      if (!result.isSuccess) {
+      if (result.error) {
         throw result.error
       }
 

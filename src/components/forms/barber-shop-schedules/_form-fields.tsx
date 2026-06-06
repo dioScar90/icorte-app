@@ -6,13 +6,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Activity, type ComponentProps } from 'react'
 import { ErrorMessages, Switch, Select, TextField } from '../default'
-import { applyMask } from '@/utils/mask'
+import { Mask } from '@/utils/mask'
 import { navigateToEndAfterFocus } from "@/utils/cursor-end-of-input"
 
 export function DateField({ label, placeholder, disabled }: { label: string, placeholder: string, disabled?: boolean }) {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
-  
+
   return (
     <div>
       <Label htmlFor={label} className="mb-2 text-xl font-bold">
@@ -24,7 +24,7 @@ export function DateField({ label, placeholder, disabled }: { label: string, pla
         placeholder={placeholder}
         onBlur={field.handleBlur}
         onChange={(e) => {
-          field.handleChange(applyMask('DATE_ISO', e.currentTarget.value))
+          field.handleChange(Mask.DATE_ISO(e.currentTarget.value))
           e.currentTarget.focus()
         }}
         onFocus={navigateToEndAfterFocus}
@@ -44,7 +44,7 @@ export function NotesField({ disabled }: { disabled?: boolean }) {
 function BaseTimeField({ label, placeholder, disabled }: { label: string, placeholder: string, disabled?: boolean }) {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
-  
+
   return (
     <div>
       <Label htmlFor={label} className="mb-2 text-xl font-bold">
@@ -56,7 +56,7 @@ function BaseTimeField({ label, placeholder, disabled }: { label: string, placeh
         placeholder={placeholder}
         onBlur={field.handleBlur}
         onChange={(e) => {
-          field.handleChange(applyMask('TIME_ONLY', e.currentTarget.value))
+          field.handleChange(Mask.TIME_ONLY(e.currentTarget.value))
           e.currentTarget.focus()
         }}
         onFocus={navigateToEndAfterFocus}

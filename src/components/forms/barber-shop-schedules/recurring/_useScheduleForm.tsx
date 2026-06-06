@@ -116,7 +116,7 @@ export function useInitValuesRecurringScheduleFormContext() {
     
         const result = await method()
     
-        if (!result.isSuccess) {
+        if (result.error) {
           throw result.error
         }
         

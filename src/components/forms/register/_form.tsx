@@ -10,7 +10,7 @@ import { Route } from '@/routes/__root'
 import { ErrorMessages, FormItem, FormLabel, Select, TextField } from '../default'
 import { SubmitButton } from '@/components/ui/submit-button'
 import { GoogleSvg } from '@/components/ui/google-svg'
-import { applyMask } from '@/utils/mask'
+import { Mask } from '@/utils/mask'
 import { cn } from '@/lib/utils'
 
 export function RegisterEmailField() {
@@ -20,7 +20,7 @@ export function RegisterEmailField() {
 export function RegisterPhoneNumberField() {
   const field = useFieldContext<string>()
   const errors = useStore(field.store, (state) => state.meta.errors)
-  
+
   return (
     <FormItem>
       <FormLabel htmlFor="Telefone">
@@ -31,7 +31,7 @@ export function RegisterPhoneNumberField() {
         value={field.state.value}
         placeholder="Telefone"
         onBlur={field.handleBlur}
-        onChange={(e) => field.handleChange(applyMask('PHONE_NUMBER', e.target.value))}
+        onChange={(e) => field.handleChange(Mask.PHONE_NUMBER(e.target.value))}
       />
       <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
         <ErrorMessages errors={errors} />
@@ -57,17 +57,17 @@ export function RegisterLastNameField() {
   return <TextField type="text" label="Sobrenome" placeholder="Sobrenome" />
 }
 
-function PasswordInputWithEyeIconContainer({ children: passwordInputChild, ref: passwordInputRef }: PropsWithChildren<{ ref: RefObject<HTMLInputElement | null>}>) {
+function PasswordInputWithEyeIconContainer({ children: passwordInputChild, ref: passwordInputRef }: PropsWithChildren<{ ref: RefObject<HTMLInputElement | null> }>) {
   const toggleInputType = () => {
     if (passwordInputRef?.current) {
       const currentType = passwordInputRef.current.type
       passwordInputRef.current.type = currentType === 'password' ? 'text' : 'password'
     }
   }
-  
+
   return (
     <div className="group relative">
-      
+
       {passwordInputChild}
 
       <button
@@ -89,9 +89,9 @@ function PasswordInputWithEyeIconContainer({ children: passwordInputChild, ref: 
 function ForgotPasswordButton() {
   const linkRef = useRef<HTMLAnchorElement>(null)
   const unavailableForNow = Route.useRouteContext({ select: (s) => s.unavailableForNow })
-  
+
   const toggleDisabled = (state: boolean) => linkRef?.current?.classList.toggle('disabled', state)
-  
+
   return (
     <div
       data-forgot-password
@@ -105,7 +105,7 @@ function ForgotPasswordButton() {
         className="ml-auto inline-block text-sm font-bold underline [&.disabled]:opacity-50 [&.disabled]:pointer-events-none"
         onClick={(e) => {
           e.preventDefault()
-          
+
           toggleDisabled(true)
           unavailableForNow(() => toggleDisabled(false))
         }}
@@ -121,13 +121,13 @@ export function RegisterPasswordField({ isLogin }: { isLogin?: boolean }) {
   const errors = useStore(field.store, (state) => state.meta.errors)
 
   const passwordInputRef = useRef<HTMLInputElement>(null)
-  
+
   return (
     <FormItem className="has-[[data-forgot-password]]:relative">
       <FormLabel>
         Senha
       </FormLabel>
-      
+
       <PasswordInputWithEyeIconContainer ref={passwordInputRef}>
         <Input
           ref={passwordInputRef}
@@ -138,11 +138,11 @@ export function RegisterPasswordField({ isLogin }: { isLogin?: boolean }) {
           onChange={(e) => field.handleChange(e.target.value)}
         />
       </PasswordInputWithEyeIconContainer>
-      
+
       <Activity mode={!!isLogin ? 'visible' : 'hidden'}>
         <ForgotPasswordButton />
       </Activity>
-      
+
       <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
         <ErrorMessages errors={errors} />
       </Activity>
@@ -159,7 +159,7 @@ export function RegisterConfirmPasswordField() {
       <FormLabel>
         Confirme sua senha
       </FormLabel>
-      
+
       <Input
         type="password"
         value={field.state.value}
@@ -167,7 +167,7 @@ export function RegisterConfirmPasswordField() {
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.value)}
       />
-      
+
       <Activity mode={field.state.meta.isTouched ? 'visible' : 'hidden'}>
         <ErrorMessages errors={errors} />
       </Activity>

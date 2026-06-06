@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useBarberShopForm } from '@/hooks/forms/use-barber-shop'
 import { states } from '@/schemas/address'
 import { barberShopSchema } from '@/schemas/barberShop'
-import { applyMask } from '@/utils/mask'
+import { Mask } from '@/utils/mask'
 import { Link } from '@tanstack/react-router'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ChevronLeft, StoreIcon } from 'lucide-react'
@@ -28,13 +28,13 @@ function RouteComponent() {
   })
 
   const navigate = useNavigate()
-  
+
   const form = useBarberShopForm({
     defaultValues: {
       name: barberShop.name,
       description: barberShop.description,
       comercialNumber: barberShop.comercialNumber,
-      comercialEmail: applyMask('PHONE_NUMBER', barberShop.comercialEmail),
+      comercialEmail: Mask.PHONE_NUMBER(barberShop.comercialEmail),
       address: {
         street: barberShop.address.street,
         number: barberShop.address.number,
@@ -42,7 +42,7 @@ function RouteComponent() {
         neighborhood: barberShop.address.neighborhood,
         city: barberShop.address.city,
         state: states[barberShop.address.state],
-        postalCode: applyMask('CEP', barberShop.address.postalCode),
+        postalCode: Mask.CEP(barberShop.address.postalCode),
         country: barberShop.address.country,
       }
     } as z.input<typeof barberShopSchema>,
@@ -53,11 +53,11 @@ function RouteComponent() {
       try {
         const values = barberShopSchema.parse(value)
         const result = await update(barberShop.id, values)
-  
+
         if (result.error) {
           throw result.error
         }
-  
+
         navigate({
           to: '/barber-shop/$barberShopId',
           params: {
@@ -74,7 +74,7 @@ function RouteComponent() {
       }
     },
   })
-  
+
   return (
     <form
       className="space-y-6"
@@ -141,7 +141,7 @@ function RouteComponent() {
                 <form.AppField name="address.country">
                   {(field) => <field.CountryField />}
                 </form.AppField>
-                
+
                 {/* <FormRootErrorMessage /> */}
               </div>
 
