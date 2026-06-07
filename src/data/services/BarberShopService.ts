@@ -2,6 +2,7 @@ import { type Pagination } from "@/data/result";
 import type { BarberShopZod } from "@/schemas/barberShop";
 import type { BarberShop } from "@/types/models/barberShop";
 import { BaseService } from "./_baseService";
+import type { Appointment } from "@/types/models/appointment";
 
 function getUrl(id?: number, appointments?: boolean) {
   const baseEndpoint = `/barber-shop`
@@ -47,7 +48,7 @@ export class BarberShopService extends BaseService<BarberShop, BarberShopZod> {
   
   async getAppointmentsByBarberShop(barberShopId: number, pag?: Pagination) {
     const url = getUrl(barberShopId, true) + getQueryParams(pag)
-    return await this.getAll(url)
+    return await this.getAll<Appointment>(url)
   }
   
   async updateBarberShop(id: number, data: BarberShopZod) {

@@ -325,7 +325,9 @@ function RouteComponent() {
           </DialogHeader>
 
           <Activity mode={state.open ? 'visible' : 'hidden'}>
-            <FormRemoveAppointment {...state.props} />
+            {state.open && (
+              <FormRemoveAppointment {...state.props} />
+            )}
           </Activity>
 
           <DialogFooter className="grid grid-cols-2 md:flex md:justify-end gap-2">

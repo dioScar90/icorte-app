@@ -20,11 +20,7 @@ export function nativeEnumValidator<
   TArr extends TReadonlyArr,
   TIdx extends IndexesOf<TArr> = IndexesOf<TArr>,
 >(arr: TArr, errorMessage?: string) {
-  function getIndexOf(el: z.Writeable<TArr>[number]): TIdx {
-    return arr.indexOf(el) as TIdx
-  }
-  
   return z.enum(arr).optional()
-    .refine(gen => gen !== undefined, { message: errorMessage })
-    .transform(getIndexOf)
+    .refine(gen => gen !== undefined, { error: errorMessage })
+    .transform(el => arr.indexOf(el) as TIdx)
 }

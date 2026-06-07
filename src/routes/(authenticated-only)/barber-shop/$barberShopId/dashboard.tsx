@@ -19,17 +19,10 @@ export const Route = createFileRoute(
 )({
   component: RouteComponent,
   beforeLoad: ({ context, params, search }) => {
-    function getPaginationObj(resp?: Awaited<ReturnType<typeof context.barberShop.getAppointments>>) {
-      if (!resp?.data?.items?.length) {
-        return {
-          appointments: [],
-          pagination: undefined,
-        }
-      }
-      
+    function getPaginationResult(resp?: Awaited<ReturnType<typeof context.barberShop.getAppointments>>) {
       return {
-        appointments: resp.data.items,
-        pagination: resp.data.pagination,
+        appointments: resp?.data?.items ?? [],
+        pagination: resp?.data?.pagination,
       }
     }
 
@@ -41,12 +34,12 @@ export const Route = createFileRoute(
             if (resp.error) {
               throw resp.error
             }
-
-            return getPaginationObj(resp)
+            
+            return getPaginationResult(resp)
           })
           .catch(err => {
             context.handleError(err)
-            return getPaginationObj()
+            return getPaginationResult()
           }),
         enabled: !!params.barberShopId && !!search.pagination?.page,
       })
@@ -68,7 +61,7 @@ function BarberShopDashboardTbodyItems() {
   const navigate = useNavigate({ from: Route.fullPath })
 
   const { data: { appointments, pagination } } = useSuspenseQuery(queryOptions())
-
+  
   useEffect(() => {
     navigate({
       search: (prev) => ({ ...prev, pagination }),
@@ -92,7 +85,7 @@ function BarberShopDashboardTbodyItems() {
   return appointments.map(({ barberShopId, client, services, ...appointment }) => (
     <TableRow key={appointment.id} data-barber-shop-id={barberShopId}>
       <TableCell className="text-center">{getFormattedDate(appointment.date)}</TableCell>
-      <TableCell className="text-center">{client.fullName}</TableCell>
+      <TableCell className="text-center">{client?.fullName}</TableCell>
       <TableCell className="text-center">{appointment.notes ?? '---'}</TableCell>
       <TableCell className="text-center">
         {PaymentTypeEnum[appointment.paymentType]}

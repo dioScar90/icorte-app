@@ -9,18 +9,18 @@ export abstract class BaseService<TEntity, TZod> {
     this._fetch = HttpFetch.getInstance()
   }
 
-  async create(data: TZod, ...ids: any[]) {
+  async create<TReturn = TEntity>(data: TZod, ...ids: any[]) {
     const url = this.getUrl(...ids)
-    return await this._fetch.post<TEntity>(url, data)
+    return await this._fetch.post<TReturn>(url, data)
   }
 
-  async get(...ids: any[]) {
+  async get<TReturn = TEntity>(...ids: any[]) {
     const url = this.getUrl(...ids)
-    return await this._fetch.get<TEntity>(url)
+    return await this._fetch.get<TReturn>(url)
   }
 
-  async getAll(url: string) {
-    return await this._fetch.getAll<TEntity>(url)
+  async getAll<TReturn = TEntity>(url: string) {
+    return await this._fetch.getAll<TReturn>(url)
   }
 
   async update(data: TZod, ...ids: any[]) {
